@@ -2,7 +2,8 @@
 | Auteur | Date de début | Projet  | Description | Communication |
 | ------------- |:-------------:| :-----|---|---|
 | Joey Martig| 19.04.2021 | Travail de diplome Covid propagation | Applications permettant de voir l'évolution d'un virus dans un environnement peuplé d'individus. | Joey.mrtg@eduge.ch Joey.mrtg@gmail.com |
-# 19.03.2021 - 08h05/17h
+
+# 19.04.2021 - 08h05/17h
 - Rendu appréciation du travail de stage.
 - Démarrage du travail de diplôme et présentation moodle.
 - Documentation
@@ -45,3 +46,30 @@
     - Au lancement prend toute la fenêtre
     - Le resize et positionnement fonctionnent
     - À la fermeture du programme, unity ne s'arrêtait pas et utilisait 15% du processeur à chaque ouverture.
+
+# 20.04.2021 - 08h05/17h
+- Retrospective 19.04.2021
+- Recherche des méthodes dans la dll user32.dll
+- Recherche de différents moyens de communications entre WPF et Unity
+  - Essai d'envoies de données de WPF à unity avec un pipeline anonyme
+  - Essai d'envoies de données de WPF à unity avec un pipeline nommé
+    - Réussi entre unity et WPF mais inutilisable actuellement
+    - Il faut stoper le programme pour lire le message
+    - Peut-être un problème lié au fait que les deux programme essaient de lire au même moment.
+
+- Problèmes d'intelliSense sur unity
+  - la connexion entre le script vs 2019 et unity n'est pas établies.
+  - Mise à jour de vs 2019 et installation des paquets unity
+  - Redémarrage du pc
+  - Modifications de paramètre Unity et vs sans succès
+  - Recherche de solutions concernant vs 2019 et non 2015
+  - Pas suffisant. Ne fonctionne toujours pas
+  - [Le point e. à reglé le prolème](https://blog.terresquall.com/2020/11/fixing-visual-studios-intellisense-autocomplete-in-unity/)
+- Problème avec unity qui supprime mes objets à chaque fermeture du projet
+  - La scène avait été suprimée et ne s'était pas rajoutée automatiquement
+- Communication fonctionnel mais le projet unity freeze après chaque message.
+  - Tentative d'utilisation de l'asynchrone pour palier au problème
+    - Ce problèm est reglé cependant un problème de décalage fait que WPF parle chinois.
+    - ![Communication entre WPF et unity qui résulte en chinoi](Medias/LogBook/Chinoi.png)
+    - Essai de lecture de byte pour obtenir le résultat
+    - 

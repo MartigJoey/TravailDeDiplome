@@ -37,11 +37,13 @@
   - [5.13. `Livrables`](#513-livrables)
 - [6. `Analyse interface graphique`](#6-analyse-interface-graphique)
   - [6.1. `Comparaison technologies`](#61-comparaison-technologies)
-    - [6.1.3. `WinForm (Windows Forms)`](#613-winform-windows-forms)
-    - [6.1.1. `WPF (Windows Presentation Foundation)`](#611-wpf-windows-presentation-foundation)
-    - [6.1.2. `Unity`](#612-unity)
-      - [`Communication`](#communication)
-      - [`Intégration `](#intégration-)
+    - [6.1.1. `WinForm (Windows Forms)`](#611-winform-windows-forms)
+    - [6.1.2. `WPF (Windows Presentation Foundation)`](#612-wpf-windows-presentation-foundation)
+    - [6.1.3. `Unity`](#613-unity)
+      - [6.1.3.1. `Communication`](#6131-communication)
+        - [`Unity Controller`](#unity-controller)
+        - [`PipeLines`](#pipelines)
+      - [6.1.3.2. `Intégration `](#6132-intégration-)
   - [6.2. `Choix de la solution`](#62-choix-de-la-solution)
 - [7. `Problèmes rencontrés`](#7-problèmes-rencontrés)
 - [8. `Environnement`](#8-environnement)
@@ -362,12 +364,12 @@ Affiche une page :
 Cette analyse concerne l'interface graphique et le choix de la technologie à utiliser pour réaliser celle-ci.
 
 ## 6.1. `Comparaison technologies`
-### 6.1.3. `WinForm (Windows Forms)`
+### 6.1.1. `WinForm (Windows Forms)`
 Lors du CFC ainsi que de l'apprentissage technicien, nous avons toujours utilisé cet interface pour réaliser l'entièreté de nos projets. Je connais donc bien cet environnement contrairement au WPF. En plus de cela, l'interface graphique réalisée dans le poc est en WinForm. Me permettant donc de simplement importer le projet déjà existant.
 
 Cependant, WinForm ainsi que l'interface graphique déjà existante apportent de gros problèmes tel que les timers. Lorsqu'il y a une charge CPU trop lourde, les timers perdent leur rythmes et n'arrivent plus à suivre. Le résultat de cette surcharge est que plus rien ne fait de sense. Les animations n'ont plus le temps de s'effectué rendant les individus immobile ou presque.
 
-### 6.1.1. `WPF (Windows Presentation Foundation)`
+### 6.1.2. `WPF (Windows Presentation Foundation)`
 
 WPF est plus récent que WinForms et a donc cerains avantage non négligeable en comparaison. Il est beaucoup plus complet en terme d'estéthique et donc d'UI que WinForms. En plus de cela, il est possible de créer des objets en 2D ou 3D. Ces objets contrairement à WinForms sont gérés par le GPU plutôt qu'être entièrement basé sur le CPU. Cet différence à elle-seule fait pencher la balance pour WPF.
 
@@ -380,16 +382,59 @@ Le possible problème de timer bien que probablement réduit du au fait que la c
 
 Il faut aussi noter que je n'ai aucune expérience en WPF et vait donc devoir m'y habituer durant un certain temps avant d'être efficace à 100%.
 
-### 6.1.2. `Unity`
+### 6.1.3. `Unity`
 Unity est un moteur de jeu en 2D et 3D. Il est possible de l'intégrer directement à une application WPF. Ça me semble être le meilleur choix si l'on prend en compte les problèmes de timer des deux autres technologies. Unity possède de façon native des méthodes qui sont appelée à chaque frame permettant le bon déroulement de la simulation.
 
 En plus de cela, j'ai beaucoup d'expérience avec ce logiciel, ayant réalisé mon TPI avec celui-ci. Je peux donc affirmer qu'il est beaucoup plus simple de réalisé l'interface graphique avec Unity.
 
 Cependant un autre problème est présent. La liaison des données. Il m'est impossible, sans le tester, de savoir si ce modèle de fonctionnement est compatible avec mon projet. Je sais qu'il est possible de transférer des informations de WPF à unity cependant, je ne sais pas si la fréquence d'envoie est suffisante ou même si la quantité de données envoyées que je souhaite atteindre est possible.
 
-#### `Communication`
+#### 6.1.3.1. `Communication`
+Pour communiquer entre WPF et Unity j'ai essayé plusieurs méthodes fonctionnant différement et surtout de complexité différente.
+##### `Unity Controller`
+Mon premier essai fut avec Unity Controller qui permet de créer un server qui communique entre une application C# et Unity.
 
-#### `Intégration `
+Pour l'installer il faut d'ajouter le paquet nuget "Unity Controller" au projet ainsi qu'un using "UnityController". Sont implémentation est la plus simple des solutions testées sachant que sont implémentation ne prend que quelque lignes au total.
+
+Le code dans un script unity ne comprend que deux lignes. La première étant le démarage du serveur.
+```C#
+void Start()
+{
+  UnityCommands.StartServer("008");
+}
+```
+
+La deuxième s'updatant à chaque image, permet de recevoir la commande et de l'appliquer.
+```C#
+void Update()
+{
+  UnityCommands.ReceiveMessage();
+}
+```
+
+Maintenant, dans le projet windows. Dans l'initialisation de la form, il faut démarrer le server en localhost.
+```C#
+public MainWindow()
+{
+  InitializeComponent();
+  UnityCommands.StartClient("localhost", "008");
+}
+```
+
+La dernière ligne située dans un évènement click d'un bouton permet de modifier l'élèment texte du GameObject "GameObjectText" en lui ajoutant la valeur "Texte".
+```C#
+private void Button_Click(object sender, RoutedEventArgs e)
+{
+  UnityCommands.UpdateText("GameObjectText", "Texte");
+}
+```
+
+Cette implémentation de la communication est extrêmement simple à mettre en place cependant, les possibilités sont très limitées. Les seules actions possibles sont le fait de changer le texte d'un GameObject, sa couleur, son image, etc. Il est impossible d'envoyer un message de code à code puis de l'interpreter. Cette façon de faire ne peut donc pas servir à la réalisation de mon projet qui demande un traitement des données.
+
+##### `PipeLines`
+Contrairement à UnityController, les pipelines laissent plus de liberté mais leur complexité est bien supérieur. J'ai rencontré divers problème avant tout dans l'implémentation de l'asychrone. Un certain décalage des données créaient un résultat qui était lu comme des charactères chinois.
+
+#### 6.1.3.2. `Intégration `
 
 
 ## 6.2. `Choix de la solution`
