@@ -71,5 +71,18 @@
   - Tentative d'utilisation de l'asynchrone pour palier au problème
     - Ce problèm est reglé cependant un problème de décalage fait que WPF parle chinois.
     - ![Communication entre WPF et unity qui résulte en chinoi](Medias/LogBook/Chinoi.png)
-    - Essai de lecture de byte pour obtenir le résultat
-    - 
+    - Essai de lecture de byte pour obtenir le résultat. sans succès
+    - Refactoring du code pour fonctionner en async.
+    - Le code est toujours imparfait et décalé
+      - "Test communication" => "Test communication"
+      - "Test communication" => "est communication"
+      - "Test communication" => Signes chinois
+  - Communication en string fonctionnelle à 100% en utilisant une méthode async récursive appelée au démarage du projet unity.
+    - Méthode apellée chaque seconde ayant des résultats très aléatoire.
+    - ![Code de base](Medias/LogBook/CodeReadPipeData1.png)
+    - Méthode appellée une fois au démarrage puis à chaque fois qu'elle termine l'affichage de données reçues.
+    - ![Nouvel exemple de code](Medias/LogBook/CodeReadPipeData2.png)
+  - Idée pour l'implémentation en Unity : Envoyer des objets en JSON via le pipeline.
+  - Test d'envoie d'un objet de WPF à Unity en JSON
+    - ![Objets envoyés](Medias/LogBook/ObjectsSent.png)
+    - ![Valeurs reçues](Medias/LogBook/ObjectReveived.png)

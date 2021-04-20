@@ -34,7 +34,7 @@ public class ScriptClient : MonoBehaviour
 
         Thread.Sleep(250);
 
-        InvokeRepeating("ReadPipeData", 0, 5f);
+        ReadPipeData();
     }
 
     // Update is called once per frame
@@ -42,16 +42,18 @@ public class ScriptClient : MonoBehaviour
     {
         //Debug.Log("Updating");
         //Debug.Log(ss.ReadString());
-        //getPipedData();
+        //GetPipedData();
     }
 
     private async void ReadPipeData()
     {
         string result = await ss.ReadStringAsync();
+        Debug.Log(result);
         ChangingText.GetComponent<Text>().text = result;
+        ReadPipeData();
     }
 
-    private void getPipedData()
+    private void GetPipedData()
     {
         Debug.Log("Thread Called - Start");
 

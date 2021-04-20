@@ -432,7 +432,7 @@ private void Button_Click(object sender, RoutedEventArgs e)
 Cette implémentation de la communication est extrêmement simple à mettre en place cependant, les possibilités sont très limitées. Les seules actions possibles sont le fait de changer le texte d'un GameObject, sa couleur, son image, etc. Il est impossible d'envoyer un message de code à code puis de l'interpreter. Cette façon de faire ne peut donc pas servir à la réalisation de mon projet qui demande un traitement des données.
 
 ##### `PipeLines`
-Contrairement à UnityController, les pipelines laissent plus de liberté mais leur complexité est bien supérieur. J'ai rencontré divers problème avant tout dans l'implémentation de l'asychrone. Un certain décalage des données créaient un résultat qui était lu comme des charactères chinois.
+Contrairement à UnityController, les pipelines laissent plus de liberté mais leur complexité est bien supérieur. J'ai rencontré divers problème avant tout dans l'implémentation de l'asychrone. Un certain décalage des données créaient un résultat qui étaient lu comme des charactères chinois.
 
 #### 6.1.3.2. `Intégration `
 
