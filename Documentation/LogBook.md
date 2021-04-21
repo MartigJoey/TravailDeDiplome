@@ -86,3 +86,14 @@
   - Test d'envoie d'un objet de WPF à Unity en JSON
     - ![Objets envoyés](Medias/LogBook/ObjectsSent.png)
     - ![Valeurs reçues](Medias/LogBook/ObjectReveived.png)
+
+# 21.04.2021 - 08h05/17h
+- Documentation
+  - Complétion de la comparaison de technologie d'interface graphique des pipelines.
+  - Problèmes rencontrés - Pipelines
+  - Intégration d'unity à WPF
+- Modification de l'envoie de données pour utiliser un BinaryWriter à la place d'une Stream
+  - Augmente la limite de données transmissible d'un Uin16 à int32.
+- Modification de la réception des données pour utiliser un BinaryReader à la place d'un stream.
+- Test d'intégration + communication réussi
+- 

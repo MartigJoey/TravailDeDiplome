@@ -46,6 +46,7 @@
       - [6.1.3.2. `Intégration `](#6132-intégration-)
   - [6.2. `Choix de la solution`](#62-choix-de-la-solution)
 - [7. `Problèmes rencontrés`](#7-problèmes-rencontrés)
+  - [7.1. `Pipeline`](#71-pipeline)
 - [8. `Environnement`](#8-environnement)
 - [9. `Architecture`](#9-architecture)
   - [9.1. `Arborescence`](#91-arborescence)
@@ -400,7 +401,7 @@ Le code dans un script unity ne comprend que deux lignes. La première étant le
 ```C#
 void Start()
 {
-  UnityCommands.StartServer("008");
+    UnityCommands.StartServer("008");
 }
 ```
 
@@ -408,7 +409,7 @@ La deuxième s'updatant à chaque image, permet de recevoir la commande et de l'
 ```C#
 void Update()
 {
-  UnityCommands.ReceiveMessage();
+    UnityCommands.ReceiveMessage();
 }
 ```
 
@@ -416,8 +417,8 @@ Maintenant, dans le projet windows. Dans l'initialisation de la form, il faut d�
 ```C#
 public MainWindow()
 {
-  InitializeComponent();
-  UnityCommands.StartClient("localhost", "008");
+    InitializeComponent();
+    UnityCommands.StartClient("localhost", "008");
 }
 ```
 
@@ -425,23 +426,209 @@ La dernière ligne située dans un évènement click d'un bouton permet de modif
 ```C#
 private void Button_Click(object sender, RoutedEventArgs e)
 {
-  UnityCommands.UpdateText("GameObjectText", "Texte");
+    UnityCommands.UpdateText("GameObjectText", "Texte");
 }
 ```
 
 Cette implémentation de la communication est extrêmement simple à mettre en place cependant, les possibilités sont très limitées. Les seules actions possibles sont le fait de changer le texte d'un GameObject, sa couleur, son image, etc. Il est impossible d'envoyer un message de code à code puis de l'interpreter. Cette façon de faire ne peut donc pas servir à la réalisation de mon projet qui demande un traitement des données.
 
 ##### `PipeLines`
-Contrairement à UnityController, les pipelines laissent plus de liberté mais leur complexité est bien supérieur. J'ai rencontré divers problème avant tout dans l'implémentation de l'asychrone. Un certain décalage des données créaient un résultat qui étaient lu comme des charactères chinois.
+Contrairement à UnityController, les pipelines laissent plus de liberté mais leur complexité est bien supérieur. J'ai rencontré divers problèmes en implémentant cette fonctionnalité.
+
+Dans mon cas, la communication se fait à sense unique, WPF donnant les informations à l'interface graphique se trouvant sur Unity. Il font donc commencer par créer un serveur du côté WPF.
+
+`Écriture`<!-- TITRE-->
+
+L'écriture se situe dans le projet WPF.
+Cette méthode permet de créer le serveur, le démarrer le serveur et d'établir une connexion avec le client qui est Unity. La méthode ServerThread sera appelée lors de l'appelle de la méthode sever.Start().
+```C#
+private void ConnectToUnity()
+{
+    Thread server;
+    Debug.WriteLine("Waiting for client connect...\n");
+    server = new Thread(ServerThread);
+    server.Start();
+}
+```
+
+Lors du démarrage du Thread, le pipeline est créé et le serveur attend que le client se connecte. Une fois qu'il est connecté, un objet StreamString est créé permettant l'écriture de message pouvant être transferé via le pipeline.
+```C#
+private void ServerThread(object data)
+{
+    NamedPipeServerStream pipeServer = new NamedPipeServerStream("testpipe", 
+                                          PipeDirection.InOut, numThreads);
+
+    pipeServer.WaitForConnection();
+
+    Debug.WriteLine("Client connected.");
+    try
+    {
+        Debug.WriteLine("Creating streamString...");
+        ss = new StreamString(pipeServer);
+
+        Debug.WriteLine("You can now write.");
+    }
+    catch (IOException e)
+    {
+        Debug.WriteLine("ERROR: {0}", e.Message);
+    }
+}
+```
+
+Le constructeur de l'objet StreamString récupère le pipeline créé et le transform en Stream qui est à sont tour transformé en BinaryWriter qui permettra l'envoie des données. Créé un objet UnicodeEncoding permettant la conversion de string en bytes pour le transfer.
+```C#
+public StreamString(Stream stream)
+{
+    this.stream = new BinaryWriter(stream);
+    streamEncoding = new UnicodeEncoding();
+}
+```
+
+WriteString est la méthode appellée à chaque fois que des données doivent être envoyées. Elle converti le message qui lui est fournit en byte et envoie celui-ci dans le pipeline.
+```C#
+public async void WriteString(string outString)
+{
+    await Task.Run(() => {
+        byte[] outBuffer = streamEncoding.GetBytes(outString);
+        int len = outBuffer.Length;
+
+        List<byte> dataToSend = new List<byte>();
+        dataToSend.Add((byte)(len >> 8));
+        dataToSend.Add((byte)(len >> 0));
+        dataToSend.AddRange(outBuffer.ToList());
+        stream.Write(dataToSend.ToArray(), 0, dataToSend.Count);
+        stream.Flush();
+    });           
+}
+```
+`Lecture` <!-- TITRE-->
+
+L'ouverture de la connexion avec le server s'effectue dans la méthde "Start" d'unity qui s'effectue au démarrage du projet. Puis appelle la méthode ConnectToServer(). Si la connection à échouée, un nouvel essai sera effectué à chaque frame du projet jusqu'à que celle-ci soit effectuée.
+```C#
+void Start()
+{
+    Debug.Log("Pipe Opening Process Started");
+    pipeClient = new NamedPipeClientStream(".", "testpipe", PipeDirection.In,   PipeOptions.Asynchronous);
+  
+    Debug.Log("Connecting to server...\n");
+    ConnectToServer();
+}
+
+void Update()
+{
+    if (!pipeClient.IsConnected)
+    {
+        ConnectToServer();
+    }
+}
+```
+
+ConnectToServer() essai donc de ce connecter, si la connexion est effectuée, un objet SreamString est créé et la lecture du flux commence.
+```C#
+private void ConnectToServer()
+{
+    pipeClient.Connect();
+    if (pipeClient.IsConnected)
+    {
+        ss = new StreamString(pipeClient);
+        Thread.Sleep(250);
+        ReadPipeData();
+    }
+}
+```
+
+ReadPipeData() est une méthode récursive et asynchrone. Elle permet de lire le résultat reçu par le pipeline. Elle attend la réception d'un message. Une fois qu'elle en reçoit un grâce à ReadStringAsync(), elle le lis et finit par s'appeler elle-même et recommence le cycle.
+```C#
+private async void ReadPipeData()
+{
+    string result = await ss.ReadStringAsync();
+    ChangingText.GetComponent<Text>().text = result;
+    ReadPipeData();
+}
+```
+
+La lecture du résultat s'effectue exactement comme l'écriture mais dans le sens inverse. La longueur du message est récupérée et utilisée pour le lire dans son entièreté. Une fois le message reçu, le résultat est converti en string et retourné à ReadPipData() qui pourra effectuer son cycle.
+
+```C#
+public async Task<string> ReadStringAsync()
+{
+    return await Task.Run(() =>
+    {
+        int len;
+        len = stream.ReadByte() << 8;
+        len += stream.ReadByte();
+        byte[] inBuffer = new byte[len];
+        stream.Read(inBuffer, 0, len);
+        return streamEncoding.GetString(inBuffer);
+    });
+}
+```
 
 #### 6.1.3.2. `Intégration `
+L'intégration permet d'avoir un rectangle au sein de la page WPF qui sera constitué d'une application .exe. Dans ce cas, il s'agit d'unity. Ça ne permet pas de commander le contenu de la fenêtre mais uniquement sa taille, position et quand démarrer le .exe.
 
+Cette méthode permet de charger et démarrer le projet Unity qui a été buildée au préalable. UnityGrid étant une grille crée dans la vue du code WPF.
+```XML
+<Grid x:Name="unityGrid" Width="454" Height="319" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,327,0"></Grid>
+```
+Cette grille est ensuite transformée en unityHandle qui permet donner au programme la grid ou il va devoir s'afficher. Le process récpuère l'emplacement du programme à lancer. Les arguments permettent de définir où le programme doit se lancer, sans les arguments, le programme se lance dans une fenêtre indépendante. Ensuite, le process est lancé ce qui démarre le programme. EnumChildWindows (user32.dll) permet de lier le programme lancé à la fenêtre, permettant la modification de sa taille en fonction de la taille du programme WPF.
+```C#
+private Process process;
+private void LoadUnityExe()
+{
+    HwndSource source = PresentationSource.FromVisual(unityGrid) as HwndSource;
+    IntPtr unityHandle = source.Handle;
+    
+    //Start embedded Unity Application
+    process = new Process();
+    process.StartInfo.FileName = @".\UnityBuild\testWPF_Unity.exe";
+    process.StartInfo.Arguments = "-parentHWND " + unityHandle.ToInt32() + " " + 
+                                  Environment.CommandLine;
+    process.Start();
+    
+    if (process.WaitForInputIdle())
+    {
+        EnumChildWindows(unityHandle, WindowEnum, IntPtr.Zero);
+    }
+}
+```
 
 ## 6.2. `Choix de la solution`
 Mon attention se porte premièrement sur Unity qui me semble être la solution avec le meilleur rendu et permet de contourner certains problèmes présent dans les deux autres options. Le premier test que j'ai effectué ne permet pas de transmettre des données complexes, uniquement des strings ou images mais pas de list c# ou autre éléments que je pourrais utiliser.
 
 
 # 7. `Problèmes rencontrés`
+## 7.1. `Pipeline`
+Durant l'implémentation des pipelines, j'ai rencontré divers problèmes, le premier étant que la structure original des pipelines utilise une communication synchrone. Lors de l'attente de données, le programme unity s'arretait completement jusqu'à la réception de la donnée attendue. Une fois reçues, une exécutait une frame puis attendait à nouveau des données. Le rproblèmes était similaire dans le code WPF qui, après avoir envoyé des données, attendait qu'Unity les ais réceptionnées pour continuer.
+
+ Pour palier à ce problème, j'ai opté pour l'implémentation de l'asynchrone dans la réception et dans l'envoie des données. Concernant l'envoie, j'ai rencontré un léger problème qui m'empêchait d'accéder à une méthode en asynchrone car j'envoyais le contenu d'un textbox appartenant donc au thread principal. Ce problème à été reglé avec l'utilisationd de Dispatcher.Invoke. Ce problème de thread m'a malgré tout pris un certain temps à reglé du au fait que WPF, Unity et WinForms utilisent tous une façon d'invoke différente rendant les recherche plus compliquée.
+```C#
+await Task.Run(() =>
+{
+    Dispatcher.Invoke((Action)(() =>
+    {
+        ss.WriteString(tbxValue.Text);
+    }));
+});
+```
+
+ Le gros poisson concerne la réception des données. Comme étant un code bloquant, j'ai cherché différentes façon d'appeler mon code de manière constante. Le placer dans la méthode update(appelée chaque frame) ne fonctionnant tout simplement pas, j'ai opté pour la méthode "InvokeRepeating" qui permet de donner un interval dans lequel une méthode sera executée.
+
+ InvokeRepeating couplé avec de l'asynchrone m'a permis d'éviter le programme de s'arrêter à chaque attente de données tout en étant capable d'en recevoir. Cependant, les données reçues n'étaient pas fidèlent aux données envoyées.
+ 
+ Par exemple:<br>
+ la première réception de données est fidèle à celles envoyées. Lors de la deuxième réception, le message est tronqué et certaines lettres du début de la transmission sont manquantes. La troisième réception est encore plus corrompue, recevant donc un message en caractère Chinois. Après cette réception il était corrant de ne recevoir des données vides.
+ ![Fidélité des données](Medias/Rapport/DataFidelity.png)
+
+ Pour régler ce problème, j'ai pensé à remplacer InvokeRepeating par un méthode asynchrone récursive. Cette méthode est appelée une première fois au démarrage du script puis s'appelle une fois qu'elle a récptionné des données. Permettant de recevoir les données correctes et sans bloquer le code.
+```C#
+    private async void ReadPipeData()
+    {
+        string result = await ss.ReadStringAsync();
+        ChangingText.GetComponent<Text>().text = result;
+        ReadPipeData();
+    }
+```
 
 # 8. `Environnement`
 L'environnement de travail est composé d'un pc technicien, 3 écrans, clavier, souris et d'un SSD amovible avec Windows 10 pro version 10.0.19042 Build 19042. Le code est réalisé à l'aide de visual studio 2019 versions 16.9.2. La documentation et le logbook sont réalisés à l'aide de visual studio code et des extensions Markdown All in One et Mardown PDF.
@@ -490,7 +677,7 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 # 16. `Bibliographie`
 
 19.04.2021
-  - Utilisé dans la compairson entre les différentes technologies de l'interface graphique
+  - Utilisés dans la compairson entre les différentes technologies de l'interface graphique
     - [c-sharpcorner - Sandeep Mishra - WPF vs WinForms 1](https://www.c-sharpcorner.com/article/wpf-vs-winforms/#:~:text=The%20abbreviation%20W.P.F%20simply%20refers,to%20develop%20Windows%20desktop%20applications.)
     - [wpf-tutorial - WPF vs WinForms 2](https://www.wpf-tutorial.com/about-wpf/wpf-vs-winforms/)
     - [educba - Priya Pedamkar - WPF vs WinForms 3](https://www.educba.com/winforms-vs-wpf/)
@@ -499,6 +686,14 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
     - [stackoverflow - Programmer - Intégration d'unity en WPF](https://stackoverflow.com/questions/44059182/embed-unity3d-app-inside-wpf-application)
     - [youtube - Anousha - Communication](https://www.youtube.com/watch?v=rz6MNZMyza4)
     - [Packet NuGet sur Unity](https://github.com/GlitchEnzo/NuGetForUnity/releases)
+
+20.04.2021
+  - Utilisés dans la création des pipelines
+    - [MSDN - Auteurs disponibles sur la page - Création des pipelines nommés](https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-use-named-pipes-for-network-interprocess-communication)
+    - [Forum Unity - WylieFoxxx - Modification du code msdn pour fonctionner sur Unity](https://answers.unity.com/questions/483123/how-do-i-get-named-pipes-to-work-in-unity.html)
+- 21.04.2021
+  - Utilisé dans la création des documentation des pipelines
+    - [Stackoverflow - usr - Modification du code MSDN](https://stackoverflow.com/questions/49172352/c-sharp-explanation-of-stream-string-example)
 
 # 17. `Annexes`
 - Projet C#

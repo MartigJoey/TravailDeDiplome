@@ -81,8 +81,9 @@ namespace TestUnity_WPF
                 WeatherForecastWithPOCOs testJson = new WeatherForecastWithPOCOs();
                 string objectToSend = JsonSerializer.Serialize(testJson);
                 Debug.WriteLine(objectToSend);
-                await Task.Factory.StartNew(() =>
+                await Task.Run(() =>
                 {
+                    // Invoke uniquement utile en cas d'utilisation du tbxValue.Text
                     Dispatcher.Invoke((Action)(() =>
                     {
                         ss.WriteString(objectToSend); // tbxValue.Text
@@ -94,46 +95,53 @@ namespace TestUnity_WPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //HwndSource source = PresentationSource.FromVisual(unityPanel) as HwndSource;
-            //IntPtr unityHandle = source.Handle;
-            //
-            ////Start embedded Unity Application
-            //process = new Process();
-            //process.StartInfo.FileName = @"C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\POC\testWPF_Unity\testWPF_Unity.exe";
-            //process.StartInfo.Arguments = "-parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
-            //process.StartInfo.UseShellExecute = false;
-            //process.StartInfo.CreateNoWindow = true;
-            //process.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
-            //process.Start();
-            //
-            //if (process.WaitForInputIdle())
-            //{
-            //    EnumChildWindows(unityHandle, WindowEnum, IntPtr.Zero);
-            //}
+            LoadUnityExe();
             ConnectToUnity();
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void LoadUnityExe()
         {
-            MoveWindow(unityHWND, 0, 0, (int)this.ActualWidth/3 * 2, (int)this.ActualHeight, true);
-            ActivateUnityWindow();
-        }
+            HwndSource source = PresentationSource.FromVisual(unityGrid) as HwndSource;
+            IntPtr unityHandle = source.Handle;
 
-        private void ActivateUnityWindow()
-        {
-            SendMessage(unityHWND, WM_ACTIVATE, WA_ACTIVE, IntPtr.Zero);
+            //Start embedded Unity Application
+            process = new Process();
+            process.StartInfo.FileName = @".\UnityBuild\testWPF_Unity.exe";
+            process.StartInfo.Arguments = "-parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
+            //process.StartInfo.UseShellExecute = false;
+            //process.StartInfo.CreateNoWindow = false;
+            //process.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
+            process.Start();
+
+            if (process.WaitForInputIdle())
+            {
+                EnumChildWindows(unityHandle, WindowEnum, IntPtr.Zero);
+            }
         }
 
         private int WindowEnum(IntPtr hwnd, IntPtr lparam)
         {
             unityHWND = hwnd;
-            ActivateUnityWindow();
+            //ActivateUnityWindow();
             return 0;
+        }
+        private void ActivateUnityWindow()
+        {
+            SendMessage(unityHWND, WM_ACTIVATE, WA_ACTIVE, IntPtr.Zero);
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            MoveWindow(unityHWND, 0, 0, (int)this.ActualWidth/3 * 2, (int)this.ActualHeight, true);
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            ss.CloseLink();
+            if (ss != null)
+            {
+                ss.CloseLink();
+            }
+            
             //process.CloseMainWindow();
             //
             //while (!process.HasExited)
@@ -145,7 +153,6 @@ namespace TestUnity_WPF
         {
             Thread server;
 
-            Debug.WriteLine("\n*** Named pipe server stream with impersonation example ***\n");
             Debug.WriteLine("Waiting for client connect...\n");
             server = new Thread(ServerThread);
             server.Start();
@@ -173,13 +180,13 @@ namespace TestUnity_WPF
 
         private void ServerThread(object data)
         {
-            NamedPipeServerStream pipeServer = new NamedPipeServerStream("testpipe", PipeDirection.InOut, numThreads);
-
-            int threadId = Thread.CurrentThread.ManagedThreadId;
+            NamedPipeServerStream pipeServer = new NamedPipeServerStream("testpipe", PipeDirection.Out, numThreads);
+            //int threadId = Thread.CurrentThread.ManagedThreadId;
 
             pipeServer.WaitForConnection();
 
-            Debug.WriteLine("Client connected on thread[{0}].", threadId);
+            //Debug.WriteLine("Client connected on thread[{0}].", threadId);
+            Debug.WriteLine("Client connected.");
             try
             {
                 Debug.WriteLine("Creating streamString...");
@@ -197,25 +204,13 @@ namespace TestUnity_WPF
 
     public class StreamString
     {
-        private Stream ioStream;
+        private BinaryWriter stream;
         private UnicodeEncoding streamEncoding;
 
-        public StreamString(Stream ioStream)
+        public StreamString(Stream stream)
         {
-            this.ioStream = ioStream;
+            this.stream = new BinaryWriter(stream);
             streamEncoding = new UnicodeEncoding();
-        }
-
-        public string ReadString()
-        {
-            int len = 0;
-
-            len = ioStream.ReadByte() * 256;
-            len += ioStream.ReadByte();
-            byte[] inBuffer = new byte[len];
-            ioStream.Read(inBuffer, 0, len);
-
-            return streamEncoding.GetString(inBuffer);
         }
 
         public async void WriteString(string outString)
@@ -223,40 +218,24 @@ namespace TestUnity_WPF
             await Task.Run(() => {
                 byte[] outBuffer = streamEncoding.GetBytes(outString);
                 int len = outBuffer.Length;
-                if (len > UInt16.MaxValue)
-                {
-                    len = (int)UInt16.MaxValue;
-                }
-                ioStream.WriteByte((byte)(len / 256));
-                ioStream.WriteByte((byte)(len & 255));
-                ioStream.Write(outBuffer, 0, len);
-                ioStream.Flush();
+
+                List<byte> dataToSend = new List<byte>();
+                dataToSend.Add((byte)(len >> 8));
+                dataToSend.Add((byte)(len >> 0));
+                dataToSend.AddRange(outBuffer.ToList());
+                stream.Write(dataToSend.ToArray(), 0, dataToSend.Count);
+                stream.Flush();
             });
             
         }
 
         public void CloseLink()
         {
-            ioStream.Close();
-        }
-    }
-
-    public class ReadFileToStream
-    {
-        private string fn;
-        private StreamString ss;
-
-        public ReadFileToStream(StreamString str, string filename)
-        {
-            fn = filename;
-            ss = str;
-        }
-
-        public void Start()
-        {
-            string contents = File.ReadAllText(fn);
-            ss.WriteString(contents);
-            Debug.WriteLine(contents);
+            if (stream != null)
+            {
+                stream.Close();
+            }
+           
         }
     }
 }

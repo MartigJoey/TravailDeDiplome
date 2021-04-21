@@ -8,7 +8,6 @@ using System.Text;
 using System;
 using System.Security.Principal;
 using System.Threading.Tasks;
-using System.IO;
 
 public class ScriptClient : MonoBehaviour
 {
@@ -21,28 +20,34 @@ public class ScriptClient : MonoBehaviour
     void Start()
     {
         Debug.Log("Pipe Opening Process Started");
-        pipeClient = new NamedPipeClientStream(".", "testpipe", PipeDirection.InOut, PipeOptions.Asynchronous);
+        pipeClient = new NamedPipeClientStream(".", "testpipe", PipeDirection.In, PipeOptions.Asynchronous);
 
         Debug.Log("Connecting to server...\n");
-        pipeClient.Connect();
 
-        ss = new StreamString(pipeClient);
+        ConnectToServer();
 
-        string result = ss.ReadString();
-        ChangingText.GetComponent<Text>().text = result;
-        Debug.Log(result);
-
-        Thread.Sleep(250);
-
-        ReadPipeData();
+        //string result = ss.ReadString();
+        //ChangingText.GetComponent<Text>().text = result;
+        //Debug.Log(result);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log("Updating");
-        //Debug.Log(ss.ReadString());
-        //GetPipedData();
+        if (!pipeClient.IsConnected)
+        {
+            ConnectToServer();
+        }
+    }
+    private void ConnectToServer()
+    {
+        pipeClient.Connect();
+        if (pipeClient.IsConnected)
+        {
+            ss = new StreamString(pipeClient);
+            Thread.Sleep(250);
+            ReadPipeData();
+        }
     }
 
     private async void ReadPipeData()
@@ -52,38 +57,26 @@ public class ScriptClient : MonoBehaviour
         ChangingText.GetComponent<Text>().text = result;
         ReadPipeData();
     }
-
-    private void GetPipedData()
-    {
-        Debug.Log("Thread Called - Start");
-
-        ss = new StreamString(pipeClient);
-        Debug.Log(ss.ReadString());
-        Debug.Log("Thread Called - End");
-
-    }
 }
-
-
 
 public class StreamString
 {
-    private Stream ioStream;
+    private BinaryReader stream;
     private UnicodeEncoding streamEncoding;
 
     public StreamString(Stream ioStream)
     {
-        this.ioStream = ioStream;
+        this.stream = new BinaryReader(ioStream);
         streamEncoding = new UnicodeEncoding();
     }
 
     public string ReadString()
     {
         int len;
-        len = ioStream.ReadByte() * 256;
-        len += ioStream.ReadByte();
+        len = stream.ReadByte() * 256;
+        len += stream.ReadByte();
         byte[] inBuffer = new byte[len];
-        ioStream.Read(inBuffer, 0, len);
+        stream.Read(inBuffer, 0, len);
 
         string outString = streamEncoding.GetString(inBuffer);
 
@@ -97,35 +90,11 @@ public class StreamString
         return await Task.Run(() =>
         {
             int len;
-            len = ioStream.ReadByte() * 256;
-            len += ioStream.ReadByte();
+            len = stream.ReadByte() << 8;
+            len += stream.ReadByte();
             byte[] inBuffer = new byte[len];
-            ioStream.Read(inBuffer, 0, len);
+            stream.Read(inBuffer, 0, len);
             return streamEncoding.GetString(inBuffer);
         });
-    }
-
-    public async Task<int> ReadIntAsync()
-    {
-        return await Task.Run(() =>
-        {
-            return ioStream.ReadByte();
-        });
-    }
-
-    public int WriteString(string outString)
-    {
-        byte[] outBuffer = streamEncoding.GetBytes(outString);
-        int len = outBuffer.Length;
-        if (len > UInt16.MaxValue)
-        {
-            len = (int)UInt16.MaxValue;
-        }
-        ioStream.WriteByte((byte)(len / 256));
-        ioStream.WriteByte((byte)(len & 255));
-        ioStream.Write(outBuffer, 0, len);
-        ioStream.Flush();
-
-        return outBuffer.Length + 2;
     }
 }

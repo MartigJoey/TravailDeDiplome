@@ -12,6 +12,6 @@
     <Grid>
         <Button Click="Button_Click" Width="200" Height="50" HorizontalAlignment="Left" Margin="517,65,0,319" Content="Send to unity"></Button>
         <TextBox x:Name="tbxValue" Width="200" Height="50" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="517,10,0,0"></TextBox>
-        <Grid x:Name="unityPanel" Width="454" Height="319" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,327,0"></Grid>
+        <Grid x:Name="unityGrid" Width="454" Height="319" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,327,0"></Grid>
     </Grid>
 </Window>
