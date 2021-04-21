@@ -1,0 +1,35 @@
+﻿<Window x:Class="CovidPropagation.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CovidPropagation"
+        mc:Ignorable="d"
+        Title="Covid propagation" Height="488" Width="864"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="#1a1a1a"
+        FontFamily="{DynamicResource MaterialDesignFont}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Button Style="{StaticResource ButtonStyle}" Content="{StaticResource cog}" Height="123.429" Width="123.429" Margin="0,0,0,192"/>
+        <Button Style="{StaticResource ButtonStyle}" Grid.Column="1" Content="Okay1" Height="50" Width="200"/>
+        <Button Style="{StaticResource ButtonStyle}" Grid.Column="1" Grid.Row="1" Content="Okay1"  Height="50" Width="200"/>
+        <!--<Frame  Grid.Column="1" x:Name="CenterFrame" VerticalAlignment="Stretch" 
+                            VerticalContentAlignment="Center" HorizontalAlignment="Stretch"  
+                            HorizontalContentAlignment="Center" Source="Page1.xaml" 
+                            Background="{DynamicResource MaterialDesignDarkBackground}"/>-->
+    </Grid>
+</Window>

@@ -632,6 +632,9 @@ await Task.Run(() =>
 
 # 8. `Environnement`
 L'environnement de travail est composé d'un pc technicien, 3 écrans, clavier, souris et d'un SSD amovible avec Windows 10 pro version 10.0.19042 Build 19042. Le code est réalisé à l'aide de visual studio 2019 versions 16.9.2. La documentation et le logbook sont réalisés à l'aide de visual studio code et des extensions Markdown All in One et Mardown PDF.
+
+Le projet WPF utilise .core 3.1 qui est la version lts.
+La version d'Unity est la 2020.3.4f1 qui est aussi la version lts.
 # 9. `Architecture`
 ## 9.1. `Arborescence`
 ```

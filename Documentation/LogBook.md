@@ -96,4 +96,17 @@
   - Augmente la limite de données transmissible d'un Uin16 à int32.
 - Modification de la réception des données pour utiliser un BinaryReader à la place d'un stream.
 - Test d'intégration + communication réussi
-- 
+- Début de la création de l'UI
+  - Recherche d'un thème pour l'application
+    - [Thème prometteur](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit)
+    - Test du thème
+    - Le thème fonctionne et possède énormément de possibilités
+  - Test de différents composants du thème
+  - Boutons
+  - TabControl
+    - Changement d'icones
+    - Changements de la couleur
+    - Tentative de changer le background pour un background non pré-défini.
+    - Intégration d'une autre page xaml depuis le TabControl
+  - Création d'une page, pour la simulation, les paramètres graphiques et les paramètres de la simulation
+  - Abandon du thpme trouvé du à son manque de responsivité malgré sa grande variété de contenu.

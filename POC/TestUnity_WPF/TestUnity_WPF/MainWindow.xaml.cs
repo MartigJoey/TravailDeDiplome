@@ -89,7 +89,6 @@ namespace TestUnity_WPF
                         ss.WriteString(objectToSend); // tbxValue.Text
                     }));
                 });
-                
             }
         }
 
