@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1;
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\App.xaml
-4-342001140
+5-1021232106
 
-8117570620
+9-613276744
 192-1533232326
-MainWindow.xaml;PageGraphicSettings.xaml;PageSimulation.xaml;PageSimulationSettings.xaml;
+Legend.xaml;MainWindow.xaml;PageGraphicSettings.xaml;PageSimulation.xaml;PageSimulationSettings.xaml;
 
-False
+True
 

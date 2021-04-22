@@ -21,9 +21,32 @@ namespace CovidPropagation
     /// </summary>
     public partial class MainWindow : Window
     {
+        PageSimulation pageSimulation;
+        PageSimulationSettings pageSimulationSettings;
+        PageGraphicSettings pageGraphicSettings;
+
         public MainWindow()
         {
             InitializeComponent();
+            pageSimulation = new PageSimulation();
+            pageSimulationSettings = new PageSimulationSettings();
+            pageGraphicSettings = new PageGraphicSettings();
+            MainContent.NavigationUIVisibility = NavigationUIVisibility.Hidden; // Cache la barre de navigation du contenu
+        }
+
+        private void SimulationPage_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Navigate(pageSimulation);
+        }
+
+        private void GraphicSettingsPage_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Navigate(pageSimulationSettings);
+        }
+
+        private void SettingsPage_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Navigate(pageGraphicSettings);
         }
     }
 }

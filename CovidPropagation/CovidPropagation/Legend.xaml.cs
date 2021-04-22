@@ -8,28 +8,18 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Diagnostics;
 
 namespace CovidPropagation
 {
     /// <summary>
-    /// Logique d'interaction pour PageSimulation.xaml
+    /// Logique d'interaction pour Legend.xaml
     /// </summary>
-    public partial class PageSimulation : Page
+    public partial class Legend : Window
     {
-        Legend legendPage;
-        public PageSimulation()
+        public Legend()
         {
             InitializeComponent();
-            legendPage = new Legend();
-        }
-
-        private void OpenLegendWindow_Click(object sender, RoutedEventArgs e)
-        {
-            legendPage.Show();
-            legendPage.Focus();
         }
     }
 }

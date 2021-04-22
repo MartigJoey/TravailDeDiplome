@@ -110,3 +110,39 @@
     - Intégration d'une autre page xaml depuis le TabControl
   - Création d'une page, pour la simulation, les paramètres graphiques et les paramètres de la simulation
   - Abandon du thpme trouvé du à son manque de responsivité malgré sa grande variété de contenu.
+
+# 22.04.2021 - 08h05/17h
+- UI
+  - Ajouts d'icône de boutons
+  - Création de l'interface principal
+    - Menu
+    - Sections
+    - Responsivité
+  - Utilisation des columns et rows
+  - Impossible de changer la couleur de la barre de titre du projet
+    - Désaffichage de la barre
+    - Création de ma propre barre
+    - Différence entre les deux versions
+      - ![Barre de titre windows](Medias/LogBook/BeforeTitleBar.png)
+      - ![Barre de titre personnalisée](Medias/LogBook/AfterTitleBar.png)
+  - Modification des méthodes de la barre de titre pour être utilisable sur toutes les pages
+  - Modification de la structure des boutons pour intégrer directement l'image dans leur balise et non appeler une image. La version précédente empêchait plusieurs boutons d'avoir la même image. Résultat en l'affichage de premier bouton sans image.
+  - Création de différentes pages de contenus
+  - Navigation entre les pages
+  - Modification de l'affichage d'un slider
+    - Difficulté à trouver les bon paramètres
+    - Binding de la couleur à la valeur du slider
+    - Création d'un template pour le slider en récupérant la version de base de  [WPF](https://docs.microsoft.com/en-us/dotnet/desktop/wpf/controls/slider-styles-and-templates?view=netframeworkdesktop-4.8)
+    - Suppression de la track bar
+    - Modification du RepeatButton
+      - Création de deux version se situant à gauche et droit du thumb et ayant des couleurs différentes
+    - Comparaison du slider de windows et du slider personnalisé à l'aide d'un template
+      - ![slider comparaison](Medias/Logbook/Slider.png)
+  - Modification de l'affichage des radioBoutons en récupérant la version de base de [WPF](https://docs.microsoft.com/en-us/dotnet/desktop/wpf/controls/radiobutton-styles-and-templates?redirectedfrom=MSDN&view=netframeworkdesktop-4.8)
+    - Nouveau design 
+    - ![slider comparaison](Medias/Logbook/RadioButton.png)
+  - Modification des couleurs pour qu'elle soient contenuent dans des balisent facilement modifiable.
+  - Modification de l'affichage des checkbox en récupérant la version de base de [WPF](https://docs.microsoft.com/en-us/dotnet/desktop/wpf/controls/checkbox-styles-and-templates?view=netframeworkdesktop-4.8)
+    - Nouveau design 
+    - ![slider comparaison](Medias/Logbook/CheckBox.png)
+- Modification de la fermeture des fenêtres pour cacher les fenêtres secondaires et fermer le programme en cas de fermeture de la fenêtre principale.

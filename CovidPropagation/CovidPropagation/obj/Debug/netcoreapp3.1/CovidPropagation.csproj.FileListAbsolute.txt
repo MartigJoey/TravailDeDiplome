@@ -23,3 +23,6 @@ C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagatio
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.dll
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.pdb
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.genruntimeconfig.cache
+C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.csprojAssemblyReference.cache
+C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\Legend.g.cs
+C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\Legend.baml
