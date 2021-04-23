@@ -146,3 +146,30 @@
     - Nouveau design 
     - ![slider comparaison](Medias/Logbook/CheckBox.png)
 - Modification de la fermeture des fenêtres pour cacher les fenêtres secondaires et fermer le programme en cas de fermeture de la fenêtre principale.
+
+# 23.04.2021 - 08h05/17h
+- Documentation
+  - Organisation
+  - Maquettes
+  - Introduction
+    - Technologies utilisées
+  - Schéma de fonctionnement
+  - Description des technologies utilisées
+- Réflexion sur le fonctionnement des threads pour l'application.
+  - Parallel
+- Installation LiveCharts
+  - Installation packet LiveCharts
+  - Installation packet LiveCharts.Wpf
+  - Installation packet LiveCharts.Geared
+- Graphiques
+  - Bug à chaque changement de taille, régénérer la solution est nécessaire.
+    - Uniquement dans le concepteur et non au lancement du programme
+  - Intégration de graphiques
+    - Courbe
+    - HeatMap
+    - Colonne
+    - Ligne
+    - Bule
+    - Circulaire (Camembert)
+    - Area Stack
+    - ![Graphiques integré à l'application WPF](Medias/LogBook/Graphiques.png)

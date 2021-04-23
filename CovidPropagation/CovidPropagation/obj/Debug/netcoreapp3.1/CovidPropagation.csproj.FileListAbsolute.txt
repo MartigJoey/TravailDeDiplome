@@ -23,6 +23,12 @@ C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagatio
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.dll
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.pdb
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.genruntimeconfig.cache
-C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.csprojAssemblyReference.cache
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\Legend.g.cs
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\Legend.baml
+C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\bin\Debug\netcoreapp3.1\LiveCharts.dll
+C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\bin\Debug\netcoreapp3.1\LiveCharts.Geared.dll
+C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\bin\Debug\netcoreapp3.1\LiveCharts.Wpf.dll
+C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\LC.g.cs
+C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\LC.baml
+C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.csproj.CopyComplete
+C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.csprojAssemblyReference.cache

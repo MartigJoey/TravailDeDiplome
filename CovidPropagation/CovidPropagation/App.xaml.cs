@@ -15,10 +15,6 @@ namespace CovidPropagation
     /// </summary>
     public partial class App : Application
     {
-        string windowName;
-
-        public string WindowName { get => windowName; set => windowName = value; }
-
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             Window currentWindow = GetCurrentWindow();

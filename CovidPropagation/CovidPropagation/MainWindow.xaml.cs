@@ -41,7 +41,9 @@ namespace CovidPropagation
 
         private void GraphicSettingsPage_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Navigate(pageSimulationSettings);
+            LC lcPage = new LC();
+            lcPage.Show();
+            //MainContent.Navigate(pageSimulationSettings);
         }
 
         private void SettingsPage_Click(object sender, RoutedEventArgs e)

@@ -3,7 +3,7 @@ Auteur      : Joey Martig
 Projet      : CovidPropagation
 Version     : 1.0
 Date        : 23.04.2021
-Description : 
+Description : Simulation d'une propagation de virusgit co
 -->
 <Page x:Class="CovidPropagation.PageSimulation"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
