@@ -3,65 +3,92 @@
 - [2. `Résumé`](#2-résumé)
 - [3. `Abstract`](#3-abstract)
 - [4. `Introduction`](#4-introduction)
-- [5. `Cahier des charges`](#5-cahier-des-charges)
-  - [5.1. `Titre`](#51-titre)
-  - [5.2. `Fonctionnalités`](#52-fonctionnalités)
-  - [5.3. `Matériel et logiciels`](#53-matériel-et-logiciels)
-  - [5.4. `Prérequis`](#54-prérequis)
-  - [5.5. `Descriptif complet du projet`](#55-descriptif-complet-du-projet)
-    - [5.5.1. `Méthodologie`](#551-méthodologie)
-    - [5.5.2. `Description de l’application`](#552-description-de-lapplication)
-      - [5.5.2.1. `Graphique`](#5521-graphique)
-      - [5.5.2.2. `Interface graphique`](#5522-interface-graphique)
-      - [5.5.2.3. `propagation`](#5523-propagation)
-      - [5.5.2.4. `Population`](#5524-population)
-        - [5.5.2.4.1. `Temporalité`](#55241-temporalité)
-        - [5.5.2.4.2. `Individus`](#55242-individus)
-        - [5.5.2.4.3. `Hopitaux / écoles / entreprise`](#55243-hopitaux--écoles--entreprise)
-  - [5.6. `Protocols de tests`](#56-protocols-de-tests)
-  - [5.7. `Persona`](#57-persona)
-    - [5.7.1. `Utilisateur expérimenté`](#571-utilisateur-expérimenté)
-    - [5.7.2. `Utilisateur inexpérimenté`](#572-utilisateur-inexpérimenté)
-  - [5.8. `User stories`](#58-user-stories)
-    - [5.8.1. `Ashley`](#581-ashley)
-    - [5.8.2. `Kanan`](#582-kanan)
-  - [5.9. `Diagramme d'activité`](#59-diagramme-dactivité)
-  - [5.10. `Planning`](#510-planning)
-  - [5.11. `Diagramme de classe initial`](#511-diagramme-de-classe-initial)
-  - [5.12. `Interactions`](#512-interactions)
-    - [5.12.1. `Menu principal`](#5121-menu-principal)
-    - [5.12.2. `Population`](#5122-population)
-    - [5.12.3. `Virus`](#5123-virus)
-    - [5.12.4. `Affichage`](#5124-affichage)
-    - [5.12.5. `Simulation`](#5125-simulation)
-  - [5.13. `Livrables`](#513-livrables)
-- [6. `Analyse interface graphique`](#6-analyse-interface-graphique)
-  - [6.1. `Comparaison technologies`](#61-comparaison-technologies)
-    - [6.1.1. `WinForm (Windows Forms)`](#611-winform-windows-forms)
-    - [6.1.2. `WPF (Windows Presentation Foundation)`](#612-wpf-windows-presentation-foundation)
-    - [6.1.3. `Unity`](#613-unity)
-      - [6.1.3.1. `Communication`](#6131-communication)
-        - [`Unity Controller`](#unity-controller)
-        - [`PipeLines`](#pipelines)
-      - [6.1.3.2. `Intégration `](#6132-intégration-)
-  - [6.2. `Choix de la solution`](#62-choix-de-la-solution)
-- [7. `Problèmes rencontrés`](#7-problèmes-rencontrés)
-  - [7.1. `Pipeline`](#71-pipeline)
-- [8. `Environnement`](#8-environnement)
-- [9. `Architecture`](#9-architecture)
-  - [9.1. `Arborescence`](#91-arborescence)
-  - [9.2. `Structure`](#92-structure)
-- [10. `Analyse fonctionnelle`](#10-analyse-fonctionnelle)
-- [11. `Analyse organique`](#11-analyse-organique)
-- [12. `Planning`](#12-planning)
-  - [12.1. `Prévisionnel`](#121-prévisionnel)
-  - [12.2. `Effectif`](#122-effectif)
-- [13. `Bilan personnel`](#13-bilan-personnel)
-- [14. `Conclusion`](#14-conclusion)
-- [15. `Table des figures`](#15-table-des-figures)
-- [16. `Bibliographie`](#16-bibliographie)
-- [17. `Annexes`](#17-annexes)
-- [18. `Livrables`](#18-livrables)
+  - [4.1. `WPF`](#41-wpf)
+    - [4.1.1. `Simulation`](#411-simulation)
+    - [4.1.2. `UI`](#412-ui)
+  - [4.2. `XML`](#42-xml)
+  - [4.3. `Graphiques`](#43-graphiques)
+  - [4.4. `Unity`](#44-unity)
+- [5. `Schéma de fonctionnement`](#5-schéma-de-fonctionnement)
+- [6. `Maquettes`](#6-maquettes)
+  - [6.1. `UI`](#61-ui)
+    - [6.1.1. `Page Simulation`](#611-page-simulation)
+    - [6.1.2. `Page Paramètres graphiques`](#612-page-paramètres-graphiques)
+    - [6.1.3. `Page Paramètres`](#613-page-paramètres)
+    - [6.1.4. `Page Informations`](#614-page-informations)
+  - [6.2. `Interface Graphique`](#62-interface-graphique)
+- [`Organisation`](#organisation)
+  - [`Planification`](#planification)
+  - [`Tâches`](#tâches)
+  - [`Versionning - Backup`](#versionning---backup)
+- [`Technologies utilisées`](#technologies-utilisées)
+  - [`C#`](#c)
+  - [`Microsoft Visual studio`](#microsoft-visual-studio)
+  - [`WPF`](#wpf)
+  - [`Unity`](#unity)
+  - [`XML`](#xml)
+  - [`LiveCharts`](#livecharts)
+  - [`JSON`](#json)
+- [7. `Cahier des charges`](#7-cahier-des-charges)
+  - [7.1. `Titre`](#71-titre)
+  - [7.2. `Fonctionnalités`](#72-fonctionnalités)
+  - [7.3. `Matériel et logiciels`](#73-matériel-et-logiciels)
+  - [7.4. `Prérequis`](#74-prérequis)
+  - [7.5. `Descriptif complet du projet`](#75-descriptif-complet-du-projet)
+    - [7.5.1. `Méthodologie`](#751-méthodologie)
+    - [7.5.2. `Description de l’application`](#752-description-de-lapplication)
+      - [7.5.2.1. `Graphique`](#7521-graphique)
+      - [7.5.2.2. `Interface graphique`](#7522-interface-graphique)
+      - [7.5.2.3. `propagation`](#7523-propagation)
+      - [7.5.2.4. `Population`](#7524-population)
+        - [7.5.2.4.1. `Temporalité`](#75241-temporalité)
+        - [7.5.2.4.2. `Individus`](#75242-individus)
+        - [7.5.2.4.3. `Hopitaux / écoles / entreprise`](#75243-hopitaux--écoles--entreprise)
+  - [7.6. `Protocols de tests`](#76-protocols-de-tests)
+  - [7.7. `Persona`](#77-persona)
+    - [7.7.1. `Utilisateur expérimenté`](#771-utilisateur-expérimenté)
+    - [7.7.2. `Utilisateur inexpérimenté`](#772-utilisateur-inexpérimenté)
+  - [7.8. `User stories`](#78-user-stories)
+    - [7.8.1. `Ashley`](#781-ashley)
+    - [7.8.2. `Kanan`](#782-kanan)
+  - [7.9. `Diagramme d'activité`](#79-diagramme-dactivité)
+  - [7.10. `Planning`](#710-planning)
+  - [7.11. `Diagramme de classe initial`](#711-diagramme-de-classe-initial)
+  - [7.12. `Interactions`](#712-interactions)
+    - [7.12.1. `Menu principal`](#7121-menu-principal)
+    - [7.12.2. `Population`](#7122-population)
+    - [7.12.3. `Virus`](#7123-virus)
+    - [7.12.4. `Affichage`](#7124-affichage)
+    - [7.12.5. `Simulation`](#7125-simulation)
+  - [7.13. `Livrables`](#713-livrables)
+- [8. `Analyse interface graphique`](#8-analyse-interface-graphique)
+  - [8.1. `Comparaison technologies`](#81-comparaison-technologies)
+    - [8.1.1. `WinForm (Windows Forms)`](#811-winform-windows-forms)
+    - [8.1.2. `WPF (Windows Presentation Foundation)`](#812-wpf-windows-presentation-foundation)
+    - [8.1.3. `Unity`](#813-unity)
+      - [8.1.3.1. `Communication`](#8131-communication)
+        - [8.1.3.1.1. `Unity Controller`](#81311-unity-controller)
+        - [8.1.3.1.2. `PipeLines`](#81312-pipelines)
+      - [8.1.3.2. `Intégration`](#8132-intégration)
+  - [8.2. `Choix de la solution`](#82-choix-de-la-solution)
+- [9. `Problèmes rencontrés`](#9-problèmes-rencontrés)
+  - [9.1. `Pipeline`](#91-pipeline)
+  - [9.2. `WPF UI`](#92-wpf-ui)
+- [10. `Environnement`](#10-environnement)
+- [11. `Architecture`](#11-architecture)
+  - [11.1. `Arborescence`](#111-arborescence)
+  - [11.2. `Structure`](#112-structure)
+- [12. `Analyse fonctionnelle`](#12-analyse-fonctionnelle)
+- [13. `Analyse organique`](#13-analyse-organique)
+- [14. `Planning`](#14-planning)
+  - [14.1. `Prévisionnel`](#141-prévisionnel)
+  - [14.2. `Effectif`](#142-effectif)
+- [15. `Bilan personnel`](#15-bilan-personnel)
+- [16. `Conclusion`](#16-conclusion)
+- [17. `Table des figures`](#17-table-des-figures)
+- [18. `Bibliographie`](#18-bibliographie)
+- [19. `Annexes`](#19-annexes)
+- [20. `Livrables`](#20-livrables)
 
 # 2. `Résumé`
 Covid propagation est une application permettant de visualiser l'évolution du covid au sain d'un environnement peuplé d'individus uniques. La visualisation se fait à l'aide de graphiques (Colonne, courbe, circulaire) et de données tel que le nombre d'infecté actuellement ou le nombre de rétablissement ainsi qu'une interface graphique permettant la visualisation des individus, des lieux, des véhicules et de leurs déplacements.
@@ -79,10 +106,107 @@ Il est nécessaire de réaliser un poster pour ce travail ainsi que de remplir u
 
 Le but de mon projet est de simuler une propagation du covid dans une simulation dite individu-centré. Ce qui signifie que des individus sont simulé et agissent selont leur planning. S'ils sont infectés c'est en cas de contact avec une autre personne infectée. Les données utilisées sont des données officiels et sont maintenuent à jour aussi souvent que possible.
 
-# 5. `Cahier des charges`
-## 5.1. `Titre`
+## 4.1. `WPF`
+Le programme WPF est le coeur de l'application, il réunit toutes les sections du projet et les gères.
+### 4.1.1. `Simulation`
+La simulation génère tous les objets nécessaires au fonctionnement de celle-ci. Ses paramètres peuvent être modifié depuis L'UI. Ses paramètres concernant le virus sont écrit dans un fichier XML. La simulation gère aussi la temporalité permettant la propagation et les déplacements.
+
+### 4.1.2. `UI`
+L'interface utilisateur est gérée par les grilles WPF permettant un affichage responsive. Elle permet à l'utilisateur de modifier les paramètres de la simulation ainsi que les paramètres d'affichage des graphiques. 
+
+## 4.2. `XML`
+Les paramètres jugé fixes du virus sont stocké dans un fichier XML.
+
+## 4.3. `Graphiques`
+Les graphiques sont créé par la librairie liveCharts qui permet l'affichage de nombreux type de graphiques ainsi qu'un grand controle sur ceux-ci. Les données sont mise à jour en temps réel et des animations intégrée à la librairie.
+
+## 4.4. `Unity`
+Le programme Unity s'occupe de gérer l'interface graphique qui comprend les batiments, véhicules et individus. L'interface est animée en fonction de la temporalité de l'application WPF. La simulation et l'interface graphique avance donc ensemble. La communication s'effectue à travers un pipeline nommé. Les données de la simulation sont envoyé par celui-ci. Le programme Unity est integré directement dans le projet WPF.
+
+# 5. `Schéma de fonctionnement`
+![Diagramme de fonctionnement](Medias/rapport/DiagrammeDeFonctionnement.png)
+<center><p style="font-size: 11px">Figure 1: Diagramme de fonctionnement</p></center>
+
+# 6. `Maquettes`
+## 6.1. `UI`
+### 6.1.1. `Page Simulation`
+![Maquette page simulation](Medias/Rapport/MaquetteSimulationPage.png)
+<center><p style="font-size: 11px">Figure 2: Maquette page de simulation</p></center>
+
+La page simulation permet la visualisation de la simulation via les graphiques, l'interface graphiques ou des données brutes.
+
+### 6.1.2. `Page Paramètres graphiques`
+![Maquette page paramètres graphiques 1](Medias/Rapport/MaquetteGraphicSettings1.png)
+<center><p style="font-size: 11px">Figure 3: Maquette page de paramètres graphiques 1</p></center>
+Cette page permet à l'utilisateur de modifier l'interface graphique qui s'affichera dans la page simulation.
+
+![Maquette page paramètres graphiques 2](Medias/Rapport/MaquetteGraphicSettings2.png)
+<center><p style="font-size: 11px">Figure 4: Maquette page de paramètres graphiques 2</p></center>
+Cette section permet de modifier en détail les paramètres d'un graphique.
+
+### 6.1.3. `Page Paramètres`
+![Maquette page paramètres](Medias/Rapport/MaquettePageParametre.png)
+<center><p style="font-size: 11px">Figure 5: Maquette page de paramètres</p></center>
+Cette page permet à l'utilisateur de modifier les paramètres de la simulation.
+
+### 6.1.4. `Page Informations`
+![Maquette page informations](Medias/Rapport/MaquettePageInformations.png)
+<center><p style="font-size: 11px">Figure 6: Maquette page d'informations</p></center>
+Cette page sert d'aide à l'utilisateur sur le fonctionnement de l'application et contient aussi des informations sur sa logique et ses sources.
+
+## 6.2. `Interface Graphique`
+![Maquette interface graphique](Medias/Rapport/MaquetteInterfaceGraphique.png)
+<center><p style="font-size: 11px">Figure 7: Maquette interaface graphique</p></center>
+L'interface graphique permet de visualiser ce qui se passe dans la simulation. Les batiments, les véhicules et les individus sont affiché ainsi que leur déplacements et leur status.
+
+# `Organisation`
+## `Planification`
+Pour la planification du travail de diplôme, j'ai décidé d'utiliser excel qui permet de réaliser un planning simple et très compréhensible. Le planning me servant de fil conducteur et de moyen d'organiser l'ordre d'execution des tâches que j'ai créé. 
+## `Tâches`
+Le traçage des tâches s'effectue sur github en suivant le modèle de scrum. Les tâches à effectuer sont dans une section "To Do" les tâches qui sont en cours, sont dans la section "In progress" et finalement les tâches terminées sont dans la section "Done".
+
+Les sprints sont tous séparés ayant des tâches différentes.
+
+![Tâches](Medias/Rapport/Taches.png)
+<center><p style="font-size: 11px">Figure 8: Gestion des tâches</p></center>
+
+## `Versionning - Backup`
+Le versionning est fait à l'aide de github. Au moins deux sauvegarde sont faite chaque jour. Une à midi et une en fin de journée. En cas de perte de données, je ne perd qu'une demi-journée dans le pire des cas. 
+
+Ayant eu des problèmes avec git par le passé. ( Corruptions de fichiers - conflits ) J'ai décidé de faire une sauvegarde supplémentaire sur un disque dur externe. La fréquence de sauvegarde étant plus faible mais suffisante étant donné qu'il s'agit d'une sauvegarde de secours.
+
+# `Technologies utilisées`
+## `C#`
+C# est un language de programmation orienté objet développé dans les années 2000 par Microsoft. Sa première version a été adoptée comme standard internationnal en 2002 par Ecma.
+Il est régulièrement mis à jour, des versions majeures sont publiées tous les 2 à 3 ans environ.
+La dernière version de C# est la version 8.0 et c’est avec celle-ci que j’ai développé l’application.
+Son environnement de développement Visual Studio permet de créer des applications windows
+facilement.
+
+## `Microsoft Visual studio`
+Microsoft Visual Studio est une suite de logiciels disponible sur windows et mac. La dernière version qui est la version utilisée dans la réalisation de ce projet est la version 2019.
+
+Il permet de générer des services web XML, des applications web ASP.NET, des applications Visual basic, Visual C++, Visual C#. C#, C++ et basic utilisent tous les même IDE, ce qui permet de partager certaines ressources.
+
+## `WPF`
+Windows Presentation Foundation (WPF) ou nom de code Avalon est une spécification graphique de .NET 3.0. Il utilise le XAML qui le raproche d'une page HTML avec un système de balise. Il est apparu en 2006.
+
+WPF comparé à WinForms permet par exemple l'affichage d'une interface responsive et l'utilisation du GPU pour certaines fonctionnalités.
+
+## `Unity`
+Unity est un moteur de jeu développé par Unity Technologies. Il est majoritairement utilisé par des petits studio et des indépendant pour la création de jeux. Il est compatible avec le C# et le javascript qui permet de réaliser les scripts. Il permet de développer des jeux compatibles avec Windows, Mac OS X, iOS, Android, TV OS, PlayStation 3, PlayStation Vita, PlayStation 4, Xbox 360, Xbox One, Xbox One X, Windows Phone 8, Windows 10 Mobile , PlayStation Mobile, Tizen, Oculus Rift, Wii U, Nintendo 3DS, Nintendo Switch, WebGL.
+
+## `XML`
+XML qui est un acronyme pour Extensible Markup Language. C'est un language de balises et fait parti du sous-enseble du strandard Generalized Markup Language (SGML).
+
+## `LiveCharts`
+## `JSON`
+
+
+# 7. `Cahier des charges`
+## 7.1. `Titre`
 Covid propagation
-## 5.2. `Fonctionnalités`
+## 7.2. `Fonctionnalités`
 - Simulation
   - Population
     - Mesures
@@ -115,39 +239,39 @@ Covid propagation
   - Informations sur le virus
     - Dangerosité
 
-## 5.3. `Matériel et logiciels`
+## 7.3. `Matériel et logiciels`
 - Pc techniciens
 - Visual studio 2019
 - Une connexion internet
 - Github
 
-## 5.4. `Prérequis`
+## 7.4. `Prérequis`
 - C#
 - Visual studio 2019
 
-## 5.5. `Descriptif complet du projet`
-### 5.5.1. `Méthodologie`
+## 7.5. `Descriptif complet du projet`
+### 7.5.1. `Méthodologie`
 Scrum
 
-### 5.5.2. `Description de l’application`
+### 7.5.2. `Description de l’application`
 Simuler un grand nombre de personnes possédant toutes des variables différentes (âge, résistance immunitaire,
 etc...), y introduire le virus et observer sa propagation. Il est possible d’affecter des mesures de sécurité, tel que le port du masque ou la distanciation pour observer la possible réduction de la propagation.
 L'affichage permet de voir en temps réel la propagation du virus et permet de visualiser chaque individu distinctement au besoin. Des graphiques sont aussi présents pour avoir une idée en chiffres de ce que signifie
 l'affichage.
 
-#### 5.5.2.1. `Graphique`
+#### 7.5.2.1. `Graphique`
 Les données des graphiques sont choisies par l'utilisateur et donc personnalisable. Plusieurs graphiques peuvent être affichés en même temps. Leur position est définie par l'utilisateur au sein de la page de l'application.
 
 L'interface graphique est fournie par [LiveChart](https://lvcharts.net/App/examples/wpf/start). Les données sont directement fournies par l'application ainsi que les échelles de grandeurs qui sont ajustées automatiquement.
 Les graphiques à courbes et en forme camembert sont disponibles.
 ![Exemple de graphiques](Medias/Rapport/Graph.png)
 
-#### 5.5.2.2. `Interface graphique`
+#### 7.5.2.2. `Interface graphique`
 En plus des graphiques, une interface graphique affichant les individus ainsi que leur lieur de travail, habitation et déplacement est disponible. Elle permet d'avoir une visualisation plus naturelle de la situation. Elle est très simple car simuler une ville est une tâche trop complexe et longue pour être ajoutée au projet. Il s'agit donc d'une aide visuel simple de la simulation. Il n'y a donc pas de routes ou autres éléments complexe similaires.
 Voici deux exemples d'interface graphique :
 ![Interface graphique](Medias/Rapport/ExemplesInterfaceGraphique.png)
 
-#### 5.5.2.3. `propagation`
+#### 7.5.2.3. `propagation`
 La propagation se fait à l'aide de calcul et de différentes variables. 1000 m<sup>2</sup> contenant 10 individus à l'intérieur aura de faibles chances de transmettre le virus. Le même nombre de personnes dans un espace clos de 10 m<sup>2</sup> aura des résultats totalement différents.
  
 La température est prise est compte ainsi que les mesures telles que le masque. Le masque réduit les chances de transmettre le virus. La température, elle fait varier la durée de vie du virus à l'extérieur d'un hôte.
@@ -155,7 +279,7 @@ La complexité de ce type de calcul étant d'une difficulté largement supérieu
 
 [Fiche excel](https://docs.google.com/spreadsheets/d/1ZWG4LslRBUjMC00Rsi65TKmfVJyzVUf2)
 
-#### 5.5.2.4. `Population`
+#### 7.5.2.4. `Population`
 La population est constituée d'objets C# généré partiellement, aléatoirement en fonction des paramètres de la simulation. Ils informent la simulation en cas de changement d'état (sain, infecté, etc...). Des itérations sont faites dans la simulation pour calculer si un individu est infecté ou non durant le temps écoulé. Il a un planning simple à suivre dans sa journée qui peut être constituée de par exemple :
 - Être dans son habitation
 - Prendre le bus
@@ -167,12 +291,12 @@ La population est constituée d'objets C# généré partiellement, aléatoiremen
 
 Ce planning est différent en fonction des individus même si vaguement le même. Durant sa journée, il croisera d'autres individus et à chaque itération, il aura des chances d'être infecté si des personnes aux alentours le sont. En fonction du lieu, il rencontrera des personnes différentes, parfois les mêmes comme dans son travail où ses collègues sont fixes. Dans le bus, des variations seront possibles. Son cercle d'amis ainsi que sa famille, lorsqu'il se trouve dans son habitation, seront les individus risquant de le contaminer.
 
-##### 5.5.2.4.1. `Temporalité`
+##### 7.5.2.4.1. `Temporalité`
 Le quotidien des individus est défini par la simulation lors de leur création. Elles peuvent évoluer avec l'âge des individus. 
 
 Une itération est équivalente à ~30min dans la simulation. À chaque itération, chaque individu calcul ses chances d'attraper le virus en fonction de son environnement et des mesures prises. Elle permet aussi à un individu d'évoluer dans son quotidien en passant d'une tâche à une autre par exemple. Leur permettant aussi de changer de lieu et tous les événements liés à l'agenda des individus ainsi que la propagation du virus. La "durée" de la simulation est définie par l'utilisateur et peut donc durer plusieurs jours.
 
-##### 5.5.2.4.2. `Individus`
+##### 7.5.2.4.2. `Individus`
 
 Les individus possèdent différents paramètres qui vont modifier leur quotidien ainsi que leur résistance au virus. La valeur la plus essentielle est l'âge de ces personnes. L'âge permet de contribuer à la modification de la résistance au virus. Il modifie aussi le quotidien en définissant si la personne va travailler, va à l'école, est libre de faire ce qu'il souhaite ou rien si trop jeune. L'âge évolue avec le temps de la simulation.
 
@@ -194,7 +318,7 @@ Chaque individu créé commence avec une valeur entre 80 et 100. Sachant qu'envi
 
 Les maladies sont inspirées de maladie réelle impactant l'effet du covid. Cependant, dans la simulation, elle n'affecte que la résistance au virus. Ces maladies apparaissent de façons aléatoires et plus fréquemment sur les individus dont l'âge est élevé. Elles ne se propagent pas. Elles sont en partie assignées au départ par la simulation puis apparaissent avec le temps. Elles réduisent la résistance au covid de 1% à 20% en fonction de la maladie et de l'âge de la personne.
 
-##### 5.5.2.4.3. `Hopitaux / écoles / entreprise`
+##### 7.5.2.4.3. `Hopitaux / écoles / entreprise`
 Ces différents lieux fonctionnent de façon similaire. Ils ont tous des individus en leur seins qui peuvent se transmettre le virus. Ils ont des tailles différentes en fonction du nombre de personnes pouvant être à l'intérieur. 
 
 Les hôpitaux fonctionnent légérement différement. Ils ont des patients ainsi que des membres du staff de l'hopital. Il y a donc des différences de mesures et quantités. Les patients sont là de manière temporaire en fonction du nombre de personnes attrapant le covid.
@@ -203,22 +327,22 @@ Les écoles ont une situation similaire en aillant des élèves ainsi que des pr
 
 Les entreprise elles fonctionnent en groupe d'individus, similaire aux classes des écoles mais sans personnel ayant des mesures différentes des autres.
 
-## 5.6. `Protocols de tests`
+## 7.6. `Protocols de tests`
 Ce projet étant en c#, je vais utiliser les tests unitaires intégrés dans visual studio.
 
 Les tests unitaires ne garantissant pas qu'il n'y ait aucun bug dans l'application, je vais créer des scénarios que je testerais avant et après chaque implémentation de fonctionnalités. Ces scénarios auront pour but de couvrir un maximum de possibilités pour éviter l'apparition de bug dû à une modification du code ou l'ajout d'une fonctionnalité. Ils permettent aussi de trouver d'éventuels des problèmes d'ergonomie en me plongeant à la place d'un utilisateur.
 
-## 5.7. `Persona`
-### 5.7.1. `Utilisateur expérimenté`
+## 7.7. `Persona`
+### 7.7.1. `Utilisateur expérimenté`
 ![Perona experimenté](Medias/Rapport/Persona_Ashley.png)
 <p style="text-align: center">Figure 1: Persona experimenté</p>
 
-### 5.7.2. `Utilisateur inexpérimenté`
+### 7.7.2. `Utilisateur inexpérimenté`
 ![Perona inexpérimenté](Medias/Rapport/Persona_Kanan.png)
 <p style="text-align: center">Figure 2: Persona inexpérimenté</p>
 
-## 5.8. `User stories`
-### 5.8.1. `Ashley`
+## 7.8. `User stories`
+### 7.8.1. `Ashley`
 **En tant que** Ashley<br>
 **Je veux** comparer différentes situations avec différentes personnes en prenant des mesures identiques<br>
 **Afin de** pouvoir observer les différences et déterminer quelles mesures est efficaces dans quelle situation.<br>
@@ -229,7 +353,7 @@ J'observe la simulation et prends note des résultats.<br>
 Une fois terminée, j'en lance une autre avec certains paramètres différents et prends note des résultats.<br>
 Je compare les résultats avec la simulation précédente et effectue ma conclusion.
 
-### 5.8.2. `Kanan`
+### 7.8.2. `Kanan`
 **En tant que** Kanan<br>
 **Je veux** vérifier l'efficacité de différentes mesures prisent pour éviter la propagation du covid<br>
 **Afin de** afin de me donner une idée concrète et visuelle de l'efficacité de ses mesures.<br>
@@ -241,19 +365,19 @@ Des aides sont disponibles me permettant de comprendre les données qui sont aff
 Après avoir terminé cette simulation, j'en lance une autre en désactivant les mesures. <br>
 Je relance la simulation et observe la différence entre les deux simulations. <br>
 
-## 5.9. `Diagramme d'activité`
+## 7.9. `Diagramme d'activité`
 ![Diagramme d'activité](Medias/Rapport/DiagrammeDactivite.png)
 <p style="text-align: center">Figure 3: Diagramme d'activité</p>
 
-## 5.10. `Planning`
+## 7.10. `Planning`
 https://docs.google.com/spreadsheets/d/1tSpIbcDVvGnzMhEN71UDwPOxEy0oapQSSbxzjqXt3RA/edit?usp=sharing
 
-## 5.11. `Diagramme de classe initial`
+## 7.11. `Diagramme de classe initial`
 ![Diagramme de classe initial](Medias/Rapport/InitialClassDiagram.png)
 <p style="text-align: center">Figure 4: Diagrame de classe initial</p>
 
-## 5.12. `Interactions`
-### 5.12.1. `Menu principal`
+## 7.12. `Interactions`
+### 7.12.1. `Menu principal`
 - Affiche un preview de l'affichage de la simulation
 - Btn Paramètres
   - Population
@@ -265,7 +389,7 @@ https://docs.google.com/spreadsheets/d/1tSpIbcDVvGnzMhEN71UDwPOxEy0oapQSSbxzjqXt
 - Btn lancer la simulation
   - Change l'affichage de la totalité de l'application, affiche une barre de chargement indiquant l'état de création de la simulation.
 
-### 5.12.2. `Population`
+### 7.12.2. `Population`
 Affiche une page avec les paramètres suivant :
 - Écoles / lieux de travail
   - Différentes selon l'âge
@@ -321,7 +445,7 @@ Affiche une page avec les paramètres suivant :
   - Réaffiche les données précédemment affichées
 - Btn sauvegarder
   - Sauvegarde les paramètres choisis par l'utilisateur
-### 5.12.3. `Virus`
+### 7.12.3. `Virus`
 Affiche une page avec les paramètres suivant :
 - Effet sur le corps
   - Permet de modifier le pourcentage de propagation en fonction du symptôme (toux)
@@ -335,7 +459,7 @@ Affiche une page avec les paramètres suivant :
   - Permet de définir si oui ou non il y a des asymptomatiques
   - Permet de définir le pourcentage d'asymptomatiques
 
-### 5.12.4. `Affichage`
+### 7.12.4. `Affichage`
 Affiche une page avec les paramètres suivant :
 - Graphiques
   - Permet de sélectionner différents styles de graphiques à afficher
@@ -344,7 +468,7 @@ Affiche une page avec les paramètres suivant :
   - Plusieurs graphiques possibles à sélectionner
 - Affichage d'une "carte" permettant une visualisation plus simple
 
-### 5.12.5. `Simulation`
+### 7.12.5. `Simulation`
 Affiche une page :
 - Affichage d'une barre de chargement lors de la génération de la simulation
   - Évolue en fonction du nombre d'individus créé
@@ -353,7 +477,7 @@ Affiche une page :
   - Possibilité d'afficher jusqu'à 4 graphiques sur le même onglet
 - S'actualise toutes les secondes (environ)
 
-## 5.13. `Livrables`
+## 7.13. `Livrables`
 - Mind Map
 - Planning
 - Rapport de projet
@@ -361,16 +485,16 @@ Affiche une page :
 - Journal de travail ou LogBook
 - Résumé / Abstract
 
-# 6. `Analyse interface graphique`
+# 8. `Analyse interface graphique`
 Cette analyse concerne l'interface graphique et le choix de la technologie à utiliser pour réaliser celle-ci.
 
-## 6.1. `Comparaison technologies`
-### 6.1.1. `WinForm (Windows Forms)`
+## 8.1. `Comparaison technologies`
+### 8.1.1. `WinForm (Windows Forms)`
 Lors du CFC ainsi que de l'apprentissage technicien, nous avons toujours utilisé cet interface pour réaliser l'entièreté de nos projets. Je connais donc bien cet environnement contrairement au WPF. En plus de cela, l'interface graphique réalisée dans le poc est en WinForm. Me permettant donc de simplement importer le projet déjà existant.
 
 Cependant, WinForm ainsi que l'interface graphique déjà existante apportent de gros problèmes tel que les timers. Lorsqu'il y a une charge CPU trop lourde, les timers perdent leur rythmes et n'arrivent plus à suivre. Le résultat de cette surcharge est que plus rien ne fait de sense. Les animations n'ont plus le temps de s'effectué rendant les individus immobile ou presque.
 
-### 6.1.2. `WPF (Windows Presentation Foundation)`
+### 8.1.2. `WPF (Windows Presentation Foundation)`
 
 WPF est plus récent que WinForms et a donc cerains avantage non négligeable en comparaison. Il est beaucoup plus complet en terme d'estéthique et donc d'UI que WinForms. En plus de cela, il est possible de créer des objets en 2D ou 3D. Ces objets contrairement à WinForms sont gérés par le GPU plutôt qu'être entièrement basé sur le CPU. Cet différence à elle-seule fait pencher la balance pour WPF.
 
@@ -383,16 +507,16 @@ Le possible problème de timer bien que probablement réduit du au fait que la c
 
 Il faut aussi noter que je n'ai aucune expérience en WPF et vait donc devoir m'y habituer durant un certain temps avant d'être efficace à 100%.
 
-### 6.1.3. `Unity`
+### 8.1.3. `Unity`
 Unity est un moteur de jeu en 2D et 3D. Il est possible de l'intégrer directement à une application WPF. Ça me semble être le meilleur choix si l'on prend en compte les problèmes de timer des deux autres technologies. Unity possède de façon native des méthodes qui sont appelée à chaque frame permettant le bon déroulement de la simulation.
 
 En plus de cela, j'ai beaucoup d'expérience avec ce logiciel, ayant réalisé mon TPI avec celui-ci. Je peux donc affirmer qu'il est beaucoup plus simple de réalisé l'interface graphique avec Unity.
 
 Cependant un autre problème est présent. La liaison des données. Il m'est impossible, sans le tester, de savoir si ce modèle de fonctionnement est compatible avec mon projet. Je sais qu'il est possible de transférer des informations de WPF à unity cependant, je ne sais pas si la fréquence d'envoie est suffisante ou même si la quantité de données envoyées que je souhaite atteindre est possible.
 
-#### 6.1.3.1. `Communication`
+#### 8.1.3.1. `Communication`
 Pour communiquer entre WPF et Unity j'ai essayé plusieurs méthodes fonctionnant différement et surtout de complexité différente.
-##### `Unity Controller`
+##### 8.1.3.1.1. `Unity Controller`
 Mon premier essai fut avec Unity Controller qui permet de créer un server qui communique entre une application C# et Unity.
 
 Pour l'installer il faut d'ajouter le paquet nuget "Unity Controller" au projet ainsi qu'un using "UnityController". Sont implémentation est la plus simple des solutions testées sachant que sont implémentation ne prend que quelque lignes au total.
@@ -432,7 +556,7 @@ private void Button_Click(object sender, RoutedEventArgs e)
 
 Cette implémentation de la communication est extrêmement simple à mettre en place cependant, les possibilités sont très limitées. Les seules actions possibles sont le fait de changer le texte d'un GameObject, sa couleur, son image, etc. Il est impossible d'envoyer un message de code à code puis de l'interpreter. Cette façon de faire ne peut donc pas servir à la réalisation de mon projet qui demande un traitement des données.
 
-##### `PipeLines`
+##### 8.1.3.1.2. `PipeLines`
 Contrairement à UnityController, les pipelines laissent plus de liberté mais leur complexité est bien supérieur. J'ai rencontré divers problèmes en implémentant cette fonctionnalité.
 
 Dans mon cas, la communication se fait à sense unique, WPF donnant les informations à l'interface graphique se trouvant sur Unity. Il font donc commencer par créer un serveur du côté WPF.
@@ -564,7 +688,7 @@ public async Task<string> ReadStringAsync()
 }
 ```
 
-#### 6.1.3.2. `Intégration `
+#### 8.1.3.2. `Intégration`
 L'intégration permet d'avoir un rectangle au sein de la page WPF qui sera constitué d'une application .exe. Dans ce cas, il s'agit d'unity. Ça ne permet pas de commander le contenu de la fenêtre mais uniquement sa taille, position et quand démarrer le .exe.
 
 Cette méthode permet de charger et démarrer le projet Unity qui a été buildée au préalable. UnityGrid étant une grille crée dans la vue du code WPF.
@@ -593,12 +717,14 @@ private void LoadUnityExe()
 }
 ```
 
-## 6.2. `Choix de la solution`
-Mon attention se porte premièrement sur Unity qui me semble être la solution avec le meilleur rendu et permet de contourner certains problèmes présent dans les deux autres options. Le premier test que j'ai effectué ne permet pas de transmettre des données complexes, uniquement des strings ou images mais pas de list c# ou autre éléments que je pourrais utiliser.
+## 8.2. `Choix de la solution`
+Mon attention se porte premièrement sur Unity qui me semble être la solution avec le meilleur rendu et permet de contourner certains problèmes présent dans les deux autres options. Le premier test que j'ai effectué ne permet pas de transmettre des données complexes, uniquement des strings ou images mais pas de list c# ou autre éléments que je pourrais utiliser. </br>
+Le second test que j'ai effectué avec les pipelines permet de transférer une grande quantité de données (Int32) en string. Il est donc possible de transferer des objets en json d'un projet à l'autre.</br>
+C'est cette deuxième option que j'ai donc choisis pour réaliser l'interface graphique. Permettant donc d'utiliser Unity qui est beaucoups plus simple à utiliser pour la réalisation de ce genre de fonctionnalité.
 
 
-# 7. `Problèmes rencontrés`
-## 7.1. `Pipeline`
+# 9. `Problèmes rencontrés`
+## 9.1. `Pipeline`
 Durant l'implémentation des pipelines, j'ai rencontré divers problèmes, le premier étant que la structure original des pipelines utilise une communication synchrone. Lors de l'attente de données, le programme unity s'arretait completement jusqu'à la réception de la donnée attendue. Une fois reçues, une exécutait une frame puis attendait à nouveau des données. Le rproblèmes était similaire dans le code WPF qui, après avoir envoyé des données, attendait qu'Unity les ais réceptionnées pour continuer.
 
  Pour palier à ce problème, j'ai opté pour l'implémentation de l'asynchrone dans la réception et dans l'envoie des données. Concernant l'envoie, j'ai rencontré un léger problème qui m'empêchait d'accéder à une méthode en asynchrone car j'envoyais le contenu d'un textbox appartenant donc au thread principal. Ce problème à été reglé avec l'utilisationd de Dispatcher.Invoke. Ce problème de thread m'a malgré tout pris un certain temps à reglé du au fait que WPF, Unity et WinForms utilisent tous une façon d'invoke différente rendant les recherche plus compliquée.
@@ -618,6 +744,7 @@ await Task.Run(() =>
  
  Par exemple:<br>
  la première réception de données est fidèle à celles envoyées. Lors de la deuxième réception, le message est tronqué et certaines lettres du début de la transmission sont manquantes. La troisième réception est encore plus corrompue, recevant donc un message en caractère Chinois. Après cette réception il était corrant de ne recevoir des données vides.
+
  ![Fidélité des données](Medias/Rapport/DataFidelity.png)
 
  Pour régler ce problème, j'ai pensé à remplacer InvokeRepeating par un méthode asynchrone récursive. Cette méthode est appelée une première fois au démarrage du script puis s'appelle une fois qu'elle a récptionné des données. Permettant de recevoir les données correctes et sans bloquer le code.
@@ -630,27 +757,42 @@ await Task.Run(() =>
     }
 ```
 
-# 8. `Environnement`
+## 9.2. `WPF UI`
+N'ayant encore jamais travaillé avec WPF, la structure du projet m'a déconcerté au départ mais j'ai rapidement pu prendre la main. Cependant, pour réaliser une apparence spécial, j'ai du modifier certains outils mis à disposition par WPF. Les boutons étant très similaires à WinForms ne m'ont pas posé de problèmes. 
+
+Ce n'est qu'après avoir eu envie de modifier l'affichage d'un slider et après des recherches, que je me suis rendu compte qu'il était impossible de modifier le slider existant pour satisfaire au paramètres que j'avais choisis. Pour le modifier, il m'a fallut créer un template du slider qui revient à récupérer le code XAML du slider et le modifier à la main. Il m'a fallut un certain temps pour comprendre chaque composants ainsi que leurs paramètres. Même si ça permet de modifier dans le moindre détail l'outil, j'ai été étonné qu'il n'existe par de paramètres facilement modifiable comme le background des boutons par exemple. 
+
+Après avoir eu du mal à modifier le slider, j'ai pu modifier les autres outils (RadioBoutons, Checkbox) avec aisance.
+
+# 10. `Environnement`
 L'environnement de travail est composé d'un pc technicien, 3 écrans, clavier, souris et d'un SSD amovible avec Windows 10 pro version 10.0.19042 Build 19042. Le code est réalisé à l'aide de visual studio 2019 versions 16.9.2. La documentation et le logbook sont réalisés à l'aide de visual studio code et des extensions Markdown All in One et Mardown PDF.
 
 Le projet WPF utilise .core 3.1 qui est la version lts.
 La version d'Unity est la 2020.3.4f1 qui est aussi la version lts.
-# 9. `Architecture`
-## 9.1. `Arborescence`
+# 11. `Architecture`
+## 11.1. `Arborescence`
 ```
-├── CovidPropagationGraphicInterface
+├── CovidPropagation
 │   ├── .vs
 │   ├── CovidPropagationGraphicInterface
 │   └── CovidPropagationGraphicInterface.sln
-└── Documentation
+├── Documentation
+│   ├── Medias
+│   │   ├── LogBook
+│   │   └── Rapport
+│   ├── LogBook.md
+│   └── Rapport.md
+└── POC
+    ├── TestUnity_WPF
+    └── testWPF_Unity.sln
 ```
-## 9.2. `Structure`
+## 11.2. `Structure`
 
-# 10. `Analyse fonctionnelle`
-# 11. `Analyse organique`
+# 12. `Analyse fonctionnelle`
+# 13. `Analyse organique`
 
-# 12. `Planning`
-## 12.1. `Prévisionnel`
+# 14. `Planning`
+## 14.1. `Prévisionnel`
 Dans le cadre de ce projet, je vais commencer par réflechir à la structure général de celui-ci et de ces interactions entre les différentes section (Simulation - Graphique - etc.) ainsi que toujours trouver le meilleurs moyen d'optimiser le code et la structure pour permettre la simulation d'un plus grand nombre d'individus.
 
 Les timers de Visual studio étant très aléatoire dès lors que le programme nécessite une trop grand charge de travail, je vais essayer de trouver une alternative ou de corriger ce problème en modifiant le timer.
@@ -668,16 +810,22 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 ![Planning prévisionnel Sprint 3](Medias/Rapport/PlanningPrevisionnelSprint3.png)
 ![Planning prévisionnel Sprint 4](Medias/Rapport/PlanningPrevisionnelSprint4.png)
 
-## 12.2. `Effectif`
+## 14.2. `Effectif`
 
-# 13. `Bilan personnel`
+# 15. `Bilan personnel`
 
-# 14. `Conclusion`
+# 16. `Conclusion`
 
-# 15. `Table des figures`
-- [Idée Bus 1](#34-Bus)
+# 17. `Table des figures`
+- [Figure 1: Diagramme de fonctionnement](#5-schéma-de-fonctionnement)
+- [Figure 2: Maquette page de simulation](#611-page-simulation)
+- [Figure 3: Maquette page de paramètres graphiques 1](#612-page-paramètres-graphiques)
+- [Figure 4: Maquette page de paramètres graphiques 2](#612-page-paramètres-graphiques)
+- [Figure 5: Maquette page de paramètres](#613-page-paramètres)
+- [Figure 6: Maquette page d'informations](#614-page-informations)
+- [Figure 7: Maquette interaface graphique](#62-interface-graphique)
 
-# 16. `Bibliographie`
+# 18. `Bibliographie`
 
 19.04.2021
   - Utilisés dans la compairson entre les différentes technologies de l'interface graphique
@@ -698,7 +846,7 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
   - Utilisé dans la création des documentation des pipelines
     - [Stackoverflow - usr - Modification du code MSDN](https://stackoverflow.com/questions/49172352/c-sharp-explanation-of-stream-string-example)
 
-# 17. `Annexes`
+# 19. `Annexes`
 - Projet C#
 - Images
   - Diagramme de classe
@@ -706,7 +854,7 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
   - Planning effectif
 - Journal de bord
 
-# 18. `Livrables`
+# 20. `Livrables`
 - Documentation
 - Logbook
 - Programme C#
