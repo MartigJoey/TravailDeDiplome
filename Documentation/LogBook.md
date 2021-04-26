@@ -3,7 +3,7 @@
 | ------------- |:-------------:| :-----|---|---|
 | Joey Martig| 19.04.2021 | Travail de diplome Covid propagation | Applications permettant de voir l'évolution d'un virus dans un environnement peuplé d'individus. | Joey.mrtg@eduge.ch Joey.mrtg@gmail.com |
 
-# 19.04.2021 - 08h05/17h
+# 19.04.2021 - 08h05/17h00
 - Rendu appréciation du travail de stage.
 - Démarrage du travail de diplôme et présentation moodle.
 - Documentation
@@ -47,7 +47,7 @@
     - Le resize et positionnement fonctionnent
     - À la fermeture du programme, unity ne s'arrêtait pas et utilisait 15% du processeur à chaque ouverture.
 
-# 20.04.2021 - 08h05/17h
+# 20.04.2021 - 08h05/17h00
 - Retrospective 19.04.2021
 - Recherche des méthodes dans la dll user32.dll
 - Recherche de différents moyens de communications entre WPF et Unity
@@ -87,7 +87,7 @@
     - ![Objets envoyés](Medias/LogBook/ObjectsSent.png)
     - ![Valeurs reçues](Medias/LogBook/ObjectReveived.png)
 
-# 21.04.2021 - 08h05/17h
+# 21.04.2021 - 08h05/17h00
 - Documentation
   - Complétion de la comparaison de technologie d'interface graphique des pipelines.
   - Problèmes rencontrés - Pipelines
@@ -111,7 +111,7 @@
   - Création d'une page, pour la simulation, les paramètres graphiques et les paramètres de la simulation
   - Abandon du thpme trouvé du à son manque de responsivité malgré sa grande variété de contenu.
 
-# 22.04.2021 - 08h05/17h
+# 22.04.2021 - 08h05/17h00
 - UI
   - Ajouts d'icône de boutons
   - Création de l'interface principal
@@ -147,7 +147,7 @@
     - ![slider comparaison](Medias/Logbook/CheckBox.png)
 - Modification de la fermeture des fenêtres pour cacher les fenêtres secondaires et fermer le programme en cas de fermeture de la fenêtre principale.
 
-# 23.04.2021 - 08h05/17h
+# 23.04.2021 - 08h05/16h10
 - Documentation
   - Organisation
   - Maquettes
@@ -164,6 +164,7 @@
 - Graphiques
   - Bug à chaque changement de taille, régénérer la solution est nécessaire.
     - Uniquement dans le concepteur et non au lancement du programme
+    - Nettoyer la solution permet de tout de même voir l'affichage de la fenêtre
   - Intégration de graphiques
     - Courbe
     - HeatMap
@@ -173,3 +174,71 @@
     - Circulaire (Camembert)
     - Area Stack
     - ![Graphiques integré à l'application WPF](Medias/LogBook/Graphiques.png)
+
+# 26.04.2021 08h05 / 16h10
+- Début de la création de la simulation
+- Récupération du code du stage et suppression des éléments graphiques
+- Commentaires
+- Création d'une classe "Site" regroupant tous les lieux et véhicules
+- Relecture du cahier des charges
+- Relecture du fichier excel contenant la transmission par aérosol [2021_COVID-19_Aerosol_Transmissionn_Estimator](https://docs.google.com/spreadsheets/d/1x_QFiFPbqLtZTjuoVoCyPQdu7onu6c370NNlPZ3TfTk/edit#gid=1679887415)
+- Création du code des lieux en fonction du fichier excel
+  - Taille du batiment, longueur - largeur - hauter - air - volume
+  - Paramètres de l'airs et de déposition
+  - Utilisation du type double pour le calcul du taux d'infection
+  - Suppression de certains paramètres non-utilisés
+- Réflexion sur la structure du code et l'interaction entre les individus et les lieux
+  - Résistance au virus
+    - Maladies
+    - Age
+    - ![Evolution individus et accèssibilité des données](Medias/LogBook/MaladiesEtAge.png)
+  - Création des planning
+    - Pattern
+    - (Gérer les cercles sociaux)
+    - Création en fonction de l'âge
+    - ![Création d'un planning](Medias/Logbook/CreationPlanning.png)
+  - Mesures & Symptômes
+    - resistance
+    - comportement
+    - Augmentent certains paramètres
+    - ![Evolution individus et accèssibilité des données](Medias/LogBook/EvolutionIndividu.png)
+  - Les activité ne contiennent que des types d'objets permettant de définir ce que l'individus fait. Le planning contient les lieux et les indiquent à l'individus.
+- Création des plannings en fonction de la figure concernant leur création.
+- Nombre d'école et autres batiments en fonction du nombre de personnes. Genève servant d'exemple.
+  - ~0.03%  --> 165 écoles pour 500'000 personnes
+  - ~6,74%  --> 33'700 entreprise pour 231'000 emplois
+  - ~0.01%  --> 8 hopitaux, 2 cliniques, 30 lieux de soint
+  - ~0,03%  --> ~136 supermarché
+  - ~50%    --> ~250'000 appartements
+- pareil mais pour l'âge de la population
+  - ~22% 0-19  ans
+  - ~63% 20-64 ans
+  - ~10% 65-79 ans
+  - ~5%  80+   ans
+  - [Source](https://www.ge.ch/statistique/graphiques/affichage.asp?filtreGraph=11_02&dom=1)
+- Pareil pour les transports
+  - ~37%  --> à pied
+  - ~36%  --> voiture (Chauffeur ou passagers)
+  - ~15%  --> tpg
+  - ~10%  --> vélos
+  - [Source](https://www.letemps.ch/suisse/nombre-voitures-menage-diminue-geneve#:~:text=Au%20d%C3%A9but%20de%20l'ann%C3%A9e,augmentation%20de%206%2C5%25)
+- Réflexion sur la création des transports et batiments et sur la source de certaines données.
+  - On a une population de 100 personnes
+    - 22% 0-19  ans
+    - 63% 20-64 ans
+    - 15% 65+ ans
+  - Il faut donc au minimum 
+    - Une école
+    - Un supermarché
+    - Une maison par personne (Pour le moment les < 19 ans vivent seuls)
+  - On créé les batiments en fonction des besoins cité
+  - Pour les véhicules
+    - On créé 36 voitures
+    - et des bus (a voir plus tard pour la quantitié)
+  - Ensuite on créer les 100 individus
+    - En fonction du pourcentage d'âge
+    - On leur attribut 
+      - Une maison vide
+      - Une école
+      - Un moyen de transport (vide si voiture)
+    - On créer leur résistance

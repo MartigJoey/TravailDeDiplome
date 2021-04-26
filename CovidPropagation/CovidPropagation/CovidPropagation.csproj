@@ -30,4 +30,8 @@
     <Resource Include="Images\window-minimize.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Simulation\Person\" />
+  </ItemGroup>
+
 </Project>

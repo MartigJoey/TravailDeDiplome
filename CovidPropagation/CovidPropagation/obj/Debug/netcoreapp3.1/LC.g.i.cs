@@ -54,7 +54,7 @@ namespace CovidPropagation {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/CovidPropagation;component/lc.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/CovidPropagation;V1.0.0.0;component/lc.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\LC.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
