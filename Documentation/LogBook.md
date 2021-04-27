@@ -242,3 +242,71 @@
       - Une école
       - Un moyen de transport (vide si voiture)
     - On créer leur résistance
+
+# 27.04.2021 08h05 / 16h30
+- Les véhicules dans la simulation agissent exactement comme les batiments.
+  - Pas de déplacements
+  - La voiture étant la seule d'"unique" à une personne.
+    - La différence réside dans l'assignation et non dans le fonctionnement.
+- Suppression du parent "Vehicle" et "Building"
+- Création d'un objet parent "Site" représentant tous les lieux dont les véhicules et l'extérieur.
+- Création de variables constantes global pour la création des sites
+- Réflexion sur le fonctionnement des individus
+  - Marche à suivre.
+  - Utiliser du async pour récupérer le taux de contamination ? (Attendre que tout le monde soit bien entré)
+- Création des individus
+  - Maladies
+  - Résistance au virus
+  - Durée de l'immunité
+  - Durée de l'infection par le virus
+- Création des maladies
+  - Puissance
+    - En fonction de l'âge
+  - Durée
+- Recherche de source pour gérer mathématiquement les probabilité qu'une personne attrape des maladies en fonction de son âge.
+  - Meilleur compréhension du sujet mais rien de concluant.
+- Modification des namespace qui avaient automatiquement créé sous-namespace en créant des dossiers dans le programme WPF
+- Modification du site pour prendre en compte les personnes qui se trouvent dedans.
+  - Cette modification impacte aussi à quel moment le calcul des probabilité est effectué.
+  - Si une personne entre ou sort. Les probabilités sont recalculées.
+  - Sinon on récupère la dernière valeur sans recalculer
+  - Doit recalculer si une personne a été infectée. (en prenant en compte le temps d'incubation du virus, ce n'est pas probablement pas nécessaire.)
+- Données récupéré concernant le temps d'incubation et d'infection du covid
+  - [Durée du covid](https://www.cdc.gov/coronavirus/2019-ncov/if-you-are-sick/end-home-isolation.html#:~:text=You%20can%20be%20around%20others%20after%3A,of%20fever%2Dreducing%20medications%20and)
+  - [Incubation et durée](https://patient.info/news-and-features/coronavirus-how-quickly-do-covid-19-symptoms-develop-and-how-long-do-they-last)
+- Suppression des cercles familaux et d'amis du planning
+  - Raison :
+    - Pas par manque de temps mais par logique du au fonctionnement de la simulation
+    - Les plannings gèrent entièrement la simulation, les lieux., les horaires, les contacts.
+    - Au final, la famille sont les personnes habitants au même endroit. Les amis, les personnes qui vont au mêmes bars.
+    - La création du planning s'occupera donc de gérer les contacts proches
+  - Cette modification pourrait être revue plus tard en fonction de l'évolution du fonctionnement de la simulation et des interactions entre les objets.
+- Commentaires et création d'en-tête dans le code
+- Recherche de convertion de probabilité d'années en mois
+  - Rien trouvé
+  - Uniquement dans l'autre sense
+- Est-il justifié d'avoir des symptômes de virus ?
+  - La résistance au virus étant simplifié et l'accent étant majoritairement mis sur la propagation, elle-il nécessaire d'intégré des symptômes qui dans 90% des cas ne changent en rien le taux de contamination (excepté la toux donc).
+  - Simplifier en utilisant simplement le taux de transmission ?
+    - Pas viable car asymptomatiques
+  - Les symptômes pourraient être utilisé pour détecter le virus dans la simulation pour les quarantaines et autres.
+  - Garder les symptôme mais avec pour la majorité, uniquement un indice de détection
+- Création de la classe Virus, Transmission et Symptom
+- Création du fichier XML comportant les données du Covid
+- Lecture du fichier depuis le code et récupération des données.
+- Fonctionnement imaginé du virus et de ses composants
+  - ![Virus transmissions and symptoms](/Medias/LogBook/VirusTransmissionsAndSymptoms.png)
+  - Informations importante concernant la respiration et affectant donc la toux [Source](https://docs.google.com/spreadsheets/d/1x_QFiFPbqLtZTjuoVoCyPQdu7onu6c370NNlPZ3TfTk/edit#gid=519189277)
+    - Resting – Oral breathing = 2.0 quanta/h
+    - Resting – Speaking = 9.4 quanta/h
+    - Resting – Loudly speaking = 60.5 quanta/h
+    - Standing – Oral breathing = 2.3 quanta/h
+    - Standing – Speaking = 11.4 quanta/h
+    - Standing – Loudly speaking = 65.1 quanta/h
+    - Light exercise – Oral breathing = 5.6 quanta/h
+    - Light exercise – Speaking = 26.3 quanta/h
+    - Light exercise – Loudly speaking = 170 quanta/h
+    - Heavy exercise – Oral breathing = 13.5 quanta/h
+    - Heavy exercise – Speaking = 63.1 quanta/h
+    - Heavy exercise – Loudly speaking = 408 quanta/h
+- Modification de la transmission par aérosol sur les sites pour prendre en compte les paramètres individuels de chaques individus présent sur les lieux.

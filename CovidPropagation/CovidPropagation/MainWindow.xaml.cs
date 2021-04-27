@@ -32,6 +32,7 @@ namespace CovidPropagation
             pageSimulationSettings = new PageSimulationSettings();
             pageGraphicSettings = new PageGraphicSettings();
             MainContent.NavigationUIVisibility = NavigationUIVisibility.Hidden; // Cache la barre de navigation du contenu
+            Virus covid = new Virus();
         }
 
         private void SimulationPage_Click(object sender, RoutedEventArgs e)

@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Datas>
+  <Name>Covid</Name>
+  <Transmissions>
+    <Transmission>TransmissionsMethodBlabla</Transmission>
+  </Transmissions>
+  <Symptoms>
+    <Symptom>SymptomsMethodBlabla</Symptom>
+  </Symptoms>
+</Datas>

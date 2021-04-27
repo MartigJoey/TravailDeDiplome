@@ -1,8 +1,15 @@
-﻿using System;
+﻿/*
+ * Nom du projet : CovidPropagation
+ * Auteur        : Joey Martig
+ * Date          : 27.04.2021
+ * Version       : 1.0
+ * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
+ */
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CovidPropagation.Simulation
+namespace CovidPropagation
 {
     public class Simulation
     {
@@ -11,7 +18,7 @@ namespace CovidPropagation.Simulation
         private int _nbPersons;
         Random rdm;
         List<Site>[] allSites;
-        List<Vehicle>[] allTransports;
+        List<Site>[] allTransports;
         List<Person> population;
         public Simulation(int avgAge, int nbInfected, int nbPersons)
         {
@@ -27,11 +34,11 @@ namespace CovidPropagation.Simulation
                 new List<Site>()
             };
 
-            allTransports = new List<Vehicle>[] {
-                new List<Vehicle>(),
-                new List<Vehicle>(),
-                new List<Vehicle>(),
-                new List<Vehicle>(),
+            allTransports = new List<Site>[] {
+                new List<Site>(),
+                new List<Site>(),
+                new List<Site>(),
+                new List<Site>(),
             };
             population = new List<Person>();
 

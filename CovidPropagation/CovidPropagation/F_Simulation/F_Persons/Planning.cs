@@ -1,13 +1,19 @@
-﻿using CovidPropagation.Simulation;
+﻿/*
+ * Nom du projet : CovidPropagation
+ * Auteur        : Joey Martig
+ * Date          : 27.04.2021
+ * Version       : 1.0
+ * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
+ */
 using System;
 using System.Drawing;
 
-namespace CovidPropagation.Classes.Person
+namespace CovidPropagation
 {
     /// <summary>
     /// Gère le planning des individus. Composé de Jours, qui sont composés de périodes, qui sont composé d'activités.
     /// </summary>
-    class Planning
+    public class Planning
     {
         private Day[] _days = new Day[GlobalVariables.NUMBER_OF_DAY];
         public Day[] Days { get => _days; }

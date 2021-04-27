@@ -1,6 +1,13 @@
-﻿using System;
+﻿/*
+ * Nom du projet : CovidPropagation
+ * Auteur        : Joey Martig
+ * Date          : 27.04.2021
+ * Version       : 1.0
+ * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
+ */
+using System;
 
-namespace CovidPropagation.Classes
+namespace CovidPropagation
 {
     static class TimeManager
     {
