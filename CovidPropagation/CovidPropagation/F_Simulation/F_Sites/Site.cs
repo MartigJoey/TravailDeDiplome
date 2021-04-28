@@ -22,7 +22,6 @@ namespace CovidPropagation
         double averageQuantaExhalationRate;
 
         #region probability
-        protected double eventDuration = GlobalVariables.DURATION_OF_PERIOD;
         double hospitalisationRate = 20;
         double deathRate = 4;
         // Size
@@ -62,8 +61,8 @@ namespace CovidPropagation
             this.co2 = co2;
 
             this.ventilationWithOutside = ventilationWithOutside;
-            this.decayRateOfVirus = 0.62d;// récupérer du virus
-            this.depositionOnSurfaceRate = 0.3d; // récupérer du virus
+            this.decayRateOfVirus = Virus.DecayRateOfVirus;// récupérer du virus
+            this.depositionOnSurfaceRate = Virus.DepositionOnSurfaceRate; // récupérer du virus
             this.additionalControlMeasures = additionalControlMeasures;
 
             this.sumFirstOrderLossRate = this.ventilationWithOutside + decayRateOfVirus + depositionOnSurfaceRate + this.additionalControlMeasures;
@@ -77,72 +76,39 @@ namespace CovidPropagation
         }
 
         /// <summary>
-        /// Récupère les probabilité d'infection d'une personne dans ce lieu.
-        /// Recalcul le taux de probabilité si nécessaire.
+        /// Récupère les taux de probabilité d'infection d'une personne dans ce lieu.
         /// </summary>
         /// <returns>Taux de probabilité d'infection actuellement dans ce lieu</returns>
         public double GetProbabilityOfInfection()
         {
-            if (hasEnvironnementChanged)
-            {
-                if (Virus.IsTransmissibleBy(typeof(AirTransmission)))
-                    CalculateAerosolRisk();
-
-                hasEnvironnementChanged = false;
-            }
             return probabilityOfInfection;
         }
 
         /// <summary>
-        /// Calcule les risques de propagation d'aérosols ainsi que d'autres nombreux paramètres du site.
+        /// Calcul le taux de probabilité d'infection d'une personne dans ce lieu.
         /// </summary>
-        private void CalculateAerosolRisk()
+        public void CalculateprobabilityOfInfection()
         {
-            // /!\ Utiliser l'objet AirTransmission pour certains paramètres
-            int nbPersons = persons.Count;
-            int infectivePersons = persons.Where(p => (int)p.CurrentState > 1).Count();
-            double fractionOfImmune = persons.Where(p => p.CurrentState == PersonState.Immune).Count() / nbPersons * 100; // %
-            int nbSusceptiblePersons = ((nbPersons - infectivePersons) * (1-(int)fractionOfImmune) * -1) / 10; // Bof
+            if (hasEnvironnementChanged)
+            {
+                if (Virus.IsTransmissibleBy(typeof(AerosolTransmission)))
+                {
+                    AerosolTransmission aerosolTransmission = Virus.GetTransmission(typeof(AerosolTransmission)) as AerosolTransmission;
+                    int nbPersons = persons.Count;
+                    int infectivePersons = persons.Where(p => (int)p.CurrentState > 1).Count();
+                    double fractionOfImmune = persons.Where(p => p.CurrentState == PersonState.Immune).Count() / nbPersons * 100; // %
+                    int nbPersonsWithMask = persons.Where(p => p.HasMask).Count();
+                    double inhalationMaskEfficiency = persons.Where(p => p.HasMask).Sum(p => p.InhalationMaskEfficiency) / nbPersonsWithMask;
+                    double probabilityOfBeingInfective = persons.Where(p => (int)p.CurrentState >= 3).Count() / nbPersons; // A modifier pour entrer en accord avec la simulation
 
-            //Density
-            //double densityAreaPersons = air / nbPersons;
-            //double densityPersonsArea = nbPersons / air;
-            //double densityVolumePersons = volume / nbPersons;
+                    // Personnalisé par personne en fonction des symptoms
+                    // Ancienne version: quantaExhalationRateOfInfected = quantaExhalationRateOfInfected * (1 - exhalationMaskEfficiency * percentagePersonWithMask) * infectivePersons; 
+                    double quantaExhalationRateOfInfected = persons.Where(p => (int)p.CurrentState > 2).Sum(p => p.QuantaExhalationRate * (1 - p.ExhalationMaskEfficiency * p.HasMask.ConvertToInt())) / infectivePersons;
 
-            // Breathing
-            double breathingRate = 0.026d * 60;
-            //double co2EmissionsPerPerson = 0.0091d;
-            //double co2Emissions = co2EmissionsPerPerson * nbPersons * (1 / pressure) * (273.15d + temperature) / 273.15d;
-            double quantaExhalationRateOfInfected; // A modifier en fonction des individus infecté et de leurs symptoms.
-
-            //ventilationPerPersonRate = volume * (ventilationWithOutside + additionalControlMeasures) * 1000 / 3600 / nbPersons;
-
-            // Masks 0 à 1
-            //double exhalationMaskEfficiency = 0;
-            int nbPersonsWithMask = persons.Where(p => p.HasMask).Count();
-            double percentagePersonWithMask = nbPersonsWithMask / persons.Count;
-            double inhalationMaskEfficiency = persons.Where(p => p.HasMask).Sum(p => p.InhalationMaskEfficiency) / nbPersonsWithMask;
-
-
-            // Virus
-            double probabilityOfBeingInfective = 0.011d;
-
-            // RESULT
-            //Ancienne version: quantaExhalationRateOfInfected = quantaExhalationRateOfInfected * (1 - exhalationMaskEfficiency * percentagePersonWithMask) * infectivePersons; // Personnalisé par personne en fonction des symptoms
-            quantaExhalationRateOfInfected = persons.Where(p => (int)p.CurrentState > 2).Sum(p =>  p.QuantaExhalationRate * (1 - p.ExhalationMaskEfficiency * p.HasMask.ConvertToInt())) / infectivePersons;
-
-            // sumQuantaExhalationRateOfInfected / sumFirstOrderLossRate / volume * (1-(1 / sumFirstOrderLossRate / eventDuration) * (1-exp(-sumFirstOrderLossRate * eventDuration)))
-            double avgQuantaConcentration = (Math.Abs(quantaExhalationRateOfInfected) / Math.Abs(sumFirstOrderLossRate) / Math.Abs(volume) * (1 - (1 / Math.Abs(sumFirstOrderLossRate) / eventDuration) * (1 - Math.Exp(-Math.Abs(sumFirstOrderLossRate) * Math.Abs(eventDuration)))));
-            double quantaInhaledPerPerson = avgQuantaConcentration * breathingRate * eventDuration * (1 - inhalationMaskEfficiency * percentagePersonWithMask);
-
-            // Infection
-            double probabilityOfOneInfection = 1 - Math.Exp(-quantaInhaledPerPerson);
-            double probabilityOfInfection = 1 - Math.Pow((1 - quantaExhalationRateOfInfected * probabilityOfBeingInfective), nbSusceptiblePersons);
-
-            double nOfInfectivePersons = (infectivePersons + nbSusceptiblePersons) * probabilityOfBeingInfective;
-            probabilityOfInfection = (nbSusceptiblePersons - nOfInfectivePersons) * probabilityOfInfection;
-            double probabilityOfHospitalisation = probabilityOfInfection * hospitalisationRate;
-            double probabilityOfDeath = probabilityOfInfection * deathRate;
+                    TransmissionData aerosolDatas = aerosolTransmission.CalculateRisk(nbPersons, infectivePersons, fractionOfImmune, nbPersonsWithMask, inhalationMaskEfficiency, sumFirstOrderLossRate, volume, quantaExhalationRateOfInfected, probabilityOfBeingInfective);
+                }
+            }
+            hasEnvironnementChanged = false;
         }
 
         /// <summary>

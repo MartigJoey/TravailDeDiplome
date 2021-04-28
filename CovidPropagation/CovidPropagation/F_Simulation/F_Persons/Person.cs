@@ -33,6 +33,7 @@ namespace CovidPropagation
         private Site _currentSite; // Int temporaire --> batiment / véhicules
         private PersonState _state;
         private List<Ilness> ilnesses;
+        private List<Symptom> symptoms;
         private double virusResistance;
         private double baseVirusResistance;
         private int _age;
@@ -50,31 +51,31 @@ namespace CovidPropagation
         // Augmenter respiration
         public PersonState CurrentState { get => _state; set => _state = value; }
         public double QuantaExhalationRate { get => quantaExhalationRate; }
-        public bool HasMask { get => _hasMask; set => _hasMask = value; }
+        public bool HasMask { get => _hasMask; }
         public double ExhalationMaskEfficiency { get => _exhalationMaskEfficiency; set => _exhalationMaskEfficiency = value; }
         public double InhalationMaskEfficiency { get => _inhalationMaskEfficiency; set => _inhalationMaskEfficiency = value; }
+        public int Age { get => _age; set => _age = value; }
 
         public Person(Planning planning, Random rdm, int age = GlobalVariables.DEFAULT_PERSON_AGE, PersonState state = PersonState.Healthy)
         {
             _planning = planning;
             _state = state;
             _rdm = rdm;
-            _age = age;
-            ilnesses = new List<Ilness>();
+            Age = age;
 
-            // Initialise la résistance de base de la personne
-            if (_rdm.Next(0, 100) < GlobalVariables.PERCENTAGE_OF_ASYMPTOMATIC)
-            {
-                baseVirusResistance = _rdm.Next(GlobalVariables.ASYMPTOMATIC_MIN_RESISTANCE, GlobalVariables.ASYMPTOMATIC_MAX_RESISTANCE);
-            }
-            else
-            {
-                baseVirusResistance = _rdm.Next(GlobalVariables.SYMPTOMATIC_MIN_RESISTANCE, GlobalVariables.SYMPTOMATIC_MAX_RESISTANCE);
-            }
-            virusResistance = baseVirusResistance;
+            ilnesses = new List<Ilness>();
+            symptoms = new List<Symptom>();
             ExhalationMaskEfficiency = GlobalVariables.AVERAGE_EXHALATION_MASK_EFFICIENCY;
             _inhalationMaskEfficiency = GlobalVariables.AVERAGE_INHALATION_MASK_EFFICIENCY;
             _hasMask = false;
+
+            // Initialise la résistance de base de la personne
+            if (_rdm.Next(0, 100) < GlobalVariables.PERCENTAGE_OF_ASYMPTOMATIC)
+                baseVirusResistance = _rdm.Next(GlobalVariables.ASYMPTOMATIC_MIN_RESISTANCE, GlobalVariables.ASYMPTOMATIC_MAX_RESISTANCE);
+            else
+                baseVirusResistance = _rdm.Next(GlobalVariables.SYMPTOMATIC_MIN_RESISTANCE, GlobalVariables.SYMPTOMATIC_MAX_RESISTANCE);
+
+            virusResistance = baseVirusResistance;
         }
 
         /// <summary>
@@ -88,7 +89,6 @@ namespace CovidPropagation
         /// </summary>
         public void ChangeActivity()
         {
-            double contaminationProbability = 0;
             // Quitte le lieu précédent si il est différent, récupère le nouveau et entre dedans.
             Site newSite = _planning.GetActivity();
             if (_currentSite != newSite)
@@ -98,16 +98,23 @@ namespace CovidPropagation
                 _currentSite.Enter(this);
 
                 // Mettre le mask à true si besoin.
-                quantaExhalationRate = _currentSite.GetAverageQuantaExhalationRate(); // Ajouter la possible Toux
+                quantaExhalationRate = _currentSite.GetAverageQuantaExhalationRate();
+                if (symptoms.OfType<CoughSymptom>().Any())
+                {
+                    quantaExhalationRate += symptoms.OfType<CoughSymptom>().First().QuantaAddedByCoughing();
+                }
             }
+        }
 
-            contaminationProbability = _currentSite.GetProbabilityOfInfection();
+        public void ChechState()
+        {
+            double contaminationProbability = _currentSite.GetProbabilityOfInfection();
             if (_state == PersonState.Healthy && contaminationProbability >= _rdm.NextDouble())
             {
                 _state = PersonState.Infected;
-                // Modifier pour récupérer directement les valeurs sur le virus. (Le virus calculera alors les valeurs)
-                virusDuration = GlobalVariables.VIRUS_DURATION;
-                virusIncubationDuration = GlobalVariables.VIRUS_INCUBATION_DURATION_MEDIAN;
+                virusDuration = Virus.Duration;
+                virusIncubationDuration = Virus.IncubationDurationMedian;
+                symptoms.AddRange(Virus.GetCommonSymptoms());
             }
 
             ContractIlness();
@@ -165,7 +172,7 @@ namespace CovidPropagation
             // SI attrape alors Modifier pour prendre en compte l'âge
             if (GlobalVariables.ILNESS_INFECTION_PROBABILITY > _rdm.NextDouble())
             {
-                Ilness newIlness = new Ilness(_age, _rdm);
+                Ilness newIlness = new Ilness(Age, _rdm);
                 ilnesses.Add(newIlness);
             }
 

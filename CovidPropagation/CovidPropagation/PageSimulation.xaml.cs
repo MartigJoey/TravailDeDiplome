@@ -20,16 +20,36 @@ namespace CovidPropagation
     public partial class PageSimulation : Page
     {
         Legend legendPage;
+        MainWindow mw;
+        string data;
+        public int SliderValue { get => (int)intervalSlider.Value; set => intervalSlider.Value = value; }
         public PageSimulation()
         {
             InitializeComponent();
             legendPage = new Legend();
+            intervalSlider.Value = GlobalVariables.DEFAULT_INTERVAL;
+            mw = ((MainWindow)Application.Current.MainWindow);
         }
 
         private void OpenLegendWindow_Click(object sender, RoutedEventArgs e)
         {
             legendPage.Show();
             legendPage.Focus();
+        }
+
+        private void intervalSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            mw.Sim.Interval = Convert.ToInt32(intervalSlider.Maximum - intervalSlider.Value);
+        }
+
+        private void Start_Click(object sender, RoutedEventArgs e)
+        {
+            mw.Sim.Start();
+        }
+
+        private void Stop_Click(object sender, RoutedEventArgs e)
+        {
+            mw.Sim.Stop();
         }
     }
 }

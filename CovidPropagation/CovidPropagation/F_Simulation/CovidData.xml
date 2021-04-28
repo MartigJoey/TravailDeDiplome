@@ -1,6 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Datas>
-  <Name>Covid</Name>
+  <Informations>
+    <Name>Covid</Name>
+    <IncubationDurationMin>2</IncubationDurationMin>
+    <IncubationDurationMax>14</IncubationDurationMax>
+    <IncubationDurationMedian>5</IncubationDurationMedian>
+    <Duration>12</Duration>
+    <HospitalRate>0.20</HospitalRate>
+    <DeathRate>0.04</DeathRate>
+    <DecayRateOfVirus>0.62</DecayRateOfVirus>
+    <DepositionOnSurfaceRate>0.3</DepositionOnSurfaceRate>
+  </Informations>
   <Transmissions>
     <Transmission>TransmissionsMethodBlabla</Transmission>
   </Transmissions>

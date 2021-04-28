@@ -4,7 +4,8 @@ using System.Text;
 
 namespace CovidPropagation
 {
-    class Transmission
+    public interface Transmission
     {
+        
     }
 }

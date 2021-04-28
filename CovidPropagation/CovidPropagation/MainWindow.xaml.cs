@@ -24,6 +24,9 @@ namespace CovidPropagation
         PageSimulation pageSimulation;
         PageSimulationSettings pageSimulationSettings;
         PageGraphicSettings pageGraphicSettings;
+        Simulation sim;
+
+        public Simulation Sim { get => sim; set => sim = value; }
 
         public MainWindow()
         {
@@ -32,7 +35,11 @@ namespace CovidPropagation
             pageSimulationSettings = new PageSimulationSettings();
             pageGraphicSettings = new PageGraphicSettings();
             MainContent.NavigationUIVisibility = NavigationUIVisibility.Hidden; // Cache la barre de navigation du contenu
-            Virus covid = new Virus();
+            Virus.Init();
+            Sim = new Simulation(30, 1, 100);
+            Sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
+            Sim.Iterate();
+            Sim.Start();
         }
 
         private void SimulationPage_Click(object sender, RoutedEventArgs e)

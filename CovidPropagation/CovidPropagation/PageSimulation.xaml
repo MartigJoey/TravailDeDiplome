@@ -28,25 +28,36 @@ Description : Simulation d'une propagation de virusgit co
             <RowDefinition Height="23*"/>
             <RowDefinition Height="8*"/>
         </Grid.RowDefinitions>
-        <Slider Template="{StaticResource HorizontalSlider}" x:Name="mySlider" Grid.Column="0" Value="6" Grid.Row="1" Minimum="0" Maximum="100" Margin="50,0,50,90" 
-                IsSelectionRangeEnabled="True">
+
+        <Label Grid.Column="2" Grid.Row="1" 
+               x:Name="lblDatas"
+               Content="{Binding }">
+            Datas
+        </Label>
+
+        <Slider Template="{StaticResource HorizontalSlider}" 
+                x:Name="intervalSlider" 
+                Grid.Column="0" Grid.Row="1" 
+                Minimum="0" Maximum="1000" Margin="28,38,72,52"
+                IsSelectionRangeEnabled="True"
+                Thumb.DragCompleted="intervalSlider_DragCompleted">
         </Slider>
-        
-        <StackPanel Margin="10" Grid.Column="1">
-            <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Never gonna</Label>
-            <RadioButton Foreground="{StaticResource foreGroundLight}">Give</RadioButton>
-            <RadioButton IsEnabled="False" Foreground="{StaticResource foreGroundLight}">You</RadioButton>
-            <RadioButton Foreground="{StaticResource foreGroundLight}" IsChecked="True">Up</RadioButton>
-        </StackPanel>
-        
-        <StackPanel Margin="10" Grid.Column="1" Grid.Row="1">
-            <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Never gonna</Label>
-            <CheckBox IsEnabled="False"  Foreground="{StaticResource foreGroundLight}">Let</CheckBox>
-            <CheckBox Foreground="{StaticResource foreGroundLight}" IsChecked="True">You</CheckBox>
-            <CheckBox Foreground="{StaticResource foreGroundLight}">Down</CheckBox>
-        </StackPanel>
-        <Button Style="{StaticResource button}" Grid.Column="0" Grid.Row="1" Content="Okay1" Height="50" Width="200" Grid.ColumnSpan="2"/>
-        <Button Style="{StaticResource button}" Grid.Column="0" Grid.Row="2" Content="Okay1"  Height="50" Width="200"/>
-        <Button Click="OpenLegendWindow_Click" Style="{StaticResource smallButton}" Grid.Column="2" Grid.Row="4" Content="Légende"  Height="30" Width="100"/>
+
+        <Button Click="Start_Click" Style="{StaticResource button}" 
+                x:Name="btnStart" 
+                Grid.Column="0" Grid.Row="0"
+                Margin="99,52,150,103"
+                Content="Start" Grid.RowSpan="2"/>
+
+        <Button Click="Stop_Click" Style="{StaticResource button}"
+                x:Name="btnStop" 
+                Grid.Column="0" Grid.Row="0"
+                Margin="255,52,0,103"
+                Content="Stop" Grid.RowSpan="2"/>
+
+        <Button Click="OpenLegendWindow_Click" Style="{StaticResource smallButton}" 
+                Grid.Column="2" Grid.Row="4" 
+                Height="30" Width="100"
+                Content="Légende"/>
     </Grid>
 </Page>

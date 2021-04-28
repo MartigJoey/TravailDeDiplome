@@ -9,6 +9,36 @@
       Title="PageSimulationSettings">
 
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50*" />
+            <ColumnDefinition Width="25*" />
+            <ColumnDefinition Width="25*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="23*"/>
+            <RowDefinition Height="23*"/>
+            <RowDefinition Height="23*"/>
+            <RowDefinition Height="23*"/>
+            <RowDefinition Height="8*"/>
+        </Grid.RowDefinitions>
+        <Slider Template="{StaticResource HorizontalSlider}" x:Name="mySlider" Grid.Column="0" Value="6" Grid.Row="1" Minimum="0" Maximum="100" Margin="50,0,50,90" 
+                IsSelectionRangeEnabled="True">
+        </Slider>
+
+        <StackPanel Margin="10" Grid.Column="1">
+            <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Never gonna</Label>
+            <RadioButton Foreground="{StaticResource foreGroundLight}">Give</RadioButton>
+            <RadioButton IsEnabled="False" Foreground="{StaticResource foreGroundLight}">You</RadioButton>
+            <RadioButton Foreground="{StaticResource foreGroundLight}" IsChecked="True">Up</RadioButton>
+        </StackPanel>
+
+        <StackPanel Margin="10" Grid.Column="1" Grid.Row="1">
+            <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Never gonna</Label>
+            <CheckBox IsEnabled="False"  Foreground="{StaticResource foreGroundLight}">Let</CheckBox>
+            <CheckBox Foreground="{StaticResource foreGroundLight}" IsChecked="True">You</CheckBox>
+            <CheckBox Foreground="{StaticResource foreGroundLight}">Down</CheckBox>
+        </StackPanel>
+        <Button Style="{StaticResource button}" Grid.Column="0" Grid.Row="1" Content="Okay1" Height="50" Width="200" Grid.ColumnSpan="2"/>
+        <Button Style="{StaticResource button}" Grid.Column="0" Grid.Row="2" Content="Okay1"  Height="50" Width="200"/>
     </Grid>
 </Page>

@@ -205,10 +205,13 @@
   - Les activité ne contiennent que des types d'objets permettant de définir ce que l'individus fait. Le planning contient les lieux et les indiquent à l'individus.
 - Création des plannings en fonction de la figure concernant leur création.
 - Nombre d'école et autres batiments en fonction du nombre de personnes. Genève servant d'exemple.
-  - ~0.03%  --> 165 écoles pour 500'000 personnes
+  - Formules  
+    - 100 + Abs((y2 - y1) / y1)*100 = %
+    - (% - 100)/100 * y1 + y1 = y2
+  - ~0.033%  --> 165 écoles pour 500'000 personnes 100 - ((165 - 500'000) / 500'000)*100
   - ~6,74%  --> 33'700 entreprise pour 231'000 emplois
-  - ~0.01%  --> 8 hopitaux, 2 cliniques, 30 lieux de soint
-  - ~0,03%  --> ~136 supermarché
+  - ~0.0016%  --> 8 hopitaux, 2 cliniques, 30 lieux de soint
+  - ~0,0272%  --> ~136 supermarché
   - ~50%    --> ~250'000 appartements
 - pareil mais pour l'âge de la population
   - ~22% 0-19  ans
@@ -217,10 +220,9 @@
   - ~5%  80+   ans
   - [Source](https://www.ge.ch/statistique/graphiques/affichage.asp?filtreGraph=11_02&dom=1)
 - Pareil pour les transports
-  - ~37%  --> à pied
-  - ~36%  --> voiture (Chauffeur ou passagers)
-  - ~15%  --> tpg
-  - ~10%  --> vélos
+  - ~36%  --> 218'000 voiture (Chauffeur ou passagers)
+  - ~15%  --> 452 + 117 tpg
+  - ~10%  --> ~ 200'000 vélos
   - [Source](https://www.letemps.ch/suisse/nombre-voitures-menage-diminue-geneve#:~:text=Au%20d%C3%A9but%20de%20l'ann%C3%A9e,augmentation%20de%206%2C5%25)
 - Réflexion sur la création des transports et batiments et sur la source de certaines données.
   - On a une population de 100 personnes
@@ -295,7 +297,7 @@
 - Création du fichier XML comportant les données du Covid
 - Lecture du fichier depuis le code et récupération des données.
 - Fonctionnement imaginé du virus et de ses composants
-  - ![Virus transmissions and symptoms](/Medias/LogBook/VirusTransmissionsAndSymptoms.png)
+  - ![Virus transmissions and symptoms](Medias/LogBook/VirusTransmissionsAndSymptoms.png)
   - Informations importante concernant la respiration et affectant donc la toux [Source](https://docs.google.com/spreadsheets/d/1x_QFiFPbqLtZTjuoVoCyPQdu7onu6c370NNlPZ3TfTk/edit#gid=519189277)
     - Resting – Oral breathing = 2.0 quanta/h
     - Resting – Speaking = 9.4 quanta/h
@@ -310,3 +312,45 @@
     - Heavy exercise – Speaking = 63.1 quanta/h
     - Heavy exercise – Loudly speaking = 408 quanta/h
 - Modification de la transmission par aérosol sur les sites pour prendre en compte les paramètres individuels de chaques individus présent sur les lieux.
+
+# 28.04.2021 07h50 / 16h30
+- Refactoring
+  - Certain point logiques à revoir
+    - Le lieu calculait le risque de transmission aérosol alors que c'est au type de transmission du virus de le faire. Ou un mix des deux.
+- Penser à modifier les calculs recupéré sur le fichier excel pour être plus en accord avec le fonctionnement de la simulation.
+- Revoir le pattern visistor pour éventuellement l'implémenter pour le calcul de risque de la transmission
+- Transmission effectuée
+  - Revoir la strucutre du code pour certaines améliorations nécessaires
+- Ajout de données du covid dans le fichier excel
+- Refactorisation de la lecture du fichier XML
+  - Échec
+  - La structure de code essayée ne correspond pas aux besoin de la simulation
+    - Tentative de convertion d'une boucle itérant dans le xml à un système de query. Cependant, les query ne permettent pas de récupérer des valeurs précisent en groupes et de les lirent individuellement.
+- Penser à remplacer le XMl par du JSON.
+  - Permettant de générer le virus de façon dynamique en fonction du JSON.
+- Création du diagramme de classe
+- Discution avec Mr. Mathieu sur les threads de l'application
+  - Création de 2 thread, un gérant la simulation, l'autre la GUI.
+  - À la place d'un timer, vérifier le temps entre deux "tick" et attendre si le traitement est trop rapide.
+  - ![Résultat rencontre](Medias/LogBook/AppFonctionnement.jpg)
+- Création du "timer" dans la simulation
+- lecture du code TrainSimulatorApp
+  - Fonctionnement des Threads
+  - Boucle
+- Intégration de la simulation au programme WPF
+  - Start
+  - Stop
+  - Changement de l'interval en fonction du slider
+- Recherche sur le binding de données en WPF
+  - Trop complexe pour le moment. À éventuellement ajouter plus tard.
+- Création des bâtiments
+  - Reprise de réel
+- Perte du câble du disque dur externe --> pas de sauvegarde dessus
+- Données concernant le nombre d'étudiants à genève pour calculer le ratio école / élèves.
+  - Total = 103'008 étudiants en 2020
+  - [Sources](https://drive.google.com/drive/folders/16TU3wTAwMIrx5XxhLVHWT5VI7Rbx-zqy?usp=sharing)
+- Rectification du compteur de batiment nécessaire à la population
+  - Formules
+    - (% - 100) / 100 * y1 + y1 = y2
+    - 100 - ((y2 - y1) / y1) * 100 = %
+- 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CovidPropagation
 {
-    class Symptom
+    public interface Symptom
     {
 
     }

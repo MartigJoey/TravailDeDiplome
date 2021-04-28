@@ -5,6 +5,7 @@
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
+using System;
 using System.Drawing;
 
 namespace CovidPropagation
@@ -17,6 +18,8 @@ namespace CovidPropagation
         //public static readonly double[] PROBABILITY_TO_HAVE_SMALL_ILNESS = new double[] {     0.96, 0.90, 0.85, 0.75, 0.50 };
         //public static readonly double[] PROBABILITY_TO_HAVE_NORMAL_ILNESS = new double[] {    0.03, 0.07, 0.10, 0.15, 0.30  };
         //public static readonly double[] PROBABILITY_TO_HAVE_DANGEROUS_ILNESS = new double[] { 0.01, 0.03, 0.05, 0.10, 0.20  };
+
+        public static readonly Random rdm = new Random();
 
         public const int DURATION_OF_PERIOD = 30; // En minutes
         public const int MINUTES_PER_DAY = 1440;
@@ -32,6 +35,9 @@ namespace CovidPropagation
         public const double ILNESS_MIN_ATTACK = 0.05d;
         public const double ILNESS_MAX_ATTACK = 0.2d;
 
+        public const int DEFAULT_INTERVAL = 500;
+
+        // Symptomatic / Asymptomatic
         public const int PERCENTAGE_OF_ASYMPTOMATIC = 5;
         public const int ASYMPTOMATIC_MIN_RESISTANCE = 90;
         public const int ASYMPTOMATIC_MAX_RESISTANCE = 101; // 101 exclus
@@ -39,19 +45,16 @@ namespace CovidPropagation
         public const int SYMPTOMATIC_MIN_RESISTANCE = 80;
         public const int SYMPTOMATIC_MAX_RESISTANCE = 90; // 90 exclus
 
+        // Person
         public const int DEFAULT_PERSON_AGE = 30;
+        public const int MAX_SCHOOL_AGE = 18;
+
+        public const double BREATHING_RATE = 0.026d * 60;
 
         public const double AVERAGE_QUANTA_EXHALATION = 5.6d;
 
         public const double AVERAGE_EXHALATION_MASK_EFFICIENCY = 0.5;
         public const double AVERAGE_INHALATION_MASK_EFFICIENCY = 0.3;
-
-        // Virus
-        public const int VIRUS_INCUBATION_DURATION_MIN = 2;
-        public const int VIRUS_INCUBATION_DURATION_MAX = 14;
-        public const int VIRUS_INCUBATION_DURATION_MEDIAN = 5;
-
-        public const int VIRUS_DURATION = 12; // En jours
 
         #region SitesDefaultParameter
         public const double OUTSIDE_TEMPERATURE = 30;

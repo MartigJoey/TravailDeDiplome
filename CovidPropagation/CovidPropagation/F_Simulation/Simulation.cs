@@ -7,7 +7,11 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CovidPropagation
 {
@@ -16,88 +20,111 @@ namespace CovidPropagation
         private int _averageAge;
         private int _nbInfected;
         private int _nbPersons;
-        Random rdm;
-        List<Site>[] allSites;
-        List<Site>[] allTransports;
+        List<Site> allBuildingSites;
+        List<Site> allTransports;
         List<Person> population;
+        Stopwatch sp;
+        bool startStop;
+        int interval;
+
+        public int Interval { get => interval; set => interval = value; }
+
         public Simulation(int avgAge, int nbInfected, int nbPersons)
         {
             _averageAge = avgAge;
             _nbInfected = nbInfected;
             _nbPersons = nbPersons;
-            rdm = new Random();
-            allSites = new List<Site>[] { 
-                new List<Site>(),
-                new List<Site>(),
-                new List<Site>(),
-                new List<Site>(),
-                new List<Site>()
-            };
-
-            allTransports = new List<Site>[] {
-                new List<Site>(),
-                new List<Site>(),
-                new List<Site>(),
-                new List<Site>(),
-            };
+            allBuildingSites = new List<Site>();
+            allTransports = new List<Site>();
+            population = new List<Person>();
+            sp = new Stopwatch();
             population = new List<Person>();
 
+            startStop = true;
+        }
+
+        public async void Iterate()
+        {
+            while (true)
+            {
+                Debug.WriteLine(Interval);
+                if (startStop)
+                {
+                    sp.Start();
+                    TimeManager.NextPeriod();
+                    population.ForEach(p => p.ChangeActivity());
+                    allBuildingSites.ForEach(p => p.CalculateprobabilityOfInfection());
+                    population.ForEach(p => p.ChechState());
+                    sp.Stop();
+
+                    if (sp.ElapsedMilliseconds < Interval)
+                    {
+                        long interval = Interval;
+                        await Task.Delay((int)(Interval - sp.ElapsedMilliseconds));
+                    }
+                    Debug.WriteLine("Tick");
+                    sp.Reset();
+                }
+                await Task.Delay(100);
+            }
+        }
+
+        public void Start()
+        {
+            startStop = true;
+        }
+
+        public void Stop()
+        {
+            startStop = false;
         }
 
         private void CreateBuildings()
         {
-            double nbOfSchool = 0.03d * 100 / _nbPersons;
-            double nbOfCompany = 6.74d * 100 / _nbPersons;
-            double nbOfHomes = 0.01d * 100 / _nbPersons;
-            double nbOfSupermarket = 0.03d * 100 / _nbPersons;
-            double nbOfHospital = 50d * 100 / _nbPersons;
+            int populationInSchool = population.Where(p => p.Age < GlobalVariables.MAX_SCHOOL_AGE).Count();
+            int populationInCompanies = population.Where(p => p.Age > GlobalVariables.MAX_SCHOOL_AGE).Count();
 
-            int[] nbOfSites = new int[] {
-                (int)Math.Ceiling(nbOfSchool),
-                (int)Math.Ceiling(nbOfCompany),
-                (int)Math.Ceiling(nbOfHomes),
-                (int)Math.Ceiling(nbOfSupermarket),
-                (int)Math.Ceiling(nbOfHospital)
-            };
+            int nbOfSchool = (int)Math.Ceiling((0.03d - 100) / 100 * _nbPersons + _nbPersons);
+            int nbOfCompany = (int)Math.Ceiling((6.74d - 100) / 100 * _nbPersons + _nbPersons);
+            int nbOfHospital = (int)Math.Ceiling((0.01d - 100) / 100 * _nbPersons + _nbPersons);
+            int nbOfSupermarket = (int)Math.Ceiling((0.03d - 100) / 100 * _nbPersons + _nbPersons);
+            int nbOfHomes = (int)Math.Ceiling((50d - 100) / 100 * _nbPersons + _nbPersons);
 
-            Type[] typeOfSite = new Type[] {
-                typeof(School),
-                typeof(Company),
-                typeof(Home),
-                typeof(Supermarket),
-                typeof(Hospital),
-            };
-
-            for (int indexSiteType = 0; indexSiteType < allSites.Length; indexSiteType++)
+            
+            for (int i = 0; i < nbOfSchool; i++)
             {
-                for (int i = 0; i < nbOfSites[indexSiteType]; i++)
-                {
-                    allSites[indexSiteType].Add(new School(1));
-                }
+                allBuildingSites.Add(new School(populationInSchool / nbOfSchool));
             }
 
+            for (int i = 0; i < nbOfCompany; i++)
+            {
+                allBuildingSites.Add(new Company(populationInCompanies / nbOfCompany));
+            }
+
+            for (int i = 0; i < nbOfHospital; i++)
+            {
+                allBuildingSites.Add(new Hospital(population.Count / nbOfHospital));
+            }
+
+            for (int i = 0; i < nbOfSupermarket; i++)
+            {
+                allBuildingSites.Add(new Supermarket(population.Count / nbOfSupermarket));
+            }
+            
+            for (int i = 0; i < nbOfHomes; i++)
+            {
+                allBuildingSites.Add(new Home(population.Count / nbOfHomes));
+            }
         }
 
         private void CreateTransports()
         {
-            double nbOfCar = 0.03d * 100 / _nbPersons;
-            double nbOfBus = 6.74d * 100 / _nbPersons;
-            double nbOfBikes = 0.01d * 100 / _nbPersons;
-            double nbOfWalking = 0.03d * 100 / _nbPersons;
+            double nbOfCar = (int)Math.Ceiling((36d - 100) / 100 * _nbPersons + _nbPersons);
+            double nbOfBus = (int)Math.Ceiling((15d - 100) / 100 * _nbPersons + _nbPersons);
+            double nbOfBikes = (int)Math.Ceiling((10d - 100) / 100 * _nbPersons + _nbPersons); // Augmente quanta
 
-            int[] nbOfTransports = new int[] {
-                (int)Math.Ceiling(nbOfCar),
-                (int)Math.Ceiling(nbOfBus),
-                (int)Math.Ceiling(nbOfBikes),
-                (int)Math.Ceiling(nbOfWalking)
-            };
 
-            for (int indexTransportType = 0; indexTransportType < allSites.Length; indexTransportType++)
-            for (int i = 0; i < nbOfTransports[indexTransportType]; i++)
-            {
-                // Create Transports
 
-            }
         }
 
         private void CreatePopulation()
