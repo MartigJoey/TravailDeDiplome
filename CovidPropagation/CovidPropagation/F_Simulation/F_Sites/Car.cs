@@ -16,12 +16,9 @@ namespace CovidPropagation
                            double length = GlobalVariables.CAR_LENGTH,
                            double width = GlobalVariables.CAR_WIDTH,
                            double height = GlobalVariables.CAR_HEIGHT,
-                           double pressure = GlobalVariables.CAR_PRESSURE,
-                           double temperature = GlobalVariables.CAR_TEMPERATURE,
-                           double co2 = GlobalVariables.CAR_ADDITIONAL_CONTROL_MEASURES,
                            double ventilationWithOutside = GlobalVariables.CAR_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.CAR_ADDITIONAL_CONTROL_MEASURES) :
-                 base(maxPerson, length, width, height, pressure, temperature, co2, ventilationWithOutside, additionalControlMeasures)
+                 base(maxPerson, length, width, height, ventilationWithOutside, additionalControlMeasures)
         {
             
         }

@@ -1,11 +1,12 @@
 ﻿/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
- * Date          : 27.04.2021
+ * Date          : 29.04.2021
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace CovidPropagation
@@ -18,13 +19,11 @@ namespace CovidPropagation
         private Day[] _days = new Day[GlobalVariables.NUMBER_OF_DAY];
         public Day[] Days { get => _days; }
 
-        private int _personAge;
         private Site _dayActivity;
 
-        public Planning(Day[] days, int age)
+        public Planning()
         {
-            _days = days;
-            _personAge = age;
+            // Does nothing
         }
 
         /// <summary>
@@ -57,15 +56,40 @@ namespace CovidPropagation
             return _days[nextPeiod[0]].GetActivity(nextPeiod[1]);
         }
 
-
-
-
-
-        /// <summary>
-        /// Génère le planning en fonction des paramètres de la personne.
-        /// </summary>
-        public void Generate()
+        public void CreateAdultPlanning()
         {
+            List<Day> days = new List<Day>();
+            for (int i = 0; i < GlobalVariables.NUMBER_OF_DAY; i++)
+            {
+                Day day = new Day();
+                day.CreateAdultDay(i);
+                days.Add(day);
+            }
+            _days = days.ToArray();
+        }
+
+        public void CreateStudentPlanning()
+        {
+            List<Day> days = new List<Day>();
+            for (int i = 0; i < GlobalVariables.NUMBER_OF_DAY; i++)
+            {
+                Day day = new Day();
+                day.CreateAdultDay(i);
+                days.Add(day);
+            }
+            _days = days.ToArray();
+        }
+
+        public void CreateElderPlanning()
+        {
+            List<Day> days = new List<Day>();
+            for (int i = 0; i < GlobalVariables.NUMBER_OF_DAY; i++)
+            {
+                Day day = new Day();
+                day.CreateAdultDay(i);
+                days.Add(day);
+            }
+            _days = days.ToArray();
         }
     }
 }

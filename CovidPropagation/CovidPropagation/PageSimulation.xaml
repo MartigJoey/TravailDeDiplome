@@ -30,8 +30,7 @@ Description : Simulation d'une propagation de virusgit co
         </Grid.RowDefinitions>
 
         <Label Grid.Column="2" Grid.Row="1" 
-               x:Name="lblDatas"
-               Content="{Binding }">
+               x:Name="lblDatas">
             Datas
         </Label>
 

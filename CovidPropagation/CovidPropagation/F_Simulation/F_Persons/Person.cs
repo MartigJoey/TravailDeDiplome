@@ -56,11 +56,11 @@ namespace CovidPropagation
         public double InhalationMaskEfficiency { get => _inhalationMaskEfficiency; set => _inhalationMaskEfficiency = value; }
         public int Age { get => _age; set => _age = value; }
 
-        public Person(Planning planning, Random rdm, int age = GlobalVariables.DEFAULT_PERSON_AGE, PersonState state = PersonState.Healthy)
+        public Person(Planning planning, int age = GlobalVariables.DEFAULT_PERSON_AGE, PersonState state = PersonState.Healthy)
         {
             _planning = planning;
             _state = state;
-            _rdm = rdm;
+            _rdm = GlobalVariables.rdm;
             Age = age;
 
             ilnesses = new List<Ilness>();
@@ -76,6 +76,7 @@ namespace CovidPropagation
                 baseVirusResistance = _rdm.Next(GlobalVariables.SYMPTOMATIC_MIN_RESISTANCE, GlobalVariables.SYMPTOMATIC_MAX_RESISTANCE);
 
             virusResistance = baseVirusResistance;
+            _currentSite = planning.GetActivity();
         }
 
         /// <summary>
@@ -114,7 +115,6 @@ namespace CovidPropagation
                 _state = PersonState.Infected;
                 virusDuration = Virus.Duration;
                 virusIncubationDuration = Virus.IncubationDurationMedian;
-                symptoms.AddRange(Virus.GetCommonSymptoms());
             }
 
             ContractIlness();
@@ -150,9 +150,13 @@ namespace CovidPropagation
                 else
                 {
                     if (virusResistance > GlobalVariables.ASYMPTOMATIC_MIN_RESISTANCE)
+                    {
                         _state = PersonState.Asymptomatic;
-                    else
+                    }else
+                    {
                         _state = PersonState.Infectious;
+                        symptoms.AddRange(Virus.GetCommonSymptoms());
+                    }
                 }
             }else if ((int)_state > 2)
             {

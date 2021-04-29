@@ -25,6 +25,7 @@ namespace CovidPropagation
         public const int MINUTES_PER_DAY = 1440;
         public const int NUMBER_OF_PERIODS = MINUTES_PER_DAY / DURATION_OF_PERIOD;
         public const int NUMBER_OF_DAY = 7;
+        public const int NUMBER_OF_HOURS_PER_DAY = 24;
 
         public const int TIMER_INTERVAL = 1000; // 50 minimum
 
@@ -47,7 +48,7 @@ namespace CovidPropagation
 
         // Person
         public const int DEFAULT_PERSON_AGE = 30;
-        public const int MAX_SCHOOL_AGE = 18;
+        public const int MAX_SCHOOL_AGE = 25;
 
         public const double BREATHING_RATE = 0.026d * 60;
 
@@ -55,6 +56,13 @@ namespace CovidPropagation
 
         public const double AVERAGE_EXHALATION_MASK_EFFICIENCY = 0.5;
         public const double AVERAGE_INHALATION_MASK_EFFICIENCY = 0.3;
+
+        // Sites
+
+        public const int HOME_INDEX = 0;
+        public const int SUPERMARKET_INDEX = 1;
+        public const int OUTSIDE_INDEX = 2;
+        public const int RESTAURANT_INDEX = 3;
 
         #region SitesDefaultParameter
         public const double OUTSIDE_TEMPERATURE = 30;

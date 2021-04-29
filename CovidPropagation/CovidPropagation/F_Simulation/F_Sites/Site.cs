@@ -20,6 +20,7 @@ namespace CovidPropagation
         List<Person> persons;
         bool hasEnvironnementChanged;
         double averageQuantaExhalationRate;
+        int maxNbPeople;
 
         #region probability
         double hospitalisationRate = 20;
@@ -32,10 +33,8 @@ namespace CovidPropagation
         protected double volume;
 
         // Air
-        protected double pressure;
         protected double temperature; // En Celsius
         protected double humidity; // %
-        protected double co2;
 
         // Ventilation & deposition
         protected double ventilationWithOutside;
@@ -47,18 +46,17 @@ namespace CovidPropagation
         protected double ventilationPerPersonRate;
 
         protected double probabilityOfInfection;
+
+        public int MaxNbPeople { get => maxNbPeople; set => maxNbPeople = value; }
         #endregion
 
-        public Site(double length, double width, double height, double pressure = 0.95d, double temperature = 20, double humidity = 50, double co2 = 415,
+        public Site(int maxNbPeople, double length, double width, double height,
                     double ventilationWithOutside = 0.7d, double additionalControlMeasures = 0)
         {
+            this.MaxNbPeople = maxNbPeople;
             this.length = length;  
             this.width = width;
             this.height = height;
-            this.pressure = pressure;
-            this.temperature = temperature;
-            this.humidity = humidity;
-            this.co2 = co2;
 
             this.ventilationWithOutside = ventilationWithOutside;
             this.decayRateOfVirus = Virus.DecayRateOfVirus;// récupérer du virus
@@ -89,7 +87,7 @@ namespace CovidPropagation
         /// </summary>
         public void CalculateprobabilityOfInfection()
         {
-            if (hasEnvironnementChanged)
+            if (hasEnvironnementChanged && persons.Count > 0)
             {
                 if (Virus.IsTransmissibleBy(typeof(AerosolTransmission)))
                 {
@@ -141,6 +139,11 @@ namespace CovidPropagation
         public double GetAverageQuantaExhalationRate()
         {
             return averageQuantaExhalationRate;
+        }
+
+        public int CountNbPeople()
+        {
+            return persons.Count;
         }
     }
 }

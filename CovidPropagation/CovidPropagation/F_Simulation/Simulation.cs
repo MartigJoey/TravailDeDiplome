@@ -1,7 +1,7 @@
 ﻿/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
- * Date          : 27.04.2021
+ * Date          : 29.04.2021
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
@@ -41,6 +41,9 @@ namespace CovidPropagation
             population = new List<Person>();
 
             startStop = true;
+            CreateBuildings();
+            CreateTransports();
+            CreatePopulation();
         }
 
         public async void Iterate()
@@ -90,6 +93,7 @@ namespace CovidPropagation
             int nbOfSupermarket = (int)Math.Ceiling((0.03d - 100) / 100 * _nbPersons + _nbPersons);
             int nbOfHomes = (int)Math.Ceiling((50d - 100) / 100 * _nbPersons + _nbPersons);
 
+            allBuildingSites.Add(new Outside(_nbPersons));
             
             for (int i = 0; i < nbOfSchool; i++)
             {
@@ -123,26 +127,144 @@ namespace CovidPropagation
             double nbOfBus = (int)Math.Ceiling((15d - 100) / 100 * _nbPersons + _nbPersons);
             double nbOfBikes = (int)Math.Ceiling((10d - 100) / 100 * _nbPersons + _nbPersons); // Augmente quanta
 
-
+            for (int i = 0; i < nbOfCar; i++)
+            {
+               // allTransports.Add(new School(populationInSchool / nbOfSchool));
+            }
 
         }
 
         private void CreatePopulation()
         {
-            int _personAge = 0;
-            Site _dayActivity;
-            if (_personAge < 18)
+            // Récupérer depuis les paramètres
+            double minorProbability = 0.22d;
+            double retirementProbability = 0.14d;
+            double workingProbability = 1 - minorProbability - retirementProbability;
+
+            int nbMinor = (int)Math.Round(minorProbability * _nbPersons);
+            int nbRetirement = (int)Math.Round(retirementProbability * _nbPersons);
+            int nbWorking = (int)Math.Round(workingProbability * _nbPersons);
+
+            while (nbMinor > 0)
             {
-                _dayActivity = new School(5); // A modifier par le fait de récupérer dans une liste d'école disponibles.
+                population.Add(CreateStudentPerson());
+                nbMinor--;
             }
-            else if (_personAge < 65)
+
+            while (nbRetirement > 0)
             {
-                _dayActivity = new Company(5);
+                population.Add(CreateAdultClass());
+                nbRetirement--;
             }
-            else
+
+            while (nbWorking > 0)
             {
-                _dayActivity = new Company(5);
+                population.Add(CreateElderPerson());
+                nbWorking--;
             }
         }
+
+        private Person CreateStudentPerson()
+        {
+            Person student;
+            Planning planning = new Planning();
+            planning.CreateStudentPlanning();
+            student = new Person(planning);
+            return student;
+        }
+
+        private Person CreateAdultClass()
+        {
+            Person adult;
+            Planning planning = new Planning();
+            planning.CreateAdultPlanning();
+            adult = new Person(planning);
+            return adult;
+        }
+
+        private Person CreateElderPerson()
+        {
+            Person elder;
+            Planning planning = new Planning();
+            planning.CreateElderPlanning();
+            elder = new Person(planning);
+            return elder;
+        }
+
+        /* private List<Period> CreateEveningWorkingClass()
+         {
+             int eveningTotalPeriods = 10;
+             List<Period> eveningPeriods = new List<Period>();
+             Random rdm = GlobalVariables.rdm;
+             int nbPeriodsPerDay = GlobalVariables.NUMBER_OF_PERIODS;
+             int nbHoursPerDay = GlobalVariables.NUMBER_OF_HOURS_PER_DAY;
+             Type selectedActivity;
+             while (eveningTotalPeriods > 0)
+             {
+                 int RestaurantMinPeriods = 2;
+                 int SupermarketMinPeriods = 1;
+
+                 if (eveningTotalPeriods < RestaurantMinPeriods)
+                 {
+                     selectedActivity = rdm.NextProbability(new KeyValuePair<Type, double>[] {
+                         new KeyValuePair<Type, double>(typeof(Home), 0.90),
+                         new KeyValuePair<Type, double>(typeof(Supermarket), 0.10)
+                     });
+                 }
+                 else if (eveningTotalPeriods < SupermarketMinPeriods)
+                 {
+                     selectedActivity = typeof(Home);
+                 }
+                 else
+                 {
+                     selectedActivity = rdm.NextProbability(new KeyValuePair<Type, double>[] {
+                         new KeyValuePair<Type, double>(typeof(Home), 0.50),
+                         new KeyValuePair<Type, double>(typeof(Supermarket), 0.40),
+                         new KeyValuePair<Type, double>(typeof(Restaurant), 0.10)
+                     });
+                 }
+
+                 // Temps min = 0, max = full;
+                 if (selectedActivity == typeof(Home))
+                 {
+                     int min = 5 * nbPeriodsPerDay / nbHoursPerDay;
+                     int max = 8 * nbPeriodsPerDay / nbHoursPerDay;
+                     eveningPeriods.AddRange(CreateSiteActivity(min, max, typeof(Restaurant)));
+                 }
+
+                 // temps min = 1, max = 3
+                 if (selectedActivity == typeof(Supermarket))
+                 {
+                     int min = 5 * nbPeriodsPerDay / nbHoursPerDay;
+                     int max = 8 * nbPeriodsPerDay / nbHoursPerDay;
+                     eveningPeriods.AddRange(CreateSiteActivity(min, max, typeof(Restaurant)));
+                 }
+
+                 // Temps min = 2, max = 6
+                 if (selectedActivity == typeof(Restaurant))
+                 {
+                     int min = 5 * nbPeriodsPerDay / nbHoursPerDay;
+                     int max = 8 * nbPeriodsPerDay / nbHoursPerDay;
+                     eveningPeriods.AddRange(CreateSiteActivity(min, max, typeof(Restaurant)));
+                 }
+                 eveningTotalPeriods--;
+             }
+             return eveningPeriods;
+         }
+
+         private List<Period> CreateSiteActivity(int min, int max, Type site)
+         {
+             Random rdm = GlobalVariables.rdm;
+             List<Period> eveningPeriods = new List<Period>();
+
+             int eveningPeriodsNb = rdm.Next(min, max);
+
+             while (eveningPeriodsNb > 0)
+             {
+                 //homePeriods.Add(new Period(site));
+                 eveningPeriodsNb--;
+             }
+             return eveningPeriods;
+         }*/
     }
 }

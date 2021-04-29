@@ -212,7 +212,7 @@
   - ~6,74%  --> 33'700 entreprise pour 231'000 emplois
   - ~0.0016%  --> 8 hopitaux, 2 cliniques, 30 lieux de soint
   - ~0,0272%  --> ~136 supermarché
-  - ~50%    --> ~250'000 appartements
+  - ~50% - 100%    --> ~250'000 appartements
 - pareil mais pour l'âge de la population
   - ~22% 0-19  ans
   - ~63% 20-64 ans
@@ -313,7 +313,7 @@
     - Heavy exercise – Loudly speaking = 408 quanta/h
 - Modification de la transmission par aérosol sur les sites pour prendre en compte les paramètres individuels de chaques individus présent sur les lieux.
 
-# 28.04.2021 07h50 / 16h30
+# 28.04.2021 07h50 / 17h00
 - Refactoring
   - Certain point logiques à revoir
     - Le lieu calculait le risque de transmission aérosol alors que c'est au type de transmission du virus de le faire. Ou un mix des deux.
@@ -353,4 +353,52 @@
   - Formules
     - (% - 100) / 100 * y1 + y1 = y2
     - 100 - ((y2 - y1) / y1) * 100 = %
-- 
+
+# 29.04.2021 08h05 / 17h00
+- Début de la création des plannings
+  - Modification de la création des batiments
+  - Ajouts des réstaurants
+  - Ajouts de l'extérieur
+- Quantité de personne retraitée à Genève = ~14%
+  - [Source](https://www.ge.ch/statistique/tel/publications/2016/donnees_generales/annuaire/dg_as_2016.pdf)
+- Création de la strucutre du planning d'un individu qui travail
+  - Jour de travail :
+```
+  Home 5h-8h
+  trajet (5h30 - 8h30)
+  company (Arrivé 6h - 9h  Départ (11h-12h))
+  trajet | company (11h30-12h30)
+  Resto  | Company (Arrivé 12h - 13h  Départ (12h30-13h30))
+  trajet | company (13h-14h)
+  company (Arrivé 13h30-14h30  Départ (16h-19h))
+  trajet (16h30 - 19h30)
+  Supermarché 30m-1h30 | maison 30min-Fin | restaurant 1h-3h | Bar (17h-19h)
+                      \ /                \ /                 | Bar
+  Supermarché          | maison           | restaurant       | Bar (17h30-19h)
+                      \                  \ /                 | Bar
+                       | maison           | restaurant       | Bar (19h - 20h)
+   Outisde             | maison                              | Bar (20h - minuit)
+   maison
+   ```
+- Ajouts de méthode d'extensions pour le calcul de random booléen
+  - Méthode choississant un choix aléatoir entre plusieurs choix à disposition selon un poid
+- Création d'une méthode créant la soirée d'une personne de manière dynamqiue
+  - Manque de connaissance pour la réaliser de manière propre et fonctionnel
+  - Suppression de la méthode
+- Création de différents pattern préfait choisis de manière aléatoire.
+  - Simplifie la version précédente
+  - Suffisament aléatoire
+- Utiliser une string en temps que seed pour générer des plannings ?
+  -  +Meilleur control sur les plannings
+  -  +Simple
+  -  +Possibilité d'ajouter une génération aléatoir plus tard
+  -  -Prégénéré
+  -  -durée des périodes (ne devraient pas changer)
+- Création de la string
+- Modification de l'emplacement des méthodes de création de planning.
+  - CreateDays simulation --> Day
+  - CreatePlanning simulation --> Planning
+- Génération du planning en fonction de la seed
+- Création de seeds pour étudiants, adultes et retraités
+- Première compilation de la simulation (Alpha) réussie après quelques bugs mineurs
+- Suppression des paramètres "Pression", "Temperature" et "Co2" dans les lieux car pas encore utilisé.
