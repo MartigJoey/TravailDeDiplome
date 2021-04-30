@@ -37,7 +37,7 @@ namespace CovidPropagation
             legendPage.Focus();
         }
 
-        private void intervalSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        private void IntervalSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             mw.Sim.Interval = Convert.ToInt32(intervalSlider.Maximum - intervalSlider.Value);
         }

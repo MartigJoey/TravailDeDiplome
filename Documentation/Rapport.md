@@ -705,7 +705,7 @@ Cette méthode permet de charger et démarrer le projet Unity qui a été build�
 <Grid x:Name="unityGrid" Width="454" Height="319" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,327,0"></Grid>
 ```
 Cette grille est ensuite transformée en unityHandle qui permet de donner au programme la grid ou il va devoir s'afficher. Le process récupère l'emplacement du programme à lancer. Les arguments permettent de définir où le programme doit se lancer, sans les arguments, le programme se lance dans une fenêtre indépendante. Ensuite, le process est lancé ce qui démarre le programme. EnumChildWindows (user32.dll) permet de lier le programme lancé à la fenêtre, permettant la modification de sa taille en fonction de la taille du programme WPF.
-```C#
+```C# {.line-numbers}
 Process process;
 HwndSource source = PresentationSource.FromVisual(unityGrid) as HwndSource;
 IntPtr unityHandle = source.Handle;
@@ -715,7 +715,6 @@ process.StartInfo.FileName = @".\UnityBuild\testWPF_Unity.exe";
 process.StartInfo.Arguments = "-parentHWND " + unityHandle.ToInt32() + " " + 
                               Environment.CommandLine;
 process.Start();
-}
 ```
 
 ## Choix de la solution

@@ -76,5 +76,10 @@ namespace CovidPropagation
         {
             return value.ToCharArray()[0];
         }
+
+        public static int GetLastIndex<T>(this IEnumerable<T> value)
+        {
+            return value.Count() - 1;
+        }
     }
 }

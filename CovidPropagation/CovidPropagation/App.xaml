@@ -391,7 +391,6 @@
                                                 </ColorAnimationUsingKeyFrames>
                                             </Storyboard>
                                         </VisualState>
-                                        <VisualState x:Name="Disabled" />
                                     </VisualStateGroup>
                                     <VisualStateGroup x:Name="CheckStates">
                                         <VisualState x:Name="Checked">

@@ -7,8 +7,69 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PageGraphicSettings">
+    <DockPanel  x:Name="spnMain">
+        <Grid DockPanel.Dock="Top" x:Name="grdMenu" ScrollViewer.CanContentScroll="True" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25*" MinWidth="180" />
+                <ColumnDefinition Width="25*" MinWidth="180" />
+                <ColumnDefinition Width="25*" MinWidth="180" />
+                <ColumnDefinition Width="25*" MinWidth="180" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
 
-    <Grid>
+            <Button Click="AddRow_Click" Grid.Column="0" Style="{StaticResource smallButton}" 
+                    x:Name="btnAddRow" 
+                    >Ajouter ligne</Button>
+
+            <Button Click="RemoveRow_Click" Grid.Column="1" Style="{StaticResource smallButton}" 
+                    x:Name="btnRemoveRow" 
+                    >Retirer ligne</Button>
+
+            <Button Click="AddColumn_Click" Grid.Column="2" Style="{StaticResource smallButton}" 
+                    x:Name="btnAddColumn" 
+                    >Ajouter colonne</Button>
+
+            <Button Click="RemoveColumn_Click" Grid.Column="3" Style="{StaticResource smallButton}" 
+                    x:Name="btnRemoveColumn" 
+                    >Retirer colonne</Button>
+
+            <Button Click="AddGraph_Click" Grid.Column="0" Grid.Row="1"  Style="{StaticResource smallButton}" 
+                    x:Name="btnAddGraph" 
+                    >Ajouter Graphique</Button>
+
+            <Button Click="AddGUI_Click" Grid.Column="1" Grid.Row="1" Style="{StaticResource smallButton}" 
+                    x:Name="btnAddGUI" 
+                    >Ajouter GUI</Button>
+
+
+            <Button Click="Save_Click" Grid.Column="2" Grid.Row="1"  Style="{StaticResource smallButton}" 
+                    x:Name="btnSave" 
+                    >Sauvegarder</Button>
+
+            <Button Click="Cancel_Click" Grid.Column="3" Grid.Row="1" Style="{StaticResource smallButton}" 
+                    x:Name="btnCancel" 
+                    >Annuler</Button>
+        </Grid>
         
-    </Grid>
+        <ScrollViewer DockPanel.Dock="Top" x:Name="scrollerViewer" 
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+
+            <Grid x:Name="grdContent" ShowGridLines="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MinWidth="150" />
+                    <ColumnDefinition Width="*" MinWidth="150" />
+                    <ColumnDefinition Width="*" MinWidth="150" />
+                    <ColumnDefinition Width="*" MinWidth="150" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Name="Row1" Height="*" MinHeight="150"/>
+                    <RowDefinition Height="*" MinHeight="150"/>
+                </Grid.RowDefinitions>
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
 </Page>

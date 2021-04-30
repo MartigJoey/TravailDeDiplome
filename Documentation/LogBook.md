@@ -402,7 +402,7 @@
 - Première compilation de la simulation (Alpha) réussie après quelques bugs mineurs
 - Suppression des paramètres "Pression", "Temperature" et "Co2" dans les lieux, car pas encore utilisé par [](https://docs.google.com/spreadsheets/d/1x_QFiFPbqLtZTjuoVoCyPQdu7onu6c370NNlPZ3TfTk/edit#gid=519189277).
 
-# 30.04.2021 08h05 / 16h10
+# 30.04.2021 08h05 / 17h00
 - Documentation
   - ~~Revoir la structure pour fonctionner avec le système de sprint.~~
   - Réduction de la quantité de code affiché dans la documentation
@@ -416,8 +416,10 @@
   - Contenu du LogBook
   - Rendu Sprint 1
     - Uniquement le rapport
-- Maintenant que le planning est fonctionnel
-  - Attribuer les bons objets à la bonne personne.
-  - Bâtiments
 - Modification du diagramme de classe
-- 
+- Avancement de l'interface graphique simulation
+  - Ajout d'une barre de scroll
+  - Ajouts d'éléments à l'emplacement des futurs éléments graphiques
+  - Création d'une grille par le code
+  - Création d'une méthode d'extension permettant de récupérer le dernier index d'une liste.
+  - Ajouter / retirer colonnes et lignes responsives

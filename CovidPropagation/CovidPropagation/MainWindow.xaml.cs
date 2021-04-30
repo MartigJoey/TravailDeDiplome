@@ -56,7 +56,7 @@ namespace CovidPropagation
 
         private void SettingsPage_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Navigate(pageGraphicSettings);
+            MainContent.Navigate(pageGraphicSettings); // Switch avec SimulationSettings
         }
     }
 }
