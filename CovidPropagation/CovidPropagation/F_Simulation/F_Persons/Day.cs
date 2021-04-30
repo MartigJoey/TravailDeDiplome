@@ -191,6 +191,14 @@ namespace CovidPropagation
                             period = new Period(new Outside(5));
                             periods.Add(period);
                             break;
+                        case SCHOOL_ID:
+                            period = new Period(new School(5));
+                            periods.Add(period);
+                            break;
+                        case STORE_ID:
+                            period = new Period(new Store(5));
+                            periods.Add(period);
+                            break;
                         case HOME_ID:
                         default:
                             period = new Period(new Home(5));

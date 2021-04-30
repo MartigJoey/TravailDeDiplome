@@ -3,7 +3,7 @@
   <Class Name="CovidPropagation.Day">
     <Position X="12.5" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABAAAAAQAAAAAAAAAAAACAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <HashCode>AAgyBAABAAQADEAQAAAAAEQCACBEAAAAAAAAAAggQCA=</HashCode>
       <FileName>F_Simulation\F_Persons\Day.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -11,23 +11,23 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="CovidPropagation.Ilness">
-    <Position X="18.25" Y="4.75" Width="1.5" />
+    <Position X="18" Y="12.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAQAAAAAAAAiAAAAAIAAAACABAAAAAAAAAA=</HashCode>
       <FileName>F_Simulation\F_Persons\Ilness.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CovidPropagation.Period">
-    <Position X="12.5" Y="14.5" Width="1.5" />
+    <Position X="12.5" Y="18" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAEAAAAA=</HashCode>
       <FileName>F_Simulation\F_Persons\Period.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CovidPropagation.Person">
-    <Position X="15.5" Y="4.75" Width="1.5" />
+    <Position X="15.5" Y="8.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAACIAEABQQwEAiAABACCABAAIIIAgAAAAAICgERAA=</HashCode>
+      <HashCode>AAAACIAEABQQwEAiAEBACCABAAIIIQgAAAAAICgERAA=</HashCode>
       <FileName>F_Simulation\F_Persons\Person.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -40,7 +40,7 @@
   <Class Name="CovidPropagation.Planning">
     <Position X="12.5" Y="8.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAAAABAQIAAIEAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAQAAAAEBAQIAgIAAAAAA=</HashCode>
       <FileName>F_Simulation\F_Persons\Planning.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -57,7 +57,7 @@
   <Class Name="CovidPropagation.Company" Collapsed="true">
     <Position X="7.75" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>F_Simulation\F_Sites\Company.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -85,7 +85,7 @@
   <Class Name="CovidPropagation.Site">
     <Position X="10.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAFAAYAQEgQASCAEAEEAAAGAQSAIAECBAA=</HashCode>
+      <HashCode>AAACAAAAAAAFAEYAQEgQACCIEAEEAAAEAQSAIAGCBAA=</HashCode>
       <FileName>F_Simulation\F_Sites\Site.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -97,7 +97,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="CovidPropagation.CoughSymptom" BaseTypeListCollapsed="true">
-    <Position X="24.5" Y="8.5" Width="1.5" />
+    <Position X="24.5" Y="8.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAAAAAEAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
       <FileName>F_Simulation\F_Virus\F_Symptoms\CoughSymptom.cs</FileName>
@@ -140,33 +140,35 @@
       <FileName>F_Simulation\F_Virus\Virus.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
-      <Field Name="rareSymptoms" />
       <Field Name="commonSymptoms" />
+      <Field Name="rareSymptoms" />
       <Field Name="transmissions" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="CovidPropagation.ExtensionMethods">
     <Position X="28.25" Y="4.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAACBAAAAAAABAEAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>F_Simulation\ExtensionMethods.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CovidPropagation.GlobalVariables">
     <Position X="26.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAACAAAkgARBIQEscAAUAFhBYIBAIAMAQEAII0KGNA=</HashCode>
+      <HashCode>BAgICAAQkgARBJQE8cAAUAFhBYIBAIAMAQEAYI0KGNA=</HashCode>
       <FileName>F_Simulation\GlobalVariables.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CovidPropagation.Simulation">
     <Position X="15.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAgAAAAQAAAAACiACQAAAAAAAIAAAAAAABA=</HashCode>
+      <HashCode>AAAAAACAACgEACQQAIAAACiICQAAAAAAIKAAgAAAAAA=</HashCode>
       <FileName>F_Simulation\Simulation.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Field Name="population" />
+      <Field Name="allBuildingSites" />
+      <Field Name="allTransports" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="CovidPropagation.TimeManager">
@@ -174,6 +176,41 @@
     <TypeIdentifier>
       <HashCode>AQAABAgQAAAAAAAEAAAAAABAAAAAQAAAAAAGAAAABAA=</HashCode>
       <FileName>F_Simulation\TimeManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CovidPropagation.Store" Collapsed="true">
+    <Position X="7.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>F_Simulation\F_Sites\Store.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CovidPropagation.Outside" Collapsed="true">
+    <Position X="7.75" Y="7.75" Width="1.5" />
+    <InheritanceLine Type="CovidPropagation.Site" FixedToPoint="true">
+      <Path>
+        <Point X="11" Y="7.314" />
+        <Point X="11" Y="8.062" />
+        <Point X="9.25" Y="8.062" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>F_Simulation\F_Sites\Outside.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CovidPropagation.Restaurant" Collapsed="true">
+    <Position X="7.75" Y="8.75" Width="1.5" />
+    <InheritanceLine Type="CovidPropagation.Site" FixedToPoint="true">
+      <Path>
+        <Point X="11" Y="7.314" />
+        <Point X="11" Y="9.125" />
+        <Point X="9.25" Y="9.125" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>F_Simulation\F_Sites\Restaurant.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="CovidPropagation.Symptom" Collapsed="true">
@@ -191,7 +228,7 @@
     </TypeIdentifier>
   </Interface>
   <Enum Name="CovidPropagation.PersonState">
-    <Position X="15.5" Y="11.25" Width="1.5" />
+    <Position X="15.5" Y="15" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAQAABAAgAAAAQAAAAAAAAAAAAA=</HashCode>
       <FileName>F_Simulation\F_Persons\Person.cs</FileName>
