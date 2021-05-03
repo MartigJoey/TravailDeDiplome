@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace CovidPropagation
 {
     /// <summary>
-    /// État d'une personne concernant le virus.
+    /// Personne propageant le virus.
     /// </summary>
     public enum PersonState
     {
@@ -30,7 +30,7 @@ namespace CovidPropagation
     public class Person
     {
         private Planning _planning;
-        private Site _currentSite; // Int temporaire --> batiment / véhicules
+        private Site _currentSite;
         private PersonState _state;
         private List<Ilness> ilnesses;
         private List<Symptom> symptoms;
@@ -46,9 +46,6 @@ namespace CovidPropagation
         private double _exhalationMaskEfficiency;
         private double _inhalationMaskEfficiency;
 
-        // Ajouter respiration
-        // Si toux
-        // Augmenter respiration
         public PersonState CurrentState { get => _state; set => _state = value; }
         public double QuantaExhalationRate { get => quantaExhalationRate; }
         public bool HasMask { get => _hasMask; }

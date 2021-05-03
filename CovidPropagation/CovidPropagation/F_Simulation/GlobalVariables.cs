@@ -48,7 +48,6 @@ namespace CovidPropagation
 
         // Person
         public const int DEFAULT_PERSON_AGE = 30;
-        public const int MAX_SCHOOL_AGE = 25;
 
         public const double BREATHING_RATE = 0.026d * 60;
 

@@ -74,19 +74,19 @@ namespace CovidPropagation
             for (int i = 0; i < GlobalVariables.NUMBER_OF_DAY; i++)
             {
                 Day day = new Day();
-                day.CreateAdultDay(i);
+                day.CreateStudentDay(i);
                 days.Add(day);
             }
             _days = days.ToArray();
         }
 
-        public void CreateElderPlanning()
+        public void CreateElderPlanning(Home home, Site hobby, Site transport)
         {
             List<Day> days = new List<Day>();
             for (int i = 0; i < GlobalVariables.NUMBER_OF_DAY; i++)
             {
                 Day day = new Day();
-                day.CreateAdultDay(i);
+                day.CreateElderDay(i, home, hobby, transport);
                 days.Add(day);
             }
             _days = days.ToArray();

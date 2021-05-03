@@ -423,3 +423,46 @@
   - Création d'une grille par le code
   - Création d'une méthode d'extension permettant de récupérer le dernier index d'une liste.
   - Ajouter / retirer colonnes et lignes responsives
+
+# 03.05.2021 08h05 / 16h10
+- Répartition des Site dans les plannings
+  - Réflexion sur l'attribution des sites pour la famille et amis.
+    - Attribution au préalable ?
+    - ~~Attribution à chaque itération ?~~
+    - ~~Mixe ?~~
+  - ![Différence création avec/sans cercle sociaux](Medias/Logbook/CercleSociaux.png)
+  - Création de différents présets
+  - [Source des données de répartition des ménages](https://www.ge.ch/statistique/tel/publications/2014/analyses/communications/an-cs-2014-48.pdf)
+    - Graphique page 4
+    - Graphique page 7
+      - Original :
+        - ![Proprotions ménages original 2011](Medias/LogBook/MenageProportions.png)
+      - Version simplifiée utilisée dans la simulation :
+        - Suppression des "autres types de ménages" et "sans indications"
+        - Séparation en 3 sections 
+          - Jeunes
+          - Adultes
+          - Retraités
+        - Moyenne de chaque type de ménages par section d'âge
+        - ![Proprotions ménages modifiée 2011](Medias/LogBook/MenageProportions2.png)
+        - Cette version simplifiée permet de grandement améliorer le code sans dénaturer les données
+- Modification de la variable d'extensions NextProbability() pour prendre en compte des strings
+  - Vérification des résultats
+    - Attendus:
+    ```
+    OnePerson          28
+    CoupleWithChild    21
+    CoupleWithoutChild 40
+    OneParentWithChild 11
+    ```
+    - Résultats pour 100 essais :
+    ```
+    OnePerson          27.85
+    CoupleWithChild    20.57
+    CoupleWithoutChild 40.52
+    OneParentWithChild 11.05
+    ```
+
+- Documentation
+  - Difficultés rencontrées
+    - Planning

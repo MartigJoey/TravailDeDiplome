@@ -21,7 +21,7 @@ namespace CovidPropagation
         public static bool NextBoolean(this Random value, double trueWeight)
         {
             bool result = false;
-            if (value.Next(0, 101) < trueWeight)
+            if (value.NextDouble() < trueWeight)
                 result = true;
 
             return result;
@@ -65,11 +65,33 @@ namespace CovidPropagation
                 sumPreviousWeight += weight[i].Value;
                 if (rdm < sumPreviousWeight)
                 {
-                    result = i;
+                    result = weight[i].Key;
                     break;
                 }
             }
-            return weight[result].Key;
+            return result;
+        }
+
+        public static string NextProbability(this Random value, KeyValuePair<string, double>[] weight)
+        {
+            double weightSum = weight.Sum(w => w.Value);
+            if (weightSum > 1 && weightSum < 1)
+                throw new ArgumentException("Weight array sum must be equal to 1.");
+
+            string result = "";
+            double rdm = value.NextDouble();
+            double sumPreviousWeight = 0;
+            weight = weight.OrderBy(w => w.Value).ToArray();
+            for (int i = 0; i < weight.Length; i++)
+            {
+                sumPreviousWeight += weight[i].Value;
+                if (rdm < sumPreviousWeight)
+                {
+                    result = weight[i].Key;
+                    break;
+                }
+            }
+            return result;
         }
 
         public static char ToChar(this string value)

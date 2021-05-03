@@ -17,6 +17,9 @@ namespace CovidPropagation
 {
     public class Simulation
     {
+        private const int MAX_SCHOOL_AGE = 25;
+        private const int MAX_WORKING_AGE = 65;
+
         private int _averageAge;
         private int _nbInfected;
         private int _nbPersons;
@@ -41,9 +44,19 @@ namespace CovidPropagation
             population = new List<Person>();
 
             startStop = true;
-            CreateBuildings();
+
+            // Récupérer depuis les paramètres
+            double minorProbability = 0.22d;
+            double retirementProbability = 0.14d;
+            double workingProbability = 1 - minorProbability - retirementProbability;
+
+            int nbMinor = (int)Math.Round(minorProbability * _nbPersons);
+            int nbRetirement = (int)Math.Round(retirementProbability * _nbPersons);
+            int nbWorking = (int)Math.Round(workingProbability * _nbPersons);
+
+            CreateBuildings(nbMinor, nbWorking, nbRetirement);
             CreateTransports();
-            CreatePopulation();
+            CreatePopulation(_nbPersons, retirementProbability);
         }
 
         public async void Iterate()
@@ -82,11 +95,8 @@ namespace CovidPropagation
             startStop = false;
         }
 
-        private void CreateBuildings()
+        private void CreateBuildings(int populationInSchool, int populationInCompanies, int populationInRetirement)
         {
-            int populationInSchool = population.Where(p => p.Age < GlobalVariables.MAX_SCHOOL_AGE).Count();
-            int populationInCompanies = population.Where(p => p.Age > GlobalVariables.MAX_SCHOOL_AGE).Count();
-
             int nbOfSchool = (int)Math.Ceiling((0.03d - 100) / 100 * _nbPersons + _nbPersons);
             int nbOfCompany = (int)Math.Ceiling((6.74d - 100) / 100 * _nbPersons + _nbPersons);
             int nbOfHospital = (int)Math.Ceiling((0.01d - 100) / 100 * _nbPersons + _nbPersons);
@@ -134,34 +144,137 @@ namespace CovidPropagation
 
         }
 
-        private void CreatePopulation()
+        private void CreatePopulation(int nbPeople, double retirementProbability)
         {
-            // Récupérer depuis les paramètres
-            double minorProbability = 0.22d;
-            double retirementProbability = 0.14d;
-            double workingProbability = 1 - minorProbability - retirementProbability;
-
-            int nbMinor = (int)Math.Round(minorProbability * _nbPersons);
-            int nbRetirement = (int)Math.Round(retirementProbability * _nbPersons);
-            int nbWorking = (int)Math.Round(workingProbability * _nbPersons);
-
-            while (nbMinor > 0)
+            while (nbPeople > 0)
             {
-                population.Add(CreateStudentPerson());
-                nbMinor--;
+                if (GlobalVariables.rdm.NextBoolean(retirementProbability))
+                {
+                    nbPeople -= CreateRetired();
+                }
+                else
+                {
+                    nbPeople -= CreateFamilly();
+                }
             }
 
-            while (nbRetirement > 0)
-            {
-                population.Add(CreateAdultClass());
-                nbRetirement--;
-            }
+                //while (nbMinor > 0)
+                //{
+                //    population.Add(CreateStudentPerson());
+                //    nbMinor--;
+                //}
+                //
+                //while (nbWorking > 0)
+                //{
+                //    population.Add(CreateElderPerson());
+                //    nbWorking--;
+                //}
+                //
+                //while (nbRetirement > 0)
+                //{
+                //    population.Add(CreateAdultClass());
+                //    nbRetirement--;
+                //}
+        }
 
-            while (nbWorking > 0)
+        private int CreateFamilly()
+        {
+            KeyValuePair<string, double>[] famillyPresetsProbability = new KeyValuePair<string, double>[] {
+                new KeyValuePair<string, double>("OnePerson", 0.28d),
+                new KeyValuePair<string, double>("CoupleWithChild", 0.21d),
+                new KeyValuePair<string, double>("CoupleWithoutChild", 0.40d),
+                new KeyValuePair<string, double>("OneParentWithChild", 0.11d)
+            };
+
+            string famillyPreset = GlobalVariables.rdm.NextProbability(famillyPresetsProbability);
+
+            // Switch présets
+            switch (famillyPreset)
             {
-                population.Add(CreateElderPerson());
-                nbWorking--;
+                default:
+                case "OnePerson":
+                    // Créer personne avec amis
+                    break;
+                case "CoupleWithChild":
+                    // Créer deux personnes en couples avec 1 enfant, amis liés
+                    break;
+                case "CoupleWithoutChild":
+                    // Créer deux personnes en couples sans enfants, amis liés
+                    break;
+                case "OneParentWithChild":
+                    // Créer 1 personne avec 1 enfant, amis
+                    break;
             }
+            return 1;
+        }
+
+        private int CreateRetired()
+        {
+            KeyValuePair<string, double>[] retiredPresetsProbability = new KeyValuePair<string, double>[] {
+                new KeyValuePair<string, double>("OnePerson", 0.35d),
+                new KeyValuePair<string, double>("Couple", 0.65d)
+            };
+            int nbCreated;
+            string retiredPreset = GlobalVariables.rdm.NextProbability(retiredPresetsProbability);
+
+            // Switch présets
+            switch (retiredPreset)
+            {
+                default:
+                case "OnePerson":
+                    // Créer personne avec amis
+                    Planning planning = new Planning();
+                    if (GlobalVariables.rdm.NextBoolean())
+                    {
+                        Car car = new Car(5);
+                        Home home = new Home(10);
+                        Outside hobby = (Outside)allBuildingSites.Where(b => b.GetType() == typeof(Outside)).First();
+                        planning.CreateElderPlanning(home, hobby, car);
+                    }
+                    else
+                    {
+                        planning.CreateElderPlanning();
+                    }
+                    
+                    population.Add(new Person(planning));
+                    nbCreated = 1;
+                    break;
+                case "Couple":
+                    // Créer deux personnes en couples, amis liés
+                    Planning planning1 = new Planning();
+                    Planning planning2 = new Planning();
+                    planning1.CreateElderPlanning(); // Link both
+                    planning2.CreateElderPlanning();
+                    population.Add(new Person(planning1));
+                    population.Add(new Person(planning2));
+                    nbCreated = 2;
+                    break;
+            }
+            // ONE PERSON
+            // Simulation
+                // Créer 1 personne
+                // Créer véhicule ou pas
+                // Créer maison
+                // Choisir lieux de loisirs
+            // Planning
+                // Sélectionne un planning compatible avec les paramètres reçus
+                // Plus tard générer le planning automatiquement
+                // Stocker les lieux
+            // Personne
+
+            // COUPLE
+            // Simulation
+                // Créer 2 personnes
+                // Créer véhicule ou pas | liée
+                // Créer maison | liée
+                // Choisir lieux de loisirs | liée ou pas
+            // Planning
+                // Sélectionne un planning compatible avec les paramètres reçus
+                // Plus tard générer le planning automatiquement
+                // Stocker les lieux
+            // Personne
+
+            return nbCreated;
         }
 
         private Person CreateStudentPerson()

@@ -78,6 +78,7 @@
 - [`Problèmes rencontrés`](#problèmes-rencontrés)
   - [Pipeline](#pipeline)
   - [WPF UI](#wpf-ui)
+  - [Planning](#planning-1)
 - [`Simulation`](#simulation-2)
   - [Structure](#structure-1)
   - [Fonctionnement](#fonctionnement)
@@ -87,7 +88,7 @@
 - [`UI`](#ui-2)
   - [Thème](#thème)
   - [Pages](#pages)
-- [`Planning`](#planning-1)
+- [`Planning`](#planning-2)
   - [Prévisionnel](#prévisionnel)
   - [Effectif](#effectif)
 - [`Bilan personnel`](#bilan-personnel)
@@ -762,6 +763,10 @@ Ce n'est qu'après avoir eu envie de modifier l'affichage d'un slider et après 
 
 Après avoir eu du mal à modifier le slider, j'ai pu modifier les autres outils (RadioBoutons, Checkbox) avec aisance.
 
+## Planning
+Une fois les plannings mis en place, la structure de ceux-ci rend le tout très efficace à executer. Mais encore faut-il créer les plannings. En prenant en compte qu'ils doivent être logiquent, respecter certaines règles et être liés les uns les autres. Cette liaison permet par exemple le voyage de plusieurs personnes dans un même véhicule, ou le fait de se retrouver chez un ami. C'est donc cette création qui m'a demandé beaucoup de temps et énormément de réflexion sur son fonctionnement. Quelles variables sont nécessairent ? Lesquelles sont en trop ? Qui s'occupe de la création de ceux-ci ? </br>
+Beaucoup de questions qui sont venues souvent lors de ce travail. 
+
 # `Simulation`
 ## Structure
 Diagramme de classe final -
@@ -850,6 +855,19 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 
 26.04.2021
   - Utilisé dans la propagation du virus
+    - [Excel - Professeur Jose L. Jimenez et Docteur Zhe Peng - Propagation par aérosol](https://docs.google.com/spreadsheets/d/1x_QFiFPbqLtZTjuoVoCyPQdu7onu6c370NNlPZ3TfTk/edit#gid=519189277)
+  - Utilisés dans la création des individus
+    - [ge.ch - OCSTAT - Statistiques véhicules à genève](https://www.ge.ch/statistique/graphiques/affichage.asp?filtreGraph=11_02&dom=1)
+    - [Le temps -  Olivier Francey - Statistiques véhicules à genève](https://www.letemps.ch/suisse/nombre-voitures-menage-diminue-geneve#:~:text=Au%20d%C3%A9but%20de%20l'ann%C3%A9e,augmentation%20de%206%2C5%25)
+
+27.04.2021
+  - Utilisés dans la création du virus
+    - [CDC - Durée du covid](https://www.cdc.gov/coronavirus/2019-ncov/if-you-are-sick/end-home-isolation.html#:~:text=You%20can%20be%20around%20others%20after%3A,of%20fever%2Dreducing%20medications%20and)
+    - [Patient -  Dr. Sarah Jarvis MBE - Incubation et durée du covid](https://patient.info/news-and-features/coronavirus-how-quickly-do-covid-19-symptoms-develop-and-how-long-do-they-last)
+
+03.05.2021
+  - Utilisé dans la création des individus
+    - [ge.ch - OCSTAT - Statistiques concernant les ménages](https://www.ge.ch/statistique/tel/publications/2014/analyses/communications/an-cs-2014-48.pdf)
 # `Annexes`
 - Projet C#
 - Images

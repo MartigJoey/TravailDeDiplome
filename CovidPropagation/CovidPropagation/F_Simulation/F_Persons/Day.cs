@@ -151,14 +151,14 @@ namespace CovidPropagation
             }
         }
 
-        public void CreateElderDay(int dayOfWeek)
+        public void CreateElderDay(int dayOfWeek, Home home, Site hobby, Site transport)
         {
             Random rdm = GlobalVariables.rdm;
             int seedIndex = rdm.Next(eldersDaysSeeds.Length - 1);
-            CreateDay(eldersDaysSeeds[seedIndex]);
+            CreateDay(eldersDaysSeeds[seedIndex], home, hobby, transport);
         }
 
-        private void CreateDay(string seed)
+        private void CreateDay(string seed, Home home, Site hobby, Site transport)
         {
             string[] seedSplitted = seed.Split(" ");
             List<Period> periods = new List<Period>();
@@ -172,7 +172,7 @@ namespace CovidPropagation
                     switch (siteType)
                     {
                         case TRANSPORT_ID:
-                            period = new Period(new Car(5));
+                            period = new Period(transport);
                             periods.Add(period);
                             break;
                         case COMPANY_ID:
