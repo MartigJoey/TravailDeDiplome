@@ -63,7 +63,7 @@ namespace CovidPropagation
         {
             while (true)
             {
-                Debug.WriteLine(Interval);
+                //Debug.WriteLine(Interval);
                 if (startStop)
                 {
                     sp.Start();
@@ -78,7 +78,7 @@ namespace CovidPropagation
                         long interval = Interval;
                         await Task.Delay((int)(Interval - sp.ElapsedMilliseconds));
                     }
-                    Debug.WriteLine("Tick");
+                    //Debug.WriteLine("Tick");
                     sp.Reset();
                 }
                 await Task.Delay(100);
@@ -103,8 +103,10 @@ namespace CovidPropagation
             int nbOfSupermarket = (int)Math.Ceiling((0.03d - 100) / 100 * _nbPersons + _nbPersons);
             int nbOfHomes = (int)Math.Ceiling((50d - 100) / 100 * _nbPersons + _nbPersons);
 
-            allBuildingSites.Add(new Outside(_nbPersons));
-            
+            allBuildingSites.Add(new Outside());
+            allBuildingSites.Add(new Store());
+            allBuildingSites.Add(new Restaurant());
+
             for (int i = 0; i < nbOfSchool; i++)
             {
                 allBuildingSites.Add(new School(populationInSchool / nbOfSchool));
@@ -216,37 +218,58 @@ namespace CovidPropagation
             };
             int nbCreated;
             string retiredPreset = GlobalVariables.rdm.NextProbability(retiredPresetsProbability);
+            Dictionary<Type, Site> locations = new Dictionary<Type, Site>();
 
             // Switch présets
             switch (retiredPreset)
             {
                 default:
                 case "OnePerson":
-                    // Créer personne avec amis
+                    // Créer personne
                     Planning planning = new Planning();
+                    planning.CreateElderPlanning();
+                    locations.Add(typeof(Home), new Home());
+
                     if (GlobalVariables.rdm.NextBoolean())
-                    {
-                        Car car = new Car(5);
-                        Home home = new Home(10);
-                        Outside hobby = (Outside)allBuildingSites.Where(b => b.GetType() == typeof(Outside)).First();
-                        planning.CreateElderPlanning(home, hobby, car);
-                    }
+                        locations.Add(typeof(Car), new Car());
                     else
-                    {
-                        planning.CreateElderPlanning();
-                    }
-                    
-                    population.Add(new Person(planning));
+                        locations.Add(typeof(Car), new Outside());
+
+                    locations.Add(typeof(Outside), allBuildingSites.Where(b => typeof(Outside) == b.GetType()).First());
+                    locations.Add(typeof(Company), allBuildingSites.Where(b => typeof(Company) == b.GetType()).First());
+                    locations.Add(typeof(Hospital), allBuildingSites.Where(b => typeof(Hospital) == b.GetType()).First());
+                    locations.Add(typeof(Restaurant), allBuildingSites.Where(b => typeof(Restaurant) == b.GetType()).First());
+                    locations.Add(typeof(School), allBuildingSites.Where(b => typeof(School) == b.GetType()).First());
+                    locations.Add(typeof(Store), allBuildingSites.Where(b => typeof(Store) == b.GetType()).First());
+                    locations.Add(typeof(Supermarket), allBuildingSites.Where(b => typeof(Supermarket) == b.GetType()).First());
+
+                    population.Add(new Person(planning, locations));
                     nbCreated = 1;
                     break;
                 case "Couple":
-                    // Créer deux personnes en couples, amis liés
+                    // Créer deux personnes en couples
                     Planning planning1 = new Planning();
                     Planning planning2 = new Planning();
                     planning1.CreateElderPlanning(); // Link both
                     planning2.CreateElderPlanning();
-                    population.Add(new Person(planning1));
-                    population.Add(new Person(planning2));
+
+                    locations.Add(typeof(Home), new Home());
+
+                    if (GlobalVariables.rdm.NextBoolean())
+                        locations.Add(typeof(Car), new Car());
+                    else
+                        locations.Add(typeof(Car), new Outside());
+
+                    locations.Add(typeof(Outside), allBuildingSites.Where(b => typeof(Outside) == b.GetType()).First());
+                    locations.Add(typeof(Company), allBuildingSites.Where(b => typeof(Company) == b.GetType()).First());
+                    locations.Add(typeof(Hospital), allBuildingSites.Where(b => typeof(Hospital) == b.GetType()).First());
+                    locations.Add(typeof(Restaurant), allBuildingSites.Where(b => typeof(Restaurant) == b.GetType()).First());
+                    locations.Add(typeof(School), allBuildingSites.Where(b => typeof(School) == b.GetType()).First());
+                    locations.Add(typeof(Store), allBuildingSites.Where(b => typeof(Store) == b.GetType()).First());
+                    locations.Add(typeof(Supermarket), allBuildingSites.Where(b => typeof(Supermarket) == b.GetType()).First());
+
+                    population.Add(new Person(planning1, locations));
+                    population.Add(new Person(planning2, locations));
                     nbCreated = 2;
                     break;
             }
@@ -282,7 +305,7 @@ namespace CovidPropagation
             Person student;
             Planning planning = new Planning();
             planning.CreateStudentPlanning();
-            student = new Person(planning);
+            student = new Person(planning, new Dictionary<Type, Site>());
             return student;
         }
 
@@ -291,7 +314,7 @@ namespace CovidPropagation
             Person adult;
             Planning planning = new Planning();
             planning.CreateAdultPlanning();
-            adult = new Person(planning);
+            adult = new Person(planning, new Dictionary<Type, Site>());
             return adult;
         }
 
@@ -300,7 +323,7 @@ namespace CovidPropagation
             Person elder;
             Planning planning = new Planning();
             planning.CreateElderPlanning();
-            elder = new Person(planning);
+            elder = new Person(planning, new Dictionary<Type, Site>());
             return elder;
         }
 

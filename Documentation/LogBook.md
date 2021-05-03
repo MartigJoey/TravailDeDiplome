@@ -462,7 +462,18 @@
     CoupleWithoutChild 40.52
     OneParentWithChild 11.05
     ```
-
+- L'attribution des lieux ne se fait pas dans le planning mais lors de la première itération ou lors de la création de la personne(dictionnaire --> si existe pas entre, sinon utiliser existant.)
+- Chaque personne reçoit un lieu de chaque soit random (Company, restaurant, bar, etc.) soit prédéfini à la création (maison, véhicule, etc.)
+- Insertion d'éléments dans la grille de l'UI de la simulation.
+  - Recherche d'une case vide
+  - Ajout d'un élèment dans la case
+  - Suppression de l'élèment d'une case
+  - Déplacement d'un élèment
+  - Bug une case se bloque.
+    - à la création, la mauvaise case se bloque (inversion x et y)
+    - Lors de la suppression la mauvaise case se libérait (inversion x et y)
+  - Changement de taille + / -
+    - Ne supporte par encore le déplacement
 - Documentation
   - Difficultés rencontrées
     - Planning

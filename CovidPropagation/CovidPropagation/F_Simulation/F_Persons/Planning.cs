@@ -32,7 +32,7 @@ namespace CovidPropagation
         /// <param name="dayOfWeek">int du jour de la semaine</param>
         /// <param name="periodOfDay">int de la période de la journée</param>
         /// <returns>L'activité au jour et à la période demandé</returns>
-        public Site GetActivity(int dayOfWeek, int periodOfDay)
+        public Type GetActivity(int dayOfWeek, int periodOfDay)
         {
             return _days[dayOfWeek].GetActivity(periodOfDay);
         }
@@ -41,7 +41,7 @@ namespace CovidPropagation
         /// Récupère une activité au jour et à la période actuelle.
         /// </summary>
         /// <returns>L'activité actuelle</returns>
-        public Site GetActivity()
+        public Type GetActivity()
         {
             return _days[TimeManager.CurrentDay].GetCurrentActivity();
         }
@@ -50,7 +50,7 @@ namespace CovidPropagation
         /// Récupère la prochaine activité.
         /// </summary>
         /// <returns>L'activité qui sera réalisé après un tick</returns>
-        public Site GetNextActivity()
+        public Type GetNextActivity()
         {
             int[] nextPeiod = TimeManager.GetNextPeriod();
             return _days[nextPeiod[0]].GetActivity(nextPeiod[1]);
@@ -80,13 +80,13 @@ namespace CovidPropagation
             _days = days.ToArray();
         }
 
-        public void CreateElderPlanning(Home home, Site hobby, Site transport)
+        public void CreateElderPlanning()
         {
             List<Day> days = new List<Day>();
             for (int i = 0; i < GlobalVariables.NUMBER_OF_DAY; i++)
             {
                 Day day = new Day();
-                day.CreateElderDay(i, home, hobby, transport);
+                day.CreateElderDay(i);
                 days.Add(day);
             }
             _days = days.ToArray();

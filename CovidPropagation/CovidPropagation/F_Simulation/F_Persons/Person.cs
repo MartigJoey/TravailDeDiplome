@@ -45,6 +45,7 @@ namespace CovidPropagation
         private bool _hasMask;
         private double _exhalationMaskEfficiency;
         private double _inhalationMaskEfficiency;
+        private Dictionary<Type, Site> locations;
 
         public PersonState CurrentState { get => _state; set => _state = value; }
         public double QuantaExhalationRate { get => quantaExhalationRate; }
@@ -53,7 +54,7 @@ namespace CovidPropagation
         public double InhalationMaskEfficiency { get => _inhalationMaskEfficiency; set => _inhalationMaskEfficiency = value; }
         public int Age { get => _age; set => _age = value; }
 
-        public Person(Planning planning, int age = GlobalVariables.DEFAULT_PERSON_AGE, PersonState state = PersonState.Healthy)
+        public Person(Planning planning, Dictionary<Type, Site> locations, int age = GlobalVariables.DEFAULT_PERSON_AGE, PersonState state = PersonState.Healthy)
         {
             _planning = planning;
             _state = state;
@@ -73,7 +74,8 @@ namespace CovidPropagation
                 baseVirusResistance = _rdm.Next(GlobalVariables.SYMPTOMATIC_MIN_RESISTANCE, GlobalVariables.SYMPTOMATIC_MAX_RESISTANCE);
 
             virusResistance = baseVirusResistance;
-            _currentSite = planning.GetActivity();
+            this.locations = locations;
+            _currentSite = locations[_planning.GetActivity()];
         }
 
         /// <summary>
@@ -88,7 +90,7 @@ namespace CovidPropagation
         public void ChangeActivity()
         {
             // Quitte le lieu précédent si il est différent, récupère le nouveau et entre dedans.
-            Site newSite = _planning.GetActivity();
+            Site newSite = locations[_planning.GetActivity()];
             if (_currentSite != newSite)
             {
                 _currentSite.Leave(this);

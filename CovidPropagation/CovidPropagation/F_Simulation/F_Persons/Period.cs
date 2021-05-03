@@ -5,6 +5,8 @@
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
+using System;
+
 namespace CovidPropagation
 {
     /// <summary>
@@ -12,11 +14,11 @@ namespace CovidPropagation
     /// </summary>
     public class Period
     {
-        private Site _activity;
+        private Type _activity;
 
-        public Site Activity { get => _activity; }
+        public Type Activity { get => _activity; }
 
-        public Period(Site activity)
+        public Period(Type activity)
         {
             _activity = activity;
         }

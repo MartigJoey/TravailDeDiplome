@@ -20,7 +20,6 @@ namespace CovidPropagation
         List<Person> persons;
         bool hasEnvironnementChanged;
         double averageQuantaExhalationRate;
-        int maxNbPeople;
 
         #region probability
         double hospitalisationRate = 20;
@@ -47,13 +46,11 @@ namespace CovidPropagation
 
         protected double probabilityOfInfection;
 
-        public int MaxNbPeople { get => maxNbPeople; set => maxNbPeople = value; }
         #endregion
 
-        public Site(int maxNbPeople, double length, double width, double height,
+        public Site(double length, double width, double height,
                     double ventilationWithOutside = 0.7d, double additionalControlMeasures = 0)
         {
-            this.MaxNbPeople = maxNbPeople;
             this.length = length;  
             this.width = width;
             this.height = height;

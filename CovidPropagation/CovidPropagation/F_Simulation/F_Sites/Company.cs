@@ -15,13 +15,12 @@ namespace CovidPropagation
     {
         private const double PRESSURE = 0;
 
-        public Company(int maxPerson,
-                           double length = GlobalVariables.BUILDING_LENGTH,
+        public Company(double length = GlobalVariables.BUILDING_LENGTH,
                            double width = GlobalVariables.BUILDING_WIDTH,
                            double height = GlobalVariables.BUILDING_HEIGHT,
                            double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
-                 base(maxPerson, length, width, height, ventilationWithOutside, additionalControlMeasures)
+                 base(length, width, height, ventilationWithOutside, additionalControlMeasures)
         {
 
         }

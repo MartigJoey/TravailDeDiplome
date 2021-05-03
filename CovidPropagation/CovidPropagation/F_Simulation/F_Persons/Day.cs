@@ -107,7 +107,7 @@ namespace CovidPropagation
         /// </summary>
         /// <param name="period">Index de la période à récupérer</param>
         /// <returns>Activité dans la période.</returns>
-        public Site GetActivity(int period)
+        public Type GetActivity(int period)
         {
             return _periods[period].Activity;
         }
@@ -116,7 +116,7 @@ namespace CovidPropagation
         /// Récupère l'activité actuelle
         /// </summary>
         /// <returns>L'activité en cours.</returns>
-        public Site GetCurrentActivity()
+        public Type GetCurrentActivity()
         {
             return _periods[TimeManager.CurrentPeriod].Activity;
         }
@@ -151,14 +151,14 @@ namespace CovidPropagation
             }
         }
 
-        public void CreateElderDay(int dayOfWeek, Home home, Site hobby, Site transport)
+        public void CreateElderDay(int dayOfWeek)
         {
             Random rdm = GlobalVariables.rdm;
             int seedIndex = rdm.Next(eldersDaysSeeds.Length - 1);
-            CreateDay(eldersDaysSeeds[seedIndex], home, hobby, transport);
+            CreateDay(eldersDaysSeeds[seedIndex]);
         }
 
-        private void CreateDay(string seed, Home home, Site hobby, Site transport)
+        private void CreateDay(string seed)
         {
             string[] seedSplitted = seed.Split(" ");
             List<Period> periods = new List<Period>();
@@ -172,36 +172,36 @@ namespace CovidPropagation
                     switch (siteType)
                     {
                         case TRANSPORT_ID:
-                            period = new Period(transport);
+                            period = new Period(typeof(Car));
                             periods.Add(period);
                             break;
                         case COMPANY_ID:
-                            period = new Period(new Company(5));
+                            period = new Period(typeof(Company));
                             periods.Add(period);
                             break;
                         case RESTAURANT_ID:
-                            period = new Period(new Restaurant(5));
+                            period = new Period(typeof(Restaurant));
                             periods.Add(period);
                             break;
                         case SUPERMARKET_ID:
-                            period = new Period(new Supermarket(5));
+                            period = new Period(typeof(Supermarket));
                             periods.Add(period);
                             break;
                         case OUTSIDE_ID:
-                            period = new Period(new Outside(5));
+                            period = new Period(typeof(Outside));
                             periods.Add(period);
                             break;
                         case SCHOOL_ID:
-                            period = new Period(new School(5));
+                            period = new Period(typeof(School));
                             periods.Add(period);
                             break;
                         case STORE_ID:
-                            period = new Period(new Store(5));
+                            period = new Period(typeof(Store));
                             periods.Add(period);
                             break;
                         case HOME_ID:
                         default:
-                            period = new Period(new Home(5));
+                            period = new Period(typeof(Home));
                             periods.Add(period);
                             break;
                     }
