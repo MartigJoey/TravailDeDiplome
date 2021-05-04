@@ -12,18 +12,6 @@ using System.Collections.Generic;
 namespace CovidPropagation
 {
     /// <summary>
-    /// Personne propageant le virus.
-    /// </summary>
-    public enum PersonState
-    {
-        Healthy = 0,
-        Immune = 1,
-        Infected = 2,
-        Infectious = 3,
-        Asymptomatic = 4
-    }
-
-    /// <summary>
     /// Individus se déplacant dans différents lieu en fonction de son planning.
     /// Peut être infecté et modifier les chances d'être infecté dans un lieu.
     /// </summary>
@@ -89,7 +77,7 @@ namespace CovidPropagation
         /// </summary>
         public void ChangeActivity()
         {
-            // Quitte le lieu précédent si il est différent, récupère le nouveau et entre dedans.
+            // Quitte le lieu précédent s'il est différent, récupère le nouveau et entre dedans.
             Site newSite = locations[_planning.GetActivity()];
             if (_currentSite != newSite)
             {

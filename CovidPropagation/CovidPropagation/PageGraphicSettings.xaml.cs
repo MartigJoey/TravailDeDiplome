@@ -22,7 +22,7 @@ namespace CovidPropagation
         private const int ROW_MIN_HEIGHT = 150;
         private const int COLUMN_MIN_WIDTH = 150;
         private const int MAX_GRID_SIZE = 10;
-        private bool[,] gridCellHasContent = new bool[MAX_GRID_SIZE, MAX_GRID_SIZE];
+        private bool[,] gridHasContent = new bool[MAX_GRID_SIZE, MAX_GRID_SIZE];
         int oldX = MAX_GRID_SIZE + 1;
         int oldY = MAX_GRID_SIZE + 1;
 
@@ -82,16 +82,15 @@ namespace CovidPropagation
                 btnG.Foreground = new SolidColorBrush(Colors.Green);
                 btnG.VerticalAlignment = VerticalAlignment.Stretch;
                 btnG.HorizontalAlignment = HorizontalAlignment.Stretch;
-                btnG.Click += RemoveGraph_Click;
                 btnG.PreviewMouseDown += GraphDragOn_MouseDown;
                 btnG.PreviewMouseUp += GraphDragOff_MouseUp;
                 btnG.KeyDown += GraphSizeUp_KeyDown;
-
+                btnG.Click += RemoveGraph_Click;
 
                 Grid.SetColumn(btnG, emptyIndex[0]);
                 Grid.SetRow(btnG, emptyIndex[1]);
 
-                gridCellHasContent[emptyIndex[0], emptyIndex[1]] = true;
+                gridHasContent[emptyIndex[0], emptyIndex[1]] = true;
                 dynamicGrid.Children.Add(btnG);
             }
         }
@@ -100,7 +99,9 @@ namespace CovidPropagation
         {
             Button btn = (Button)sender;
 
-            gridCellHasContent[Grid.GetColumn(btn), Grid.GetRow(btn)] = false;
+            int x = Grid.GetColumn(btn), y = Grid.GetRow(btn);
+            int columnSpan = Grid.GetColumnSpan(btn), rowSpan = Grid.GetRowSpan(btn);
+            SetCellsContent(x, y, x + columnSpan, y + rowSpan, false);
             dynamicGrid.Children.Remove(btn);
         }
 
@@ -109,6 +110,8 @@ namespace CovidPropagation
             Button btn = (Button)sender;
             oldX = Grid.GetColumn(btn);
             oldY = Grid.GetRow(btn);
+            int columnSpan = Grid.GetColumnSpan(btn), rowSpan = Grid.GetRowSpan(btn);
+            SetCellsContent(oldX, oldY, oldX + columnSpan, oldY + rowSpan, false); // Libère l'espace anciennement occupé
         }
 
         private void GraphDragOff_MouseUp(object sender, MouseButtonEventArgs e)
@@ -116,43 +119,61 @@ namespace CovidPropagation
             Button btn = (Button)sender;
             int[] newCoordinates = GetCoordinateWithSize(Mouse.GetPosition(dynamicGrid).X, Mouse.GetPosition(dynamicGrid).Y);
 
-            if (!gridCellHasContent[newCoordinates[0], newCoordinates[1]]) // ChechIfCellsEmpty
-            {
-                gridCellHasContent[oldX, oldY] = false;
+            //if (!gridHasContent[newCoordinates[0], newCoordinates[1]]) // ChechIfCellsEmpty
+            int x = newCoordinates[0], y = newCoordinates[1];
+            int columnSpan = Grid.GetColumnSpan(btn), rowSpan = Grid.GetRowSpan(btn);
+            if (ChechIfCellsEmpty(x, y, x + columnSpan, y + rowSpan)) 
+            { 
+                // repositionne l'élément
                 Grid.SetColumn(btn, newCoordinates[0]);
                 Grid.SetRow(btn, newCoordinates[1]);
-                gridCellHasContent[newCoordinates[0], newCoordinates[1]] = true;
+                SetCellsContent(x, y, x + columnSpan, y + rowSpan, true); // Bloque le nouvel espace occupé
+            }
+            else
+            {
+                SetCellsContent(oldX, oldY, oldX + columnSpan, oldY + rowSpan, true); // Aucun nouvel emplacement trouvé, on rebloque l'ancienne espace liberé
             }
             oldX = MAX_GRID_SIZE + 1;
             oldY = MAX_GRID_SIZE + 1;
-
-            //Button btn = (Button)sender;
-            //
-            //gridCellHasContent[Grid.GetRow(btn), Grid.GetColumn(btn)] = false;
-            //dynamicGrid.Children.Remove(btn);
         }
 
         private void GraphSizeUp_KeyDown(object sender, KeyEventArgs e)
         {
             Button btn = (Button)sender;
-            if (e.Key == Key.Up)
-            {
-                int x = Grid.GetColumn(btn);
-                int y = Grid.GetRow(btn);
 
-                if (!gridCellHasContent[x + 1, y])
+            int x = Grid.GetColumn(btn);
+            int y = Grid.GetRow(btn);
+            int columnSpan = Grid.GetColumnSpan(btn);
+            int rowSpan = Grid.GetRowSpan(btn);
+
+            if (e.Key == Key.Right)
+            {
+                if (ChechIfCellsEmpty(x + columnSpan, y, x + columnSpan + 1, y + rowSpan))
                 {
-                    Grid.SetColumnSpan(btn, 2);
-                    gridCellHasContent[x + 1, y] = true;
+                    Grid.SetColumnSpan(btn, columnSpan + 1);
+                    SetCellsContent(x, y, x + columnSpan + 1, y + rowSpan, true);
                 }
             }
 
-            if (e.Key == Key.Down && Grid.GetColumnSpan(btn) > 1)
+            if (e.Key == Key.Left && Grid.GetColumnSpan(btn) > 1)
             {
-                int x = Grid.GetColumn(btn);
-                int y = Grid.GetRow(btn);
-                Grid.SetColumnSpan(btn, 1);
-                gridCellHasContent[x + 1, y] = false;
+                Grid.SetColumnSpan(btn, columnSpan - 1);
+                SetCellsContent(x + 1, y, x + columnSpan + 1, y + rowSpan, false);
+            }
+
+            if (e.Key == Key.Up)
+            {
+                if (ChechIfCellsEmpty(x, y + rowSpan, x + columnSpan, y + rowSpan + 1))
+                {
+                    Grid.SetRowSpan(btn, rowSpan + 1);
+                    SetCellsContent(x, y, x + columnSpan, y + rowSpan + 1, true);
+                }
+            }
+
+            if (e.Key == Key.Down && Grid.GetRowSpan(btn) > 1)
+            {
+                Grid.SetRowSpan(btn, rowSpan - 1);
+                SetCellsContent(x, y + 1, x + columnSpan, y + rowSpan + 1, false);
             }
         }
 
@@ -171,11 +192,34 @@ namespace CovidPropagation
 
         }
 
+        private void SetCellsContent(int xStart, int yStart, int xStop, int yStop, bool hasContent)
+        {
+            for (int y = yStart; y < yStop; y++)
+            {
+                for (int x = xStart; x < xStop; x++)
+                {
+                    gridHasContent[x, y] = hasContent;
+                }
+            }
+        }
 
-        private bool ChechIfCellsEmpty(int x, int y, int width, int height)
+        private bool ChechIfCellsEmpty(int xStart, int yStart, int xStop, int yStop)
         {
             // check si entre x, y et x+width, y+height est vide
-            return true
+            bool result = true;
+            for (int y = yStart; y < yStop; y++)
+            {
+                for (int x = xStart; x < xStop; x++)
+                {
+                    if (gridHasContent[x, y])
+                    {
+                        result = false;
+                        y = yStop;
+                        break;
+                    }
+                }
+            }
+            return result;
         }
         private int[] GetCoordinateWithSize(double x, double y)
         {
@@ -202,7 +246,7 @@ namespace CovidPropagation
             {
                 for (int x = 0; x < dynamicGrid.ColumnDefinitions.Count; x++)
                 {
-                    if (!gridCellHasContent[x, y])
+                    if (!gridHasContent[x, y])
                     {
                         indexes[0] = x;
                         indexes[1] = y;

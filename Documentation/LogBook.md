@@ -424,7 +424,7 @@
   - Création d'une méthode d'extension permettant de récupérer le dernier index d'une liste.
   - Ajouter / retirer colonnes et lignes responsives
 
-# 03.05.2021 08h05 / 16h10
+# 03.05.2021 08h05 / 17h00
 - Répartition des Site dans les plannings
   - Réflexion sur l'attribution des sites pour la famille et amis.
     - Attribution au préalable ?
@@ -477,3 +477,29 @@
 - Documentation
   - Difficultés rencontrées
     - Planning
+
+# 04.05.2021 08h05 / 16h10
+- Interface utilisateur
+  - Support du déplacement des objets de tailles supérieur à 1
+  - Modification de la taille en x et y (+ et -)
+  - Création d'une méthode permettant de vérifier si des cellules sont utilisées dans un certain périmètre
+    - pareil mais pour changer l'état de ces cellules
+  - Problème, pour le moment, un élément prend en compte sa propre position et se bloque lors de déplacements.
+    - Reglé en libérant l'espace utilisé lors du MouseDown event. L'espace est réassigné si le bouton n'est pas déplacé.
+- Structure du planning
+  - Assignation des lieux --> Sélection d'un planning compatible
+- Discussion avec M. Mathieu
+  - Propagation (Rapport)
+    - Qui 
+    - quoi 
+    - pourquoi 
+    - expliquer comment 
+    - justifier utilisation 
+  - Éviter graphiques 3d
+    - Moins claires
+    - Perspective trompeuse
+  - Faire attention à l'utilisation des graphiques
+    - Toujours partir de 0
+    - Si pourcentages alors de 0 à 100
+    - Sinon de 0 à ~valeur max
+- 
