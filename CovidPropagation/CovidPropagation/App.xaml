@@ -77,6 +77,58 @@
                 </Style.Triggers>
             </Style>
 
+
+            <!-- GraphClose button style-->
+            <Style x:Key="GraphCloseStyle"  TargetType="{x:Type Button}">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="{StaticResource normalRed}" />
+                <Setter Property="FontSize" Value="25" />
+                <Setter Property="FontWeight" Value="DemiBold" />
+                <Setter Property="Foreground" Value="#1a1a1a" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource highlightRed}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+
+            <!-- GraphClose button style-->
+            <Style x:Key="GraphButtonStyle"  TargetType="{x:Type Button}">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="{StaticResource lightDark}" />
+                <Setter Property="FontSize" Value="25" />
+                <Setter Property="FontWeight" Value="DemiBold" />
+                <Setter Property="Foreground" Value="#1a1a1a" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource normalGray}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
             <!-- Maximize - Minimize button style-->
             <Style x:Key="MaximizeMinimizeStyle"  TargetType="{x:Type Button}">
                 <Setter Property="BorderThickness" Value="0" />
@@ -132,6 +184,7 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+
 
             <!-- Title bar -->
             <DataTemplate x:Key="FilterTypeByTemplateControl">

@@ -75,58 +75,126 @@ namespace CovidPropagation
 
             if (emptyIndex[0] < MAX_GRID_SIZE)
             {
-                Button btnG = new Button();
-                btnG.Content = "Book";
-                btnG.FontSize = 14;
-                btnG.FontWeight = FontWeights.Bold;
-                btnG.Foreground = new SolidColorBrush(Colors.Green);
-                btnG.VerticalAlignment = VerticalAlignment.Stretch;
-                btnG.HorizontalAlignment = HorizontalAlignment.Stretch;
-                btnG.PreviewMouseDown += GraphDragOn_MouseDown;
-                btnG.PreviewMouseUp += GraphDragOff_MouseUp;
-                btnG.KeyDown += GraphSizeUp_KeyDown;
-                btnG.Click += RemoveGraph_Click;
+                Grid cell = new Grid();
+                Button btnRemove = CreateGraphButton("GraphCloseStyle", "./Images/close.png");
+                Button btnMove = CreateGraphButton("GraphButtonStyle", "");
 
-                Grid.SetColumn(btnG, emptyIndex[0]);
-                Grid.SetRow(btnG, emptyIndex[1]);
+                Button btnWidthPlus = CreateGraphButton("GraphButtonStyle", "");
+                Button btnWidthMinus = CreateGraphButton("GraphButtonStyle", "");
+
+                Button btnHeightPlus = CreateGraphButton("GraphButtonStyle", "");
+                Button btnHeightMinus = CreateGraphButton("GraphButtonStyle", "");
+
+                cell.ColumnDefinitions.Add(new ColumnDefinition());
+                cell.ColumnDefinitions.Add(new ColumnDefinition());
+                cell.ColumnDefinitions.Add(new ColumnDefinition());
+                cell.ColumnDefinitions.Add(new ColumnDefinition());
+                cell.ColumnDefinitions.Add(new ColumnDefinition());
+                cell.ColumnDefinitions.Add(new ColumnDefinition());
+
+                RowDefinition firstRow = new RowDefinition();
+                firstRow.MinHeight = 30;
+                firstRow.MaxHeight = 30;
+                cell.RowDefinitions.Add(firstRow);
+                cell.RowDefinitions.Add(new RowDefinition());
+                cell.RowDefinitions.Add(new RowDefinition());
+                cell.RowDefinitions.Add(new RowDefinition());
+                cell.RowDefinitions.Add(new RowDefinition());
+
+
+                cell.VerticalAlignment = VerticalAlignment.Stretch;
+                cell.HorizontalAlignment = HorizontalAlignment.Stretch;
+                btnWidthPlus.Click += GrapheWidthUp_Click;
+                btnWidthMinus.Click += GrapheWidthDown_Click;
+                btnHeightPlus.Click += GrapheHeightUp_Click;
+                btnHeightMinus.Click += GrapheHeightDown_Click;
+                btnRemove.Click += RemoveGraph_Click;
+                btnMove.PreviewMouseDown += GraphDragOn_MouseDown;
+                btnMove.PreviewMouseUp += GraphDragOff_MouseUp;
+
+                Grid.SetColumn(btnWidthPlus, 0);
+                Grid.SetRow(btnWidthPlus, 0);
+
+                Grid.SetColumn(btnWidthMinus, 1);
+                Grid.SetRow(btnWidthMinus, 0);
+
+                Grid.SetColumn(btnHeightPlus, 2);
+                Grid.SetRow(btnHeightPlus, 0); 
+                
+                Grid.SetColumn(btnHeightMinus, 3);
+                Grid.SetRow(btnHeightMinus, 0);
+
+                Grid.SetColumn(btnMove, 4);
+                Grid.SetRow(btnMove, 0);
+
+                Grid.SetColumn(btnRemove, 5);
+                Grid.SetRow(btnRemove, 0);
+
+                cell.Children.Add(btnMove);
+                cell.Children.Add(btnRemove);
+                cell.Children.Add(btnWidthPlus);
+                cell.Children.Add(btnWidthMinus);
+                cell.Children.Add(btnHeightPlus);
+                cell.Children.Add(btnHeightMinus);
+
+                cell.Background = Brushes.Green;
+
+                Grid.SetColumn(cell, emptyIndex[0]);
+                Grid.SetRow(cell, emptyIndex[1]);
 
                 gridHasContent[emptyIndex[0], emptyIndex[1]] = true;
-                dynamicGrid.Children.Add(btnG);
+                dynamicGrid.Children.Add(cell);
             }
+        }
+
+        private Button CreateGraphButton(string style, string imageSource)
+        {
+            Button btn = new Button();
+            btn.Style = this.FindResource(style) as Style;
+            //Image img = new Image();
+            //img.Source = new BitmapImage(new Uri(imageSource, UriKind.Relative));
+            //img.Height = 30;
+            //btn.Content = img;
+            btn.VerticalAlignment = VerticalAlignment.Stretch;
+            btn.HorizontalAlignment = HorizontalAlignment.Stretch;
+            return btn;
         }
 
         private void RemoveGraph_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
+            Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
 
-            int x = Grid.GetColumn(btn), y = Grid.GetRow(btn);
-            int columnSpan = Grid.GetColumnSpan(btn), rowSpan = Grid.GetRowSpan(btn);
+            int x = Grid.GetColumn(cell), y = Grid.GetRow(cell);
+            int columnSpan = Grid.GetColumnSpan(cell), rowSpan = Grid.GetRowSpan(cell);
             SetCellsContent(x, y, x + columnSpan, y + rowSpan, false);
-            dynamicGrid.Children.Remove(btn);
+            dynamicGrid.Children.Remove(cell);
         }
 
         private void GraphDragOn_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Button btn = (Button)sender;
-            oldX = Grid.GetColumn(btn);
-            oldY = Grid.GetRow(btn);
-            int columnSpan = Grid.GetColumnSpan(btn), rowSpan = Grid.GetRowSpan(btn);
+            Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
+            oldX = Grid.GetColumn(cell);
+            oldY = Grid.GetRow(cell);
+            int columnSpan = Grid.GetColumnSpan(cell), rowSpan = Grid.GetRowSpan(cell);
             SetCellsContent(oldX, oldY, oldX + columnSpan, oldY + rowSpan, false); // Libère l'espace anciennement occupé
         }
 
         private void GraphDragOff_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Button btn = (Button)sender;
+            Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
             int[] newCoordinates = GetCoordinateWithSize(Mouse.GetPosition(dynamicGrid).X, Mouse.GetPosition(dynamicGrid).Y);
 
             //if (!gridHasContent[newCoordinates[0], newCoordinates[1]]) // ChechIfCellsEmpty
             int x = newCoordinates[0], y = newCoordinates[1];
-            int columnSpan = Grid.GetColumnSpan(btn), rowSpan = Grid.GetRowSpan(btn);
+            int columnSpan = Grid.GetColumnSpan(cell), rowSpan = Grid.GetRowSpan(cell);
             if (ChechIfCellsEmpty(x, y, x + columnSpan, y + rowSpan)) 
             { 
                 // repositionne l'élément
-                Grid.SetColumn(btn, newCoordinates[0]);
-                Grid.SetRow(btn, newCoordinates[1]);
+                Grid.SetColumn(cell, newCoordinates[0]);
+                Grid.SetRow(cell, newCoordinates[1]);
                 SetCellsContent(x, y, x + columnSpan, y + rowSpan, true); // Bloque le nouvel espace occupé
             }
             else
@@ -137,42 +205,72 @@ namespace CovidPropagation
             oldY = MAX_GRID_SIZE + 1;
         }
 
-        private void GraphSizeUp_KeyDown(object sender, KeyEventArgs e)
+        private void GrapheWidthUp_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
+            Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
 
-            int x = Grid.GetColumn(btn);
-            int y = Grid.GetRow(btn);
-            int columnSpan = Grid.GetColumnSpan(btn);
-            int rowSpan = Grid.GetRowSpan(btn);
+            int x = Grid.GetColumn(cell);
+            int y = Grid.GetRow(cell);
+            int columnSpan = Grid.GetColumnSpan(cell);
+            int rowSpan = Grid.GetRowSpan(cell);
 
-            if (e.Key == Key.Right)
+            if (ChechIfCellsEmpty(x + columnSpan, y, x + columnSpan + 1, y + rowSpan))
             {
-                if (ChechIfCellsEmpty(x + columnSpan, y, x + columnSpan + 1, y + rowSpan))
-                {
-                    Grid.SetColumnSpan(btn, columnSpan + 1);
-                    SetCellsContent(x, y, x + columnSpan + 1, y + rowSpan, true);
-                }
+                Grid.SetColumnSpan(cell, columnSpan + 1);
+                SetCellsContent(x, y, x + columnSpan + 1, y + rowSpan, true);
             }
+        }
 
-            if (e.Key == Key.Left && Grid.GetColumnSpan(btn) > 1)
+        private void GrapheWidthDown_Click(object sender, RoutedEventArgs e)
+        {
+
+            Button btn = (Button)sender;
+            Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
+
+            int x = Grid.GetColumn(cell);
+            int y = Grid.GetRow(cell);
+            int columnSpan = Grid.GetColumnSpan(cell);
+            int rowSpan = Grid.GetRowSpan(cell);
+            if (Grid.GetColumnSpan(cell) > 1)
             {
-                Grid.SetColumnSpan(btn, columnSpan - 1);
+                Grid.SetColumnSpan(cell, columnSpan - 1);
                 SetCellsContent(x + 1, y, x + columnSpan + 1, y + rowSpan, false);
             }
+        }
+        private void GrapheHeightUp_Click(object sender, RoutedEventArgs e)
+        {
 
-            if (e.Key == Key.Up)
+            Button btn = (Button)sender;
+            Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
+
+            int x = Grid.GetColumn(cell);
+            int y = Grid.GetRow(cell);
+            int columnSpan = Grid.GetColumnSpan(cell);
+            int rowSpan = Grid.GetRowSpan(cell);
+
+
+            if (ChechIfCellsEmpty(x, y + rowSpan, x + columnSpan, y + rowSpan + 1))
             {
-                if (ChechIfCellsEmpty(x, y + rowSpan, x + columnSpan, y + rowSpan + 1))
-                {
-                    Grid.SetRowSpan(btn, rowSpan + 1);
-                    SetCellsContent(x, y, x + columnSpan, y + rowSpan + 1, true);
-                }
+                Grid.SetRowSpan(cell, rowSpan + 1);
+                SetCellsContent(x, y, x + columnSpan, y + rowSpan + 1, true);
             }
+        }
 
-            if (e.Key == Key.Down && Grid.GetRowSpan(btn) > 1)
+        private void GrapheHeightDown_Click(object sender, RoutedEventArgs e)
+        {
+
+            Button btn = (Button)sender;
+            Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
+
+            int x = Grid.GetColumn(cell);
+            int y = Grid.GetRow(cell);
+            int columnSpan = Grid.GetColumnSpan(cell);
+            int rowSpan = Grid.GetRowSpan(cell);
+
+            if (Grid.GetRowSpan(cell) > 1)
             {
-                Grid.SetRowSpan(btn, rowSpan - 1);
+                Grid.SetRowSpan(cell, rowSpan - 1);
                 SetCellsContent(x, y + 1, x + columnSpan, y + rowSpan + 1, false);
             }
         }

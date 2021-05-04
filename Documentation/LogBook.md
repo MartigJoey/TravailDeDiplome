@@ -502,4 +502,18 @@
     - Toujours partir de 0
     - Si pourcentages alors de 0 à 100
     - Sinon de 0 à ~valeur max
-- 
+- Ajout de boutons dans l'UI de chaque élément
+  - Création d'une grille dans les cellules remplies.
+    - Grille contenant les boutons permettants la modification / suppression de la cellule
+  - Modification du code pour fonctionner avec le fait qu'il y a plusieurs grilles
+  - Ajout d'un bouton permettant de modifier les données du graphique
+    - Bouton ouvrant une nouvelle fenêtre avec les paramètre du graphique
+  - Boutons créés avec différents style
+    - Bug après quelque secondes d'exécutions : ''{DependencyProperty.UnsetValue}' n'est pas une valeur valide pour la propriété 'Background'.'
+    - L'utilisation du style créé pour ces boutons à plusieurs reprise créé cette erreur.
+    - Erreur réglée, il s'agissait d'un code couleur mal inscrit dans App.xaml.  
+      - ```HTML
+        <Setter Property="Background" Value="{StaticResource 9b9b9b}"/>  
+        ↓
+        <Setter Property="Background" Value="{StaticResource normalGray}"/> 
+        ```
