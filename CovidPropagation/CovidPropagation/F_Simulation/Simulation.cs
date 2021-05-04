@@ -57,6 +57,8 @@ namespace CovidPropagation
             CreateBuildings(nbMinor, nbWorking, nbRetirement);
             CreateTransports();
             CreatePopulation(_nbPersons, retirementProbability);
+
+            GenerateSeedWithSite(null);
         }
 
         public async void Iterate()
@@ -273,6 +275,11 @@ namespace CovidPropagation
                     nbCreated = 2;
                     break;
             }
+            // Nouveau
+            // choisir lieux
+            // Choisir une seed ICI pour la famille en fonction des lieux
+            // créer tous les planning de la famille
+
             // ONE PERSON
             // Simulation
                 // Créer 1 personne
@@ -298,6 +305,59 @@ namespace CovidPropagation
             // Personne
 
             return nbCreated;
+        }
+
+        private string GenerateSeedWithSite(List<Site> sites)
+        {
+            int totalPeriods = GlobalVariables.NUMBER_OF_PERIODS;
+            Random rdm = GlobalVariables.rdm;
+
+            int morningPeriodsMax = 22, morningMin = 12;
+            int noonPeriodsMax = 4, noonMin = 1;
+            int afterNoonPeriodsMax = 10, afterNoonMin = 5;
+            int eveningPeriodsMax = 6, eveningMin = 3;
+            int nightPeriods; // remplit ce qu'il manque
+
+            int morningPeriods = rdm.Next(morningPeriodsMax - morningMin, morningPeriodsMax + 1);
+            int noonPeriods = rdm.Next(noonPeriodsMax - noonMin, noonPeriodsMax + 1);
+            int afterNoonPeriods = rdm.Next(afterNoonPeriodsMax - afterNoonMin, afterNoonPeriodsMax + 1);
+            int eveningPeriods = rdm.Next(eveningPeriodsMax - eveningMin, eveningPeriodsMax + 1);
+
+            // Activities
+            #region Activities
+
+            int morningActivityPeriods = 0;
+            if (morningPeriods < morningPeriodsMax)
+                morningActivityPeriods = morningPeriodsMax - morningPeriods;
+
+
+            if (noonPeriods < noonPeriodsMax)
+                afterNoonPeriodsMax += 1;
+
+            int afterNoonActivityPeriods = 0;
+            if (afterNoonPeriods < afterNoonPeriodsMax)
+                afterNoonActivityPeriods = afterNoonPeriodsMax - afterNoonPeriods;
+
+            int eveningActivityPeriods = 0;
+            if (eveningPeriods < eveningPeriodsMax)
+                eveningActivityPeriods = eveningPeriodsMax - eveningPeriods;
+
+            #endregion
+
+            nightPeriods = (morningPeriods + morningActivityPeriods) +
+                           (noonPeriods) +
+                           (afterNoonPeriods + afterNoonActivityPeriods) +
+                           (eveningPeriods + eveningActivityPeriods);
+
+            nightPeriods = totalPeriods - nightPeriods;
+
+            Debug.WriteLine((morningPeriods + " " + morningActivityPeriods) + " " + Environment.NewLine +
+                           (noonPeriods) + " " + Environment.NewLine +
+                           (afterNoonPeriods + " " + afterNoonActivityPeriods) + " " + Environment.NewLine +
+                           (eveningPeriods + " " + eveningActivityPeriods) + " " + Environment.NewLine + nightPeriods);
+
+            // utiliser les sites et le durée créé pour créer la seed.
+            return "";
         }
 
         private Person CreateStudentPerson()

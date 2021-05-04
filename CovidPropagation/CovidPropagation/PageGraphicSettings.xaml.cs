@@ -25,6 +25,8 @@ namespace CovidPropagation
         private bool[,] gridHasContent = new bool[MAX_GRID_SIZE, MAX_GRID_SIZE];
         int oldX = MAX_GRID_SIZE + 1;
         int oldY = MAX_GRID_SIZE + 1;
+        int maxCellColumnSpan;
+        int maxCellRowSpan;
 
         Grid dynamicGrid;
 
@@ -33,9 +35,9 @@ namespace CovidPropagation
             InitializeComponent();
 
             dynamicGrid = grdContent;
-
-            // ElementExemple
             scrollerViewer.Content = dynamicGrid;
+            maxCellColumnSpan = dynamicGrid.ColumnDefinitions.Count;
+            maxCellRowSpan = dynamicGrid.RowDefinitions.Count;
         }
 
         private void AddRow_Click(object sender, RoutedEventArgs e)
@@ -45,13 +47,17 @@ namespace CovidPropagation
                 RowDefinition newGridRow = new RowDefinition();
                 newGridRow.MinHeight = ROW_MIN_HEIGHT;
                 dynamicGrid.RowDefinitions.Add(newGridRow);
+                maxCellRowSpan = dynamicGrid.RowDefinitions.Count;
             }
         }
 
         private void RemoveRow_Click(object sender, RoutedEventArgs e)
         {
             if (dynamicGrid.RowDefinitions.Count > 1)
+            {
                 dynamicGrid.RowDefinitions.RemoveAt(dynamicGrid.RowDefinitions.GetLastIndex());
+                maxCellRowSpan = dynamicGrid.RowDefinitions.Count;
+            }
         }
 
         private void AddColumn_Click(object sender, RoutedEventArgs e)
@@ -61,12 +67,17 @@ namespace CovidPropagation
                 ColumnDefinition newGridColumn = new ColumnDefinition();
                 newGridColumn.MinWidth = COLUMN_MIN_WIDTH;
                 dynamicGrid.ColumnDefinitions.Add(newGridColumn);
+                maxCellColumnSpan = dynamicGrid.ColumnDefinitions.Count;
             }
         }
+
         private void RemoveColumn_Click(object sender, RoutedEventArgs e)
         {
             if(dynamicGrid.ColumnDefinitions.Count > 1)
+            {
                 dynamicGrid.ColumnDefinitions.RemoveAt(dynamicGrid.ColumnDefinitions.GetLastIndex());
+                maxCellColumnSpan = dynamicGrid.ColumnDefinitions.Count;
+            }
         }
 
         private void AddGraph_Click(object sender, RoutedEventArgs e)
@@ -85,21 +96,13 @@ namespace CovidPropagation
                 Button btnHeightPlus = CreateGraphButton("GraphButtonStyle", "");
                 Button btnHeightMinus = CreateGraphButton("GraphButtonStyle", "");
 
-                cell.ColumnDefinitions.Add(new ColumnDefinition());
-                cell.ColumnDefinitions.Add(new ColumnDefinition());
-                cell.ColumnDefinitions.Add(new ColumnDefinition());
-                cell.ColumnDefinitions.Add(new ColumnDefinition());
-                cell.ColumnDefinitions.Add(new ColumnDefinition());
-                cell.ColumnDefinitions.Add(new ColumnDefinition());
+                CreateColumns(cell, 6);
 
                 RowDefinition firstRow = new RowDefinition();
                 firstRow.MinHeight = 30;
                 firstRow.MaxHeight = 30;
                 cell.RowDefinitions.Add(firstRow);
-                cell.RowDefinitions.Add(new RowDefinition());
-                cell.RowDefinitions.Add(new RowDefinition());
-                cell.RowDefinitions.Add(new RowDefinition());
-                cell.RowDefinitions.Add(new RowDefinition());
+                CreateRows(cell, 4);
 
 
                 cell.VerticalAlignment = VerticalAlignment.Stretch;
@@ -144,6 +147,22 @@ namespace CovidPropagation
 
                 gridHasContent[emptyIndex[0], emptyIndex[1]] = true;
                 dynamicGrid.Children.Add(cell);
+            }
+        }
+
+        private void CreateColumns(Grid cell, int quantity)
+        {
+            for (int i = 0; i < quantity; i++)
+            {
+                cell.ColumnDefinitions.Add(new ColumnDefinition());
+            }
+        }
+
+        private void CreateRows(Grid cell, int quantity)
+        {
+            for (int i = 0; i < quantity; i++)
+            {
+                cell.RowDefinitions.Add(new RowDefinition());
             }
         }
 
@@ -215,7 +234,8 @@ namespace CovidPropagation
             int columnSpan = Grid.GetColumnSpan(cell);
             int rowSpan = Grid.GetRowSpan(cell);
 
-            if (ChechIfCellsEmpty(x + columnSpan, y, x + columnSpan + 1, y + rowSpan))
+            Debug.WriteLine(maxCellColumnSpan + " " + columnSpan + 1);
+            if (ChechIfCellsEmpty(x + columnSpan, y, x + columnSpan + 1, y + rowSpan) && columnSpan < maxCellColumnSpan)
             {
                 Grid.SetColumnSpan(cell, columnSpan + 1);
                 SetCellsContent(x, y, x + columnSpan + 1, y + rowSpan, true);
@@ -238,6 +258,7 @@ namespace CovidPropagation
                 SetCellsContent(x + 1, y, x + columnSpan + 1, y + rowSpan, false);
             }
         }
+
         private void GrapheHeightUp_Click(object sender, RoutedEventArgs e)
         {
 
@@ -250,7 +271,7 @@ namespace CovidPropagation
             int rowSpan = Grid.GetRowSpan(cell);
 
 
-            if (ChechIfCellsEmpty(x, y + rowSpan, x + columnSpan, y + rowSpan + 1))
+            if (ChechIfCellsEmpty(x, y + rowSpan, x + columnSpan, y + rowSpan + 1) && rowSpan < maxCellRowSpan)
             {
                 Grid.SetRowSpan(cell, rowSpan + 1);
                 SetCellsContent(x, y, x + columnSpan, y + rowSpan + 1, true);
@@ -296,7 +317,8 @@ namespace CovidPropagation
             {
                 for (int x = xStart; x < xStop; x++)
                 {
-                    gridHasContent[x, y] = hasContent;
+                    if (x < gridHasContent.GetLength(0) && y < gridHasContent.GetLength(1))
+                        gridHasContent[x, y] = hasContent;
                 }
             }
         }
@@ -309,7 +331,7 @@ namespace CovidPropagation
             {
                 for (int x = xStart; x < xStop; x++)
                 {
-                    if (gridHasContent[x, y])
+                    if (x < gridHasContent.GetLength(0) && y < gridHasContent.GetLength(1) && gridHasContent[x, y])
                     {
                         result = false;
                         y = yStop;
@@ -319,6 +341,7 @@ namespace CovidPropagation
             }
             return result;
         }
+
         private int[] GetCoordinateWithSize(double x, double y)
         {
             int cellCountX = 1;

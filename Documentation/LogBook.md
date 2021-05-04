@@ -486,8 +486,6 @@
     - pareil mais pour changer l'état de ces cellules
   - Problème, pour le moment, un élément prend en compte sa propre position et se bloque lors de déplacements.
     - Reglé en libérant l'espace utilisé lors du MouseDown event. L'espace est réassigné si le bouton n'est pas déplacé.
-- Structure du planning
-  - Assignation des lieux --> Sélection d'un planning compatible
 - Discussion avec M. Mathieu
   - Propagation (Rapport)
     - Qui 
@@ -517,3 +515,9 @@
         ↓
         <Setter Property="Background" Value="{StaticResource normalGray}"/> 
         ```
+- Ajout d'une limite de taille des éléments en fonction de la taille de la grille
+- ⚠ Penser à changer les noms de variables qui contiennent "période" ⚠
+- Structure du planning
+  - Assignation des lieux --> Sélection d'un planning compatible
+  - Création d'une méthode créant des horaires aléatoires suivant des paramètres donné (Durée matin, durée midi, durée après-midi, etc.)
+  - 
