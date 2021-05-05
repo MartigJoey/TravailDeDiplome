@@ -13,14 +13,13 @@ namespace CovidPropagation
 {
     public class Company : Site
     {
-        private const double PRESSURE = 0;
-
+        private static SiteType[] companyTypes = new SiteType[] { SiteType.Work, SiteType.Eat };
         public Company(double length = GlobalVariables.BUILDING_LENGTH,
                            double width = GlobalVariables.BUILDING_WIDTH,
                            double height = GlobalVariables.BUILDING_HEIGHT,
                            double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
-                 base(length, width, height, ventilationWithOutside, additionalControlMeasures)
+                 base(companyTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
         {
 
         }

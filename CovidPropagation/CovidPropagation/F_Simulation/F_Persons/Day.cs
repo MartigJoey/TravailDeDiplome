@@ -16,17 +16,6 @@ namespace CovidPropagation
     /// </summary>
     public class Day
     {
-        #region SiteIds
-        private const char HOME_ID = 'H';
-        private const char TRANSPORT_ID = 'T';
-        private const char COMPANY_ID = 'C';
-        private const char RESTAURANT_ID = 'R';
-        private const char SUPERMARKET_ID = 'S';
-        private const char STORE_ID = 'M'; // MAGASIN
-        private const char SCHOOL_ID = 'E'; // ECOLE
-        private const char OUTSIDE_ID = 'O';
-
-        #endregion
 
         #region WorkingClass
         private static string[] adultWeekDaysSeeds = new string[] {
@@ -94,31 +83,31 @@ namespace CovidPropagation
 
         private const int NB_WORKING_DAYS = 5;
 
-        private Period[] _periods;
-        public Period[] Periods { get => _periods; }
+        private TimeFrame[] _timeFrames;
+        public TimeFrame[] TimeFrames { get => _timeFrames; }
 
         public Day()
         {
-            _periods = new Period[GlobalVariables.NUMBER_OF_PERIODS];
+            _timeFrames = new TimeFrame[GlobalVariables.NUMBER_OF_TIMEFRAME];
         }
 
         /// <summary>
         /// Récupère l'activité à l'index spécifié.
         /// </summary>
-        /// <param name="period">Index de la période à récupérer</param>
+        /// <param name="timeFrame">Index de la période à récupérer</param>
         /// <returns>Activité dans la période.</returns>
-        public Type GetActivity(int period)
+        public Site GetActivity(int timeFrame)
         {
-            return _periods[period].Activity;
+            return _timeFrames[timeFrame].Activity;
         }
 
         /// <summary>
         /// Récupère l'activité actuelle
         /// </summary>
         /// <returns>L'activité en cours.</returns>
-        public Type GetCurrentActivity()
+        public Site GetCurrentActivity()
         {
-            return _periods[TimeManager.CurrentPeriod].Activity;
+            return _timeFrames[TimeManager.CurrentTimeFrame].Activity;
         }
 
         public void CreateStudentDay(int dayOfWeek)
@@ -161,53 +150,53 @@ namespace CovidPropagation
         private void CreateDay(string seed)
         {
             string[] seedSplitted = seed.Split(" ");
-            List<Period> periods = new List<Period>();
+            List<TimeFrame> timeFrames = new List<TimeFrame>();
             foreach (string item in seedSplitted)
             {
                 char siteType = item.Substring(0, 1).ToChar();
                 int count = Convert.ToInt32(item.Substring(1));
                 for (int i = 0; i < count; i++)
                 {
-                    Period period;
+                    TimeFrame timeFrame;
                     switch (siteType)
                     {
-                        case TRANSPORT_ID:
-                            period = new Period(typeof(Car));
-                            periods.Add(period);
+                        case GlobalVariables.TRANSPORT_ID:
+                            timeFrame = new TimeFrame(new Car(), SitePersonStatus.Other);
+                            timeFrames.Add(timeFrame);
                             break;
-                        case COMPANY_ID:
-                            period = new Period(typeof(Company));
-                            periods.Add(period);
+                        case GlobalVariables.COMPANY_ID:
+                            timeFrame = new TimeFrame(new Company(), SitePersonStatus.Other);
+                            timeFrames.Add(timeFrame);
                             break;
-                        case RESTAURANT_ID:
-                            period = new Period(typeof(Restaurant));
-                            periods.Add(period);
+                        case GlobalVariables.RESTAURANT_ID:
+                            timeFrame = new TimeFrame(new Restaurant(), SitePersonStatus.Other);
+                            timeFrames.Add(timeFrame);
                             break;
-                        case SUPERMARKET_ID:
-                            period = new Period(typeof(Supermarket));
-                            periods.Add(period);
+                        case GlobalVariables.SUPERMARKET_ID:
+                            timeFrame = new TimeFrame(new Supermarket(), SitePersonStatus.Other);
+                            timeFrames.Add(timeFrame);
                             break;
-                        case OUTSIDE_ID:
-                            period = new Period(typeof(Outside));
-                            periods.Add(period);
+                        case GlobalVariables.OUTSIDE_ID:
+                            timeFrame = new TimeFrame(new Outside(), SitePersonStatus.Other);
+                            timeFrames.Add(timeFrame);
                             break;
-                        case SCHOOL_ID:
-                            period = new Period(typeof(School));
-                            periods.Add(period);
+                        case GlobalVariables.SCHOOL_ID:
+                            timeFrame = new TimeFrame(new School(), SitePersonStatus.Other);
+                            timeFrames.Add(timeFrame);
                             break;
-                        case STORE_ID:
-                            period = new Period(typeof(Store));
-                            periods.Add(period);
+                        case GlobalVariables.STORE_ID:
+                            timeFrame = new TimeFrame(new Store(), SitePersonStatus.Other);
+                            timeFrames.Add(timeFrame);
                             break;
-                        case HOME_ID:
+                        case GlobalVariables.HOME_ID:
                         default:
-                            period = new Period(typeof(Home));
-                            periods.Add(period);
+                            timeFrame = new TimeFrame(new Home(), SitePersonStatus.Other);
+                            timeFrames.Add(timeFrame);
                             break;
                     }
                 }
             }
-            _periods = periods.ToArray();
+            _timeFrames = timeFrames.ToArray();
         }
     }
 }

@@ -11,13 +11,14 @@ namespace CovidPropagation
 {
     class Car : Site
     {
+        private static SiteType[] carTypes = new SiteType[] { SiteType.Transport };
 
         public Car(double length = GlobalVariables.CAR_LENGTH,
                    double width = GlobalVariables.CAR_WIDTH,
                    double height = GlobalVariables.CAR_HEIGHT,
                    double ventilationWithOutside = GlobalVariables.CAR_VENTILATION_WITH_OUTSIDE,
                    double additionalControlMeasures = GlobalVariables.CAR_ADDITIONAL_CONTROL_MEASURES) :
-                 base(length, width, height, ventilationWithOutside, additionalControlMeasures)
+                 base(carTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
         {
             
         }

@@ -20,6 +20,7 @@ namespace CovidPropagation
         List<Person> persons;
         bool hasEnvironnementChanged;
         double averageQuantaExhalationRate;
+        SiteType[] types;
 
         #region probability
         double hospitalisationRate = 20;
@@ -46,11 +47,14 @@ namespace CovidPropagation
 
         protected double probabilityOfInfection;
 
+        public SiteType[] Type { get => types; }
+
         #endregion
 
-        public Site(double length, double width, double height,
+        public Site(SiteType[] types, double length, double width, double height,
                     double ventilationWithOutside = 0.7d, double additionalControlMeasures = 0)
         {
+            this.types = types;
             this.length = length;  
             this.width = width;
             this.height = height;

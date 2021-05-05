@@ -7,8 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\arrow-down.png" />
+    <None Remove="Images\arrow-left.png" />
+    <None Remove="Images\arrow-right.png" />
+    <None Remove="Images\arrow-up.png" />
     <None Remove="Images\close.png" />
     <None Remove="Images\cog.png" />
+    <None Remove="Images\cursor-move.png" />
     <None Remove="Images\play.png" />
     <None Remove="Images\tune-vertical.png" />
     <None Remove="Images\window-maximize.png" />
@@ -22,8 +27,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\arrow-down.png" />
+    <Resource Include="Images\arrow-left.png" />
+    <Resource Include="Images\arrow-right.png" />
+    <Resource Include="Images\arrow-up.png" />
     <Resource Include="Images\close.png" />
     <Resource Include="Images\cog.png" />
+    <Resource Include="Images\cursor-move.png" />
     <Resource Include="Images\play.png" />
     <Resource Include="Images\tune-vertical.png" />
     <Resource Include="Images\window-maximize.png" />

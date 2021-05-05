@@ -21,9 +21,9 @@ namespace CovidPropagation
 
         public static readonly Random rdm = new Random();
 
-        public const int DURATION_OF_PERIOD = 30; // En minutes
+        public const int DURATION_OF_TIMEFRAME = 30; // En minutes
         public const int MINUTES_PER_DAY = 1440;
-        public const int NUMBER_OF_PERIODS = MINUTES_PER_DAY / DURATION_OF_PERIOD;
+        public const int NUMBER_OF_TIMEFRAME = MINUTES_PER_DAY / DURATION_OF_TIMEFRAME;
         public const int NUMBER_OF_DAY = 7;
         public const int NUMBER_OF_HOURS_PER_DAY = 24;
 
@@ -62,6 +62,17 @@ namespace CovidPropagation
         public const int SUPERMARKET_INDEX = 1;
         public const int OUTSIDE_INDEX = 2;
         public const int RESTAURANT_INDEX = 3;
+
+        // Ids
+        public const char HOME_ID = 'H';
+        public const char TRANSPORT_ID = 'T';
+        public const char COMPANY_ID = 'C';
+        public const char RESTAURANT_ID = 'R';
+        public const char SUPERMARKET_ID = 'S';
+        public const char STORE_ID = 'M'; // MAGASIN
+        public const char SCHOOL_ID = 'E'; // ECOLE
+        public const char OUTSIDE_ID = 'O';
+        public const char HOBBY_ID = 'Y'; // HobbY
 
         #region SitesDefaultParameter
         public const double OUTSIDE_TEMPERATURE = 30;

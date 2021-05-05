@@ -82,6 +82,7 @@
 - [`Simulation`](#simulation-2)
   - [Structure](#structure-1)
   - [Fonctionnement](#fonctionnement)
+  - [Source](#source)
 - [`GUI`](#gui)
   - [Structure](#structure-2)
   - [Fonctionnement](#fonctionnement-1)
@@ -771,15 +772,25 @@ Beaucoup de questions qui sont revenues lors de la création des plannings.
 ## Structure
 Diagramme de classe final -
 Interactions entre objets
+
 ## Fonctionnement
 Création -
 Évolution (Itérations)
+
+## Source
+Propagation (Rapport)
+    - Qui 
+    - quoi 
+    - pourquoi 
+    - expliquer comment 
+    - justifier utilisation 
 
 # `GUI`
 ## Structure
 Diagramme de classe final -
 Interactions entre objets - 
 Réception des données
+
 ## Fonctionnement
 Création -
 Évolution (Itérations) -
@@ -852,6 +863,7 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 - 21.04.2021
   - Utilisé dans la création de la documentation des pipelines
     - [Stackoverflow - usr - Modification du code MSDN](https://stackoverflow.com/questions/49172352/c-sharp-explanation-of-stream-string-example)
+    - [materialDesignIcons - Icônes des boutons](https://materialdesignicons.com/)
 
 26.04.2021
   - Utilisé dans la propagation du virus
@@ -868,6 +880,7 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 03.05.2021
   - Utilisé dans la création des individus
     - [ge.ch - OCSTAT - Statistiques concernant les ménages](https://www.ge.ch/statistique/tel/publications/2014/analyses/communications/an-cs-2014-48.pdf)
+
 # `Annexes`
 - Projet C#
 - Images

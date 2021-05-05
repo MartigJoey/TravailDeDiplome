@@ -4,13 +4,9 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CovidPropagation
 {
@@ -22,6 +18,7 @@ namespace CovidPropagation
         private const int ROW_MIN_HEIGHT = 150;
         private const int COLUMN_MIN_WIDTH = 150;
         private const int MAX_GRID_SIZE = 10;
+
         private bool[,] gridHasContent = new bool[MAX_GRID_SIZE, MAX_GRID_SIZE];
         int oldX = MAX_GRID_SIZE + 1;
         int oldY = MAX_GRID_SIZE + 1;
@@ -88,22 +85,21 @@ namespace CovidPropagation
             {
                 Grid cell = new Grid();
                 Button btnRemove = CreateGraphButton("GraphCloseStyle", "./Images/close.png");
-                Button btnMove = CreateGraphButton("GraphButtonStyle", "");
+                Button btnMove = CreateGraphButton("GraphButtonStyle", "./Images/cursor-move.png");
 
-                Button btnWidthPlus = CreateGraphButton("GraphButtonStyle", "");
-                Button btnWidthMinus = CreateGraphButton("GraphButtonStyle", "");
+                Button btnWidthPlus = CreateGraphButton("GraphButtonStyle", "./Images/arrow-right.png");
+                Button btnWidthMinus = CreateGraphButton("GraphButtonStyle", "./Images/arrow-left.png");
 
-                Button btnHeightPlus = CreateGraphButton("GraphButtonStyle", "");
-                Button btnHeightMinus = CreateGraphButton("GraphButtonStyle", "");
+                Button btnHeightPlus = CreateGraphButton("GraphButtonStyle", "./Images/arrow-down.png");
+                Button btnHeightMinus = CreateGraphButton("GraphButtonStyle", "./Images/arrow-up.png");
 
-                CreateColumns(cell, 6);
 
                 RowDefinition firstRow = new RowDefinition();
                 firstRow.MinHeight = 30;
                 firstRow.MaxHeight = 30;
                 cell.RowDefinitions.Add(firstRow);
                 CreateRows(cell, 4);
-
+                CreateColumns(cell, 6);
 
                 cell.VerticalAlignment = VerticalAlignment.Stretch;
                 cell.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -170,10 +166,10 @@ namespace CovidPropagation
         {
             Button btn = new Button();
             btn.Style = this.FindResource(style) as Style;
-            //Image img = new Image();
-            //img.Source = new BitmapImage(new Uri(imageSource, UriKind.Relative));
-            //img.Height = 30;
-            //btn.Content = img;
+            Image img = new Image();
+            img.Source = new BitmapImage(new Uri(imageSource, UriKind.Relative));
+            img.Height = 30;
+            btn.Content = img;
             btn.VerticalAlignment = VerticalAlignment.Stretch;
             btn.HorizontalAlignment = HorizontalAlignment.Stretch;
             return btn;
@@ -261,7 +257,6 @@ namespace CovidPropagation
 
         private void GrapheHeightUp_Click(object sender, RoutedEventArgs e)
         {
-
             Button btn = (Button)sender;
             Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
 
@@ -269,7 +264,6 @@ namespace CovidPropagation
             int y = Grid.GetRow(cell);
             int columnSpan = Grid.GetColumnSpan(cell);
             int rowSpan = Grid.GetRowSpan(cell);
-
 
             if (ChechIfCellsEmpty(x, y + rowSpan, x + columnSpan, y + rowSpan + 1) && rowSpan < maxCellRowSpan)
             {

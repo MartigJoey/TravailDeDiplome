@@ -12,15 +12,18 @@ namespace CovidPropagation
     /// <summary>
     /// Période composé d'une activité.
     /// </summary>
-    public class Period
+    public class TimeFrame
     {
-        private Type _activity;
+        private Site _activity;
+        private SitePersonStatus _reason;
 
-        public Type Activity { get => _activity; }
+        public Site Activity { get => _activity; }
+        public SitePersonStatus Reason { get => _reason; set => _reason = value; }
 
-        public Period(Type activity)
+        public TimeFrame(Site activity, SitePersonStatus reason)
         {
             _activity = activity;
+            _reason = reason;
         }
     }
 }

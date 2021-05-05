@@ -13,12 +13,14 @@ namespace CovidPropagation
 {
     public class School : Site
     {
+
+        private static SiteType[] schoolTypes = new SiteType[] { SiteType.Work, SiteType.Eat };
         public School(double length = GlobalVariables.BUILDING_LENGTH,
                            double width = GlobalVariables.BUILDING_WIDTH,
                            double height = GlobalVariables.BUILDING_HEIGHT,
                            double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
-                 base(length, width, height, ventilationWithOutside, additionalControlMeasures)
+                 base(schoolTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
         {
 
         }

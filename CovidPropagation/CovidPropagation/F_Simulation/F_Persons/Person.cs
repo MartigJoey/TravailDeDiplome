@@ -63,7 +63,7 @@ namespace CovidPropagation
 
             virusResistance = baseVirusResistance;
             this.locations = locations;
-            _currentSite = locations[_planning.GetActivity()];
+            _currentSite = _planning.GetActivity();
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace CovidPropagation
         public void ChangeActivity()
         {
             // Quitte le lieu précédent s'il est différent, récupère le nouveau et entre dedans.
-            Site newSite = locations[_planning.GetActivity()];
+            Site newSite = _planning.GetActivity();
             if (_currentSite != newSite)
             {
                 _currentSite.Leave(this);

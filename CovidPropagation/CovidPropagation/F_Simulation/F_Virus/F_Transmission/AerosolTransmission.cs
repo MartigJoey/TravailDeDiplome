@@ -47,8 +47,8 @@ namespace CovidPropagation
             double percentagePersonWithMask = nbPersonsWithMask / nbPersons;
 
             // sumQuantaExhalationRateOfInfected / sumFirstOrderLossRate / volume * (1-(1 / sumFirstOrderLossRate / eventDuration) * (1-exp(-sumFirstOrderLossRate * eventDuration)))
-            _avgQuantaConcentration = (Math.Abs(quantaExhalationRateOfInfected) / Math.Abs(sumFirstOrderLossRate) / Math.Abs(volume) * (1 - (1 / Math.Abs(sumFirstOrderLossRate) / GlobalVariables.DURATION_OF_PERIOD) * (1 - Math.Exp(-Math.Abs(sumFirstOrderLossRate) * Math.Abs(GlobalVariables.DURATION_OF_PERIOD)))));
-            _quantaInhaledPerPerson = _avgQuantaConcentration * GlobalVariables.BREATHING_RATE * GlobalVariables.DURATION_OF_PERIOD * (1 - inhalationMaskEfficiency * percentagePersonWithMask);
+            _avgQuantaConcentration = (Math.Abs(quantaExhalationRateOfInfected) / Math.Abs(sumFirstOrderLossRate) / Math.Abs(volume) * (1 - (1 / Math.Abs(sumFirstOrderLossRate) / GlobalVariables.DURATION_OF_TIMEFRAME) * (1 - Math.Exp(-Math.Abs(sumFirstOrderLossRate) * Math.Abs(GlobalVariables.DURATION_OF_TIMEFRAME)))));
+            _quantaInhaledPerPerson = _avgQuantaConcentration * GlobalVariables.BREATHING_RATE * GlobalVariables.DURATION_OF_TIMEFRAME * (1 - inhalationMaskEfficiency * percentagePersonWithMask);
 
             // Infection probability
             _probabilityOfOneInfection = 1 - Math.Exp(-_quantaInhaledPerPerson);

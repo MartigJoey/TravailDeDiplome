@@ -30,18 +30,18 @@ namespace CovidPropagation
         /// Récupère une activité au jour et à la période demandée.
         /// </summary>
         /// <param name="dayOfWeek">int du jour de la semaine</param>
-        /// <param name="periodOfDay">int de la période de la journée</param>
+        /// <param name="timeFrameOfDay">int de la période de la journée</param>
         /// <returns>L'activité au jour et à la période demandé</returns>
-        public Type GetActivity(int dayOfWeek, int periodOfDay)
+        public Site GetActivity(int dayOfWeek, int timeFrameOfDay)
         {
-            return _days[dayOfWeek].GetActivity(periodOfDay);
+            return _days[dayOfWeek].GetActivity(timeFrameOfDay);
         }
 
         /// <summary>
         /// Récupère une activité au jour et à la période actuelle.
         /// </summary>
         /// <returns>L'activité actuelle</returns>
-        public Type GetActivity()
+        public Site GetActivity()
         {
             return _days[TimeManager.CurrentDay].GetCurrentActivity();
         }
@@ -50,10 +50,10 @@ namespace CovidPropagation
         /// Récupère la prochaine activité.
         /// </summary>
         /// <returns>L'activité qui sera réalisé après un tick</returns>
-        public Type GetNextActivity()
+        public Site GetNextActivity()
         {
-            int[] nextPeiod = TimeManager.GetNextPeriod();
-            return _days[nextPeiod[0]].GetActivity(nextPeiod[1]);
+            int[] nextTimeFrame = TimeManager.GetNextTimeFrame();
+            return _days[nextTimeFrame[0]].GetActivity(nextTimeFrame[1]);
         }
 
         public void CreateAdultPlanning()

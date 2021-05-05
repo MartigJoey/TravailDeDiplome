@@ -58,7 +58,8 @@ namespace CovidPropagation
             CreateTransports();
             CreatePopulation(_nbPersons, retirementProbability);
 
-            GenerateSeedWithSite(null);
+            GenerateWeekDay();
+            //GenerateFreeDay();
         }
 
         public async void Iterate()
@@ -69,7 +70,7 @@ namespace CovidPropagation
                 if (startStop)
                 {
                     sp.Start();
-                    TimeManager.NextPeriod();
+                    TimeManager.NextTimeFrame();
                     population.ForEach(p => p.ChangeActivity());
                     allBuildingSites.ForEach(p => p.CalculateprobabilityOfInfection());
                     population.ForEach(p => p.ChechState());
@@ -307,57 +308,207 @@ namespace CovidPropagation
             return nbCreated;
         }
 
-        private string GenerateSeedWithSite(List<Site> sites)
+        private string GenerateWeekDay()
         {
-            int totalPeriods = GlobalVariables.NUMBER_OF_PERIODS;
+            int totalTimeFrame = GlobalVariables.NUMBER_OF_TIMEFRAME;
             Random rdm = GlobalVariables.rdm;
 
-            int morningPeriodsMax = 22, morningMin = 12;
-            int noonPeriodsMax = 4, noonMin = 1;
-            int afterNoonPeriodsMax = 10, afterNoonMin = 5;
-            int eveningPeriodsMax = 6, eveningMin = 3;
-            int nightPeriods; // remplit ce qu'il manque
+            List<Site> personSites = new List<Site>() { new Home(), new Store(), new Restaurant(), new Car(), new Company() };
 
-            int morningPeriods = rdm.Next(morningPeriodsMax - morningMin, morningPeriodsMax + 1);
-            int noonPeriods = rdm.Next(noonPeriodsMax - noonMin, noonPeriodsMax + 1);
-            int afterNoonPeriods = rdm.Next(afterNoonPeriodsMax - afterNoonMin, afterNoonPeriodsMax + 1);
-            int eveningPeriods = rdm.Next(eveningPeriodsMax - eveningMin, eveningPeriodsMax + 1);
+            int morningTimeFrameMax = 16, morningVariation = 4;
+            int morningTimeFrameTotal = 22;
+            int noonTimeFrameMax = 4, noonMin = 3;
+            int afterNoonTimeFrameMax = 10, afterNoonVariation = 4;
+            int afterNoonTimeFrameTotal = 10;
+            int eveningTimeFrameMax = 8, eveningMin = 3;
+            int nightTimeFrame; // remplit ce qu'il manque
+
+            int morningWorkTimeFrame = 0;
+            int afterNoonFreeTimeTimeFrame = 0;
+            int eveningActivityTimeFrame = 0;
+
+            int morningTimeFrame = morningTimeFrameMax - rdm.NextWithMinimum(0, morningVariation, 0);
+            int noonTimeFrame = rdm.Next(noonMin, noonTimeFrameMax + 1);
+            int afterNoonWorkTimeFrame = afterNoonTimeFrameMax - rdm.NextWithMinimum(0, afterNoonVariation, 0);
+            int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, 3);
 
             // Activities
             #region Activities
 
-            int morningActivityPeriods = 0;
-            if (morningPeriods < morningPeriodsMax)
-                morningActivityPeriods = morningPeriodsMax - morningPeriods;
+            if (morningTimeFrame < morningTimeFrameTotal)
+                morningWorkTimeFrame = morningTimeFrameTotal - morningTimeFrame;
 
+            if (noonTimeFrame < noonTimeFrameMax)
+                afterNoonTimeFrameMax += 1;
 
-            if (noonPeriods < noonPeriodsMax)
-                afterNoonPeriodsMax += 1;
+            if (afterNoonWorkTimeFrame < afterNoonTimeFrameTotal)
+                afterNoonFreeTimeTimeFrame = afterNoonTimeFrameTotal - afterNoonWorkTimeFrame;
 
-            int afterNoonActivityPeriods = 0;
-            if (afterNoonPeriods < afterNoonPeriodsMax)
-                afterNoonActivityPeriods = afterNoonPeriodsMax - afterNoonPeriods;
-
-            int eveningActivityPeriods = 0;
-            if (eveningPeriods < eveningPeriodsMax)
-                eveningActivityPeriods = eveningPeriodsMax - eveningPeriods;
-
+            if (eveningTimeFrame < eveningTimeFrameMax)
+                eveningActivityTimeFrame = eveningTimeFrameMax - eveningTimeFrame;
             #endregion
 
-            nightPeriods = (morningPeriods + morningActivityPeriods) +
-                           (noonPeriods) +
-                           (afterNoonPeriods + afterNoonActivityPeriods) +
-                           (eveningPeriods + eveningActivityPeriods);
+            nightTimeFrame = (morningTimeFrame + morningWorkTimeFrame) +
+                           (noonTimeFrame) +
+                           (afterNoonWorkTimeFrame + afterNoonFreeTimeTimeFrame) +
+                           (eveningTimeFrame + eveningActivityTimeFrame);
 
-            nightPeriods = totalPeriods - nightPeriods;
+            nightTimeFrame = totalTimeFrame - nightTimeFrame;
 
-            Debug.WriteLine((morningPeriods + " " + morningActivityPeriods) + " " + Environment.NewLine +
-                           (noonPeriods) + " " + Environment.NewLine +
-                           (afterNoonPeriods + " " + afterNoonActivityPeriods) + " " + Environment.NewLine +
-                           (eveningPeriods + " " + eveningActivityPeriods) + " " + Environment.NewLine + nightPeriods);
+            Site hometSite = personSites.Where(h => h.Type.Contains(SiteType.Home)).OrderBy(x => rdm.Next()).First();
+            Site morningWorkSite = personSites.Where(h => h.Type.Contains(SiteType.Work)).OrderBy(x => rdm.Next()).First();
+            Site noonSite = personSites.Where(h => h.Type.Contains(SiteType.Eat)).OrderBy(x => rdm.Next()).First();
+            Site afterNoonWorkSite = personSites.Where(h => h.Type.Contains(SiteType.Work)).OrderBy(x => rdm.Next()).First();
+            Site afterNoonFreeTimeSite = personSites.Where(h => h.Type.Contains(SiteType.Hobby)).OrderBy(x => rdm.Next()).First();
+            Site eveningActivitySite = personSites.Where(h => h.Type.Contains(SiteType.Eat)).OrderBy(x => rdm.Next()).First();
+            Site transportSite = personSites.Where(h => h.Type.Contains(SiteType.Transport)).OrderBy(x => rdm.Next()).First();
 
-            // utiliser les sites et le durée créé pour créer la seed.
+            List<TimeFrame> timeFrames = new List<TimeFrame>();
+            // Changer les siteType pour définir le type
+            CreateMorning(timeFrames, hometSite, morningTimeFrame, SitePersonStatus.Other, morningWorkSite, morningWorkTimeFrame, SitePersonStatus.Worker, transportSite);
+            CreateNoon(timeFrames, noonSite, noonTimeFrame, SitePersonStatus.Client, transportSite);
+            CreateAfterNoon(timeFrames, afterNoonWorkSite, afterNoonWorkTimeFrame, SitePersonStatus.Other, afterNoonFreeTimeSite, afterNoonFreeTimeTimeFrame, SitePersonStatus.Worker, transportSite);
+            CreateEvening(timeFrames, hometSite, eveningTimeFrame, SitePersonStatus.Other, eveningActivitySite, eveningActivityTimeFrame, SitePersonStatus.Client, transportSite);
+            CreateNight(timeFrames, hometSite, nightTimeFrame, transportSite);
+
+            foreach (var item in timeFrames)
+            {
+                Debug.WriteLine(item.Activity);
+            }
             return "";
+        }
+
+        private string GenerateFreeDay()
+        {
+            int totalTimeFrame = GlobalVariables.NUMBER_OF_TIMEFRAME;
+            Random rdm = GlobalVariables.rdm;
+
+            List<Site> personSites = new List<Site>() { new Home(), new Store(), new Restaurant(), new Car()};
+
+            int morningTimeFrameMax = 22, morningMin = 12;
+            int noonTimeFrameMax = 4, noonMin = 3;
+            int afterNoonTimeFrameMax = 10, afterNoonMin = 5;
+            int eveningTimeFrameMax = 8, eveningMin = 3;
+            int nightTimeFrame; // remplit ce qu'il manque
+
+            int morningActivityTimeFrame = 0;
+            int afterNoonActivityTimeFrame = 0;
+            int eveningActivityTimeFrame = 0;
+
+            int morningTimeFrame = rdm.NextWithMinimum(morningMin, morningTimeFrameMax, 3);
+            int noonTimeFrame = rdm.Next(noonMin, noonTimeFrameMax + 1);
+            int afterNoonTimeFrame = rdm.NextWithMinimum(afterNoonMin, afterNoonTimeFrameMax, 3);
+            int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, 3);
+
+            // Activities
+            #region Activities
+
+            if (morningTimeFrame < morningTimeFrameMax)
+                morningActivityTimeFrame = morningTimeFrameMax - morningTimeFrame;
+
+            if (noonTimeFrame < noonTimeFrameMax)
+                afterNoonTimeFrameMax += 1;
+
+            if (afterNoonTimeFrame < afterNoonTimeFrameMax)
+                afterNoonActivityTimeFrame = afterNoonTimeFrameMax - afterNoonTimeFrame;
+
+            if (eveningTimeFrame < eveningTimeFrameMax)
+                eveningActivityTimeFrame = eveningTimeFrameMax - eveningTimeFrame;
+            #endregion
+
+            nightTimeFrame = (morningTimeFrame + morningActivityTimeFrame) +
+                           (noonTimeFrame) +
+                           (afterNoonTimeFrame + afterNoonActivityTimeFrame) +
+                           (eveningTimeFrame + eveningActivityTimeFrame);
+
+            nightTimeFrame = totalTimeFrame - nightTimeFrame;
+
+            Debug.WriteLine(eveningTimeFrame);
+
+            // établir différement
+            Site homeSite = personSites.Where(h => h.Type.Contains(SiteType.Home)).OrderBy(x => rdm.Next()).First();
+            Site morningActivitySite = personSites.Where(h => h.Type.Contains(SiteType.Hobby)).OrderBy(x => rdm.Next()).First();
+            Site noonSite = personSites.Where(h => h.Type.Contains(SiteType.Eat)).OrderBy(x => rdm.Next()).First();
+            Site afterNoonActivitySite = personSites.Where(h => h.Type.Contains(SiteType.Hobby)).OrderBy(x => rdm.Next()).First();
+            Site eveningActivitySite = personSites.Where(h => h.Type.Contains(SiteType.Eat)).OrderBy(x => rdm.Next()).First();
+            Site transportSite = personSites.Where(h => h.Type.Contains(SiteType.Transport)).OrderBy(x => rdm.Next()).First();
+
+            // Morning
+            List<TimeFrame> timeFrames = new List<TimeFrame>();
+            CreateMorning(timeFrames, homeSite, morningTimeFrame, SitePersonStatus.Other, morningActivitySite, morningActivityTimeFrame, SitePersonStatus.Client, transportSite);
+            CreateNoon(timeFrames, noonSite, noonTimeFrame, SitePersonStatus.Client, transportSite);
+            CreateAfterNoon(timeFrames, homeSite, afterNoonTimeFrame, SitePersonStatus.Other, afterNoonActivitySite, afterNoonActivityTimeFrame, SitePersonStatus.Client, transportSite);
+            CreateEvening(timeFrames, homeSite, eveningTimeFrame, SitePersonStatus.Other, eveningActivitySite, eveningActivityTimeFrame, SitePersonStatus.Client, transportSite);
+            CreateNight(timeFrames, homeSite, nightTimeFrame, transportSite);
+
+            foreach (var item in timeFrames)
+            {
+                Debug.WriteLine(item.Activity);
+            }
+            return "";
+        }
+
+        private void CreateMorning(List<TimeFrame> morningTimeFrames, Site defaultSite, int defaultTimeFrame, SitePersonStatus defaultType, Site activitySite, int activityTimeFrame, SitePersonStatus activityType ,Site transportSite)
+        {
+            morningTimeFrames.AddRange(Enumerable.Repeat(new TimeFrame(defaultSite, defaultType), defaultTimeFrame));
+            if (activitySite != defaultSite && activityTimeFrame > 0)
+            {
+                morningTimeFrames.RemoveAt(morningTimeFrames.GetLastIndex());
+                morningTimeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
+            }
+            morningTimeFrames.AddRange(Enumerable.Repeat(new TimeFrame(activitySite, activityType), activityTimeFrame));
+        }
+
+        private void CreateNoon(List<TimeFrame> timeFrames, Site site, int siteTimeFrames, SitePersonStatus siteType, Site transportSite)
+        {
+            if (timeFrames[timeFrames.GetLastIndex()].Activity != site)
+            {
+                timeFrames.RemoveAt(timeFrames.GetLastIndex());
+                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
+            }
+            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(site, siteType), siteTimeFrames));
+        }
+
+        private void CreateAfterNoon(List<TimeFrame> timeFrames, Site site, int siteTimeFrames, SitePersonStatus siteType, Site activitySite, int activityTimeFrames, SitePersonStatus activityType, Site transportSite)
+        {
+            if (timeFrames[timeFrames.GetLastIndex()].Activity != site)
+            {
+                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
+                siteTimeFrames--;
+            }
+            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(site, siteType), siteTimeFrames));
+            if (activitySite != site && activityTimeFrames > 0)
+            {
+                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
+                activityTimeFrames--;
+            }
+            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(activitySite, activityType), activityTimeFrames));
+        }
+
+        private void CreateEvening(List<TimeFrame> timeFrames, Site site, int siteTimesFrames, SitePersonStatus siteType, Site activitySite, int activityTimeFrames, SitePersonStatus activityType, Site transportSite)
+        {
+            if (timeFrames[timeFrames.GetLastIndex()].Activity != site)
+            {
+                timeFrames.RemoveAt(timeFrames.GetLastIndex());
+                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
+            }
+            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(site, siteType), siteTimesFrames));
+            if (activitySite != site && activityTimeFrames > 0)
+            {
+                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
+                activityTimeFrames--;
+            }
+            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(activitySite, activityType), activityTimeFrames));
+        }
+
+        private void CreateNight(List<TimeFrame> timeFrames, Site site, int siteTimeFrames, Site transportSite)
+        {
+            if (timeFrames[timeFrames.GetLastIndex()].Activity != site)
+            {
+                timeFrames.RemoveAt(timeFrames.GetLastIndex());
+                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
+            }
+            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(site, SitePersonStatus.Other), siteTimeFrames));
         }
 
         private Person CreateStudentPerson()
@@ -386,81 +537,5 @@ namespace CovidPropagation
             elder = new Person(planning, new Dictionary<Type, Site>());
             return elder;
         }
-
-        /* private List<Period> CreateEveningWorkingClass()
-         {
-             int eveningTotalPeriods = 10;
-             List<Period> eveningPeriods = new List<Period>();
-             Random rdm = GlobalVariables.rdm;
-             int nbPeriodsPerDay = GlobalVariables.NUMBER_OF_PERIODS;
-             int nbHoursPerDay = GlobalVariables.NUMBER_OF_HOURS_PER_DAY;
-             Type selectedActivity;
-             while (eveningTotalPeriods > 0)
-             {
-                 int RestaurantMinPeriods = 2;
-                 int SupermarketMinPeriods = 1;
-
-                 if (eveningTotalPeriods < RestaurantMinPeriods)
-                 {
-                     selectedActivity = rdm.NextProbability(new KeyValuePair<Type, double>[] {
-                         new KeyValuePair<Type, double>(typeof(Home), 0.90),
-                         new KeyValuePair<Type, double>(typeof(Supermarket), 0.10)
-                     });
-                 }
-                 else if (eveningTotalPeriods < SupermarketMinPeriods)
-                 {
-                     selectedActivity = typeof(Home);
-                 }
-                 else
-                 {
-                     selectedActivity = rdm.NextProbability(new KeyValuePair<Type, double>[] {
-                         new KeyValuePair<Type, double>(typeof(Home), 0.50),
-                         new KeyValuePair<Type, double>(typeof(Supermarket), 0.40),
-                         new KeyValuePair<Type, double>(typeof(Restaurant), 0.10)
-                     });
-                 }
-
-                 // Temps min = 0, max = full;
-                 if (selectedActivity == typeof(Home))
-                 {
-                     int min = 5 * nbPeriodsPerDay / nbHoursPerDay;
-                     int max = 8 * nbPeriodsPerDay / nbHoursPerDay;
-                     eveningPeriods.AddRange(CreateSiteActivity(min, max, typeof(Restaurant)));
-                 }
-
-                 // temps min = 1, max = 3
-                 if (selectedActivity == typeof(Supermarket))
-                 {
-                     int min = 5 * nbPeriodsPerDay / nbHoursPerDay;
-                     int max = 8 * nbPeriodsPerDay / nbHoursPerDay;
-                     eveningPeriods.AddRange(CreateSiteActivity(min, max, typeof(Restaurant)));
-                 }
-
-                 // Temps min = 2, max = 6
-                 if (selectedActivity == typeof(Restaurant))
-                 {
-                     int min = 5 * nbPeriodsPerDay / nbHoursPerDay;
-                     int max = 8 * nbPeriodsPerDay / nbHoursPerDay;
-                     eveningPeriods.AddRange(CreateSiteActivity(min, max, typeof(Restaurant)));
-                 }
-                 eveningTotalPeriods--;
-             }
-             return eveningPeriods;
-         }
-
-         private List<Period> CreateSiteActivity(int min, int max, Type site)
-         {
-             Random rdm = GlobalVariables.rdm;
-             List<Period> eveningPeriods = new List<Period>();
-
-             int eveningPeriodsNb = rdm.Next(min, max);
-
-             while (eveningPeriodsNb > 0)
-             {
-                 //homePeriods.Add(new Period(site));
-                 eveningPeriodsNb--;
-             }
-             return eveningPeriods;
-         }*/
     }
 }

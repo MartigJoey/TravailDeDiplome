@@ -113,7 +113,7 @@
 
 # 22.04.2021 - 08h05/17h00
 - UI
-  - Ajouts d'icône de boutons
+  - Ajouts d'icône de boutons [Source](https://materialdesignicons.com/)
   - Création de l'interface principale
     - Menu
     - Sections
@@ -520,4 +520,27 @@
 - Structure du planning
   - Assignation des lieux --> Sélection d'un planning compatible
   - Création d'une méthode créant des horaires aléatoires suivant des paramètres donné (Durée matin, durée midi, durée après-midi, etc.)
-  - 
+
+# 04.05.2021 08h05 / 17h00
+- Ajouts d'icônes pour les boutons des éléments graphiques
+- Création des planning
+  - Transformation des horaires générés en seed
+  - Modification des sites pour comprendre un type (Hobby, maison, autres)
+  - Utilisation des types dans l'assignations des sites dans le planning
+- Modification fonctionnement planning
+  - La simulation créé la seed
+  - Le planing traduit la seed
+  - L'individus sait ou aller en fonction du type d'endroit où il doit aller qui lui est fournit par le planning
+  - ~~Utiliser les valeurs de l'enum ou du type de site dans la seed ?~~
+    - ~~+Création simplifée~~
+    - ~~+Moins de problèmes au démarrage~~
+    - ~~-Plus de calculs à chaque itération~~
+    - ~~-Moins de contrôle~~
+- Ajout des moyens de transport lorsque la personne change de lieux dans la création des plannings
+- Suppression de la seed pour directement créer les périodes
+- 1ère version du planning fonctionnelle (Jours de congé) ! (Usine à gaz à refactoriser)
+- Modification de toutes les variables classes contenant "period" en "TimeFrame"
+- Jours de travail du planning fonctionnel. Je doit modifier l'assignation des lieux pour avoir un meilleur contrôle et définir ou la personne va et pourquoi.
+  - À établir dans les activités
+- ~~Modifier SiteType ou~~ ajouter un nouveau paramètre qui permet de définir pourquoi la personne est là.
+  - Différencie le client d'une personne qui travail

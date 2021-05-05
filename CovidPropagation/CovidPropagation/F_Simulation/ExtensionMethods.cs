@@ -94,6 +94,35 @@ namespace CovidPropagation
             return result;
         }
 
+        /// <summary>
+        /// Si le résultat obtenu est trop proche du maximum, la valeur resultante est modifiée pour obtenir un résultat suffisant.
+        /// ⚠ Inclusif ⚠
+        /// </summary>
+        /// <param name="minValue">Valeurs minimum requise entre le résultat du random et le maximum possible</param>
+        /// <returns></returns>
+        public static int NextWithMinimum(this Random value, int minRdm, int maxRdm, int minValue)
+        {
+            int result = value.Next(minRdm, maxRdm + 1);
+
+            if (result > (maxRdm - minValue) && result != maxRdm)
+                result = maxRdm - minValue;
+
+            return result;
+        }
+
+        public static void Shuffle<T>(this IList<T> ts)
+        {
+            var count = ts.Count;
+            var last = count - 1;
+            for (var i = 0; i < last; ++i)
+            {
+                var r = GlobalVariables.rdm.Next(i, count);
+                var tmp = ts[i];
+                ts[i] = ts[r];
+                ts[r] = tmp;
+            }
+        }
+
         public static char ToChar(this string value)
         {
             return value.ToCharArray()[0];
