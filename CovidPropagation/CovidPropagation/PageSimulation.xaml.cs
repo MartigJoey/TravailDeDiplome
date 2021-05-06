@@ -28,7 +28,13 @@ namespace CovidPropagation
             InitializeComponent();
             legendPage = new Legend();
             intervalSlider.Value = GlobalVariables.DEFAULT_INTERVAL;
-            mw = ((MainWindow)Application.Current.MainWindow);
+            mw = (MainWindow)Application.Current.MainWindow;
+            Loaded += MyPage_Loaded;
+        }
+
+        private void MyPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            intervalSlider.Value = Convert.ToInt32(intervalSlider.Maximum - mw.Sim.Interval);
         }
 
         private void OpenLegendWindow_Click(object sender, RoutedEventArgs e)

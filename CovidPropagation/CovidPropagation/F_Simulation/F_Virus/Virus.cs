@@ -17,7 +17,7 @@ namespace CovidPropagation
 
         private static int _incubationDurationMin;
         private static int _incubationDurationMax;
-        private static int _incubationDurationMedian;
+        private static double _incubationDurationMedian;
         private static int _duration; // En jours               
         private static double _hospitalRate;
         private static double _deathRate;
@@ -27,7 +27,7 @@ namespace CovidPropagation
 
         public static int IncubationDurationMin { get => _incubationDurationMin; }
         public static int IncubationDurationMax { get => _incubationDurationMax; }
-        public static int IncubationDurationMedian { get => _incubationDurationMedian; }
+        public static double IncubationDurationMedian { get => _incubationDurationMedian; }
         public static int Duration { get => _duration; }
         public static double HospitalRate { get => _hospitalRate; }
         public static double DeathRate { get => _deathRate; }
@@ -53,7 +53,7 @@ namespace CovidPropagation
                             _incubationDurationMax = Convert.ToInt32(reader.ReadString());
                             break;
                         case "IncubationDurationMedian":
-                            _incubationDurationMedian = Convert.ToInt32(reader.ReadString());
+                            _incubationDurationMedian = Convert.ToDouble(reader.ReadString());
                             break;
                         case "Duration":
                             _duration = Convert.ToInt32(reader.ReadString());

@@ -829,19 +829,19 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 
 # `Table des figures`
 - [Figure 1: Maquette page de simulation](#611-page-simulation)
-- [Figure 3: Maquette page de paramètres graphiques 1](#612-page-paramètres-graphiques)
-- [Figure 4: Maquette page de paramètres graphiques 2](#612-page-paramètres-graphiques)
-- [Figure 5: Maquette page de paramètres](#613-page-paramètres)
-- [Figure 6: Maquette page d'informations](#614-page-informations)
-- [Figure 7: Maquette interface graphique](#62-interface-graphique)
-- [Figure 8: Exemple de graphiques](#9521-graphique)
-- [Figure 9: Exemple d'interface graphique](#9522-interface-graphique)
-- [Figure 10: Persona expérimenté](#971-utilisateur-expérimenté)
-- [Figure 11: Persona inexpérimenté](#972-utilisateur-inexpérimenté)
-- [Figure 12: Diagramme d'activité](#99-diagramme-d'activité)
-- [Figure 13: Diagrame de classe initial](#911-diagramme-de-classe-initial)
-- [Figure 15: Fidélité des données](#121-pipeline)
-- [Figure 15: Diagramme de fonctionnement](#102-structure)
+- [Figure 2: Maquette page de paramètres graphiques 1](#612-page-paramètres-graphiques)
+- [Figure 3: Maquette page de paramètres graphiques 2](#612-page-paramètres-graphiques)
+- [Figure 4: Maquette page de paramètres](#613-page-paramètres)
+- [Figure 5: Maquette page d'informations](#614-page-informations)
+- [Figure 6: Maquette interface graphique](#62-interface-graphique)
+- [Figure 7: Exemple de graphiques](#9521-graphique)
+- [Figure 8: Exemple d'interface graphique](#9522-interface-graphique)
+- [Figure 9: Persona expérimenté](#971-utilisateur-expérimenté)
+- [Figure 10: Persona inexpérimenté](#972-utilisateur-inexpérimenté)
+- [Figure 11: Diagramme d'activité](#99-diagramme-d'activité)
+- [Figure 12: Diagrame de classe initial](#911-diagramme-de-classe-initial)
+- [Figure 13: Fidélité des données](#121-pipeline)
+- [Figure 14: Diagramme de fonctionnement](#102-structure)
 
 # `Bibliographie`
 
@@ -859,8 +859,9 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 20.04.2021
   - Utilisés dans la création des pipelines
     - [MSDN - Auteurs disponibles sur la page - Création des pipelines nommés](https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-use-named-pipes-for-network-interprocess-communication)
-    - [Forum Unity - WylieFoxxx - Modification du code msdn pour fonctionner sur Unity](https://answers.unity.com/questions/483123/how-do-i-get-named-pipes-to-work-in-unity.html)
-- 21.04.2021
+    - [Forum Unity - WylieFoxxx - Modification du code msdn pour fonctionner sur Unity](https://answers.unity.com/questions/483123/how-do-i-get-named-pipes-to-work-in-unity.html#:~:text=I%20see%20a,with%20given%20name.)
+
+21.04.2021
   - Utilisé dans la création de la documentation des pipelines
     - [Stackoverflow - usr - Modification du code MSDN](https://stackoverflow.com/questions/49172352/c-sharp-explanation-of-stream-string-example)
     - [materialDesignIcons - Icônes des boutons](https://materialdesignicons.com/)
@@ -870,12 +871,12 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
     - [Excel - Professeur Jose L. Jimenez et Docteur Zhe Peng - Propagation par aérosol](https://docs.google.com/spreadsheets/d/1x_QFiFPbqLtZTjuoVoCyPQdu7onu6c370NNlPZ3TfTk/edit#gid=519189277)
   - Utilisés dans la création des individus
     - [ge.ch - OCSTAT - Statistiques véhicules à genève](https://www.ge.ch/statistique/graphiques/affichage.asp?filtreGraph=11_02&dom=1)
-    - [Le temps -  Olivier Francey - Statistiques véhicules à genève](https://www.letemps.ch/suisse/nombre-voitures-menage-diminue-geneve#:~:text=Au%20d%C3%A9but%20de%20l'ann%C3%A9e,augmentation%20de%206%2C5%25)
+    - [Le temps -  Olivier Francey - Statistiques véhicules à genève](https://www.letemps.ch/suisse/nombre-voitures-menage-diminue-geneve#:~:text=De%20mani%C3%A8re%20g%C3%A9n%C3%A9rale,mod%C3%A9r%C3%A9e%20(%2B%201%20point).)
 
 27.04.2021
   - Utilisés dans la création du virus
     - [CDC - Durée du covid](https://www.cdc.gov/coronavirus/2019-ncov/if-you-are-sick/end-home-isolation.html#:~:text=You%20can%20be%20around%20others%20after%3A,of%20fever%2Dreducing%20medications%20and)
-    - [Patient -  Dr. Sarah Jarvis MBE - Incubation et durée du covid](https://patient.info/news-and-features/coronavirus-how-quickly-do-covid-19-symptoms-develop-and-how-long-do-they-last)
+    - [Patient -  Dr. Sarah Jarvis MBE - Incubation, durée de vie du covid et symptômes](https://patient.info/news-and-features/coronavirus-how-quickly-do-covid-19-symptoms-develop-and-how-long-do-they-last#:~:text=The%20median%20incubation,within%2011.5%20days.)
 
 03.05.2021
   - Utilisé dans la création des individus

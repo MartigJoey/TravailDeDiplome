@@ -1,7 +1,7 @@
 ﻿/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
- * Date          : 27.04.2021
+ * Date          : 06.05.2021
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
@@ -15,15 +15,15 @@ namespace CovidPropagation
     public class TimeFrame
     {
         private Site _activity;
-        private SitePersonStatus _reason;
+        private SitePersonStatus _personStatus;
 
         public Site Activity { get => _activity; }
-        public SitePersonStatus Reason { get => _reason; set => _reason = value; }
+        public SitePersonStatus PersonStatus { get => _personStatus; set => _personStatus = value; }
 
         public TimeFrame(Site activity, SitePersonStatus reason)
         {
             _activity = activity;
-            _reason = reason;
+            _personStatus = reason;
         }
     }
 }

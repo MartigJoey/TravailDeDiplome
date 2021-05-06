@@ -521,7 +521,7 @@
   - Assignation des lieux --> Sélection d'un planning compatible
   - Création d'une méthode créant des horaires aléatoires suivant des paramètres donné (Durée matin, durée midi, durée après-midi, etc.)
 
-# 04.05.2021 08h05 / 17h00
+# 05.05.2021 08h05 / 17h00
 - Ajouts d'icônes pour les boutons des éléments graphiques
 - Création des planning
   - Transformation des horaires générés en seed
@@ -544,3 +544,62 @@
   - À établir dans les activités
 - ~~Modifier SiteType ou~~ ajouter un nouveau paramètre qui permet de définir pourquoi la personne est là.
   - Différencie le client d'une personne qui travail
+
+# 06.05.2021 08h15 / 17h00
+- Ajout de la raison d'un individu d'aller dans un lieu dans la création du planning
+  - utilisation d'un mixe de SitePersonStatus et SiteType pour déterminer les lieux où va la personne. 
+    ```
+    public enum SiteType
+    {
+        Home,
+        Hobby,
+        WorkPlace,
+        Store,
+        Transport,
+        Hospital,
+        Eat
+    }
+    ```
+    ```
+    public enum SitePersonStatus
+    {
+        Client,
+        Worker,
+        Other
+    }
+    ```
+- Bug la voiture est utilisée 4 fois d'affilée sans aller nul part
+  - ~~Rectification, la voiture faisant partie des hobby, c'est le cas ici et donc pas un bug.~~
+  - Apparaît tout de même beaucoup trop souvent pour ne pas modifier l'alogrithm.
+  - 
+- [Informations concernant les repas à midi dans les entreprises](https://newsroom.heart.org/news/survey-more-than-half-of-u-s-employees-who-typically-eat-lunch-during-work-hours-struggle-to-make-it-healthy)
+- Mise à jour de la création de jours libre en prenant en compte les modifications dans la génération de jour de travail
+  - Il n'est pas nécessaire d'utiliser SitePersonStatus dans le choix de lieu car il est toujours client contrairement à un jour de la semaine.
+- Déplacement du code de la classe Simulation à Day
+- Suppression du code de génération des seeds
+- Source de données permettant l'approximation des personnes travaillant le samedi et le dimanche [Source](https://www.regionsjob.com/actualites/horaires-organisation-temps-travail-horaires-atypiques.html#:~:text=Selon%20une%20%C3%A9tude%20de%20l,pour%20se%20terminer%20%C3%A0%2018h%20!)
+  - Création des plannings des individus en comprenant que la majorité travail en semaine mais que certains travaillent aussi le week-end
+- Attributions de lieux aléatoires créé au préalable.
+  - Choix du véhicule en fonction de probabilités
+  - Bus pas encore implémenté mais ajoutés
+  - Ajouts de la classe vélos
+- Ajout de commentaire dans les méthodes d'extension et modifications de certaines
+  - Modification de Nextprobability() qui à la place d'avoir plusieurs versions acceptant différent types de paramètres, accepte uniquement le type object.
+- Ajout de commentaire dans la classe Day
+- Modification de SiteType pour inclure "WorkPlace"
+- Modification des valeurs en utilisant la source précédement récupérée [Source](https://www.letemps.ch/suisse/nombre-voitures-menage-diminue-geneve#:~:text=De%20mani%C3%A8re%20g%C3%A9n%C3%A9rale,mod%C3%A9r%C3%A9e%20(%2B%201%20point).)
+- Ajout de la fonctionnalité "Copy link to text" dans google chrome pour simplifier l'utilisation de sources.
+- Modification de certaines sources pour surligner directement le paragraphe utilisé.
+- Création d'un évènement permettant de récupérer les données à chaque itération de la simulation automatiquement.
+- Lancement de la simulation 1ère version.
+  - Oubli d'ajout des infectés
+  - La moyenne des quantas commence à 0 et augmente peut à petit jusqu'à s'arrêter à ~5.6 qui est la valeur par défaut.
+    - Les individus n'ignisialisaient pas leur "quantaExhalationRate" au démarrage mais uniquement lorsqu'ils changaient de lieux.
+- Création d'un event load dans la page simulation qui permet de récupérer 
+- Ajout d'infecté dès le départ
+  - Ils désparaissent à la première itération
+  - Les durée récupérée dans le fichier XML étaient set à 0
+  - Ils ne sont pas pris en compte dans les calcules.
+    - Ils l'étaient mais comme leur état etait celui d'infecté qui signifie que le virus ne s'est pas encore dévelopé.
+    - Changement de l'état "infected" à "infectious" pour aller plus rapidement vers la phase de contagion.
+    - 

@@ -8,10 +8,10 @@ namespace CovidPropagation
     {
         Home,
         Hobby,
-        Work,
         Store,
         Transport,
         Hospital,
-        Eat
+        Eat,
+        WorkPlace
     }
 }

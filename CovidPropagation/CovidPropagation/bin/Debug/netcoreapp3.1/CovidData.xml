@@ -1,8 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Datas>
   <Name>Covid</Name>
+  <IncubationDurationMin>2</IncubationDurationMin>
+  <IncubationDurationMax>14</IncubationDurationMax>
+  <IncubationDurationMedian>5.1</IncubationDurationMedian>
+  <Duration>14</Duration>
+  <HospitalRate>5</HospitalRate> <!-- Au pif, à modifier -->
+  <DeathRate>1</DeathRate> <!-- Au pif, à modifier -->
+  <DecayRateOfVirus>5</DecayRateOfVirus> <!-- Au pif, à modifier -->
+  <DepositionOnSurfaceRate>5</DepositionOnSurfaceRate> <!-- Au pif, à modifier -->
   <Transmissions>
     <Transmission>TransmissionsMethodBlabla</Transmission>
+	<!-- https://patient.info/news-and-features/coronavirus-how-quickly-do-covid-19-symptoms-develop-and-how-long-do-they-last#:~:text=Fever%20(88%25).,develop%20other%20symptoms.-->
   </Transmissions>
   <Symptoms>
     <Symptom>SymptomsMethodBlabla</Symptom>

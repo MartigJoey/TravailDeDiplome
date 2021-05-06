@@ -1,7 +1,7 @@
 ﻿/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
- * Date          : 29.04.2021
+ * Date          : 06.05.2021
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
@@ -16,14 +16,43 @@ namespace CovidPropagation
     /// </summary>
     public class Planning
     {
+        private const int SUNDAY_INDEX = 6;
+        private const int SATURDAY_INDEX = 5;
+        private const int FRIDAY_INDEX = 4;
+
+        private const double WORK_ON_SUNDAY_PROBABILITY = 0.1;
+        private const double WORK_ON_SATURDAY_PROBABILITY = 0.3;
         private Day[] _days = new Day[GlobalVariables.NUMBER_OF_DAY];
         public Day[] Days { get => _days; }
 
-        private Site _dayActivity;
-
-        public Planning()
+        public Planning(List<KeyValuePair<Site, SitePersonStatus>> personSites, int nbWorkDays)
         {
-            // Does nothing
+            bool[] workDays = new bool[GlobalVariables.NUMBER_OF_DAY];
+            Random rdm = GlobalVariables.rdm;
+            // Calcul les jours de la semaine ou l'individu travail
+            if (nbWorkDays > 0 && rdm.NextBoolean(WORK_ON_SUNDAY_PROBABILITY))
+            {
+                workDays[SUNDAY_INDEX] = true;
+                nbWorkDays--;
+            }
+            if (nbWorkDays > 0 && rdm.NextBoolean(WORK_ON_SATURDAY_PROBABILITY))
+            {
+                workDays[SATURDAY_INDEX] = true;
+                nbWorkDays--;
+            }
+            while (nbWorkDays > 0)
+            {
+                workDays[rdm.NextInclusive(0, FRIDAY_INDEX)] = true;
+                nbWorkDays--;
+            }
+
+            for (int i = 0; i < _days.Length; i++)
+            {
+                if (workDays[i])
+                    _days[i] = new Day(personSites, true);
+                else
+                    _days[i] = new Day(personSites, false);
+            }
         }
 
         /// <summary>
@@ -54,42 +83,6 @@ namespace CovidPropagation
         {
             int[] nextTimeFrame = TimeManager.GetNextTimeFrame();
             return _days[nextTimeFrame[0]].GetActivity(nextTimeFrame[1]);
-        }
-
-        public void CreateAdultPlanning()
-        {
-            List<Day> days = new List<Day>();
-            for (int i = 0; i < GlobalVariables.NUMBER_OF_DAY; i++)
-            {
-                Day day = new Day();
-                day.CreateAdultDay(i);
-                days.Add(day);
-            }
-            _days = days.ToArray();
-        }
-
-        public void CreateStudentPlanning()
-        {
-            List<Day> days = new List<Day>();
-            for (int i = 0; i < GlobalVariables.NUMBER_OF_DAY; i++)
-            {
-                Day day = new Day();
-                day.CreateStudentDay(i);
-                days.Add(day);
-            }
-            _days = days.ToArray();
-        }
-
-        public void CreateElderPlanning()
-        {
-            List<Day> days = new List<Day>();
-            for (int i = 0; i < GlobalVariables.NUMBER_OF_DAY; i++)
-            {
-                Day day = new Day();
-                day.CreateElderDay(i);
-                days.Add(day);
-            }
-            _days = days.ToArray();
         }
     }
 }

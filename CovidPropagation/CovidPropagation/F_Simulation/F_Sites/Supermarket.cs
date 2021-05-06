@@ -13,7 +13,7 @@ namespace CovidPropagation
 {
     public class Supermarket : Site
     {
-        private static SiteType[] supermarketTypes = new SiteType[] { SiteType.Store, SiteType.Work };
+        private static SiteType[] supermarketTypes = new SiteType[] { SiteType.Store, SiteType.WorkPlace };
         public Supermarket(double length = GlobalVariables.BUILDING_LENGTH, 
                            double width = GlobalVariables.BUILDING_WIDTH, 
                            double height = GlobalVariables.BUILDING_HEIGHT,  

@@ -8,6 +8,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CovidPropagation
 {
@@ -33,7 +34,6 @@ namespace CovidPropagation
         private bool _hasMask;
         private double _exhalationMaskEfficiency;
         private double _inhalationMaskEfficiency;
-        private Dictionary<Type, Site> locations;
 
         public PersonState CurrentState { get => _state; set => _state = value; }
         public double QuantaExhalationRate { get => quantaExhalationRate; }
@@ -42,7 +42,7 @@ namespace CovidPropagation
         public double InhalationMaskEfficiency { get => _inhalationMaskEfficiency; set => _inhalationMaskEfficiency = value; }
         public int Age { get => _age; set => _age = value; }
 
-        public Person(Planning planning, Dictionary<Type, Site> locations, int age = GlobalVariables.DEFAULT_PERSON_AGE, PersonState state = PersonState.Healthy)
+        public Person(Planning planning, int age = GlobalVariables.DEFAULT_PERSON_AGE, PersonState state = PersonState.Healthy)
         {
             _planning = planning;
             _state = state;
@@ -62,8 +62,10 @@ namespace CovidPropagation
                 baseVirusResistance = _rdm.Next(GlobalVariables.SYMPTOMATIC_MIN_RESISTANCE, GlobalVariables.SYMPTOMATIC_MAX_RESISTANCE);
 
             virusResistance = baseVirusResistance;
-            this.locations = locations;
             _currentSite = _planning.GetActivity();
+            quantaExhalationRate = _currentSite.GetAverageQuantaExhalationRate();
+            if ((int)_state >= 2)
+                SetInfectionDurations(PersonState.Infectious);
         }
 
         /// <summary>
@@ -94,19 +96,27 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Vérifie l'état de contamination de la personne.
+        /// </summary>
         public void ChechState()
         {
             double contaminationProbability = _currentSite.GetProbabilityOfInfection();
             if (_state == PersonState.Healthy && contaminationProbability >= _rdm.NextDouble())
             {
-                _state = PersonState.Infected;
-                virusDuration = Virus.Duration;
-                virusIncubationDuration = Virus.IncubationDurationMedian;
+                SetInfectionDurations(PersonState.Infected);
             }
 
             ContractIlness();
             DecreaseImmunityDuration();
             DecreaseVirusDuration();
+        }
+
+        private void SetInfectionDurations(PersonState state)
+        {
+            _state = state;
+            virusDuration = Virus.Duration * GlobalVariables.NUMBER_OF_TIMEFRAME;
+            virusIncubationDuration = Convert.ToInt32(Virus.IncubationDurationMedian * GlobalVariables.NUMBER_OF_TIMEFRAME);
         }
 
         /// <summary>

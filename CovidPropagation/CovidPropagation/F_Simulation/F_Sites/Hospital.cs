@@ -13,7 +13,7 @@ namespace CovidPropagation
 {
     public class Hospital : Site
     {
-        private static SiteType[] hospitalTypes = new SiteType[] { SiteType.Hospital, SiteType.Work, SiteType.Eat };
+        private static SiteType[] hospitalTypes = new SiteType[] { SiteType.Hospital, SiteType.Eat, SiteType.WorkPlace };
         public Hospital(double length = GlobalVariables.BUILDING_LENGTH,
                            double width = GlobalVariables.BUILDING_WIDTH,
                            double height = GlobalVariables.BUILDING_HEIGHT,

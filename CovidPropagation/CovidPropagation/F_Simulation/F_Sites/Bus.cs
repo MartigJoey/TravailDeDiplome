@@ -5,22 +5,24 @@
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
-using System.Drawing;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace CovidPropagation
 {
-    class Car : Site
+    class Bus : Site
     {
-        private static SiteType[] carTypes = new SiteType[] { SiteType.Transport };
+        private static SiteType[] busTypes = new SiteType[] { SiteType.Transport, SiteType.WorkPlace };
 
-        public Car(double length = GlobalVariables.CAR_LENGTH,
+        public Bus(double length = GlobalVariables.CAR_LENGTH,
                    double width = GlobalVariables.CAR_WIDTH,
                    double height = GlobalVariables.CAR_HEIGHT,
                    double ventilationWithOutside = GlobalVariables.CAR_VENTILATION_WITH_OUTSIDE,
                    double additionalControlMeasures = GlobalVariables.CAR_ADDITIONAL_CONTROL_MEASURES) :
-                 base(carTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
+                 base(busTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
         {
-            
+
         }
     }
 }

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Diagnostics;
 
 namespace CovidPropagation
 {
@@ -95,16 +96,19 @@ namespace CovidPropagation
                     AerosolTransmission aerosolTransmission = Virus.GetTransmission(typeof(AerosolTransmission)) as AerosolTransmission;
                     int nbPersons = persons.Count;
                     int infectivePersons = persons.Where(p => (int)p.CurrentState > 1).Count();
-                    double fractionOfImmune = persons.Where(p => p.CurrentState == PersonState.Immune).Count() / nbPersons * 100; // %
+                    double fractionOfImmune = (double)persons.Where(p => p.CurrentState == PersonState.Immune).Count() / (double)nbPersons * 100d; // %
                     int nbPersonsWithMask = persons.Where(p => p.HasMask).Count();
-                    double inhalationMaskEfficiency = persons.Where(p => p.HasMask).Sum(p => p.InhalationMaskEfficiency) / nbPersonsWithMask;
-                    double probabilityOfBeingInfective = persons.Where(p => (int)p.CurrentState >= 3).Count() / nbPersons; // A modifier pour entrer en accord avec la simulation
+                    double inhalationMaskEfficiency = (double)persons.Where(p => p.HasMask).Sum(p => p.InhalationMaskEfficiency) / (double)nbPersonsWithMask;
+                    double probabilityOfBeingInfective = (double)persons.Where(p => (int)p.CurrentState >= 3).Count() / (double)nbPersons; // A modifier pour entrer en accord avec la simulation
 
-                    // Personnalisé par personne en fonction des symptoms
                     // Ancienne version: quantaExhalationRateOfInfected = quantaExhalationRateOfInfected * (1 - exhalationMaskEfficiency * percentagePersonWithMask) * infectivePersons; 
                     double quantaExhalationRateOfInfected = persons.Where(p => (int)p.CurrentState > 2).Sum(p => p.QuantaExhalationRate * (1 - p.ExhalationMaskEfficiency * p.HasMask.ConvertToInt())) / infectivePersons;
 
                     TransmissionData aerosolDatas = aerosolTransmission.CalculateRisk(nbPersons, infectivePersons, fractionOfImmune, nbPersonsWithMask, inhalationMaskEfficiency, sumFirstOrderLossRate, volume, quantaExhalationRateOfInfected, probabilityOfBeingInfective);
+                    Debug.WriteLine($"Total       : {nbPersons}" + Environment.NewLine +
+                                    $"Infected    : {infectivePersons}" + Environment.NewLine +
+                                    $"probability : {probabilityOfBeingInfective}");
+                    probabilityOfInfection = aerosolDatas.ProbabilityOfInfection;
                 }
             }
             hasEnvironnementChanged = false;

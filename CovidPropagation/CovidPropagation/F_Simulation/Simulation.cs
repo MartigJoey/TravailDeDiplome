@@ -1,7 +1,7 @@
 ﻿/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
- * Date          : 29.04.2021
+ * Date          : 06.05.2021
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
@@ -15,11 +15,23 @@ using System.Threading.Tasks;
 
 namespace CovidPropagation
 {
-    public class Simulation
+    //First we have to define a delegate that acts as a signature for the
+    //function that is ultimately called when the event is triggered.
+    //You will notice that the second parameter is of MyEventArgs type.
+    //This object will contain information about the triggered event.
+    public delegate void MyEventHandler(object source, Simulation e);
+
+    //This is a class which describes the event to the class that recieves it.
+    //An EventArgs class must always derive from System.EventArgs.
+    public class Simulation : EventArgs
     {
+
+        public event MyEventHandler OnTickSP;
+
         private const int MAX_SCHOOL_AGE = 25;
         private const int MAX_WORKING_AGE = 65;
 
+        private Random rdm = GlobalVariables.rdm;
         private int _averageAge;
         private int _nbInfected;
         private int _nbPersons;
@@ -56,10 +68,8 @@ namespace CovidPropagation
 
             CreateBuildings(nbMinor, nbWorking, nbRetirement);
             CreateTransports();
-            CreatePopulation(_nbPersons, retirementProbability);
+            CreatePopulation(_nbPersons, _nbInfected, retirementProbability, minorProbability);
 
-            GenerateWeekDay();
-            //GenerateFreeDay();
         }
 
         public async void Iterate()
@@ -71,9 +81,10 @@ namespace CovidPropagation
                 {
                     sp.Start();
                     TimeManager.NextTimeFrame();
-                    population.ForEach(p => p.ChangeActivity());
-                    allBuildingSites.ForEach(p => p.CalculateprobabilityOfInfection());
-                    population.ForEach(p => p.ChechState());
+                    if (OnTickSP != null)
+                    {
+                        OnTickSP(10, this);
+                    }
                     sp.Stop();
 
                     if (sp.ElapsedMilliseconds < Interval)
@@ -86,6 +97,17 @@ namespace CovidPropagation
                 }
                 await Task.Delay(100);
             }
+        }
+
+        public string GetData()
+        {
+            population.ForEach(p => p.ChangeActivity());
+            allBuildingSites.ForEach(p => p.CalculateprobabilityOfInfection());
+            population.ForEach(p => p.ChechState());
+            return $"Average age             : {population.Average(p => p.Age)} {Environment.NewLine}" +
+                   $"Infecté(s)              : {population.Where(p => (int)p.CurrentState >= 2).Count()} {Environment.NewLine}" +
+                   $"Moyenne quanta          : {population.Average(p => p.QuantaExhalationRate)} {Environment.NewLine}" +
+                   $"Probabilité d'infection : {allBuildingSites.Sum(b => b.GetProbabilityOfInfection())} {Environment.NewLine}";
         }
 
         public void Start()
@@ -138,7 +160,7 @@ namespace CovidPropagation
 
         private void CreateTransports()
         {
-            double nbOfCar = (int)Math.Ceiling((36d - 100) / 100 * _nbPersons + _nbPersons);
+            double nbOfCar = (int)Math.Ceiling((36d - 100) / 100 * _nbPersons + _nbPersons); //  Modifier les % de chances d'utiliser une voiture dans la création de population
             double nbOfBus = (int)Math.Ceiling((15d - 100) / 100 * _nbPersons + _nbPersons);
             double nbOfBikes = (int)Math.Ceiling((10d - 100) / 100 * _nbPersons + _nbPersons); // Augmente quanta
 
@@ -146,52 +168,49 @@ namespace CovidPropagation
             {
                // allTransports.Add(new School(populationInSchool / nbOfSchool));
             }
-
         }
 
-        private void CreatePopulation(int nbPeople, double retirementProbability)
+        private void CreatePopulation(int nbPeople, int nbInfected, double retirementProbability, double minorProbability)
         {
             while (nbPeople > 0)
             {
+                nbInfected--;
+                PersonState personState;
+                if (nbInfected > 0)
+                    personState = PersonState.Infectious;
+                else
+                    personState = PersonState.Healthy;
+
                 if (GlobalVariables.rdm.NextBoolean(retirementProbability))
                 {
-                    nbPeople -= CreateRetired();
+                    CreateElder(personState);
+                    nbPeople--;
+                    //nbPeople -= CreateRetired();
+                }else if (GlobalVariables.rdm.NextBoolean(minorProbability))
+                {
+                    CreateStudent(personState);
+                    nbPeople--;
+                    //nbPeople -= CreateRetired();
                 }
                 else
                 {
-                    nbPeople -= CreateFamilly();
+                    CreateAdult(personState);
+                    nbPeople--;
+                    //nbPeople -= CreateFamilly();
                 }
             }
-
-                //while (nbMinor > 0)
-                //{
-                //    population.Add(CreateStudentPerson());
-                //    nbMinor--;
-                //}
-                //
-                //while (nbWorking > 0)
-                //{
-                //    population.Add(CreateElderPerson());
-                //    nbWorking--;
-                //}
-                //
-                //while (nbRetirement > 0)
-                //{
-                //    population.Add(CreateAdultClass());
-                //    nbRetirement--;
-                //}
         }
 
         private int CreateFamilly()
         {
-            KeyValuePair<string, double>[] famillyPresetsProbability = new KeyValuePair<string, double>[] {
-                new KeyValuePair<string, double>("OnePerson", 0.28d),
-                new KeyValuePair<string, double>("CoupleWithChild", 0.21d),
-                new KeyValuePair<string, double>("CoupleWithoutChild", 0.40d),
-                new KeyValuePair<string, double>("OneParentWithChild", 0.11d)
+            KeyValuePair<object, double>[] famillyPresetsProbability = new KeyValuePair<object, double>[] {
+                new KeyValuePair<object, double>("OnePerson", 0.28d),
+                new KeyValuePair<object, double>("CoupleWithChild", 0.21d),
+                new KeyValuePair<object, double>("CoupleWithoutChild", 0.40d),
+                new KeyValuePair<object, double>("OneParentWithChild", 0.11d)
             };
 
-            string famillyPreset = GlobalVariables.rdm.NextProbability(famillyPresetsProbability);
+            string famillyPreset = (string)GlobalVariables.rdm.NextProbability(famillyPresetsProbability);
 
             // Switch présets
             switch (famillyPreset)
@@ -215,12 +234,12 @@ namespace CovidPropagation
 
         private int CreateRetired()
         {
-            KeyValuePair<string, double>[] retiredPresetsProbability = new KeyValuePair<string, double>[] {
-                new KeyValuePair<string, double>("OnePerson", 0.35d),
-                new KeyValuePair<string, double>("Couple", 0.65d)
+            KeyValuePair<object, double>[] retiredPresetsProbability = new KeyValuePair<object, double>[] {
+                new KeyValuePair<object, double>("OnePerson", 0.35d),
+                new KeyValuePair<object, double>("Couple", 0.65d)
             };
             int nbCreated;
-            string retiredPreset = GlobalVariables.rdm.NextProbability(retiredPresetsProbability);
+            string retiredPreset = (string)GlobalVariables.rdm.NextProbability(retiredPresetsProbability);
             Dictionary<Type, Site> locations = new Dictionary<Type, Site>();
 
             // Switch présets
@@ -228,9 +247,15 @@ namespace CovidPropagation
             {
                 default:
                 case "OnePerson":
-                    // Créer personne
-                    Planning planning = new Planning();
-                    planning.CreateElderPlanning();
+                    // Créer personne seule
+                    // Choisir dans la liste de lieux au moin 1 de chaque.
+                    List<KeyValuePair<Site, SitePersonStatus>> personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
+                        new KeyValuePair<Site, SitePersonStatus>(new Home(), SitePersonStatus.Other),
+                        new KeyValuePair<Site, SitePersonStatus>(new Store(), SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(new Restaurant(), SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(new Car(), SitePersonStatus.Other)
+                    };
+                    Planning planning = new Planning(personSitesFree, 0);
                     locations.Add(typeof(Home), new Home());
 
                     if (GlobalVariables.rdm.NextBoolean())
@@ -246,34 +271,34 @@ namespace CovidPropagation
                     locations.Add(typeof(Store), allBuildingSites.Where(b => typeof(Store) == b.GetType()).First());
                     locations.Add(typeof(Supermarket), allBuildingSites.Where(b => typeof(Supermarket) == b.GetType()).First());
 
-                    population.Add(new Person(planning, locations));
+                    population.Add(new Person(planning));
                     nbCreated = 1;
                     break;
                 case "Couple":
                     // Créer deux personnes en couples
-                    Planning planning1 = new Planning();
-                    Planning planning2 = new Planning();
-                    planning1.CreateElderPlanning(); // Link both
-                    planning2.CreateElderPlanning();
-
-                    locations.Add(typeof(Home), new Home());
-
-                    if (GlobalVariables.rdm.NextBoolean())
-                        locations.Add(typeof(Car), new Car());
-                    else
-                        locations.Add(typeof(Car), new Outside());
-
-                    locations.Add(typeof(Outside), allBuildingSites.Where(b => typeof(Outside) == b.GetType()).First());
-                    locations.Add(typeof(Company), allBuildingSites.Where(b => typeof(Company) == b.GetType()).First());
-                    locations.Add(typeof(Hospital), allBuildingSites.Where(b => typeof(Hospital) == b.GetType()).First());
-                    locations.Add(typeof(Restaurant), allBuildingSites.Where(b => typeof(Restaurant) == b.GetType()).First());
-                    locations.Add(typeof(School), allBuildingSites.Where(b => typeof(School) == b.GetType()).First());
-                    locations.Add(typeof(Store), allBuildingSites.Where(b => typeof(Store) == b.GetType()).First());
-                    locations.Add(typeof(Supermarket), allBuildingSites.Where(b => typeof(Supermarket) == b.GetType()).First());
-
-                    population.Add(new Person(planning1, locations));
-                    population.Add(new Person(planning2, locations));
-                    nbCreated = 2;
+                    //Planning planning1 = new Planning();
+                    //Planning planning2 = new Planning();
+                    //planning1.CreateElderPlanning(); // Link both
+                    //planning2.CreateElderPlanning();
+                    //
+                    //locations.Add(typeof(Home), new Home());
+                    //
+                    //if (GlobalVariables.rdm.NextBoolean())
+                    //    locations.Add(typeof(Car), new Car());
+                    //else
+                    //    locations.Add(typeof(Car), new Outside());
+                    //
+                    //locations.Add(typeof(Outside), allBuildingSites.Where(b => typeof(Outside) == b.GetType()).First());
+                    //locations.Add(typeof(Company), allBuildingSites.Where(b => typeof(Company) == b.GetType()).First());
+                    //locations.Add(typeof(Hospital), allBuildingSites.Where(b => typeof(Hospital) == b.GetType()).First());
+                    //locations.Add(typeof(Restaurant), allBuildingSites.Where(b => typeof(Restaurant) == b.GetType()).First());
+                    //locations.Add(typeof(School), allBuildingSites.Where(b => typeof(School) == b.GetType()).First());
+                    //locations.Add(typeof(Store), allBuildingSites.Where(b => typeof(Store) == b.GetType()).First());
+                    //locations.Add(typeof(Supermarket), allBuildingSites.Where(b => typeof(Supermarket) == b.GetType()).First());
+                    //
+                    //population.Add(new Person(planning1, locations));
+                    //population.Add(new Person(planning2, locations));
+                    //nbCreated = 2;
                     break;
             }
             // Nouveau
@@ -305,237 +330,58 @@ namespace CovidPropagation
                 // Stocker les lieux
             // Personne
 
-            return nbCreated;
+            return nbCreated =  1;
         }
 
-        private string GenerateWeekDay()
+        private void CreateAdult(PersonState personState)
         {
-            int totalTimeFrame = GlobalVariables.NUMBER_OF_TIMEFRAME;
-            Random rdm = GlobalVariables.rdm;
+            List<KeyValuePair<Site, SitePersonStatus>> personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
+                        new KeyValuePair<Site, SitePersonStatus>(new Home(), SitePersonStatus.Other),
+                        new KeyValuePair<Site, SitePersonStatus>(allBuildingSites.Where(b => typeof(Store) == b.GetType()).OrderBy(x => rdm.Next()).First(), SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(allBuildingSites.Where(b => typeof(Restaurant) == b.GetType()).OrderBy(x => rdm.Next()).First(), SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(allBuildingSites.Where(b => b.Type.Contains(SiteType.WorkPlace)).OrderBy(x => rdm.Next()).First(), SitePersonStatus.Worker),
+                        new KeyValuePair<Site, SitePersonStatus>(GetVehicle(), SitePersonStatus.Other)
+                    };
+            Planning planning = new Planning(personSitesFree, 5);
 
-            List<Site> personSites = new List<Site>() { new Home(), new Store(), new Restaurant(), new Car(), new Company() };
-
-            int morningTimeFrameMax = 16, morningVariation = 4;
-            int morningTimeFrameTotal = 22;
-            int noonTimeFrameMax = 4, noonMin = 3;
-            int afterNoonTimeFrameMax = 10, afterNoonVariation = 4;
-            int afterNoonTimeFrameTotal = 10;
-            int eveningTimeFrameMax = 8, eveningMin = 3;
-            int nightTimeFrame; // remplit ce qu'il manque
-
-            int morningWorkTimeFrame = 0;
-            int afterNoonFreeTimeTimeFrame = 0;
-            int eveningActivityTimeFrame = 0;
-
-            int morningTimeFrame = morningTimeFrameMax - rdm.NextWithMinimum(0, morningVariation, 0);
-            int noonTimeFrame = rdm.Next(noonMin, noonTimeFrameMax + 1);
-            int afterNoonWorkTimeFrame = afterNoonTimeFrameMax - rdm.NextWithMinimum(0, afterNoonVariation, 0);
-            int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, 3);
-
-            // Activities
-            #region Activities
-
-            if (morningTimeFrame < morningTimeFrameTotal)
-                morningWorkTimeFrame = morningTimeFrameTotal - morningTimeFrame;
-
-            if (noonTimeFrame < noonTimeFrameMax)
-                afterNoonTimeFrameMax += 1;
-
-            if (afterNoonWorkTimeFrame < afterNoonTimeFrameTotal)
-                afterNoonFreeTimeTimeFrame = afterNoonTimeFrameTotal - afterNoonWorkTimeFrame;
-
-            if (eveningTimeFrame < eveningTimeFrameMax)
-                eveningActivityTimeFrame = eveningTimeFrameMax - eveningTimeFrame;
-            #endregion
-
-            nightTimeFrame = (morningTimeFrame + morningWorkTimeFrame) +
-                           (noonTimeFrame) +
-                           (afterNoonWorkTimeFrame + afterNoonFreeTimeTimeFrame) +
-                           (eveningTimeFrame + eveningActivityTimeFrame);
-
-            nightTimeFrame = totalTimeFrame - nightTimeFrame;
-
-            Site hometSite = personSites.Where(h => h.Type.Contains(SiteType.Home)).OrderBy(x => rdm.Next()).First();
-            Site morningWorkSite = personSites.Where(h => h.Type.Contains(SiteType.Work)).OrderBy(x => rdm.Next()).First();
-            Site noonSite = personSites.Where(h => h.Type.Contains(SiteType.Eat)).OrderBy(x => rdm.Next()).First();
-            Site afterNoonWorkSite = personSites.Where(h => h.Type.Contains(SiteType.Work)).OrderBy(x => rdm.Next()).First();
-            Site afterNoonFreeTimeSite = personSites.Where(h => h.Type.Contains(SiteType.Hobby)).OrderBy(x => rdm.Next()).First();
-            Site eveningActivitySite = personSites.Where(h => h.Type.Contains(SiteType.Eat)).OrderBy(x => rdm.Next()).First();
-            Site transportSite = personSites.Where(h => h.Type.Contains(SiteType.Transport)).OrderBy(x => rdm.Next()).First();
-
-            List<TimeFrame> timeFrames = new List<TimeFrame>();
-            // Changer les siteType pour définir le type
-            CreateMorning(timeFrames, hometSite, morningTimeFrame, SitePersonStatus.Other, morningWorkSite, morningWorkTimeFrame, SitePersonStatus.Worker, transportSite);
-            CreateNoon(timeFrames, noonSite, noonTimeFrame, SitePersonStatus.Client, transportSite);
-            CreateAfterNoon(timeFrames, afterNoonWorkSite, afterNoonWorkTimeFrame, SitePersonStatus.Other, afterNoonFreeTimeSite, afterNoonFreeTimeTimeFrame, SitePersonStatus.Worker, transportSite);
-            CreateEvening(timeFrames, hometSite, eveningTimeFrame, SitePersonStatus.Other, eveningActivitySite, eveningActivityTimeFrame, SitePersonStatus.Client, transportSite);
-            CreateNight(timeFrames, hometSite, nightTimeFrame, transportSite);
-
-            foreach (var item in timeFrames)
-            {
-                Debug.WriteLine(item.Activity);
-            }
-            return "";
+            population.Add(new Person(planning, 30, personState)); // Changer pour age random
         }
 
-        private string GenerateFreeDay()
+        private void CreateStudent(PersonState personState)
         {
-            int totalTimeFrame = GlobalVariables.NUMBER_OF_TIMEFRAME;
-            Random rdm = GlobalVariables.rdm;
-
-            List<Site> personSites = new List<Site>() { new Home(), new Store(), new Restaurant(), new Car()};
-
-            int morningTimeFrameMax = 22, morningMin = 12;
-            int noonTimeFrameMax = 4, noonMin = 3;
-            int afterNoonTimeFrameMax = 10, afterNoonMin = 5;
-            int eveningTimeFrameMax = 8, eveningMin = 3;
-            int nightTimeFrame; // remplit ce qu'il manque
-
-            int morningActivityTimeFrame = 0;
-            int afterNoonActivityTimeFrame = 0;
-            int eveningActivityTimeFrame = 0;
-
-            int morningTimeFrame = rdm.NextWithMinimum(morningMin, morningTimeFrameMax, 3);
-            int noonTimeFrame = rdm.Next(noonMin, noonTimeFrameMax + 1);
-            int afterNoonTimeFrame = rdm.NextWithMinimum(afterNoonMin, afterNoonTimeFrameMax, 3);
-            int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, 3);
-
-            // Activities
-            #region Activities
-
-            if (morningTimeFrame < morningTimeFrameMax)
-                morningActivityTimeFrame = morningTimeFrameMax - morningTimeFrame;
-
-            if (noonTimeFrame < noonTimeFrameMax)
-                afterNoonTimeFrameMax += 1;
-
-            if (afterNoonTimeFrame < afterNoonTimeFrameMax)
-                afterNoonActivityTimeFrame = afterNoonTimeFrameMax - afterNoonTimeFrame;
-
-            if (eveningTimeFrame < eveningTimeFrameMax)
-                eveningActivityTimeFrame = eveningTimeFrameMax - eveningTimeFrame;
-            #endregion
-
-            nightTimeFrame = (morningTimeFrame + morningActivityTimeFrame) +
-                           (noonTimeFrame) +
-                           (afterNoonTimeFrame + afterNoonActivityTimeFrame) +
-                           (eveningTimeFrame + eveningActivityTimeFrame);
-
-            nightTimeFrame = totalTimeFrame - nightTimeFrame;
-
-            Debug.WriteLine(eveningTimeFrame);
-
-            // établir différement
-            Site homeSite = personSites.Where(h => h.Type.Contains(SiteType.Home)).OrderBy(x => rdm.Next()).First();
-            Site morningActivitySite = personSites.Where(h => h.Type.Contains(SiteType.Hobby)).OrderBy(x => rdm.Next()).First();
-            Site noonSite = personSites.Where(h => h.Type.Contains(SiteType.Eat)).OrderBy(x => rdm.Next()).First();
-            Site afterNoonActivitySite = personSites.Where(h => h.Type.Contains(SiteType.Hobby)).OrderBy(x => rdm.Next()).First();
-            Site eveningActivitySite = personSites.Where(h => h.Type.Contains(SiteType.Eat)).OrderBy(x => rdm.Next()).First();
-            Site transportSite = personSites.Where(h => h.Type.Contains(SiteType.Transport)).OrderBy(x => rdm.Next()).First();
-
-            // Morning
-            List<TimeFrame> timeFrames = new List<TimeFrame>();
-            CreateMorning(timeFrames, homeSite, morningTimeFrame, SitePersonStatus.Other, morningActivitySite, morningActivityTimeFrame, SitePersonStatus.Client, transportSite);
-            CreateNoon(timeFrames, noonSite, noonTimeFrame, SitePersonStatus.Client, transportSite);
-            CreateAfterNoon(timeFrames, homeSite, afterNoonTimeFrame, SitePersonStatus.Other, afterNoonActivitySite, afterNoonActivityTimeFrame, SitePersonStatus.Client, transportSite);
-            CreateEvening(timeFrames, homeSite, eveningTimeFrame, SitePersonStatus.Other, eveningActivitySite, eveningActivityTimeFrame, SitePersonStatus.Client, transportSite);
-            CreateNight(timeFrames, homeSite, nightTimeFrame, transportSite);
-
-            foreach (var item in timeFrames)
-            {
-                Debug.WriteLine(item.Activity);
-            }
-            return "";
+            List<KeyValuePair<Site, SitePersonStatus>> personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
+                        new KeyValuePair<Site, SitePersonStatus>(new Home(), SitePersonStatus.Other),
+                        new KeyValuePair<Site, SitePersonStatus>(allBuildingSites.Where(b => typeof(Store) == b.GetType()).OrderBy(x => rdm.Next()).First(), SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(allBuildingSites.Where(b => typeof(Restaurant) == b.GetType()).OrderBy(x => rdm.Next()).First(), SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(allBuildingSites.Where(b => typeof(Outside) == b.GetType()).First(), SitePersonStatus.Other),
+                        new KeyValuePair<Site, SitePersonStatus>(allBuildingSites.Where(b => typeof(School) == b.GetType()).OrderBy(x => rdm.Next()).First(), SitePersonStatus.Worker)
+                    };
+            Planning planning = new Planning(personSitesFree, 5);
+            population.Add(new Person(planning, 15, personState));
         }
 
-        private void CreateMorning(List<TimeFrame> morningTimeFrames, Site defaultSite, int defaultTimeFrame, SitePersonStatus defaultType, Site activitySite, int activityTimeFrame, SitePersonStatus activityType ,Site transportSite)
+        private void CreateElder(PersonState personState)
         {
-            morningTimeFrames.AddRange(Enumerable.Repeat(new TimeFrame(defaultSite, defaultType), defaultTimeFrame));
-            if (activitySite != defaultSite && activityTimeFrame > 0)
-            {
-                morningTimeFrames.RemoveAt(morningTimeFrames.GetLastIndex());
-                morningTimeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
-            }
-            morningTimeFrames.AddRange(Enumerable.Repeat(new TimeFrame(activitySite, activityType), activityTimeFrame));
+            List<KeyValuePair<Site, SitePersonStatus>> personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
+                        new KeyValuePair<Site, SitePersonStatus>(new Home(), SitePersonStatus.Other),
+                        new KeyValuePair<Site, SitePersonStatus>(allBuildingSites.Where(b => typeof(Store) == b.GetType()).OrderBy(x => rdm.Next()).First(), SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(allBuildingSites.Where(b => typeof(Restaurant) == b.GetType()).OrderBy(x => rdm.Next()).First(), SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(GetVehicle(), SitePersonStatus.Other)
+                    };
+            Planning planning = new Planning(personSitesFree, 0);
+            population.Add(new Person(planning, 70, personState));
         }
 
-        private void CreateNoon(List<TimeFrame> timeFrames, Site site, int siteTimeFrames, SitePersonStatus siteType, Site transportSite)
-        {
-            if (timeFrames[timeFrames.GetLastIndex()].Activity != site)
-            {
-                timeFrames.RemoveAt(timeFrames.GetLastIndex());
-                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
-            }
-            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(site, siteType), siteTimeFrames));
-        }
 
-        private void CreateAfterNoon(List<TimeFrame> timeFrames, Site site, int siteTimeFrames, SitePersonStatus siteType, Site activitySite, int activityTimeFrames, SitePersonStatus activityType, Site transportSite)
+        private Site GetVehicle()
         {
-            if (timeFrames[timeFrames.GetLastIndex()].Activity != site)
-            {
-                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
-                siteTimeFrames--;
-            }
-            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(site, siteType), siteTimeFrames));
-            if (activitySite != site && activityTimeFrames > 0)
-            {
-                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
-                activityTimeFrames--;
-            }
-            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(activitySite, activityType), activityTimeFrames));
-        }
-
-        private void CreateEvening(List<TimeFrame> timeFrames, Site site, int siteTimesFrames, SitePersonStatus siteType, Site activitySite, int activityTimeFrames, SitePersonStatus activityType, Site transportSite)
-        {
-            if (timeFrames[timeFrames.GetLastIndex()].Activity != site)
-            {
-                timeFrames.RemoveAt(timeFrames.GetLastIndex());
-                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
-            }
-            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(site, siteType), siteTimesFrames));
-            if (activitySite != site && activityTimeFrames > 0)
-            {
-                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
-                activityTimeFrames--;
-            }
-            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(activitySite, activityType), activityTimeFrames));
-        }
-
-        private void CreateNight(List<TimeFrame> timeFrames, Site site, int siteTimeFrames, Site transportSite)
-        {
-            if (timeFrames[timeFrames.GetLastIndex()].Activity != site)
-            {
-                timeFrames.RemoveAt(timeFrames.GetLastIndex());
-                timeFrames.Add(new TimeFrame(transportSite, SitePersonStatus.Client));
-            }
-            timeFrames.AddRange(Enumerable.Repeat(new TimeFrame(site, SitePersonStatus.Other), siteTimeFrames));
-        }
-
-        private Person CreateStudentPerson()
-        {
-            Person student;
-            Planning planning = new Planning();
-            planning.CreateStudentPlanning();
-            student = new Person(planning, new Dictionary<Type, Site>());
-            return student;
-        }
-
-        private Person CreateAdultClass()
-        {
-            Person adult;
-            Planning planning = new Planning();
-            planning.CreateAdultPlanning();
-            adult = new Person(planning, new Dictionary<Type, Site>());
-            return adult;
-        }
-
-        private Person CreateElderPerson()
-        {
-            Person elder;
-            Planning planning = new Planning();
-            planning.CreateElderPlanning();
-            elder = new Person(planning, new Dictionary<Type, Site>());
-            return elder;
+            KeyValuePair<object, double>[] transportsProbability = new KeyValuePair<object, double>[] {
+                new KeyValuePair<object, double>(new Car(), 0.36),
+                new KeyValuePair<object, double>(allBuildingSites.Where(b => typeof(Outside) == b.GetType()).First(), 0.37),
+                new KeyValuePair<object, double>(new Bike(), 0.27), // Normalement 0.11 avec les bus
+                //new KeyValuePair<object, double>(allBuildingSites.Where(b => typeof(Bus) == b.GetType()).OrderBy(x => rdm.Next()).First(), 0.15),
+            };
+            return (Site)rdm.NextProbability(transportsProbability);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace CovidPropagation
 {
     class Restaurant : Site
     {
-        private static SiteType[] restaurantTypes = new SiteType[] { SiteType.Eat, SiteType.Work };
+        private static SiteType[] restaurantTypes = new SiteType[] { SiteType.Eat, SiteType.WorkPlace };
         public Restaurant(double length = GlobalVariables.BUILDING_LENGTH,
                            double width = GlobalVariables.BUILDING_WIDTH,
                            double height = GlobalVariables.BUILDING_HEIGHT,
