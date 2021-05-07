@@ -18,6 +18,8 @@ namespace CovidPropagation
     /// </summary>
     public class Site
     {
+        private const double DURATION_OF_HOUR = 60;
+
         List<Person> persons;
         bool hasEnvironnementChanged;
         double averageQuantaExhalationRate;
@@ -42,13 +44,50 @@ namespace CovidPropagation
         protected double decayRateOfVirus;
         protected double depositionOnSurfaceRate;
         protected double additionalControlMeasures;
-        protected double sumFirstOrderLossRate;
+        private double sumFirstOrderLossRate;
 
         protected double ventilationPerPersonRate;
 
-        protected double probabilityOfInfection;
+        private double probabilityOfInfection;
+        double fractionPersonsWithMask;
+        double exhalationMaskEfficiency;
+        double netEmissionRate;
+        double avgQuantaConcentration;
+        double quantaInhaledPerPerson;
+
+        protected int nbPersons;
+        protected int nbInfectivePersons;
+        protected double fractionOfImmune;
+        protected int nbPersonsWithMask;
+        protected double inhalationMaskEfficiency;
+        protected double probabilityOfBeingInfective;
+        protected double quantaExhalationRateOfInfected;
+
+        protected double probabilityOfOneInfection;
+        protected double nbOfInfectivePersons;
+        protected double virusAraisingCases;
+
+
 
         public SiteType[] Type { get => types; }
+        public int NbPersons { get => nbPersons; set => nbPersons = value; }
+        public int NbInfectivePersons { get => nbInfectivePersons; set => nbInfectivePersons = value; }
+        public double FractionOfImmune { get => fractionOfImmune; set => fractionOfImmune = value; }
+        public int NbPersonsWithMask { get => nbPersonsWithMask; set => nbPersonsWithMask = value; }
+        public double InhalationMaskEfficiency { get => inhalationMaskEfficiency; set => inhalationMaskEfficiency = value; }
+        public double ProbabilityOfBeingInfective { get => probabilityOfBeingInfective; set => probabilityOfBeingInfective = value; }
+        public double QuantaExhalationRateOfInfected { get => quantaExhalationRateOfInfected; set => quantaExhalationRateOfInfected = value; }
+        public double ProbabilityOfOneInfection { get => probabilityOfOneInfection; set => probabilityOfOneInfection = value; }
+        public double NbOfInfectivePersons { get => nbOfInfectivePersons; set => nbOfInfectivePersons = value; }
+        public double VirusAraisingCases { get => virusAraisingCases; set => virusAraisingCases = value; }
+        public double FractionPersonsWithMask { get => fractionPersonsWithMask; set => fractionPersonsWithMask = value; }
+        public double ExhalationMaskEfficiency { get => exhalationMaskEfficiency; set => exhalationMaskEfficiency = value; }
+        public double NetEmissionRate { get => netEmissionRate; set => netEmissionRate = value; }
+        public double AvgQuantaConcentration { get => avgQuantaConcentration; set => avgQuantaConcentration = value; }
+        public double QuantaInhaledPerPerson { get => quantaInhaledPerPerson; set => quantaInhaledPerPerson = value; }
+        public double SumFirstOrderLossRate { get => sumFirstOrderLossRate; set => sumFirstOrderLossRate = value; }
+        public double ProbabilityOfInfection { get => probabilityOfInfection; set => probabilityOfInfection = value; }
+        public double AverageQuantaExhalationRate { get => averageQuantaExhalationRate; set => averageQuantaExhalationRate = value; }
 
         #endregion
 
@@ -65,14 +104,13 @@ namespace CovidPropagation
             this.depositionOnSurfaceRate = Virus.DepositionOnSurfaceRate; // récupérer du virus
             this.additionalControlMeasures = additionalControlMeasures;
 
-            this.sumFirstOrderLossRate = this.ventilationWithOutside + decayRateOfVirus + depositionOnSurfaceRate + this.additionalControlMeasures;
-
+            this.SumFirstOrderLossRate = this.ventilationWithOutside + decayRateOfVirus + depositionOnSurfaceRate + this.additionalControlMeasures;
             air = this.length * this.width;
             volume = air * this.height;
 
             persons = new List<Person>();
             hasEnvironnementChanged = true;
-            averageQuantaExhalationRate = GlobalVariables.AVERAGE_QUANTA_EXHALATION;
+            AverageQuantaExhalationRate = GlobalVariables.AVERAGE_QUANTA_EXHALATION;
         }
 
         /// <summary>
@@ -81,7 +119,7 @@ namespace CovidPropagation
         /// <returns>Taux de probabilité d'infection actuellement dans ce lieu</returns>
         public double GetProbabilityOfInfection()
         {
-            return probabilityOfInfection;
+            return ProbabilityOfInfection;
         }
 
         /// <summary>
@@ -94,21 +132,48 @@ namespace CovidPropagation
                 if (Virus.IsTransmissibleBy(typeof(AerosolTransmission)))
                 {
                     AerosolTransmission aerosolTransmission = Virus.GetTransmission(typeof(AerosolTransmission)) as AerosolTransmission;
-                    int nbPersons = persons.Count;
-                    int infectivePersons = persons.Where(p => (int)p.CurrentState > 1).Count();
-                    double fractionOfImmune = (double)persons.Where(p => p.CurrentState == PersonState.Immune).Count() / (double)nbPersons * 100d; // %
-                    int nbPersonsWithMask = persons.Where(p => p.HasMask).Count();
-                    double inhalationMaskEfficiency = (double)persons.Where(p => p.HasMask).Sum(p => p.InhalationMaskEfficiency) / (double)nbPersonsWithMask;
-                    double probabilityOfBeingInfective = (double)persons.Where(p => (int)p.CurrentState >= 3).Count() / (double)nbPersons; // A modifier pour entrer en accord avec la simulation
+                    NbPersons = persons.Count;
+                    NbInfectivePersons = CountNumberInfectivePersons();
+                    FractionOfImmune = GetFractionOfImmune(NbPersons);
 
-                    // Ancienne version: quantaExhalationRateOfInfected = quantaExhalationRateOfInfected * (1 - exhalationMaskEfficiency * percentagePersonWithMask) * infectivePersons; 
-                    double quantaExhalationRateOfInfected = persons.Where(p => (int)p.CurrentState > 2).Sum(p => p.QuantaExhalationRate * (1 - p.ExhalationMaskEfficiency * p.HasMask.ConvertToInt())) / infectivePersons;
+                    NbPersonsWithMask = CountPersonsWithMask(); 
+                    FractionPersonsWithMask = GetFractionpersonsWithMask(NbPersonsWithMask, NbPersons);
+                    InhalationMaskEfficiency = GetInhalationMaskEfficiency(NbPersonsWithMask);
+                    ExhalationMaskEfficiency = GetExhalationMaskEfficiency(NbPersonsWithMask);
 
-                    TransmissionData aerosolDatas = aerosolTransmission.CalculateRisk(nbPersons, infectivePersons, fractionOfImmune, nbPersonsWithMask, inhalationMaskEfficiency, sumFirstOrderLossRate, volume, quantaExhalationRateOfInfected, probabilityOfBeingInfective);
-                    Debug.WriteLine($"Total       : {nbPersons}" + Environment.NewLine +
-                                    $"Infected    : {infectivePersons}" + Environment.NewLine +
-                                    $"probability : {probabilityOfBeingInfective}");
-                    probabilityOfInfection = aerosolDatas.ProbabilityOfInfection;
+                    ProbabilityOfBeingInfective = GetprobabilityOfBeingInfective(); // actuellement valeur fixe
+
+                    QuantaExhalationRateOfInfected = GetQuantaExhalationRateofInfected(NbInfectivePersons);
+                    NetEmissionRate = GetNetEmissionRate(QuantaExhalationRateOfInfected, ExhalationMaskEfficiency, 
+                                                                FractionPersonsWithMask, NbInfectivePersons);
+
+                    double eventDuration = GlobalVariables.DURATION_OF_TIMEFRAME / DURATION_OF_HOUR;
+                    AvgQuantaConcentration = GetAverageQuantaConcentration(NetEmissionRate, eventDuration);
+
+                    QuantaInhaledPerPerson = GetQuantaInhaledPerPerson(AvgQuantaConcentration, eventDuration, InhalationMaskEfficiency, FractionPersonsWithMask);
+
+                    TransmissionData aerosolDatas = aerosolTransmission.CalculateRisk(NbPersons, NbInfectivePersons, FractionOfImmune, 
+                                                                                      NbPersonsWithMask, InhalationMaskEfficiency, SumFirstOrderLossRate, 
+                                                                                      volume, QuantaExhalationRateOfInfected, ProbabilityOfBeingInfective, 
+                                                                                      QuantaInhaledPerPerson);
+                    //Debug.WriteLine($"_________________" + Environment.NewLine +
+                    //                $"nbPersons: {NbPersons}     " +
+                    //                $"infectivePersons: {NbInfectivePersons}     " +
+                    //                $"fractionOfImmune: {FractionOfImmune}    " +
+                    //                $"nbPersonsWithMask: {NbPersonsWithMask}    " +
+                    //                $"inhalationMaskEfficiency: {InhalationMaskEfficiency.ToString("0.##")}    " +
+                    //                $"probabilityOfBeingInfective: {ProbabilityOfBeingInfective.ToString("0.##")}     " +
+                    //                $"quantaExhalationRateOfInfected: {QuantaExhalationRateOfInfected.ToString("0.##")}    ");
+                    //
+                    //Debug.WriteLine($"probability : {aerosolDatas.ProbabilityOfInfection.ToString("0.############")}" + Environment.NewLine +
+                    //                $"proba of one: {aerosolDatas.ProbabilityOfOneInfection}" + Environment.NewLine +
+                    //                $"nbInfective : {aerosolDatas.NOfInfectivePersons}" + Environment.NewLine +
+                    //                $"Re          : {aerosolDatas.VirusAraisingCases}");
+
+                    ProbabilityOfInfection = aerosolDatas.ProbabilityOfInfection.SetValueIfNaN();
+                    ProbabilityOfOneInfection = aerosolDatas.ProbabilityOfOneInfection.SetValueIfNaN();
+                    NbOfInfectivePersons = aerosolDatas.NOfInfectivePersons.SetValueIfNaN();
+                    VirusAraisingCases = aerosolDatas.VirusAraisingCases.SetValueIfNaN();
                 }
             }
             hasEnvironnementChanged = false;
@@ -136,19 +201,82 @@ namespace CovidPropagation
             hasEnvironnementChanged = true;
         }
 
-        /// <summary>
-        /// Récupère le taux de quanta exhalé moyen dans se bâtiment.
-        /// Utile pour différencier une salle de sport d'une classe par exemple.
-        /// </summary>
-        /// <returns>Taux de quanta exhalé moyen.</returns>
-        public double GetAverageQuantaExhalationRate()
-        {
-            return averageQuantaExhalationRate;
-        }
-
         public int CountNbPeople()
         {
             return persons.Count;
         }
+
+        #region Calculs
+        private int CountNumberInfectivePersons()
+        {
+            return persons.Where(p => (int)p.CurrentState > 1).Count();
+        }
+        private double GetFractionOfImmune(double nbPersons)
+        {
+            return (double)persons.Where(p => p.CurrentState == PersonState.Immune).Count() / nbPersons * 100d;
+        }
+        private int CountPersonsWithMask()
+        {
+            return persons.Where(p => p.HasMask).Count();
+        }
+
+        private double GetFractionpersonsWithMask(double nbPersonsWithMask, double nbPersons)
+        {
+            return nbPersonsWithMask / 10000d * nbPersons; //fractionPersonsWithMask = fractionPersonsWithMask.SetValueIfNaN();
+        }
+
+        private double GetInhalationMaskEfficiency(double nbPersonsWithMask)
+        {
+            double inhalationMaskEfficiency = (double)persons.Where(p => p.HasMask)
+                                                             .Sum(p => p.InhalationMaskEfficiency) 
+                                                             / nbPersonsWithMask; 
+            return inhalationMaskEfficiency.SetValueIfNaN();
+        }
+
+        private double GetExhalationMaskEfficiency(double nbPersonsWithMask)
+        {
+            double exhalationMaskEfficiency = (double)persons.Where(p => p.HasMask)
+                                                             .Sum(p => p.ExhalationMaskEfficiency) 
+                                                             / nbPersonsWithMask; 
+            return exhalationMaskEfficiency.SetValueIfNaN();
+        }
+        
+        private double GetprobabilityOfBeingInfective()
+        {
+            double probabilityOfBeingInfective = 0.0011;//(double)persons.Where(p => (int)p.CurrentState > 2).Count() / (double)nbPersons; // A modifier pour entrer en accord avec la simulation
+            return probabilityOfBeingInfective.SetValueIfNaN();
+        }
+
+        private double GetQuantaExhalationRateofInfected(double nbInfectivePersons)
+        {
+            double quantaExhalationRateOfInfected = persons.Where(p => (int)p.CurrentState > 2)
+                                                            .Sum(p => p.QuantaExhalationRate * (1 - p.ExhalationMaskEfficiency * p.HasMask.ConvertToInt())) 
+                                                            / nbInfectivePersons; 
+
+            return quantaExhalationRateOfInfected.SetValueIfNaN();
+        }
+
+        private double GetNetEmissionRate(double quantaExhalationRateOfInfected, double exhalationMaskEfficiency, double fractionPersonsWithMask, double nbInfectivePersons)
+        {
+            return quantaExhalationRateOfInfected * (1 - exhalationMaskEfficiency * fractionPersonsWithMask) * nbInfectivePersons;
+        }
+
+        private double GetAverageQuantaConcentration(double netEmissionRate, double eventDuration)
+        {
+            double avgQuantaConcentration = Math.Abs(netEmissionRate) / 
+                                            Math.Abs(SumFirstOrderLossRate) / 
+                                            volume * 
+                                            ( 1 - (1 / Math.Abs(SumFirstOrderLossRate) / eventDuration) * (1 - Math.Exp(-SumFirstOrderLossRate * eventDuration)));
+
+            return avgQuantaConcentration.SetValueIfNaN();
+        }
+
+        private double GetQuantaInhaledPerPerson(double avgQuantaConcentration, double eventDuration, double inhalationMaskEfficiency, double fractionPersonsWithMask)
+        {
+            double quantaInhaledPerPerson = avgQuantaConcentration * Math.Abs(SumFirstOrderLossRate) * eventDuration * (1 - inhalationMaskEfficiency * fractionPersonsWithMask);
+            return quantaInhaledPerPerson.SetValueIfNaN();
+        }
+        
+        #endregion
     }
 }

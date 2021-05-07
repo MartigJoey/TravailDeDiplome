@@ -602,4 +602,43 @@
   - Ils ne sont pas pris en compte dans les calcules.
     - Ils l'étaient mais comme leur état etait celui d'infecté qui signifie que le virus ne s'est pas encore dévelopé.
     - Changement de l'état "infected" à "infectious" pour aller plus rapidement vers la phase de contagion.
-    - 
+
+# 07.06.2021 07h45 / 17h00
+- Modification du code de propagation qui a des problèmes de format de données. certains doubles retournant NaN du à des dividions par 0.
+  - Le nombre de reproduction du virus était mélangé aux probabilités d'être infecté créant un valeur non-utilisable.
+  - Le calculs nombre de personnes susceptibles d'attraper le virus ne calcul par correctement et donne des résultats négatifs.
+  - ~~Différence de résultat en calculant les mêmes valeurs dans la calculatrice/code et le fichier excel~~
+    - Différence de format % et probabilités
+  - Problème de résultats dans les probabilités d'être infectés.
+    - le problème réside dans la quantité de quantas qui n'est pas correcte.
+    - Nécessité d'ajouter de nombreux calculs concernant :
+      - Les émissions de Co2
+      - moyenne de concentration de quanta
+      - Les quantas inhalé par personnes
+    - émissions de Co2 fonctionnelles
+    - Le calcul de quanta moyen n'est pas bon
+      - La durée était calculée en minute alors qu'elle doit être calculée en heure (0 -> 0.5 -> 1) ~~(1 -> 1h30 -> 2h00)~~
+      - Le calcul fonctionne en modifiant le volume du lieux et la somme des mesures pour qu'ils soient identiquent au excel.
+    - En utilisant le même BreathingRate du fichier excel, le résultat de quantaInhaledPerPerson est identique.
+    - Modification de calculs déjà existant pour utiliser les nouvelles valeurs calculées en temps réel.
+    - Probabilité d'infection fonctionnelle.
+- Besoin de refactoriser le code des calculs
+  - Actuellement illisible
+- Refactorisation du code dans la classe Site
+- Discussion avec M. Mathieu sur l'état actuel du projet
+  - Pas besoin de trop complexifier les planning en faisant par exemple déposer la fille par le père en voiture
+    - Gain de temps et complexité des plannings.
+- ~~La méthode NextDouble ne permet pas de générer des randoms avec une différence de taille suffisante pour permettre à des individus d'être infectés~~
+- Test sur 2 semaines dans la simulation
+  - 100 personnes et 9 infectés au départ
+  - 3 on été contaminé.
+- Modification du code pour empêcher le résultat NaN avec la concentration de quanta.
+- Le volume de certains lieux est de 0 empêchant le calcul de concentration de quanta dans un lieu.
+  - Il s'agissait d'un ancien code qui créait les lieux avec le nombre maximum de personnes sur le lieu comme premier paramètre (Qui est maintenant un paramètre de taille)
+- Test Sur ~2 semaines
+  - 1000 personnes et 100 infectés au départs
+  - 650 personnes infectées maximum
+  - une moyenne de 500 cas. 
+- Testé avec 100'000 personnes et le résultat est fonctionnel mais extrêmement lent.
+  - 95% d'infectés maximum
+  - Moyenne de 80%

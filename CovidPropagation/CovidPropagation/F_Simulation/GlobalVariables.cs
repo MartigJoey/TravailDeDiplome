@@ -78,9 +78,9 @@ namespace CovidPropagation
         public const double OUTSIDE_TEMPERATURE = 30;
 
         // Bâtiments
-        public const double BUILDING_WIDTH = 30;
-        public const double BUILDING_LENGTH = 30;
-        public const double BUILDING_HEIGHT = 3;
+        public const double BUILDING_WIDTH = 15;
+        public const double BUILDING_LENGTH = 15;
+        public const double BUILDING_HEIGHT = 2;
 
         public const double BUILDING_PRESSURE = 0.95d;
         public const double BUILDING_TEMPERATURE = 23;

@@ -36,18 +36,18 @@ namespace CovidPropagation
             pageGraphicSettings = new PageGraphicSettings();
             MainContent.NavigationUIVisibility = NavigationUIVisibility.Hidden; // Cache la barre de navigation du contenu
             Virus.Init();
-            Sim = new Simulation(30, 10, 100);
+            Sim = new Simulation(30, 100, 10000);
             Sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
             Sim.Iterate();
             Sim.Start();
 
-            Sim.OnTickSP += new MyEventHandler(MaximumReached);
+            Sim.OnTickSP += new MyEventHandler(OnTimerTick);
         }
 
         //This is the actual method that will be assigned to the event handler
         //within the above class. This is where we perform an action once the
         //event has been triggered.
-        static void MaximumReached(object source, Simulation e)
+        static void OnTimerTick(object source, Simulation e)
         {
             Debug.WriteLine(e.GetData());
         }

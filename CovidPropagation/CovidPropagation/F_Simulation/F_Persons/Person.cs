@@ -63,9 +63,12 @@ namespace CovidPropagation
 
             virusResistance = baseVirusResistance;
             _currentSite = _planning.GetActivity();
-            quantaExhalationRate = _currentSite.GetAverageQuantaExhalationRate();
+            quantaExhalationRate = _currentSite.AverageQuantaExhalationRate;
             if ((int)_state >= 2)
+            {
                 SetInfectionDurations(PersonState.Infectious);
+                VirusIncubationisOver();
+            }
         }
 
         /// <summary>
@@ -88,7 +91,7 @@ namespace CovidPropagation
                 _currentSite.Enter(this);
 
                 // Mettre le mask à true si besoin.
-                quantaExhalationRate = _currentSite.GetAverageQuantaExhalationRate();
+                quantaExhalationRate = _currentSite.AverageQuantaExhalationRate;
                 if (symptoms.OfType<CoughSymptom>().Any())
                 {
                     quantaExhalationRate += symptoms.OfType<CoughSymptom>().First().QuantaAddedByCoughing();
@@ -102,6 +105,7 @@ namespace CovidPropagation
         public void ChechState()
         {
             double contaminationProbability = _currentSite.GetProbabilityOfInfection();
+            
             if (_state == PersonState.Healthy && contaminationProbability >= _rdm.NextDouble())
             {
                 SetInfectionDurations(PersonState.Infected);
@@ -146,14 +150,7 @@ namespace CovidPropagation
                     virusIncubationDuration--;
                 else
                 {
-                    if (virusResistance > GlobalVariables.ASYMPTOMATIC_MIN_RESISTANCE)
-                    {
-                        _state = PersonState.Asymptomatic;
-                    }else
-                    {
-                        _state = PersonState.Infectious;
-                        symptoms.AddRange(Virus.GetCommonSymptoms());
-                    }
+                    VirusIncubationisOver();
                 }
             }else if ((int)_state > 2)
             {
@@ -161,6 +158,19 @@ namespace CovidPropagation
                     virusDuration--;
                 else
                     _state = PersonState.Healthy;
+            }
+        }
+
+        private void VirusIncubationisOver()
+        {
+            if (virusResistance > GlobalVariables.ASYMPTOMATIC_MIN_RESISTANCE)
+            {
+                _state = PersonState.Asymptomatic;
+            }
+            else
+            {
+                _state = PersonState.Infectious;
+                symptoms.AddRange(Virus.GetCommonSymptoms());
             }
         }
 

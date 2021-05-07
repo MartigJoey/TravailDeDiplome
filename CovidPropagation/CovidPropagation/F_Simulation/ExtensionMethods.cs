@@ -136,5 +136,20 @@ namespace CovidPropagation
         {
             return value.Count() - 1;
         }
+
+        /// <summary>
+        /// Si la valeur d'un double vaut NaN, alors le transform en 0.
+        /// </summary>
+        /// <returns>0 ou la valeur du double si autre que NaN</returns>
+        public static double SetValueIfNaN(this double value)
+        {
+            double result;
+            if (double.IsNaN(value))
+                result = 0;
+            else
+                result = value;
+
+            return result;
+        }
     }
 }

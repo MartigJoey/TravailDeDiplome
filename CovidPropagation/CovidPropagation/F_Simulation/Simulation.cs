@@ -85,6 +85,9 @@ namespace CovidPropagation
                     {
                         OnTickSP(10, this);
                     }
+                    population.ForEach(p => p.ChangeActivity()); // Tester traitement en parallel
+                    allBuildingSites.ForEach(p => p.CalculateprobabilityOfInfection());
+                    population.ForEach(p => p.ChechState());
                     sp.Stop();
 
                     if (sp.ElapsedMilliseconds < Interval)
@@ -92,7 +95,6 @@ namespace CovidPropagation
                         long interval = Interval;
                         await Task.Delay((int)(Interval - sp.ElapsedMilliseconds));
                     }
-                    //Debug.WriteLine("Tick");
                     sp.Reset();
                 }
                 await Task.Delay(100);
@@ -101,13 +103,30 @@ namespace CovidPropagation
 
         public string GetData()
         {
-            population.ForEach(p => p.ChangeActivity());
-            allBuildingSites.ForEach(p => p.CalculateprobabilityOfInfection());
-            population.ForEach(p => p.ChechState());
-            return $"Average age             : {population.Average(p => p.Age)} {Environment.NewLine}" +
-                   $"Infecté(s)              : {population.Where(p => (int)p.CurrentState >= 2).Count()} {Environment.NewLine}" +
-                   $"Moyenne quanta          : {population.Average(p => p.QuantaExhalationRate)} {Environment.NewLine}" +
-                   $"Probabilité d'infection : {allBuildingSites.Sum(b => b.GetProbabilityOfInfection())} {Environment.NewLine}";
+            //foreach (var item in allBuildingSites)
+            //{
+            //    if (item.NbPersons > 0)
+            //    {
+            //        Debug.WriteLine("Probability of infection " + item.ProbabilityOfInfection);
+            //        Debug.WriteLine("Probability of being infective " + item.ProbabilityOfBeingInfective);
+            //        Debug.WriteLine("Probability of one infection " + item.ProbabilityOfOneInfection);
+            //        Debug.WriteLine("Number of persons " + item.NbPersons);
+            //    }
+            //}
+
+            return $"Nombre de personne      : {population.Count} {Environment.NewLine}" +
+                   $"Average age             : {(double)population.Average(p => p.Age)} {Environment.NewLine}" +
+                   $"Infecté(s)              : {(double)population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count()} {Environment.NewLine}" +
+                   $"Moyenne quanta exhalé   : {(double)population.Average(p => p.QuantaExhalationRate)} {Environment.NewLine}" +
+                   $"Probabilité d'infection : {(double)allBuildingSites.Sum(b => b.ProbabilityOfInfection)} {Environment.NewLine}" +
+
+                   $"Quanta concentre        : {(double)allBuildingSites.Sum(b => b.AvgQuantaConcentration)} {Environment.NewLine}" +
+                   $"inhal mask eff          : {(double)allBuildingSites.Sum(b => b.InhalationMaskEfficiency)} {Environment.NewLine}" +
+                   $"Fraction persons w mask : {(double)allBuildingSites.Sum(b => b.FractionPersonsWithMask)} {Environment.NewLine}" +
+
+                   $"Quanta inhalé par person: {(double)allBuildingSites.Sum(b => b.QuantaInhaledPerPerson)} {Environment.NewLine}" +
+                   $"Re                      : {allBuildingSites.Sum(b => b.VirusAraisingCases)} {Environment.NewLine}" +
+                   $"Temps                   : {TimeManager.CurrentDayString} {TimeManager.CurrentHour}";
         }
 
         public void Start()
@@ -134,27 +153,27 @@ namespace CovidPropagation
 
             for (int i = 0; i < nbOfSchool; i++)
             {
-                allBuildingSites.Add(new School(populationInSchool / nbOfSchool));
+                allBuildingSites.Add(new School());
             }
 
             for (int i = 0; i < nbOfCompany; i++)
             {
-                allBuildingSites.Add(new Company(populationInCompanies / nbOfCompany));
+                allBuildingSites.Add(new Company());
             }
 
             for (int i = 0; i < nbOfHospital; i++)
             {
-                allBuildingSites.Add(new Hospital(population.Count / nbOfHospital));
+                allBuildingSites.Add(new Hospital());
             }
 
             for (int i = 0; i < nbOfSupermarket; i++)
             {
-                allBuildingSites.Add(new Supermarket(population.Count / nbOfSupermarket));
+                allBuildingSites.Add(new Supermarket());
             }
             
             for (int i = 0; i < nbOfHomes; i++)
             {
-                allBuildingSites.Add(new Home(population.Count / nbOfHomes));
+                allBuildingSites.Add(new Home());
             }
         }
 
