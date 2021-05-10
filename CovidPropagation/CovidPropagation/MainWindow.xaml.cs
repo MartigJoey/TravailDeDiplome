@@ -36,7 +36,7 @@ namespace CovidPropagation
             pageGraphicSettings = new PageGraphicSettings();
             MainContent.NavigationUIVisibility = NavigationUIVisibility.Hidden; // Cache la barre de navigation du contenu
             Virus.Init();
-            Sim = new Simulation(30, 100, 10000);
+            Sim = new Simulation(30, 0.01, 100000);
             Sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
             Sim.Iterate();
             Sim.Start();

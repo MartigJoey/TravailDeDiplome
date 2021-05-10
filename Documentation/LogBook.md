@@ -208,7 +208,7 @@
   - Formules  
     - 100 + Abs((y2 - y1) / y1)*100 = %
     - (% - 100)/100 * y1 + y1 = y2
-  - ~0.033%  --> 165 écoles pour 500'000 personnes 100 - ((165 - 500'000) / 500'000)*100
+  - ~0.033%  --> 165 écoles pour 500'000 personnes 100 + ((165 - 500'000) / 500'000)*100
   - ~6,74%  --> 33'700 entreprises pour 231'000 emplois
   - ~0.0016%  --> 8 hôpitaux, 2 cliniques, 30 lieux de soins
   - ~0,0272%  --> ~136 supermarchés
@@ -642,3 +642,44 @@
 - Testé avec 100'000 personnes et le résultat est fonctionnel mais extrêmement lent.
   - 95% d'infectés maximum
   - Moyenne de 80%
+
+# 10.05.2021 08h05 / 16h10
+- Installation de paint.net
+- Création du poster
+  - Ajouts des technologies utilisées
+    - Unity
+    - WPF
+    - Visual Studio
+    - LiveCharts
+  - Ajout du background (Map)
+  - Ajout du titre
+  - Version 1
+    - ![Affiche V1](Medias/Poster/PosterCovidPropagation.png)
+- Simulation
+  - Tentative de créer la simulation en utilisant un traitement parallèle.
+    - Non fonctionnel du à l'utilisation de list en cours de création.
+    - Modification du code de création des bâtiments
+      - Async - await - Structure
+    - Ancien calcul déterminant le nombre de batiment érroné. 
+      - ~~(0.03d - 100) / 100 * _nbPersons + _nbPersons)~~
+      - ~~Peut importe la valeur de _nbPersons le résultat est toujours 0.03 .-.~~
+      - [Source de données concernant le nombre de batiment par personne](https://www.ge.ch/statistique/graphiques/affichage.asp?filtreGraph=09_02&dom=1)
+      - Utilisation des calculs du 26.04.2020 pour recréer les bâtiments
+    - Réduction du temps de création des personnes de 1650ms à 650ms
+      - Système de création instable
+        - Doit créer 10'000 personnes
+        - En créé 9408
+        - Ils sont tous infecté dès le départ
+        - Utilisation d'un parallel.For à la place de tasks et tasks.WaitAll()
+        - Ajout d'un lock lors d'une modification d'une liste
+    - ~~Bug rare --> Dans FillIfMissingBuilding() la liste est parfois vide.~~
+  - Création de la simulation pour 100'000 personnes
+    - Avant ~1min
+    - Maintenant ~10 secondes
+  - Bug, tous les individus sont infectés dès le démarrage
+    - Dû au parallel.For
+    - Le problème est au niveau de l'assignation des lieux aux individus. Dû au parallels, ils se situent tous au même endroit augmentant les chances de propagations à 100% et contaminant tout le monde.
+    - Suppression du parallel pour la création des individus.
+  - Tentative d'utilisation de parallels dans le choix des lieux.
+    - Plus long et le même problème que pour le for est retrouvé
+    - 

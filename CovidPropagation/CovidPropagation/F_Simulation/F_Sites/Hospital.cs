@@ -14,12 +14,22 @@ namespace CovidPropagation
     public class Hospital : Site
     {
         private static SiteType[] hospitalTypes = new SiteType[] { SiteType.Hospital, SiteType.Eat, SiteType.WorkPlace };
+        
         public Hospital(double length = GlobalVariables.BUILDING_LENGTH,
                            double width = GlobalVariables.BUILDING_WIDTH,
                            double height = GlobalVariables.BUILDING_HEIGHT,
                            double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
                  base(hospitalTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
+        {
+
+        }
+
+        public Hospital() : this(GlobalVariables.BUILDING_LENGTH,
+                                 GlobalVariables.BUILDING_WIDTH,
+                                 GlobalVariables.BUILDING_HEIGHT,
+                                 GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
+                                 GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES)
         {
 
         }

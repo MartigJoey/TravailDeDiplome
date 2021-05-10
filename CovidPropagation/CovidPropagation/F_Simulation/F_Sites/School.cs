@@ -24,5 +24,14 @@ namespace CovidPropagation
         {
 
         }
+
+        public School() : this(GlobalVariables.BUILDING_LENGTH,
+                         GlobalVariables.BUILDING_WIDTH,
+                         GlobalVariables.BUILDING_HEIGHT,
+                         GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
+                         GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES)
+        {
+
+        }
     }
 }
