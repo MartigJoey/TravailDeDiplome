@@ -690,4 +690,25 @@
     - Malgré qu'ils soient tous assigné en tant que "Healthy" ils sont tous infectés par la suite instentanément.
     - Abandon du parallel pour la création de la population pour le moment.
 - Ajout de commentaires dans la simulation
-  - 
+- Documentation
+  - Fonctionnement de la simulation
+- Ajouts de mesures dans la simulation
+  - Masques
+    - Efficacités
+    - Qui doit les mettres
+- Penser à modifier le planning pourm ajouter de l'aléatoire dans le choix de certaines activités
+  - Actuellement des groupes se créé. Ces groupes ne ce mélange pas nécessairement rendant difficule la propagation.
+- Discussion avec M. Mathieu
+  - Regarder pour allouer plus de mémoire au thread 
+    - "Accélérer" la création des objets.
+- Recherche sur l'ajout de mémoire
+  - Rien trouver de concluant
+- Ajout de la quarantaine pour les individus
+  - Bloquer dans sa maison sans contact externe
+- Ajout d'un équivalent à la distanciation
+  - La distanciation étant très dur à implémenter, un équivalent a été ajouté. Si le temps me le permet j'effectuerais une version plus complète plus tard.
+- Hôpitaux
+  - Création des patients covid
+  - Places limitées
+  - Traitement des patients
+- Penser à implémenter dans le planning ou la personne le trajet à effectuer lors de quarantaine / hopital.

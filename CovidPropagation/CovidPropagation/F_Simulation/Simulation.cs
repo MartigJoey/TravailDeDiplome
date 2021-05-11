@@ -37,8 +37,8 @@ namespace CovidPropagation
 
         private const double PROBABILITY_OF_USING_A_CAR = 0.36d;
         private const double PROBABILITY_OF_USING_A_BIKE = 0.37d;
-        private const double PROBABILITY_OF_USING_A_BUS = 0.27d;// Normalement 0.11 avec les bus
-        private const double PROBABILITY_OF_WALKING = 0.15d;
+        private const double PROBABILITY_OF_USING_A_BUS = 0.15d;
+        private const double PROBABILITY_OF_WALKING = 0.27d;// Normalement 0.11 avec les bus
 
         private const int MAX_SCHOOL_AGE = 25;
         private const int MAX_WORKING_AGE = 65;
@@ -106,6 +106,7 @@ namespace CovidPropagation
             CreatePopulation(_nbPersons, retirementProbability, minorProbability);
             speedTest.Stop();           
             Debug.WriteLine("Population" + speedTest.ElapsedMilliseconds + "  Count" + population.Count);
+            //buildingSites.ForEach(b => b.SetMaskMeasure(true, true));
         }
 
         /// <summary>
@@ -174,6 +175,7 @@ namespace CovidPropagation
 
                    $"Quanta inhalé par person: {(double)buildingSites.Sum(b => b.QuantaInhaledPerPerson)} {Environment.NewLine}" +
                    $"Re                      : {buildingSites.Sum(b => b.VirusAraisingCases)} {Environment.NewLine}" +
+                   $"Wearmasks               : {buildingSites.Sum(b => b.FractionPersonsWithMask) / buildingSites.Where(b => b.GetType() != typeof(Home)).Count()}" +
                    $"Temps                   : {TimeManager.CurrentDayString} {TimeManager.CurrentHour}";
         }
 

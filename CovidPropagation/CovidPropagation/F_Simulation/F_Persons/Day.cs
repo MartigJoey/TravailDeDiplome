@@ -47,6 +47,11 @@ namespace CovidPropagation
             return _timeFrames[TimeManager.CurrentTimeFrame].Activity;
         }
 
+        public SitePersonStatus GetCurrentPersonTypeInActivity()
+        {
+            return _timeFrames[TimeManager.CurrentTimeFrame].PersonStatus;
+        }
+
         /// <summary>
         /// Créé un jour de travail pour une personne avec les lieux qui lui sont fournies.
         /// </summary>

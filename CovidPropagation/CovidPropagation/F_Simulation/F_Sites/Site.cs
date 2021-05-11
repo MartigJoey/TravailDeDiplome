@@ -24,6 +24,8 @@ namespace CovidPropagation
         bool hasEnvironnementChanged;
         double averageQuantaExhalationRate;
         SiteType[] types;
+        bool clientsMustWearMasks;
+        bool workersMustWearMasks;
 
         #region probability
         double hospitalisationRate = 20;
@@ -139,6 +141,7 @@ namespace CovidPropagation
 
                     NbPersonsWithMask = CountPersonsWithMask(); 
                     FractionPersonsWithMask = GetFractionpersonsWithMask(NbPersonsWithMask, NbPersons);
+
                     InhalationMaskEfficiency = GetInhalationMaskEfficiency(NbPersonsWithMask);
                     ExhalationMaskEfficiency = GetExhalationMaskEfficiency(NbPersonsWithMask);
 
@@ -153,23 +156,10 @@ namespace CovidPropagation
 
                     QuantaInhaledPerPerson = GetQuantaInhaledPerPerson(AvgQuantaConcentration, eventDuration, InhalationMaskEfficiency, FractionPersonsWithMask);
 
-                    TransmissionData aerosolDatas = aerosolTransmission.CalculateRisk(NbPersons, NbInfectivePersons, FractionOfImmune, 
-                                                                                      NbPersonsWithMask, InhalationMaskEfficiency, SumFirstOrderLossRate, 
-                                                                                      volume, QuantaExhalationRateOfInfected, ProbabilityOfBeingInfective, 
+                    TransmissionData aerosolDatas = aerosolTransmission.CalculateRisk(NbPersons, NbInfectivePersons, FractionOfImmune,
+                                                                                      NbPersonsWithMask, InhalationMaskEfficiency, SumFirstOrderLossRate,
+                                                                                      volume, QuantaExhalationRateOfInfected, ProbabilityOfBeingInfective,
                                                                                       QuantaInhaledPerPerson);
-                    //Debug.WriteLine($"_________________" + Environment.NewLine +
-                    //                $"nbPersons: {NbPersons}     " +
-                    //                $"infectivePersons: {NbInfectivePersons}     " +
-                    //                $"fractionOfImmune: {FractionOfImmune}    " +
-                    //                $"nbPersonsWithMask: {NbPersonsWithMask}    " +
-                    //                $"inhalationMaskEfficiency: {InhalationMaskEfficiency.ToString("0.##")}    " +
-                    //                $"probabilityOfBeingInfective: {ProbabilityOfBeingInfective.ToString("0.##")}     " +
-                    //                $"quantaExhalationRateOfInfected: {QuantaExhalationRateOfInfected.ToString("0.##")}    ");
-                    //
-                    //Debug.WriteLine($"probability : {aerosolDatas.ProbabilityOfInfection.ToString("0.############")}" + Environment.NewLine +
-                    //                $"proba of one: {aerosolDatas.ProbabilityOfOneInfection}" + Environment.NewLine +
-                    //                $"nbInfective : {aerosolDatas.NOfInfectivePersons}" + Environment.NewLine +
-                    //                $"Re          : {aerosolDatas.VirusAraisingCases}");
 
                     ProbabilityOfInfection = aerosolDatas.ProbabilityOfInfection.SetValueIfNaN();
                     ProbabilityOfOneInfection = aerosolDatas.ProbabilityOfOneInfection.SetValueIfNaN();
@@ -183,12 +173,20 @@ namespace CovidPropagation
         /// <summary>
         /// Fait entrer une personne sur le site.
         /// L'ajoutant à la liste de personne et informant le site qu'il doit recalculer le taux de propagation dans le lieu.
+        /// Lui demande de porter le masque si nécessaire.
         /// </summary>
         /// <param name="personEntering">La personne qui entre</param>
-        public void Enter(Person personEntering)
+        public void Enter(Person personEntering, SitePersonStatus sitePersonStatus)
         {
             persons.Add(personEntering);
             HasEnvironnementChanged = true;
+
+            if (sitePersonStatus == SitePersonStatus.Client && clientsMustWearMasks)
+                personEntering.PutMaskOn();
+            else if(sitePersonStatus == SitePersonStatus.Worker && workersMustWearMasks)
+                personEntering.PutMaskOn();
+
+
         }
 
         /// <summary>
@@ -200,11 +198,19 @@ namespace CovidPropagation
         {
             persons.Remove(personLeaving);
             HasEnvironnementChanged = true;
+            personLeaving.RemoveMask();
         }
 
-        public int CountNbPeople()
+        public void SetMaskMeasure(bool clientsMustWearMasks, bool workersMustWearMasks)
         {
-            return persons.Count;
+            this.clientsMustWearMasks = clientsMustWearMasks;
+            this.workersMustWearMasks = workersMustWearMasks;
+        }
+
+        public void SetDistanciations(bool isDistanciationSet)
+        {
+            additionalControlMeasures = isDistanciationSet.ConvertToInt();
+            SumFirstOrderLossRate = ventilationWithOutside + decayRateOfVirus + depositionOnSurfaceRate + additionalControlMeasures;
         }
 
         #region Calculs
@@ -223,7 +229,7 @@ namespace CovidPropagation
 
         private double GetFractionpersonsWithMask(double nbPersonsWithMask, double nbPersons)
         {
-            return nbPersonsWithMask / 10000d * nbPersons; //fractionPersonsWithMask = fractionPersonsWithMask.SetValueIfNaN();
+            return nbPersonsWithMask / (nbPersons / 100d) / 100d; //fractionPersonsWithMask = fractionPersonsWithMask.SetValueIfNaN();
         }
 
         private double GetInhalationMaskEfficiency(double nbPersonsWithMask)

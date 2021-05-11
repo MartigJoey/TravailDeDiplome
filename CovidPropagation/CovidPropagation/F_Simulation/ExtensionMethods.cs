@@ -103,6 +103,17 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// Identique à Random.NextDouble() mais avec un minimum et un maximum.
+        /// </summary>
+        /// <param name="minRdm">Valeur minimum à tirer au sort.</param>
+        /// <param name="maxRdm">Valeur maximum à tirer au sort.</param>
+        /// <returns></returns>
+        public static double NextDoubleInclusive(this Random value, double minRdm, double maxRdm)
+        {
+            return value.NextDouble() * (maxRdm - minRdm) + minRdm;
+        }
+
+        /// <summary>
         /// Permet de mélanger une liste de tout type.
         /// </summary>
         public static void Shuffle<T>(this IList<T> ts)

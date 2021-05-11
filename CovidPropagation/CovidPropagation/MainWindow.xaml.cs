@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,11 +37,11 @@ namespace CovidPropagation
             pageGraphicSettings = new PageGraphicSettings();
             MainContent.NavigationUIVisibility = NavigationUIVisibility.Hidden; // Cache la barre de navigation du contenu
             Virus.Init();
-            Sim = new Simulation(30, 0.1, 100000);
+            Sim = new Simulation(30, 0.1, 10000);
             Sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
             Sim.Iterate();
             Sim.Start();
-
+            
             Sim.OnTickSP += new MyEventHandler(OnTimerTick);
         }
 

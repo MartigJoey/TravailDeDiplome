@@ -18,7 +18,7 @@ namespace CovidPropagation
         private SitePersonStatus _personStatus;
 
         public Site Activity { get => _activity; }
-        public SitePersonStatus PersonStatus { get => _personStatus; set => _personStatus = value; }
+        public SitePersonStatus PersonStatus { get => _personStatus; }
 
         public TimeFrame(Site activity, SitePersonStatus reason)
         {

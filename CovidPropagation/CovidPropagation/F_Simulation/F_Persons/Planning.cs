@@ -75,6 +75,11 @@ namespace CovidPropagation
             return _days[TimeManager.CurrentDay].GetCurrentActivity();
         }
 
+        public SitePersonStatus PersonTypeInActivity()
+        {
+            return _days[TimeManager.CurrentDay].GetCurrentPersonTypeInActivity();
+        }
+
         /// <summary>
         /// Récupère la prochaine activité.
         /// </summary>

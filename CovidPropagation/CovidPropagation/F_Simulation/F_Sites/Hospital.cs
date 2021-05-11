@@ -13,6 +13,10 @@ namespace CovidPropagation
 {
     public class Hospital : Site
     {
+        int nbCovidPatientMax;
+        int nbExtremeCovidPatientMax;
+        int nbSumCovidPatientMax;
+        List<Person> covidPatient;
         private static SiteType[] hospitalTypes = new SiteType[] { SiteType.Hospital, SiteType.Eat, SiteType.WorkPlace };
         
         public Hospital(double length = GlobalVariables.BUILDING_LENGTH,
@@ -22,7 +26,10 @@ namespace CovidPropagation
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
                  base(hospitalTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
         {
-
+            nbCovidPatientMax = 50;
+            nbExtremeCovidPatientMax = 10;
+            nbSumCovidPatientMax = nbCovidPatientMax + nbExtremeCovidPatientMax;
+            covidPatient = new List<Person>();
         }
 
         public Hospital() : this(GlobalVariables.BUILDING_LENGTH,
@@ -32,6 +39,27 @@ namespace CovidPropagation
                                  GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES)
         {
 
+        }
+
+        public bool EnterForCovid(Person patient)
+        {
+            bool result = false;
+            if (covidPatient.Count < nbSumCovidPatientMax)
+            {
+                covidPatient.Add(patient);
+                result = true;
+            }
+            return result;
+        }
+
+        public void LeaveForCovid(Person patient)
+        {
+            covidPatient.Remove(patient);
+        }
+
+        public void TreatPatients()
+        {
+            covidPatient.ForEach(p => p.);
         }
     }
 }
