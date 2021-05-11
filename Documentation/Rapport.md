@@ -81,6 +81,7 @@
   - [Planning](#planning-1)
 - [`Simulation`](#simulation-2)
   - [Structure](#structure-1)
+    - [Intéraction entre objets](#intéraction-entre-objets)
   - [Fonctionnement](#fonctionnement)
   - [Source](#source)
 - [`GUI`](#gui)
@@ -773,7 +774,22 @@ Beaucoup de questions qui sont revenues lors de la création des plannings.
 Diagramme de classe final -
 Interactions entre objets
 
+### Intéraction entre objets
+
+
 ## Fonctionnement
+Dans ce projet, les objets sont très connectés les uns des autres. La simulation par exemple détient l'entièreté de tous les objets dans des listes, à l'exception des plannings. Elle s'occupe donc de créer les bâtiments, la population, les moyen de transports. Beaucoup de paramètres entres en compte dans la création. Certains de ces paramètres sont fixes et tirés de données inspirés de la réalité. D'autres, même si ayant des valeurs similaires par défaut, sont modifiables par l'utilisateur afin de personnaliser la simulation et observer différents cas de figures.</br>
+Lors de la création des bâtiments, un calcul est effectué pour déterminer le nombre de bâtiments à créer en fonction du nombre d'individus. Il doit y avoir au moins un bâtiments de chaque type pour que la simulation fonctionne correctement. </br>
+Les données utilisée pour définir le nombre de bâtiments de chaque type ont été inspirées par des données officiels de Genève.</br>
+<h1>AJOUTER TRANSPORTS</h1>
+Pour créer les individus, la tâche est plus complexe. Pour créer un individu, il est nécessaire de lui créer un planning. Pour ce faire, des lieux lui sont donné. Une fois en posession de ces lieux et après avoir définit l'âge de la personne(âge qui définit certains de ces lieux) un planning est créé. </br> 
+Ce planning est composé des jours de la semaines ainsi que de 48 périodes de 30 min représentant des activités. Chaque activités contient un lieu dans laquel l'individu ira. Les planning sont créé dynamiquement en fonction des lieux qui lui sont donné, permettant de créer un adulte qui va aller travailler, ou un enfant qui va aller à l'école par exemple.</br>
+Une fois que le planning est créé, un individu sera alors créé et utilisera ce planning unique pour ce déplacer plus tard dans la simulation.
+</br></br>
+Une fois créé, ils sont stockés et utilisés lors de chaque changement de périodes. À chaque changement, chaque individus va passer à l'activité suivante dans son planning, donc soit changer de lieu, soit rester dans le même.</br>
+C'est ensuite au lieu de vérifier si il y a eu un changement d'état demandant de recalculer les chances d'infections dans celui-ci. Cela signifie que si 5 personnes se situe dans un lieu, et qu'aucune autre n'entre, ne sort, ou me change d'état, le calcul des chances d'infection ne s'effectuera pas et le dernier résultat sera utilisé. Cela permet de limiter un maximum les calculs inutiles et améliorer la fluidité.</br>
+Une fois les calculs effectués, chaque personne dans chaque lieu va effectuer un test qui permet de définir si elle a été contaminée ou non. Si c'est le cas, celle-ci va commencer par un temps d'incubation du virus puis une fois celui-ci terminé, deviendra contagieuse et pourra souffrir de symptômes. Ces symptômes peuvent eux-aussi augmenter les chances de propager le virus.</br>
+<h1>AJOUTER Maladies - détailler propagation (variables) - </h1>
 Création -
 Évolution (Itérations)
 

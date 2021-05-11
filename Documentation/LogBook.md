@@ -643,7 +643,7 @@
   - 95% d'infectés maximum
   - Moyenne de 80%
 
-# 10.05.2021 08h05 / 16h10
+# 10.05.2021 08h05 / 17h00
 - Installation de paint.net
 - Création du poster
   - Ajouts des technologies utilisées
@@ -682,4 +682,12 @@
     - Suppression du parallel pour la création des individus.
   - Tentative d'utilisation de parallels dans le choix des lieux.
     - Plus long et le même problème que pour le for est retrouvé
-    - 
+
+# 11.05.2021 08h05 / 16h10
+- Recherche d'une solution permettant d'exécuter des randoms dans un parallel.For ainsi que de créer les objets dedans.
+  - Bug : 
+    - Personne ne se situe dans les bâtiments.
+    - Malgré qu'ils soient tous assigné en tant que "Healthy" ils sont tous infectés par la suite instentanément.
+    - Abandon du parallel pour la création de la population pour le moment.
+- Ajout de commentaires dans la simulation
+  - 

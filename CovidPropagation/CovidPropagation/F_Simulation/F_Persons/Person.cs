@@ -66,8 +66,9 @@ namespace CovidPropagation
             quantaExhalationRate = _currentSite.AverageQuantaExhalationRate;
             if ((int)_state >= 2)
             {
-                SetInfectionDurations(PersonState.Infectious);
-                VirusIncubationisOver();
+                SetInfectionDurations(_state);
+                if ((int)_state > 2)
+                    VirusIncubationisOver();
             }
         }
 
@@ -108,6 +109,7 @@ namespace CovidPropagation
             
             if (_state == PersonState.Healthy && contaminationProbability >= _rdm.NextDouble())
             {
+                _currentSite.HasEnvironnementChanged = true;
                 SetInfectionDurations(PersonState.Infected);
             }
 

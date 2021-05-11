@@ -88,6 +88,7 @@ namespace CovidPropagation
         public double SumFirstOrderLossRate { get => sumFirstOrderLossRate; set => sumFirstOrderLossRate = value; }
         public double ProbabilityOfInfection { get => probabilityOfInfection; set => probabilityOfInfection = value; }
         public double AverageQuantaExhalationRate { get => averageQuantaExhalationRate; set => averageQuantaExhalationRate = value; }
+        public bool HasEnvironnementChanged { get => hasEnvironnementChanged; set => hasEnvironnementChanged = value; }
 
         #endregion
 
@@ -109,7 +110,7 @@ namespace CovidPropagation
             volume = air * this.height;
 
             persons = new List<Person>();
-            hasEnvironnementChanged = true;
+            HasEnvironnementChanged = true;
             AverageQuantaExhalationRate = GlobalVariables.AVERAGE_QUANTA_EXHALATION;
         }
 
@@ -127,7 +128,7 @@ namespace CovidPropagation
         /// </summary>
         public void CalculateprobabilityOfInfection()
         {
-            if (hasEnvironnementChanged && persons.Count > 0)
+            if (HasEnvironnementChanged && persons.Count > 0)
             {
                 if (Virus.IsTransmissibleBy(typeof(AerosolTransmission)))
                 {
@@ -176,7 +177,7 @@ namespace CovidPropagation
                     VirusAraisingCases = aerosolDatas.VirusAraisingCases.SetValueIfNaN();
                 }
             }
-            hasEnvironnementChanged = false;
+            HasEnvironnementChanged = false;
         }
 
         /// <summary>
@@ -187,7 +188,7 @@ namespace CovidPropagation
         public void Enter(Person personEntering)
         {
             persons.Add(personEntering);
-            hasEnvironnementChanged = true;
+            HasEnvironnementChanged = true;
         }
 
         /// <summary>
@@ -198,7 +199,7 @@ namespace CovidPropagation
         public void Leave(Person personLeaving)
         {
             persons.Remove(personLeaving);
-            hasEnvironnementChanged = true;
+            HasEnvironnementChanged = true;
         }
 
         public int CountNbPeople()
@@ -209,7 +210,7 @@ namespace CovidPropagation
         #region Calculs
         private int CountNumberInfectivePersons()
         {
-            return persons.Where(p => (int)p.CurrentState > 1).Count();
+            return persons.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count();
         }
         private double GetFractionOfImmune(double nbPersons)
         {
@@ -249,7 +250,7 @@ namespace CovidPropagation
 
         private double GetQuantaExhalationRateofInfected(double nbInfectivePersons)
         {
-            double quantaExhalationRateOfInfected = persons.Where(p => (int)p.CurrentState > 2)
+            double quantaExhalationRateOfInfected = persons.Where(p => (int)p.CurrentState > (int)PersonState.Infectious)
                                                             .Sum(p => p.QuantaExhalationRate * (1 - p.ExhalationMaskEfficiency * p.HasMask.ConvertToInt())) 
                                                             / nbInfectivePersons; 
 

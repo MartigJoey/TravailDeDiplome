@@ -25,13 +25,27 @@ namespace CovidPropagation
     //An EventArgs class must always derive from System.EventArgs.
     public class Simulation : EventArgs
     {
+        private const double PROBABILITY_OF_BEING_A_COMPANY = 0.7909d;
+        private const double PROBABILITY_OF_BEING_A_STORE = 0.1d;
+        private const double PROBABILITY_OF_BEING_A_RESTAURANT = 0.1d;
+        private const double PROBABILITY_OF_BEING_A_SCHOOL = 0.0045d;
+        private const double PROBABILITY_OF_BEING_A_HOSPITAL = 0.0004d;
+        private const double PROBABILITY_OF_BEING_A_SUPERMARKET = 0.0042d;
 
-        public event MyEventHandler OnTickSP;
+        private const double DEFAULT_PROBABILITY_OF_BEING_MINOR = 0.22d;
+        private const double DEFAULT_PROBABILITY_OF_BEING_RETIRED = 0.14d;
+
+        private const double PROBABILITY_OF_USING_A_CAR = 0.36d;
+        private const double PROBABILITY_OF_USING_A_BIKE = 0.37d;
+        private const double PROBABILITY_OF_USING_A_BUS = 0.27d;// Normalement 0.11 avec les bus
+        private const double PROBABILITY_OF_WALKING = 0.15d;
 
         private const int MAX_SCHOOL_AGE = 25;
         private const int MAX_WORKING_AGE = 65;
 
-        private Random rdm = GlobalVariables.rdm;
+        public event MyEventHandler OnTickSP;
+
+        private Random rdm = new Random();
         private int _averageAge;
         private double _probabilityOfInfected;
         private int _nbPersons;
@@ -71,8 +85,8 @@ namespace CovidPropagation
             startStop = true;
 
             // Récupérer depuis les paramètres
-            double minorProbability = 0.22d;
-            double retirementProbability = 0.14d;
+            double minorProbability = DEFAULT_PROBABILITY_OF_BEING_MINOR;
+            double retirementProbability = DEFAULT_PROBABILITY_OF_BEING_RETIRED;
             double workingProbability = 1 - minorProbability - retirementProbability;
 
             int nbMinor = (int)Math.Round(minorProbability * _nbPersons);
@@ -81,7 +95,7 @@ namespace CovidPropagation
 
             Stopwatch speedTest = new Stopwatch();
             speedTest.Start();
-            CreateBuildings(nbMinor, nbWorking, nbRetirement);
+            CreateBuildings();
             speedTest.Stop();
             Debug.WriteLine("Building" + speedTest.ElapsedMilliseconds + "  Count" + buildingSites.Count);
             speedTest.Restart();
@@ -90,20 +104,21 @@ namespace CovidPropagation
             Debug.WriteLine("Transport" + speedTest.ElapsedMilliseconds);
             speedTest.Restart();
             CreatePopulation(_nbPersons, retirementProbability, minorProbability);
-            speedTest.Stop();
-            foreach (var item in homes)
-            {
-                Debug.WriteLine(item.CountNbPeople());
-            }
+            speedTest.Stop();           
             Debug.WriteLine("Population" + speedTest.ElapsedMilliseconds + "  Count" + population.Count);
-
         }
 
+        /// <summary>
+        /// Itère la simulation. 
+        /// Créé un "timer" à l'aide des stopwatch pour une meilleur précision.
+        /// Ordonne à la population de changer d'activité,
+        /// aux bâtiment de calculer les chances d'attraper le virus dans ceux-ci, 
+        /// à la population de calculer si elle a été infectée.
+        /// </summary>
         public async void Iterate()
         {
             while (true)
             {
-                //Debug.WriteLine(Interval);
                 if (startStop)
                 {
                     sp.Start();
@@ -112,9 +127,11 @@ namespace CovidPropagation
                     {
                         OnTickSP(10, this);
                     }
-                    population.ForEach(p => p.ChangeActivity()); // Tester traitement en parallel
+
+                    population.ForEach(p => p.ChangeActivity());
                     buildingSites.ForEach(p => p.CalculateprobabilityOfInfection());
                     population.ForEach(p => p.ChechState());
+
                     sp.Stop();
 
                     if (sp.ElapsedMilliseconds < Interval)
@@ -128,6 +145,10 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Récupère les données lors d'un évènement qui est déclanché à chaque itération de la simulation.
+        /// </summary>
+        /// <returns>Données actuelles de la simulation.</returns>
         public string GetData()
         {
             //foreach (var item in allBuildingSites)
@@ -156,32 +177,43 @@ namespace CovidPropagation
                    $"Temps                   : {TimeManager.CurrentDayString} {TimeManager.CurrentHour}";
         }
 
+        /// <summary>
+        /// Démarre/Redémarre la simulation.
+        /// </summary>
         public void Start()
         {
             startStop = true;
         }
 
+        /// <summary>
+        /// Arrête/Pause la simulation.
+        /// </summary>
         public void Stop()
         {
             startStop = false;
         }
 
-        private void CreateBuildings(int populationInSchool, int populationInCompanies, int populationInRetirement)
+        /// <summary>
+        /// Créé les bâtiments de la simulation en fonction du nombre de personnes.
+        /// Peut importe le nombre de personnes, il existe un bâtiment de chaque.
+        /// Les bâtiments sont créé proportionnelement à la taille de la population et à leur type.
+        /// Ne créé par les maisons de la population.
+        /// </summary>
+        private void CreateBuildings()
         {
             // 6.8d est le rapport bâtiment / personne sans compter les habitations.
             int nbBuildings = (int)Math.Ceiling((6.8d - 100) / 100 * _nbPersons + _nbPersons);
             KeyValuePair<object, double>[] companyType = new KeyValuePair<object, double>[] {
-                    new KeyValuePair<object, double>(typeof(Company), 0.7909d),
-                    new KeyValuePair<object, double>(typeof(Store), 0.1d),
-                    new KeyValuePair<object, double>(typeof(Restaurant), 0.1d),
-                    new KeyValuePair<object, double>(typeof(School), 0.0045d),
-                    new KeyValuePair<object, double>(typeof(Hospital), 0.0004d),
-                    new KeyValuePair<object, double>(typeof(Supermarket), 0.0042d),
+                    new KeyValuePair<object, double>(typeof(Company), PROBABILITY_OF_BEING_A_COMPANY),
+                    new KeyValuePair<object, double>(typeof(Store), PROBABILITY_OF_BEING_A_STORE),
+                    new KeyValuePair<object, double>(typeof(Restaurant), PROBABILITY_OF_BEING_A_RESTAURANT),
+                    new KeyValuePair<object, double>(typeof(School), PROBABILITY_OF_BEING_A_SCHOOL),
+                    new KeyValuePair<object, double>(typeof(Hospital), PROBABILITY_OF_BEING_A_HOSPITAL),
+                    new KeyValuePair<object, double>(typeof(Supermarket), PROBABILITY_OF_BEING_A_SUPERMARKET),
             };
             buildingSites.Add(new Outside());
-            // Then add the result of all the tasks to r in a treadsafe fashion
 
-            Parallel.For(0, nbBuildings, i => {
+            while(nbBuildings > 0){
                 Type result = (Type)rdm.NextProbability(companyType);
                 Site newBuilding;
                 List<Site> buildingTypeListe;
@@ -215,20 +247,54 @@ namespace CovidPropagation
                     newBuilding = new Supermarket();
                     buildingTypeListe = supermarkets;
                 }
-                lock (buildingSites)
-                {
-                    buildingSites.Add(newBuilding);
-                    buildingTypeListe.Add(newBuilding);
-                }
-            });
 
-            foreach (var buildingType in companyType)
+                buildingSites.Add(newBuilding);
+                buildingTypeListe.Add(newBuilding);
+                nbBuildings--;
+            }
+
+
+            //if (!buildingSites.Any(b => b.GetType() == (Type)buildingType.Key))
+            //    buildingSites.Add((Site)Activator.CreateInstance((Type)buildingType.Key));
+            if (!buildingSites.Any(b => b.GetType() == typeof(School)))
             {
-                if (!buildingSites.Any(b => b.GetType() == (Type)buildingType.Key))
-                    buildingSites.Add((Site)Activator.CreateInstance((Type)buildingType.Key));
+                School school = new School();
+                schools.Add(school);
+                buildingSites.Add(school);
+            }
+
+            if (!buildingSites.Any(b => b.GetType() == typeof(Hospital)))
+            {
+                Hospital hospital = new Hospital();
+                hospitals.Add(hospital);
+                buildingSites.Add(hospital);
+            }
+
+            if (!buildingSites.Any(b => b.GetType() == typeof(Supermarket)))
+            {
+                Supermarket supermarket = new Supermarket();
+                supermarkets.Add(supermarket);
+                buildingSites.Add(supermarket);
+            }
+
+            if (!buildingSites.Any(b => b.GetType() == typeof(Store)))
+            {
+                Store store = new Store();
+                stores.Add(store);
+                buildingSites.Add(store);
+            }
+
+            if (!buildingSites.Any(b => b.GetType() == typeof(Restaurant)))
+            {
+                Restaurant restaurant = new Restaurant();
+                restaurants.Add(restaurant);
+                buildingSites.Add(restaurant);
             }
         }
 
+        /// <summary>
+        /// créé les transports publiques de la simulation.
+        /// </summary>
         private void CreateTransports()
         {
             double nbOfCar = (int)Math.Ceiling((36d - 100) / 100 * _nbPersons + _nbPersons); //  Modifier les % de chances d'utiliser une voiture dans la création de population
@@ -241,25 +307,70 @@ namespace CovidPropagation
             //}
         }
 
+        /// <summary>
+        /// Créé la population, définit l'âge de la personne ainsi que les lieux dans lesquelles elle va aller.
+        /// Définit si la personne est infectée dès le départ ou si elle est saine.
+        /// </summary>
+        /// <param name="nbPeople">Nombre de personnes à créer.</param>
+        /// <param name="retirementProbability">pourcentage de chance que la personne soit retraitée.</param>
+        /// <param name="minorProbability">Pourcentage de chance que la personne soit mineur.</param>
         private void CreatePopulation(int nbPeople, double retirementProbability, double minorProbability)
         {
-            for(int i = 0; i < nbPeople; i++){
-                homes.Add(new Home());
-            }
-
-            Parallel.For(0, nbPeople, i => {
+            while(nbPeople > 0) 
+            { 
+                int age;
+                int nbWorkDays;
+                Home home = new Home();
+                List<KeyValuePair<Site, SitePersonStatus>> personSitesFree;
                 PersonState personState;
-                if (!rdm.NextBoolean(_probabilityOfInfected))
+
+                if (rdm.NextBoolean(_probabilityOfInfected))
                     personState = PersonState.Infectious;
                 else
                     personState = PersonState.Healthy;
+
                 if (GlobalVariables.rdm.NextBoolean(retirementProbability))
-                    CreateElder(personState);
+                {
+                    personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
+                        new KeyValuePair<Site, SitePersonStatus>(home, SitePersonStatus.Other),
+                        new KeyValuePair<Site, SitePersonStatus>(stores[rdm.Next(0, stores.Count)], SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(restaurants[rdm.Next(0, restaurants.Count)], SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(GetVehicle(), SitePersonStatus.Other)
+                    };
+                    age = 70; // Changer pour age random
+                    nbWorkDays = 0;
+                }
                 else if (GlobalVariables.rdm.NextBoolean(minorProbability))
-                    CreateStudent(personState);
+                {
+                    personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
+                        new KeyValuePair<Site, SitePersonStatus>(home, SitePersonStatus.Other),
+                        new KeyValuePair<Site, SitePersonStatus>(stores[rdm.Next(0, stores.Count)], SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(restaurants[rdm.Next(0, restaurants.Count)], SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(buildingSites.Where(b => typeof(Outside) == b.GetType()).First(), SitePersonStatus.Other),
+                        new KeyValuePair<Site, SitePersonStatus>(schools[rdm.Next(0, schools.Count)], SitePersonStatus.Worker)
+                    };
+                    age = 15; // Changer pour age random
+                    nbWorkDays = 5;
+                }
                 else
-                    CreateAdult(personState);
-            });
+                {
+                    personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
+                        new KeyValuePair<Site, SitePersonStatus>(home, SitePersonStatus.Other),
+                        new KeyValuePair<Site, SitePersonStatus>(stores[rdm.Next(0, stores.Count)], SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(restaurants[rdm.Next(0, restaurants.Count)], SitePersonStatus.Client),
+                        new KeyValuePair<Site, SitePersonStatus>(buildingSites.Where(b => b.Type.Contains(SiteType.WorkPlace)).OrderBy(x => rdm.Next()).First(), SitePersonStatus.Worker),
+                        new KeyValuePair<Site, SitePersonStatus>(GetVehicle(), SitePersonStatus.Other)
+                    };
+                    age = 30; // Changer pour age random
+                    nbWorkDays = 5;
+                }
+
+                homes.Add(home);
+                buildingSites.Add(home);
+                Planning planning = new Planning(personSitesFree, nbWorkDays);
+                population.Add(new Person(planning, age, personState));
+                nbPeople--;
+            }
         }
 
         private int CreateFamilly()
@@ -394,61 +505,17 @@ namespace CovidPropagation
             return nbCreated =  1;
         }
 
-        private void CreateAdult(PersonState personState)
-        {
-            List<KeyValuePair<Site, SitePersonStatus>> personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
-                        new KeyValuePair<Site, SitePersonStatus>(homes[rdm.Next(0, homes.Count)], SitePersonStatus.Other),
-                        new KeyValuePair<Site, SitePersonStatus>(stores[rdm.Next(0, stores.Count)], SitePersonStatus.Client),
-                        new KeyValuePair<Site, SitePersonStatus>(restaurants[rdm.Next(0, restaurants.Count)], SitePersonStatus.Client),
-                        new KeyValuePair<Site, SitePersonStatus>(buildingSites.Where(b => b.Type.Contains(SiteType.WorkPlace)).OrderBy(x => rdm.Next()).First(), SitePersonStatus.Worker),
-                        new KeyValuePair<Site, SitePersonStatus>(GetVehicle(), SitePersonStatus.Other)
-                    };
-
-            lock (buildingSites)
-            {
-                Planning planning = new Planning(personSitesFree, 5);
-                population.Add(new Person(planning, 30, personState)); // Changer pour age random
-            }
-        }
-
-        private void CreateStudent(PersonState personState)
-        {
-            List<KeyValuePair<Site, SitePersonStatus>> personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
-                        new KeyValuePair<Site, SitePersonStatus>(homes[rdm.Next(0, homes.Count)], SitePersonStatus.Other),
-                        new KeyValuePair<Site, SitePersonStatus>(stores[rdm.Next(0, stores.Count)], SitePersonStatus.Client),
-                        new KeyValuePair<Site, SitePersonStatus>(restaurants[rdm.Next(0, restaurants.Count)], SitePersonStatus.Client),
-                        new KeyValuePair<Site, SitePersonStatus>(buildingSites.Where(b => typeof(Outside) == b.GetType()).First(), SitePersonStatus.Other),
-                        new KeyValuePair<Site, SitePersonStatus>(schools[rdm.Next(0, schools.Count)], SitePersonStatus.Worker)
-                    };
-            lock (population)
-            {
-                Planning planning = new Planning(personSitesFree, 5);
-                population.Add(new Person(planning, 15, personState));
-            }
-        }
-
-        private void CreateElder(PersonState personState)
-        {
-            List<KeyValuePair<Site, SitePersonStatus>> personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
-                        new KeyValuePair<Site, SitePersonStatus>(homes[rdm.Next(0, homes.Count)], SitePersonStatus.Other),
-                        new KeyValuePair<Site, SitePersonStatus>(stores[rdm.Next(0, stores.Count)], SitePersonStatus.Client),
-                        new KeyValuePair<Site, SitePersonStatus>(restaurants[rdm.Next(0, restaurants.Count)], SitePersonStatus.Client),
-                        new KeyValuePair<Site, SitePersonStatus>(GetVehicle(), SitePersonStatus.Other)
-                    };
-            lock (population)
-            {
-                Planning planning = new Planning(personSitesFree, 0);
-                population.Add(new Person(planning, 70, personState));
-            }
-        }
-
+        /// <summary>
+        /// Récupère un véhicule qu'un individu utilisera.
+        /// </summary>
+        /// <returns></returns>
         private Site GetVehicle()
         {
             KeyValuePair<object, double>[] transportsProbability = new KeyValuePair<object, double>[] {
-                new KeyValuePair<object, double>(new Car(), 0.36),
-                new KeyValuePair<object, double>(buildingSites.Where(b => typeof(Outside) == b.GetType()).First(), 0.37),
-                new KeyValuePair<object, double>(new Bike(), 0.27), // Normalement 0.11 avec les bus
-                //new KeyValuePair<object, double>(allBuildingSites.Where(b => typeof(Bus) == b.GetType()).OrderBy(x => rdm.Next()).First(), 0.15),
+                new KeyValuePair<object, double>(new Car(), PROBABILITY_OF_USING_A_CAR),
+                new KeyValuePair<object, double>(buildingSites.Where(b => typeof(Outside) == b.GetType()).First(), PROBABILITY_OF_WALKING),
+                new KeyValuePair<object, double>(new Bike(), PROBABILITY_OF_USING_A_BIKE), 
+                //new KeyValuePair<object, double>(allBuildingSites.Where(b => typeof(Bus) == b.GetType()).OrderBy(x => rdm.Next()).First(), PROBABILITY_OF_USING_A_BUS),
             };
             return (Site)rdm.NextProbability(transportsProbability);
         }
