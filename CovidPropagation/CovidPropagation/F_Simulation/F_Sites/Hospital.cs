@@ -59,7 +59,10 @@ namespace CovidPropagation
 
         public void TreatPatients()
         {
-            covidPatient.ForEach(p => p.);
+            covidPatient.ForEach(p => { 
+                p.GetCovidTreatment();
+                p.RecalculateVirusResistance(2);
+            });
         }
     }
 }

@@ -15,14 +15,8 @@ using System.Threading.Tasks;
 
 namespace CovidPropagation
 {
-    //First we have to define a delegate that acts as a signature for the
-    //function that is ultimately called when the event is triggered.
-    //You will notice that the second parameter is of MyEventArgs type.
-    //This object will contain information about the triggered event.
-    public delegate void MyEventHandler(object source, Simulation e);
+    public delegate void GetDataEventHandler(object source, Simulation e);
 
-    //This is a class which describes the event to the class that recieves it.
-    //An EventArgs class must always derive from System.EventArgs.
     public class Simulation : EventArgs
     {
         private const double PROBABILITY_OF_BEING_A_COMPANY = 0.7909d;
@@ -43,7 +37,7 @@ namespace CovidPropagation
         private const int MAX_SCHOOL_AGE = 25;
         private const int MAX_WORKING_AGE = 65;
 
-        public event MyEventHandler OnTickSP;
+        public event GetDataEventHandler OnTickSP;
 
         private Random rdm = new Random();
         private int _averageAge;
@@ -79,7 +73,7 @@ namespace CovidPropagation
             supermarkets = new List<Site>();
             homes = new List<Site>();
             allTransports = new List<Site>();
-            population = new List<Person>();
+            population = new List<Person>(nbPersons);
             sp = new Stopwatch();
 
             startStop = true;
@@ -323,6 +317,7 @@ namespace CovidPropagation
                 int age;
                 int nbWorkDays;
                 Home home = new Home();
+                Hospital hospital = (Hospital)hospitals[rdm.Next(0, hospitals.Count)];
                 List<KeyValuePair<Site, SitePersonStatus>> personSitesFree;
                 PersonState personState;
 
@@ -370,7 +365,7 @@ namespace CovidPropagation
                 homes.Add(home);
                 buildingSites.Add(home);
                 Planning planning = new Planning(personSitesFree, nbWorkDays);
-                population.Add(new Person(planning, age, personState));
+                population.Add(new Person(planning, hospital, age, personState));
                 nbPeople--;
             }
         }
@@ -445,7 +440,7 @@ namespace CovidPropagation
                     locations.Add(typeof(Store), buildingSites.Where(b => typeof(Store) == b.GetType()).First());
                     locations.Add(typeof(Supermarket), buildingSites.Where(b => typeof(Supermarket) == b.GetType()).First());
 
-                    population.Add(new Person(planning));
+                    //population.Add(new Person(planning));
                     nbCreated = 1;
                     break;
                 case "Couple":
@@ -475,34 +470,6 @@ namespace CovidPropagation
                     //nbCreated = 2;
                     break;
             }
-            // Nouveau
-            // choisir lieux
-            // Choisir une seed ICI pour la famille en fonction des lieux
-            // créer tous les planning de la famille
-
-            // ONE PERSON
-            // Simulation
-                // Créer 1 personne
-                // Créer véhicule ou pas
-                // Créer maison
-                // Choisir lieux de loisirs
-            // Planning
-                // Sélectionne un planning compatible avec les paramètres reçus
-                // Plus tard générer le planning automatiquement
-                // Stocker les lieux
-            // Personne
-
-            // COUPLE
-            // Simulation
-                // Créer 2 personnes
-                // Créer véhicule ou pas | liée
-                // Créer maison | liée
-                // Choisir lieux de loisirs | liée ou pas
-            // Planning
-                // Sélectionne un planning compatible avec les paramètres reçus
-                // Plus tard générer le planning automatiquement
-                // Stocker les lieux
-            // Personne
 
             return nbCreated =  1;
         }

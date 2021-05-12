@@ -26,6 +26,12 @@ namespace CovidPropagation
         private const int MIN_RESISTANCE_BEFORE_HOSPITALISATION = 50;
         private const int MIN_RESISTANCE_BAFORE_DEATH = 10;
 
+        private const int MIN_TIME_TO_DIE = 5;  // En jours
+        private const int MAX_TIME_TO_DIE = 13; // En jours
+
+        private const int MIN_IMMUNITY_DURATION = 3 * 30; // En jours
+        private const int MAX_IMMUNITY_DURATION = 8 * 30; // En jours
+
         private Planning _planning;
         private Site _currentSite;
         private PersonState _state;
@@ -45,6 +51,7 @@ namespace CovidPropagation
         private int _quarantineDuration;
         private Home _quarantineLocation;
         private Hospital _hospitalCovid;
+        private int _timeBeforeDeath;
 
         public PersonState CurrentState { get => _state; set => _state = value; }
         public double QuantaExhalationRate { get => quantaExhalationRate; }
@@ -52,15 +59,16 @@ namespace CovidPropagation
         public double ExhalationMaskEfficiency { get => _mask.ExhalationMaskEfficiency; }
         public double InhalationMaskEfficiency { get => _mask.InhalationMaskEfficiency; }
         public int Age { get => _age; set => _age = value; }
+        internal List<Ilness> Ilnesses { get => ilnesses; set => ilnesses = value; }
 
-        public Person(Planning planning, int age = GlobalVariables.DEFAULT_PERSON_AGE, PersonState state = PersonState.Healthy, Hospital hospital)
+        public Person(Planning planning, Hospital hospital, int age = GlobalVariables.DEFAULT_PERSON_AGE, PersonState state = PersonState.Healthy)
         {
             _planning = planning;
             _state = state;
             _rdm = GlobalVariables.rdm;
             Age = age;
             _hospitalCovid = hospital;
-            ilnesses = new List<Ilness>();
+            Ilnesses = new List<Ilness>();
             symptoms = new List<Symptom>();
 
             KeyValuePair<Object, double>[] probabilityOfMaskType = {
@@ -102,17 +110,19 @@ namespace CovidPropagation
         /// </summary>
         public void ChangeActivity()
         {
-            //  - 50< => hospitalisations
-            //  - 10 < => décès
             if (virusResistance < MIN_RESISTANCE_BEFORE_HOSPITALISATION)
             {
-                if (_hospitalCovid.EnterForCovid(this))
+                if (_currentSite != _hospitalCovid)
                 {
-                    _currentSite = _hospitalCovid;
-                }
-                else
-                {
-                    _currentSite = _quarantineLocation;
+                    if (_hospitalCovid.EnterForCovid(this))
+                    {
+                        _currentSite = _hospitalCovid;
+                        _timeBeforeDeath = _rdm.Next(MIN_TIME_TO_DIE, MAX_TIME_TO_DIE) * GlobalVariables.NUMBER_OF_TIMEFRAME;
+                    }
+                    else
+                    {
+                        _currentSite = _quarantineLocation;
+                    }
                 }
             }
             else if (_isQuarantined)
@@ -120,7 +130,6 @@ namespace CovidPropagation
                 _currentSite = _quarantineLocation;
                 if (_quarantineDuration <= 0)
                     _isQuarantined = false;
-
 
                 _quarantineDuration--;
             }
@@ -147,12 +156,14 @@ namespace CovidPropagation
         {
             if (virusResistance < MIN_RESISTANCE_BAFORE_DEATH)
             {
-                // Proceed to die
+                if (_timeBeforeDeath <= 0)
+                    _state = PersonState.Dead;
+
+                _timeBeforeDeath--;
             }
             else
             {
-                // guérir lentement ou stabiliser
-                // Mélanger à CheckState.
+                // Retirer maladies
             }
         }
 
@@ -231,7 +242,10 @@ namespace CovidPropagation
                 if (virusDuration > 0)
                     virusDuration--;
                 else
-                    _state = PersonState.Healthy;
+                {
+                    _state = PersonState.Immune;
+                    immunityDuration = _rdm.Next(MIN_IMMUNITY_DURATION, MAX_IMMUNITY_DURATION) * GlobalVariables.NUMBER_OF_TIMEFRAME;
+                }
             }
         }
 
@@ -254,17 +268,20 @@ namespace CovidPropagation
         /// </summary>
         private void ContractIlness()
         {
-            // SI attrape alors Modifier pour prendre en compte l'âge
+            // Si attrape alors Modifier pour prendre en compte l'âge
             if (GlobalVariables.ILNESS_INFECTION_PROBABILITY > _rdm.NextDouble())
             {
                 Ilness newIlness = new Ilness(Age, _rdm);
-                ilnesses.Add(newIlness);
+                Ilnesses.Add(newIlness);
             }
+            RecalculateVirusResistance(1);
+        }
 
-            ilnesses.ForEach(i => i.DecrementTimeBeforeDesapearance());
-            ilnesses.RemoveAll(i => i.Desapear());
-
-            virusResistance = baseVirusResistance - ilnesses.Sum(i => i.Attack);
+        public void RecalculateVirusResistance(int decrement)
+        {
+            Ilnesses.ForEach(i => i.DecrementTimeBeforeDesapearance(decrement));
+            Ilnesses.RemoveAll(i => i.Desapear());
+            virusResistance = baseVirusResistance - Ilnesses.Sum(i => i.Attack);
         }
     }
 }

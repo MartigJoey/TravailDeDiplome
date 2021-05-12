@@ -19,6 +19,6 @@
             <RowDefinition Height="5*" MaxHeight="25" MinHeight="25"/>
             <RowDefinition Height="95*" MaxHeight="150" MinHeight="50"/>
         </Grid.RowDefinitions>
-        <ContentPresenter Grid.ColumnSpan="3" Content="{Binding}" ContentTemplate="{StaticResource FilterTypeByTemplateControl}"/>
+        <ContentPresenter Grid.ColumnSpan="3" Content="{Binding}" ContentTemplate="{StaticResource TitleBar}"/>
     </Grid>
 </Window>

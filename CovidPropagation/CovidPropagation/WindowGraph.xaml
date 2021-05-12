@@ -1,0 +1,95 @@
+﻿<Window x:Class="CovidPropagation.WindowGraph"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:local="clr-namespace:CovidPropagation"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="WindowGraph" Height="450" Width="800"
+        Background="#1a1a1a"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:GraphicsType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+    <Grid x:Name="grdContent"
+          HorizontalAlignment="Stretch" 
+          VerticalAlignment="Stretch" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25*" MinWidth="60"/>
+            <ColumnDefinition Width="25*" MinWidth="60"/>
+            <ColumnDefinition Width="25*" MinWidth="60"/>
+            <ColumnDefinition Width="25*" MinWidth="60" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*" MaxHeight="25" MinHeight="25"/>
+            <RowDefinition Height="10*" MinHeight="30"/>
+            <RowDefinition Height="10*" MinHeight="30"/>
+            <RowDefinition Height="10*" MinHeight="30"/>
+            <RowDefinition Height="10*" MinHeight="30"/>
+            <RowDefinition Height="10*" MinHeight="30"/>
+            <RowDefinition Height="10*" MinHeight="30"/>
+            <RowDefinition Height="10*" MinHeight="30"/>
+            <RowDefinition Height="20*" MinHeight="50"/>
+            <RowDefinition Height="8*" MaxHeight="25" MinHeight="25"/>
+        </Grid.RowDefinitions>
+        <ContentPresenter Grid.ColumnSpan="4" Content="{Binding}" ContentTemplate="{StaticResource TitleBar}"/>
+
+        <UniformGrid x:Name="ugrGraph"
+                   Grid.Column="2"
+                   Grid.ColumnSpan="2"
+                   Grid.Row="1"
+                   Grid.RowSpan="8"/>
+
+
+        <Button x:Name="btnSave" Click="Save_Click" 
+                Content="Save" 
+                Style="{StaticResource smallButton}" 
+                Grid.Row="10"
+                Grid.Column="2"/>
+
+        <Button x:Name="btnCancel" Click="Cancel_Click" 
+                Content="cancel"
+                Style="{StaticResource smallButton}" 
+                Grid.Row="10"
+                Grid.Column="3"/>
+        
+        <ComboBox x:Name="cbxGraphType" SelectionChanged="cbxGraphType_SelectionChanged"
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+                  />
+
+        <ComboBox x:Name="cbxValueX" 
+                  Grid.Row="2"
+                  Grid.Column="1"
+                  />
+
+        <ComboBox x:Name="cbxValueY" 
+                  Grid.Row="3"
+                  Grid.Column="1"
+                  />
+
+        <TextBox x:Name="tbxQuantityOfCurves"
+                 PreviewTextInput="NumberValidationTextBox"
+                 Grid.Column="1"
+                 Grid.Row="4"
+                 />
+
+        <ComboBox x:Name="cbxCurveValue" 
+                  Grid.Row="3"
+                  Grid.Column="1"
+                  />
+
+    </Grid>
+</Window>

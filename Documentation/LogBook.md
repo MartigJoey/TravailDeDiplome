@@ -654,7 +654,7 @@
   - Ajout du background (Map)
   - Ajout du titre
   - Version 1
-    - ![Affiche V1](Medias/Poster/PosterCovidPropagation.png)
+    - ![Affiche V1](Medias/Poster/PosterCovidPropagationV1.png)
 - Simulation
   - Tentative de créer la simulation en utilisant un traitement parallèle.
     - Non fonctionnel du à l'utilisation de list en cours de création.
@@ -712,3 +712,30 @@
   - Places limitées
   - Traitement des patients
 - Penser à implémenter dans le planning ou la personne le trajet à effectuer lors de quarantaine / hopital.
+
+# 12.05.2021 08h05 / 17h00
+- Avis de Florian Lorentz sur le poster
+  - Couleur des textes et graphiques trop proche de leur background.
+  - Modifier la taille des logos
+- Deuxième avis de Florian Lorentz et Quentin Fasler
+  - Supprimer/Modifier le texte du logo WPF
+  - Ajouter le nom de livecharts sous leur logo
+- Modification du poster
+  - V2 ![Poster Version 2](Medias/Poster/PosterCovidPropagationV2.png)
+- Reprise du traitement des individus dans les hôpitaux
+  - Modification de l'immunité
+  - Ajout de l'état décedé
+  - Ajout d'un décréments du temps restant des maladies plus important dans les hôpitaux
+- Recherche pour augmenter la mémoire allouée au processus
+  - Création d'un fichier config atorisant les objets larges
+    - Aucun effet
+  - Allocation de la taille d'une liste plutôt que de le faire progressivement
+    - Pas efficace
+- Création de la page permettant de modifier les paramètres d'un graphique.
+  - Après un déplacement de "Window" le projet ne se lance plus dû à des erreurs qui n'existent pas.
+  - Retéléchargement depuis le git du projet et rajouts des modification apportées aujourd'hui.
+  - Bug d'évènement de fermeture de fenêtre du à la barre de titre personnalisée
+  - Création d'un évènement le remplaçant
+- Ajout du graphique linéaire en tant que préview des paramètres
+  - Ajouts de textbox définissant le nombre de courbe
+  - Ajouts de combobox définissant les valeurs en X, en Y et pour chaque courbe

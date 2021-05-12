@@ -9,6 +9,7 @@ namespace CovidPropagation
     /// </summary>
     public enum PersonState
     {
+        Dead = -1,
         Healthy = 0,
         Immune = 1,
         Infected = 2,

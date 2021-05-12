@@ -127,7 +127,7 @@ namespace CovidPropagation
 
             KeyValuePair<Site, SitePersonStatus> transportSite = personSites.Where(t => t.Key.Type.Contains(SiteType.Transport)).OrderBy(x => rdm.Next()).First();
 
-            timeFrames = new List<TimeFrame>();
+            timeFrames = new List<TimeFrame>(totalTimeFrame);
             // Changer les siteType pour définir le type
             CreateMorning(timeFrames, hometSite, morningTimeFrame, workSite, morningWorkTimeFrame, transportSite);
             CreateNoon(timeFrames, noonSite, noonTimeFrame, transportSite);
@@ -194,7 +194,7 @@ namespace CovidPropagation
             KeyValuePair<Site, SitePersonStatus> eveningActivitySite = personSites.Where(h => h.Key.Type.Contains(SiteType.Eat)).OrderBy(x => rdm.Next()).First();
             KeyValuePair<Site, SitePersonStatus> transportSite = personSites.Where(h => h.Key.Type.Contains(SiteType.Transport)).OrderBy(x => rdm.Next()).First();
 
-            timeFrames = new List<TimeFrame>();
+            timeFrames = new List<TimeFrame>(totalTimeFrame);
             CreateMorning(timeFrames, homeSite, morningTimeFrame, morningActivitySite, morningActivityTimeFrame, transportSite);
             CreateNoon(timeFrames, noonSite, noonTimeFrame, transportSite);
             CreateAfterNoon(timeFrames, homeSite, afterNoonTimeFrame, afterNoonActivitySite, afterNoonActivityTimeFrame, transportSite);

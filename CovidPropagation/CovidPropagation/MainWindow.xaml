@@ -34,7 +34,7 @@
         
         <!-- TitleBar -->
         <TextBlock IsEnabled="True" Text=" Covid propagation" Name="windowName"/>
-        <ContentPresenter Grid.ColumnSpan="3" Content="{Binding ElementName=windowName,Path=Text}" ContentTemplate="{StaticResource FilterTypeByTemplateControl}"/>
+        <ContentPresenter Grid.ColumnSpan="3" Content="{Binding ElementName=windowName,Path=Text}" ContentTemplate="{StaticResource TitleBar}"/>
         
         <!-- Menu buttons -->
         <TextBlock Background="{StaticResource normalGreen}" Grid.Row="1" Grid.RowSpan="4"/>

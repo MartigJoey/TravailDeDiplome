@@ -187,7 +187,7 @@
 
 
             <!-- Title bar -->
-            <DataTemplate x:Key="FilterTypeByTemplateControl">
+            <DataTemplate x:Key="TitleBar">
                 <Grid Grid.ColumnSpan="3">
                     <TextBlock MouseDown="TextBlock_MouseDown" Text=" Covid propagation" Foreground="{StaticResource foreGroundLight}" FontSize="15"/>
                     <Button Click="Minimize_Click" Style="{StaticResource MaximizeMinimizeStyle}" Margin="0,0,80,0">

@@ -16,12 +16,12 @@ namespace CovidPropagation
     /// </summary>
     class Ilness
     {
-        int timeBeforeDesapear; // En période
+        int timeBeforeDesapearing; // En période
         int attack;
         public int Attack { get => attack; set => attack = value; }
         public Ilness(int age, Random rdm)
         {
-            timeBeforeDesapear = rdm.Next(7, 30) * 48; // entre 7 jours et 30 (Temporaire)
+            timeBeforeDesapearing = rdm.Next(7, 30) * 48; // entre 7 jours et 30 (Temporaire)
             Attack = CalculateAttack(age, rdm); // Entre 5 et 20, en fonction de l'âge
         }
 
@@ -85,9 +85,9 @@ namespace CovidPropagation
         /// <summary>
         /// Décrémente le temps avant que la maladie ne disparaisse.
         /// </summary>
-        public void DecrementTimeBeforeDesapearance()
+        public void DecrementTimeBeforeDesapearance(int decrement)
         {
-            timeBeforeDesapear--;
+            timeBeforeDesapearing -= decrement;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace CovidPropagation
         /// </summary>
         public bool Desapear()
         {
-            return timeBeforeDesapear <= 0;
+            return timeBeforeDesapearing <= 0;
         }
     }
 }

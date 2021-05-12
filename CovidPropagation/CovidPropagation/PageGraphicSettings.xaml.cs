@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Windows;
@@ -93,6 +94,7 @@ namespace CovidPropagation
                 Button btnHeightPlus = CreateGraphButton("GraphButtonStyle", "./Images/arrow-down.png");
                 Button btnHeightMinus = CreateGraphButton("GraphButtonStyle", "./Images/arrow-up.png");
 
+                Button btnGraphSettings = CreateGraphButton("GraphButtonStyle", "./Images/cog.png");
 
                 RowDefinition firstRow = new RowDefinition();
                 firstRow.MinHeight = 30;
@@ -103,13 +105,17 @@ namespace CovidPropagation
 
                 cell.VerticalAlignment = VerticalAlignment.Stretch;
                 cell.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+                btnMove.PreviewMouseDown += GraphDragOn_MouseDown;
+                btnMove.PreviewMouseUp += GraphDragOff_MouseUp;
+                btnRemove.Click += RemoveGraph_Click;
+
                 btnWidthPlus.Click += GrapheWidthUp_Click;
                 btnWidthMinus.Click += GrapheWidthDown_Click;
                 btnHeightPlus.Click += GrapheHeightUp_Click;
                 btnHeightMinus.Click += GrapheHeightDown_Click;
-                btnRemove.Click += RemoveGraph_Click;
-                btnMove.PreviewMouseDown += GraphDragOn_MouseDown;
-                btnMove.PreviewMouseUp += GraphDragOff_MouseUp;
+
+                btnGraphSettings.Click += OpenGraphSettings_Click;
 
                 Grid.SetColumn(btnWidthPlus, 0);
                 Grid.SetRow(btnWidthPlus, 0);
@@ -129,12 +135,18 @@ namespace CovidPropagation
                 Grid.SetColumn(btnRemove, 5);
                 Grid.SetRow(btnRemove, 0);
 
+                Grid.SetColumn(btnGraphSettings, 0);
+                Grid.SetColumnSpan(btnGraphSettings, 6);
+                Grid.SetRow(btnGraphSettings, 1);
+                Grid.SetRowSpan(btnGraphSettings, 4);
+
                 cell.Children.Add(btnMove);
                 cell.Children.Add(btnRemove);
                 cell.Children.Add(btnWidthPlus);
                 cell.Children.Add(btnWidthMinus);
                 cell.Children.Add(btnHeightPlus);
                 cell.Children.Add(btnHeightMinus);
+                cell.Children.Add(btnGraphSettings);
 
                 cell.Background = Brushes.Green;
 
@@ -288,6 +300,24 @@ namespace CovidPropagation
                 Grid.SetRowSpan(cell, rowSpan - 1);
                 SetCellsContent(x, y + 1, x + columnSpan, y + rowSpan + 1, false);
             }
+        }
+
+        private void OpenGraphSettings_Click(object sender, RoutedEventArgs e)
+        {
+            int graphCellX;
+            int graphCellY;
+            Button btn = (Button)sender;
+            Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
+            graphCellX = Grid.GetColumn(cell);
+            graphCellY = Grid.GetRow(cell);
+            WindowGraph graphicWindow = new WindowGraph(graphCellX, graphCellY);
+            graphicWindow.OnSave += new SaveEventHandler(OnSave);
+            graphicWindow.Show();
+        }
+
+        static void OnSave(object source, int[] e)
+        {
+            MessageBox.Show(e[0] + "" + e[1]);
         }
 
         private void AddGUI_Click(object sender, RoutedEventArgs e)

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\schad\\Desktop\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\CovidPropagation.csproj": {}
+    "C:\\Users\\schad\\OneDrive\\Bureau\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\CovidPropagation.csproj": {}
   },
   "projects": {
-    "C:\\Users\\schad\\Desktop\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\CovidPropagation.csproj": {
+    "C:\\Users\\schad\\OneDrive\\Bureau\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\CovidPropagation.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\schad\\Desktop\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\CovidPropagation.csproj",
+        "projectUniqueName": "C:\\Users\\schad\\OneDrive\\Bureau\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\CovidPropagation.csproj",
         "projectName": "CovidPropagation",
-        "projectPath": "C:\\Users\\schad\\Desktop\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\CovidPropagation.csproj",
+        "projectPath": "C:\\Users\\schad\\OneDrive\\Bureau\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\CovidPropagation.csproj",
         "packagesPath": "C:\\Users\\schad\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\schad\\Desktop\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\obj\\",
+        "outputPath": "C:\\Users\\schad\\OneDrive\\Bureau\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\schad\\AppData\\Roaming\\NuGet\\NuGet.Config",
