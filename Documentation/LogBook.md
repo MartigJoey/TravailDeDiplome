@@ -739,3 +739,5 @@
 - Ajout du graphique linéaire en tant que préview des paramètres
   - Ajouts de textbox définissant le nombre de courbe
   - Ajouts de combobox définissant les valeurs en X, en Y et pour chaque courbe
+- Documentation
+  - 
