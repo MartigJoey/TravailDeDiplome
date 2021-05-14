@@ -740,4 +740,30 @@
   - Ajouts de textbox définissant le nombre de courbe
   - Ajouts de combobox définissant les valeurs en X, en Y et pour chaque courbe
 - Documentation
-  - 
+  - Résumé
+  - Asbtract
+
+# 14.05.2021 08h05 / 16h10
+- Ajout de différents paramètres personnalisables pour les graphiques linéaires
+  - Pas de numericUpDown en WPF
+    - Utilisation d'un textBox n'acceptant que les nombres
+    - TextBox remplacé par un combobox
+  - Nombre de courbes
+  - Nom de série
+  - Valeur des axes
+- Ajout de différents paramètres personnalisables pour les graphiques à columne Vertical
+  - Réutilisation du code déjà présent pour modifier les paramètres du graphique
+- Ajout de différents paramètres personnalisables pour les graphiques à columne Horizontal
+  - Réutilisation du code déjà présent pour modifier les paramètres du graphique
+- Ajout de différents paramètres personnalisables pour les graphiques en cylindre
+  - Modification du code concernant les axes
+  - Modification du type de valeurs
+- Ajout de différents paramètres personnalisables pour les graphiques HeatMap
+  - Difficultées à ajouter les valeur dans le graphique
+  - Il s'affiche mais vide
+    - L'initialisation des valeurs se fait en deux étape
+      - Initialisation de l'objet
+      - Assignation des valeurs
+    - Je faisait le tout en une étape ce qui empêchait le graphique de s'afficher correctement
+- Modification du code pour afficher un valeur string française à la place des valeurs des enum
+- 

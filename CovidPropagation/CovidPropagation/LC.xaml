@@ -40,8 +40,7 @@
 
         <lvc:CartesianChart Grid.Column="2" Grid.Row="0" DataTooltip="{x:Null}">
             <lvc:CartesianChart.Series>
-                <lvc:HeatSeries Values="{Binding Values3}" DataLabels="True">
-
+                <lvc:HeatSeries Values="{Binding Values3}" DataLabels="False">
                     <lvc:HeatSeries.GradientStopCollection>
                         <GradientStop Offset="0" Color="#99FFFF00"></GradientStop>
                         <GradientStop Offset=".25" Color="#FFFFFF00"></GradientStop>

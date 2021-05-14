@@ -15,10 +15,22 @@
         AllowsTransparency="True"
         ResizeMode="CanResizeWithGrip">
     <Window.Resources>
-        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+        <ObjectDataProvider x:Key="GraphicsType" MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="local:GraphicsType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="GraphicsAxis" MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:GraphicsAxisData"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="GraphicsCurves" MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:GraphicsCurvesData"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>
@@ -33,14 +45,16 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="5*" MaxHeight="25" MinHeight="25"/>
-            <RowDefinition Height="10*" MinHeight="30"/>
-            <RowDefinition Height="10*" MinHeight="30"/>
-            <RowDefinition Height="10*" MinHeight="30"/>
-            <RowDefinition Height="10*" MinHeight="30"/>
-            <RowDefinition Height="10*" MinHeight="30"/>
-            <RowDefinition Height="10*" MinHeight="30"/>
-            <RowDefinition Height="10*" MinHeight="30"/>
-            <RowDefinition Height="20*" MinHeight="50"/>
+            <RowDefinition Height="5*" MinHeight="30"/>
+            <RowDefinition Height="5*" MinHeight="30"/>
+            <RowDefinition Height="5*" MinHeight="30"/>
+            <RowDefinition Height="5*" MinHeight="30"/>
+            <RowDefinition Height="5*" MinHeight="30"/>
+            <RowDefinition Height="5*" MinHeight="30"/>
+            <RowDefinition Height="5*" MinHeight="30"/>
+            <RowDefinition Height="5*" MinHeight="30"/>
+            <RowDefinition Height="5*" MinHeight="30"/>
+            <RowDefinition Height="42*" MinHeight="50"/>
             <RowDefinition Height="8*" MaxHeight="25" MinHeight="25"/>
         </Grid.RowDefinitions>
         <ContentPresenter Grid.ColumnSpan="4" Content="{Binding}" ContentTemplate="{StaticResource TitleBar}"/>
@@ -51,45 +65,68 @@
                    Grid.Row="1"
                    Grid.RowSpan="8"/>
 
+        <Label Grid.Row="1"
+               Grid.Column="0"
+               Foreground="{StaticResource foreGroundLight}"
+               >Type de graphique :</Label>
+        <ComboBox x:Name="cbxGraphType" 
+                  SelectedIndex="0"
+                  SelectionChanged="GraphType_SelectionChanged"
+                  Grid.Row="1"
+                  Grid.Column="1"
+                  ItemsSource="{Binding Source={StaticResource GraphicsType}}"
+                  />
 
+        <Label Grid.Row="2"
+               Grid.Column="0"
+               Foreground="{StaticResource foreGroundLight}"
+               >Valeur sur l'axe X :</Label>
+        <ComboBox x:Name="cbxValueX" 
+                  SelectedIndex="0"
+                  SelectionChanged="AxisValue_SelectionChanged"
+                  Tag="X"
+                  Grid.Row="2"
+                  Grid.Column="1"
+                  ItemsSource="{Binding Source={StaticResource GraphicsAxis}}"
+                  />
+
+        <Label Grid.Row="3"
+               Grid.Column="0"
+               Foreground="{StaticResource foreGroundLight}"
+               >Valeur sur l'axe Y :</Label>
+        <ComboBox x:Name="cbxValueY" 
+                  SelectedIndex="1"
+                  SelectionChanged="AxisValue_SelectionChanged"
+                  Tag="Y"
+                  Grid.Row="3"
+                  Grid.Column="1"
+                  ItemsSource="{Binding Source={StaticResource GraphicsAxis}}"
+                  />
+
+        <Label Grid.Row="4"
+               Grid.Column="0"
+               Foreground="{StaticResource foreGroundLight}"
+               >Quantité de données :</Label>
+        <ComboBox x:Name="cbxQuantityOfCurves"
+                 SelectionChanged="DataQuantity_SelectionChanged"
+                 Grid.Row="4"
+                 Grid.Column="1"/>
+
+        <Label Grid.Row="5"
+               Grid.Column="0"
+               Foreground="{StaticResource foreGroundLight}"
+               >Données :</Label>
+        
         <Button x:Name="btnSave" Click="Save_Click" 
                 Content="Save" 
                 Style="{StaticResource smallButton}" 
-                Grid.Row="10"
+                Grid.Row="11"
                 Grid.Column="2"/>
 
         <Button x:Name="btnCancel" Click="Cancel_Click" 
                 Content="cancel"
                 Style="{StaticResource smallButton}" 
-                Grid.Row="10"
+                Grid.Row="11"
                 Grid.Column="3"/>
-        
-        <ComboBox x:Name="cbxGraphType" SelectionChanged="cbxGraphType_SelectionChanged"
-                  Grid.Row="1"
-                  Grid.Column="1"
-                  ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
-                  />
-
-        <ComboBox x:Name="cbxValueX" 
-                  Grid.Row="2"
-                  Grid.Column="1"
-                  />
-
-        <ComboBox x:Name="cbxValueY" 
-                  Grid.Row="3"
-                  Grid.Column="1"
-                  />
-
-        <TextBox x:Name="tbxQuantityOfCurves"
-                 PreviewTextInput="NumberValidationTextBox"
-                 Grid.Column="1"
-                 Grid.Row="4"
-                 />
-
-        <ComboBox x:Name="cbxCurveValue" 
-                  Grid.Row="3"
-                  Grid.Column="1"
-                  />
-
     </Grid>
 </Window>

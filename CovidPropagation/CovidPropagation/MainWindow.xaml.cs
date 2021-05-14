@@ -39,8 +39,8 @@ namespace CovidPropagation
             Virus.Init();
             Sim = new Simulation(30, 0.1, 1000);
             Sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
-            Sim.Iterate();
-            Sim.Start();
+            //Sim.Iterate();
+            //Sim.Start();
             
             Sim.OnTickSP += new GetDataEventHandler(OnTimerTick);
         }

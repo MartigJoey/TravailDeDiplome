@@ -79,6 +79,7 @@
   - [Pipeline](#pipeline)
   - [WPF UI](#wpf-ui)
   - [Planning](#planning-1)
+  - [WPF](#wpf-2)
 - [`Simulation`](#simulation-2)
   - [Structure](#structure-1)
     - [Intéraction entre objets](#intéraction-entre-objets)
@@ -111,13 +112,13 @@ Pour visualiser la simulation, l'utilisateur a accès à une grande variété de
 Finalement, la majorité des données utilisée pour la réalisation de ce projet sont des données officielles permettant de se rapprocher au maximum de la réalité. Lorsqu'aucune donnée n'est disponible pour certains paramètres, celle-ci est tout de même inspirée au maximum des effets de la réalité pour éviter que son impact soit trop important et ne modifie trop les résultats.
 
 # `Abstract`
-The goal of this project is to create a simulation that is able to create a population and its environnement which is arranged like a city. Every person in the simulation is unique and follow a planning that tell them to go in different places. The virus spread in the simulation from person to person when they enter in physical contact.
+The goal of this project is to create a simulation that is able to create a population and its environment which is arranged like a city. Every person in the simulation is unique and follow a planning that tell them to go in different places. The virus spread in the simulation from person to person when they enter in physical contact.
 
-The simulation can be configured by the user by modifying it's size and the measures taken to prevent the spreading of the virus. Letting the user see the impact of such measures.
+The simulation can be configured by the user by modifying its size and the measures taken to prevent the spreading of the virus. Letting the user see the impact of such measures.
 
-A vaste variety of graphics are available to the user for him to visualize the state of the simulation. A graphical user interface can also be added to be able to have a visual depiction of what is happening in the simulation. The user interface of the simulation is entierly personnalizable by letting the user choose which graphics should be desplayed, their size and location in the window.
+A vast variety of graphics are available to the user for him to visualize the state of the simulation. A graphical user interface can also be added to be able to have a visual depiction of what is happening in the simulation. The user interface of the simulation is entirely customizable by letting the user choose which graphics should be displayed, their size and location in the window.
 
-All the data used to create this project are official covid Datas, bringing the simulation as close to reality as possible. If no datas is available, then it is inspired by real event and its effect is minimized to avoid it to change the outcome of the simulation.
+All the data used to create this project are officials covid Datas, bringing the simulation as close to reality as possible. If no data is available, then it is inspired by a real event and its effect is minimized to avoid it to change the outcome of the simulation.
 
 # `Introduction`
 Dans le cadre du cursus technicien, nous sommes amenés à réaliser un travail de diplôme qui dure du 19 avril aux 11 juin. Durant cette période, plusieurs évaluations intermédiaires sont prévues, la première se situant 10 jours après le début du travail de diplôme. La seconde évaluation est prévue le 17 mai, la troisième le 31 mai et la dernière est le rendu final le 11 juin et dure 9 jours contrairement aux autres sprints qui durent 10 jours. 
@@ -778,6 +779,11 @@ Après avoir eu du mal à modifier le slider, j'ai pu modifier les autres outils
 ## Planning
 Une fois les plannings mis en place, la structure de ceux-ci rend le tout très efficace à executer. Mais encore faut-il créer les plannings. En prenant en compte qu'ils doivent être logiquent, respecter certaines règles et être liés les uns les autres. Cette liaison permet par exemple le voyage de plusieurs personnes dans un même véhicule, ou le fait de se retrouver chez un ami. C'est donc cette création qui m'a demandé beaucoup de temps et énormément de réflexion sur son fonctionnement. Comment les créer ? Que doit être aléatoir et que doit être prédéfini ? Comment structurer le tout ? </br>
 Beaucoup de questions qui sont revenues lors de la création des plannings. 
+
+## WPF
+Combobox + Enum
+Numeric Up Down
+
 
 # `Simulation`
 ## Structure

@@ -180,11 +180,11 @@ namespace CovidPropagation
 
             DataContext = this;
 
-            r = new Random();
-            foreach (var chartValue in Values3)
-            {
-                chartValue.Weight = r.Next(0, 10);
-            }
+            //r = new Random();
+            //foreach (var chartValue in Values3)
+            //{
+            //    chartValue.Weight = r.Next(0, 10);
+            //}
         }
 
         public SeriesCollection SeriesCollection4 { get; set; }
