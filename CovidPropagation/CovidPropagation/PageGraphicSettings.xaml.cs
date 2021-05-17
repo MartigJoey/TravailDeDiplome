@@ -20,6 +20,7 @@ namespace CovidPropagation
         private const int COLUMN_MIN_WIDTH = 150;
         private const int MAX_GRID_SIZE = 10;
 
+        public static GraphicDataTransfer[,] graphicDatas = new GraphicDataTransfer[MAX_GRID_SIZE, MAX_GRID_SIZE];
         private bool[,] gridHasContent = new bool[MAX_GRID_SIZE, MAX_GRID_SIZE];
         int oldX = MAX_GRID_SIZE + 1;
         int oldY = MAX_GRID_SIZE + 1;
@@ -306,18 +307,28 @@ namespace CovidPropagation
         {
             int graphCellX;
             int graphCellY;
+            int sizeX;
+            int sizeY;
             Button btn = (Button)sender;
             Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
             graphCellX = Grid.GetColumn(cell);
             graphCellY = Grid.GetRow(cell);
-            WindowGraph graphicWindow = new WindowGraph(graphCellX, graphCellY);
+            sizeX = Grid.GetColumnSpan(cell);
+            sizeY = Grid.GetRowSpan(cell);
+            WindowGraph graphicWindow = new WindowGraph(graphCellX, graphCellY, sizeX, sizeY);
             graphicWindow.OnSave += new SaveEventHandler(OnSave);
             graphicWindow.Show();
         }
 
-        static void OnSave(object source, int[] e)
+        static void OnSave(object source, GraphicDataTransfer e)
         {
-            MessageBox.Show(e[0] + "" + e[1]);
+            string datas = "";
+            foreach (var item in e.Datas)
+            {
+                datas += " " + item;
+            }
+            MessageBox.Show("X:" + e.X + " Y:" + e.Y + "  ValueX:" + e.ValueX + "    ValueY:" + e.ValueY + " Type:" + e.GraphicType + "  Datas:" + datas);
+            graphicDatas[e.X, e.Y] = e;
         }
 
         private void AddGUI_Click(object sender, RoutedEventArgs e)

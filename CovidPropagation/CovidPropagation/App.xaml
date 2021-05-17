@@ -12,8 +12,10 @@
 
             <!-- Colors -->
             <SolidColorBrush x:Key="windowBackground" Color="#1a1a1a"/>
-            <SolidColorBrush x:Key="normalGreen" Color="#16b005"/>            
-            <SolidColorBrush x:Key="highlightGreen" Color="#1ad106"/>
+            <SolidColorBrush x:Key="normalGreen" Color="#b0b0b0"/>
+            <!--16b005-->
+            <SolidColorBrush x:Key="highlightGreen" Color="#d1d1d1"/>
+            <!--1ad106-->
             <SolidColorBrush x:Key="foreGroundDark" Color="#1a1a1a"/>
             <SolidColorBrush x:Key="foreGroundLight" Color="White"/>
             <SolidColorBrush x:Key="normalDark" Color="#1a1a1a"/>
@@ -22,8 +24,10 @@
             <SolidColorBrush x:Key="normalRed" Color="#910000"/>
             <SolidColorBrush x:Key="highlightRed" Color="#ff0000"/>
 
-            <Color x:Key="normalGreenKeyFrame">#17b806</Color>
-            <Color x:Key="highlightGreenKeyFrame">#1ad106</Color>
+            <Color x:Key="normalGreenKeyFrame">#b8b8b8</Color>
+            <!--17b806-->
+            <Color x:Key="highlightGreenKeyFrame">#d1d1d1</Color>
+            <!--1ad106-->
             <Color x:Key="normalDarkKeyFrame">Black</Color>
             <Color x:Key="lightDarkKeyFrame">#0b0b0b</Color>
             <Color x:Key="lightGrayKeyFrame">#2b2b2b</Color>

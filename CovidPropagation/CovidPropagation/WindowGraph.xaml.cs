@@ -21,7 +21,7 @@ using System.Windows.Shapes;
 
 namespace CovidPropagation
 {
-    public delegate void SaveEventHandler(object source, int[] e);
+    public delegate void SaveEventHandler(object source, GraphicDataTransfer e);
 
     /// <summary>
     /// Logique d'interaction pour WindowGraph.xaml
@@ -32,11 +32,13 @@ namespace CovidPropagation
         private const int MAX_NUMBER_OF_CURVES = 5;
         int cellX;
         int cellY;
+        int sizeX;
+        int sizeY;
         ComboBox[] cbxDatas;
         int currentCurvesIndex;
         object chart;
 
-        public WindowGraph(int cellX, int cellY)
+        public WindowGraph(int cellX, int cellY, int sizeX, int sizeY)
         {
             InitializeComponent();
 
@@ -100,7 +102,15 @@ namespace CovidPropagation
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (OnSave != null)
-                OnSave(10, new int[] { cellX, cellY });
+            {
+                List<int> datas = new List<int>();
+                for (int i = 0; i <= cbxQuantityOfCurves.SelectedIndex; i++)
+                {
+                    datas.Add(cbxDatas[i].SelectedIndex);
+                }
+                GraphicDataTransfer graphicDatas = new GraphicDataTransfer(cellX, cellY, sizeX, sizeY, cbxGraphType.SelectedIndex, cbxValueX.SelectedIndex, cbxValueY.SelectedIndex, datas.ToArray());
+                OnSave(10, graphicDatas);
+            }
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)

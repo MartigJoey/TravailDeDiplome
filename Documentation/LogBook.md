@@ -667,37 +667,37 @@
       - Utilisation des calculs du 26.04.2020 pour recréer les bâtiments
     - Réduction du temps de création des personnes de 1650ms à 650ms
       - Système de création instable
-        - Doit créer 10'000 personnes
-        - En créé 9408
-        - Ils sont tous infecté dès le départ
-        - Utilisation d'un parallel.For à la place de tasks et tasks.WaitAll()
+        - Dois créer 10'000 personnes
+        - En créer 9408
+        - Ils sont tous infectés dès le départ
+        - Utilisation d'un parallèle.For à la place de tasks et tasks.WaitAll()
         - Ajout d'un lock lors d'une modification d'une liste
     - ~~Bug rare --> Dans FillIfMissingBuilding() la liste est parfois vide.~~
   - Création de la simulation pour 100'000 personnes
     - Avant ~1min
     - Maintenant ~10 secondes
   - Bug, tous les individus sont infectés dès le démarrage
-    - Dû au parallel.For
-    - Le problème est au niveau de l'assignation des lieux aux individus. Dû au parallels, ils se situent tous au même endroit augmentant les chances de propagations à 100% et contaminant tout le monde.
-    - Suppression du parallel pour la création des individus.
-  - Tentative d'utilisation de parallels dans le choix des lieux.
+    - Dû au parallèle.For
+    - Le problème est au niveau de l'assignation des lieux aux individus. Dus au parallèle, ils se situent tous au même endroit augmentant les chances de propagations à 100% et contaminant tout le monde.
+    - Suppression du parallèle pour la création des individus.
+  - Tentative d'utilisation de parallèle dans le choix des lieux.
     - Plus long et le même problème que pour le for est retrouvé
 
 # 11.05.2021 08h05 / 16h10
-- Recherche d'une solution permettant d'exécuter des randoms dans un parallel.For ainsi que de créer les objets dedans.
+- Recherche d'une solution permettant d'exécuter des randoms dans un parallèle.For ainsi que de créer les objets dedans.
   - Bug : 
     - Personne ne se situe dans les bâtiments.
-    - Malgré qu'ils soient tous assigné en tant que "Healthy" ils sont tous infectés par la suite instentanément.
-    - Abandon du parallel pour la création de la population pour le moment.
+    - Malgré qu'ils soient tous assignés en tant que "Healthy" ils sont tous infectés par la suite instantanément.
+    - Abandon du parallèle pour la création de la population pour le moment.
 - Ajout de commentaires dans la simulation
 - Documentation
   - Fonctionnement de la simulation
 - Ajouts de mesures dans la simulation
   - Masques
     - Efficacités
-    - Qui doit les mettres
+    - Qui doit les mettre
 - Penser à modifier le planning pourm ajouter de l'aléatoire dans le choix de certaines activités
-  - Actuellement des groupes se créé. Ces groupes ne ce mélange pas nécessairement rendant difficule la propagation.
+  - Actuellement des groupes se créé. Ces groupes ne ce mélange pas nécessairement rendant difficile la propagation.
 - Discussion avec M. Mathieu
   - Regarder pour allouer plus de mémoire au thread 
     - "Accélérer" la création des objets.
@@ -706,7 +706,7 @@
 - Ajout de la quarantaine pour les individus
   - Bloquer dans sa maison sans contact externe
 - Ajout d'un équivalent à la distanciation
-  - La distanciation étant très dur à implémenter, un équivalent a été ajouté. Si le temps me le permet j'effectuerais une version plus complète plus tard.
+  - La distanciation étant très dure à implémenter, un équivalent a été ajouté. Si le temps me le permet, j'effectuerais une version plus complète plus tard.
 - Hôpitaux
   - Création des patients covid
   - Places limitées
@@ -718,26 +718,26 @@
   - Couleur des textes et graphiques trop proche de leur background.
   - Modifier la taille des logos
 - Deuxième avis de Florian Lorentz et Quentin Fasler
-  - Supprimer/Modifier le texte du logo WPF
+  - Supprimer/modifier le texte du logo WPF
   - Ajouter le nom de livecharts sous leur logo
 - Modification du poster
   - V2 ![Poster Version 2](Medias/Poster/PosterCovidPropagationV2.png)
 - Reprise du traitement des individus dans les hôpitaux
   - Modification de l'immunité
-  - Ajout de l'état décedé
-  - Ajout d'un décréments du temps restant des maladies plus important dans les hôpitaux
+  - Ajout de l'état décédé
+  - Ajout d'un décrément du temps restant des maladies plus important dans les hôpitaux
 - Recherche pour augmenter la mémoire allouée au processus
-  - Création d'un fichier config atorisant les objets larges
+  - Création d'un fichier config autorisant les objets larges
     - Aucun effet
   - Allocation de la taille d'une liste plutôt que de le faire progressivement
     - Pas efficace
 - Création de la page permettant de modifier les paramètres d'un graphique.
   - Après un déplacement de "Window" le projet ne se lance plus dû à des erreurs qui n'existent pas.
-  - Retéléchargement depuis le git du projet et rajouts des modification apportées aujourd'hui.
-  - Bug d'évènement de fermeture de fenêtre du à la barre de titre personnalisée
+  - Retéléchargement depuis le git du projet et rajouts des modifications apportées aujourd'hui.
+  - Bug d'évènement de fermeture de fenêtre dû à la barre de titre personnalisée
   - Création d'un évènement le remplaçant
 - Ajout du graphique linéaire en tant que préview des paramètres
-  - Ajouts de textbox définissant le nombre de courbe
+  - Ajouts de textbox définissant le nombre de courbes
   - Ajouts de combobox définissant les valeurs en X, en Y et pour chaque courbe
 - Documentation
   - Résumé
@@ -751,19 +751,52 @@
   - Nombre de courbes
   - Nom de série
   - Valeur des axes
-- Ajout de différents paramètres personnalisables pour les graphiques à columne Vertical
+- Ajout de différents paramètres personnalisables pour les graphiques à colonnes verticales
   - Réutilisation du code déjà présent pour modifier les paramètres du graphique
-- Ajout de différents paramètres personnalisables pour les graphiques à columne Horizontal
+- Ajout de différents paramètres personnalisables pour les graphiques à colonnes horizontales
   - Réutilisation du code déjà présent pour modifier les paramètres du graphique
 - Ajout de différents paramètres personnalisables pour les graphiques en cylindre
   - Modification du code concernant les axes
   - Modification du type de valeurs
 - Ajout de différents paramètres personnalisables pour les graphiques HeatMap
-  - Difficultées à ajouter les valeur dans le graphique
-  - Il s'affiche mais vide
-    - L'initialisation des valeurs se fait en deux étape
+  - Difficulté à ajouter les valeurs dans le graphique
+  - Il s'affiche, mais vide
+    - L'initialisation des valeurs se fait en deux étapes
       - Initialisation de l'objet
       - Assignation des valeurs
-    - Je faisait le tout en une étape ce qui empêchait le graphique de s'afficher correctement
-- Modification du code pour afficher un valeur string française à la place des valeurs des enum
-- 
+    - Je faisais le tout en une étape ce qui empêchait le graphique de s'afficher correctement
+- Modification du code pour afficher une valeur string française à la place des valeurs des enum
+- Documentation
+  - Structure
+  - Markdown
+- Rendu
+  - Poster
+  - Résumé
+  - Abstract
+  - Rapport
+- Problèmes de conversion du poster en fichier pdf A2
+  - Ajout d'un nouveau format à Windows
+    - Le format ne s'ajoute pas aux autres formats lors de l'impression
+  - Redémarrage du pc et différents tests
+  - Test avec paint
+  - Test avec paint.net
+  - Test avec Photos
+  - Solution finale --> Utilisation d'un site faisant la conversion.
+
+# 17.05.2020 07h45 / 17h00
+- Documentation
+  - Fonctionnement simulation
+    - Général
+    - Propagation
+    - Source propagation
+  - Problèmes rencontrés
+    - Outils WPF
+      - Combobox + enum
+      - NumericUpDown
+      - Combobox + description
+  - UI
+    - Thème
+    - Pages
+      - Simulation
+      - Paramètres
+      - Paramètres graphiques

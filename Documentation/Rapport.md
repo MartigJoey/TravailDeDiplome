@@ -37,13 +37,13 @@
   - [Descriptif complet du projet](#descriptif-complet-du-projet)
     - [Méthodologie](#méthodologie)
     - [Description de l’application](#description-de-lapplication)
-  - [#### Graphique](#-graphique)
-  - [#### Interface graphique](#-interface-graphique)
-  - [#### Propagation](#-propagation)
-  - [#### Population](#-population)
-  - [##### Temporalité](#-temporalité)
-  - [##### Individus](#-individus)
-  - [##### Hôpitaux / écoles / entreprise](#-hôpitaux--écoles--entreprise)
+      - [Graphique](#graphique)
+      - [Interface graphique](#interface-graphique-1)
+      - [Propagation](#propagation)
+      - [Population](#population)
+        - [Temporalité](#temporalité)
+        - [Individus](#individus)
+        - [Hôpitaux / écoles / entreprise](#hôpitaux--écoles--entreprise)
   - [Protocole de tests](#protocole-de-tests)
   - [Persona](#persona)
     - [Utilisateur expérimenté](#utilisateur-expérimenté)
@@ -56,7 +56,7 @@
   - [Diagramme de classe initial](#diagramme-de-classe-initial)
   - [Interactions](#interactions)
     - [Menu principal](#menu-principal)
-    - [Population](#population)
+    - [Population](#population-1)
     - [Virus](#virus)
     - [Affichage](#affichage)
     - [Simulation](#simulation-1)
@@ -67,30 +67,38 @@
   - [Structure](#structure)
 - [`Analyse interface graphique`](#analyse-interface-graphique)
   - [Comparaison technologies](#comparaison-technologies)
-  - [### WinForm (Windows Forms)](#-winform-windows-forms)
-  - [### WPF (Windows Presentation Foundation)](#-wpf-windows-presentation-foundation)
-  - [### Unity](#-unity)
-  - [#### Communication](#-communication)
-  - [##### Unity Controller](#-unity-controller)
-  - [##### `PipeLines`](#-pipelines)
-  - [#### Intégration](#-intégration)
+    - [WinForm (Windows Forms)](#winform-windows-forms)
+    - [WPF (Windows Presentation Foundation)](#wpf-windows-presentation-foundation)
+    - [Unity](#unity-2)
+      - [Communication](#communication)
+        - [Unity Controller](#unity-controller)
+        - [`PipeLines`](#pipelines)
+      - [Intégration](#intégration)
   - [Choix de la solution](#choix-de-la-solution)
 - [`Problèmes rencontrés`](#problèmes-rencontrés)
   - [Pipeline](#pipeline)
   - [WPF UI](#wpf-ui)
   - [Planning](#planning-1)
-  - [WPF](#wpf-2)
+  - [Outils WPF](#outils-wpf)
+    - [Combobox et enum](#combobox-et-enum)
+    - [Description d'enums](#description-denums)
+    - [Numeric Up Down](#numeric-up-down)
 - [`Simulation`](#simulation-2)
   - [Structure](#structure-1)
     - [Intéraction entre objets](#intéraction-entre-objets)
   - [Fonctionnement](#fonctionnement)
-  - [Source](#source)
+    - [Général](#général)
+    - [Propagation](#propagation-1)
+    - [Source propagation](#source-propagation)
 - [`GUI`](#gui)
   - [Structure](#structure-2)
   - [Fonctionnement](#fonctionnement-1)
 - [`UI`](#ui-2)
   - [Thème](#thème)
   - [Pages](#pages)
+    - [Simulation](#simulation-3)
+    - [Paramètres simulation](#paramètres-simulation)
+    - [Paramètres graphiques](#paramètres-graphiques)
 - [`Planning`](#planning-2)
   - [Prévisionnel](#prévisionnel)
   - [Effectif](#effectif)
@@ -126,6 +134,8 @@ Dans le cadre du cursus technicien, nous sommes amenés à réaliser un travail 
 Il est nécessaire de réaliser un poster pour ce travail ainsi que de remplir un journal de bord comprenant nos activités et nos réflexions.
 
 Le but de mon projet est de simuler une propagation du covid dans une simulation dite individu centré. Ce qui signifie que des individus sont simulés et agissent selon leur planning. S'ils sont infectés, c'est en cas de contact avec une autre personne infectée. Les données utilisées sont des données officielles et sont maintenues à jour aussi souvent que possible.
+
+Ce document contient des références à la documentation qui sont au format ####. Ces références permettent d'accéder directement au code source en faisant une recherche avec la référence dans celcui-ci.
 
 ## WPF
 Le programme WPF est le coeur de l'application, il réunit toutes les sections du projet et les gère.
@@ -290,7 +300,6 @@ L'affichage permet de voir en temps réel la propagation du virus et permet de v
 l'affichage.
 
 #### Graphique
----
 Les données des graphiques sont choisies par l'utilisateur et donc personnalisables. Plusieurs graphiques peuvent être affichés en même temps. Leur position est définie par l'utilisateur au sein de la page de l'application.
 
 L'interface graphique est fournie par [LiveChart](https://lvcharts.net/App/examples/wpf/start). Les données sont directement fournies par l'application ainsi que les échelles de grandeurs qui sont ajustées automatiquement.
@@ -299,14 +308,13 @@ Les graphiques à courbes et en forme camembert sont disponibles.
 <center><p style="font-size: 11px">Figure 8: Exemple de graphiques</p></center>
 
 #### Interface graphique
----
 En plus des graphiques, une interface graphique affichant les individus ainsi que leur lieur de travail, habitation et déplacement est disponible. Elle permet d'avoir une visualisation plus naturelle de la situation. Elle est très simple, car simuler une ville est une tâche trop complexe et longue pour être ajoutée au projet. Il s'agit donc d'une aide visuelle simple de la simulation. Il n'y a donc pas de routes ou autres éléments complexe similaire.
 Voici deux exemples d'interface graphique :
 ![Interface graphique](Medias/Rapport/ExemplesInterfaceGraphique.png)
 <center><p style="font-size: 11px">Figure 9: Exemple d'interface graphique</p></center>
 
 #### Propagation
----
+
 La propagation se fait à l'aide de calcul et de différentes variables. 1000 m<sup>2</sup> contenant 10 individus à l'intérieur aura de faibles chances de transmettre le virus. Le même nombre de personnes dans un espace clos de 10 m<sup>2</sup> aura des résultats totalement différents.
  
 La température est prise est compte ainsi que les mesures telles que le masque. Le masque réduit les chances de transmettre le virus. La température, elle fait varier la durée de vie du virus à l'extérieur d'un hôte.
@@ -315,7 +323,7 @@ La complexité de ce type de calcul étant d'une difficulté largement supérieu
 [Fiche Excel](https://docs.google.com/spreadsheets/d/1ZWG4LslRBUjMC00Rsi65TKmfVJyzVUf2)
 
 #### Population
----
+
 La population est constituée d'objets C# générés partiellement, aléatoirement en fonction des paramètres de la simulation. Ils informent la simulation en cas de changement d'état (sain, infecté, etc.). Des itérations sont faites dans la simulation pour calculer si un individu est infecté ou non durant le temps écoulé. Il a un planning simple à suivre dans sa journée qui peut être constituée de par exemple :
 - Être dans son habitation
 - Prendre le bus
@@ -328,13 +336,13 @@ La population est constituée d'objets C# générés partiellement, aléatoireme
 Ce planning est différent en fonction des individus même si vaguement le même. Durant sa journée, il croisera d'autres individus et à chaque itération, il aura des chances d'être infecté si des personnes aux alentours le sont. En fonction du lieu, il rencontrera des personnes différentes, parfois les mêmes comme dans son travail où ses collègues sont fixes. Dans le bus, des variations seront possibles. Son cercle d'amis ainsi que sa famille, lorsqu'il se trouve dans son habitation, seront les individus risquant de le contaminer.
 
 ##### Temporalité
----
+
 Le quotidien des individus est défini par la simulation lors de leur création. Elles peuvent évoluer avec l'âge des individus. 
 
 Une itération est équivalente à ~30min dans la simulation. À chaque itération, chaque individu calcul ses chances d'attraper le virus en fonction de son environnement et des mesures prises. Elle permet aussi à un individu d'évoluer dans son quotidien en passant d'une tâche à une autre par exemple. Leur permettant aussi de changer de lieu et tous les événements liés à l'agenda des individus ainsi que la propagation du virus. La "durée" de la simulation est définie par l'utilisateur et peut donc durer plusieurs jours.
 
 ##### Individus
----
+
 Les individus possèdent différents paramètres qui vont modifier leur quotidien ainsi que leur résistance au virus. La valeur la plus essentielle est l'âge de ces personnes. L'âge permet de contribuer à la modification de la résistance au virus. Il modifie aussi le quotidien en définissant si la personne va travailler, va à l'école, est libre de faire ce qu'il souhaite ou rien si trop jeune. L'âge évolue avec le temps de la simulation.
 
 Chaque individu a un entourage qui peut le contaminer. Il possède un cercle d'amis avec lequel il peut y avoir des contacts à domicile, et avec lequel il y aura des contacts en extérieur.
@@ -356,7 +364,7 @@ Chaque individu créé commence avec une valeur entre 80 et 100. Sachant qu'envi
 Les maladies sont inspirées de maladie réelle impactant l'effet du covid. Cependant, dans la simulation, elle n'affecte que la résistance au virus. Ces maladies apparaissent de façons aléatoires et plus fréquemment sur les individus dont l'âge est élevé. Elles ne se propagent pas. Elles sont en partie assignées au départ par la simulation puis apparaissent avec le temps. Elles réduisent la résistance au covid de 1% à 20% en fonction de la maladie et de l'âge de la personne.
 
 ##### Hôpitaux / écoles / entreprise
----
+
 Ces différents lieux fonctionnent de façon similaire. Ils ont tous des individus en leurs seins qui peuvent se transmettre le virus. Ils ont des tailles différentes en fonction du nombre de personnes pouvant être à l'intérieur. 
 
 Les hôpitaux fonctionnent légèrement différemment. Ils ont des patients ainsi que des membres du staff de l'hôpital. Il y a donc des différences de mesures et quantités. Les patients sont là de manière temporaire en fonction du nombre de personnes attrapant le covid.
@@ -553,14 +561,13 @@ La version d'Unity est la 2020.3.4f1 qui est aussi la version lts.
 Cette analyse concerne l'interface graphique et le choix de la technologie à utiliser pour réaliser celle-ci.
 
 ## Comparaison technologies
+
 ### WinForm (Windows Forms)
----
 Lors du CFC ainsi que de l'apprentissage technicien, nous avons toujours utilisé cet interface pour réaliser l'entièreté de nos projets. Je connais donc bien cet environnement contrairement au WPF. En plus de cela, l'interface graphique réalisée dans le poc est en WinForm. Me permettant donc de simplement importer le projet déjà existant.
 
 Cependant, WinForm ainsi que l'interface graphique déjà existante apportent de gros problèmes tels que les timers. Lorsqu'il y a une charge CPU trop lourde, les timers perdent leurs rythmes et n'arrivent plus à suivre. Le résultat de cette surcharge est que plus rien ne fait de sens. Les animations n'ont plus le temps de s'effectuer rendant les individus immobiles ou presque.
 
 ### WPF (Windows Presentation Foundation)
----
 
 WPF est plus récent que WinForms et a donc certains avantages non négligeables en comparaison. Il est beaucoup plus complet en termes d'esthétique et donc d'UI que WinForms. En plus de cela, il est possible de créer des objets en 2D ou 3D. Ces objets contrairement à WinForms sont gérés par le GPU plutôt qu'être entièrement basé sur le CPU. Cette différence à elle seule fait pencher la balance pour WPF.
 
@@ -574,7 +581,6 @@ Le possible problème de timer bien que probablement réduit du au fait que la c
 Il faut aussi noter que je n'ai aucune expérience en WPF et vais donc devoir m'y habituer durant un certain temps avant d'être efficace à 100%.
 
 ### Unity
----
 Unity est un moteur de jeu en 2D et 3D. Il est possible de l'intégrer directement à une application WPF. Ça me semble être le meilleur choix si l'on prend en compte les problèmes de timer des deux autres technologies. Unity possède de façon native des méthodes qui sont appelées à chaque frame permettant le bon déroulement de la simulation.
 
 En plus de cela, j'ai beaucoup d'expérience avec ce logiciel, ayant réalisé mon TPI avec celui-ci. Je peux donc affirmer qu'il est beaucoup plus simple de réaliser l'interface graphique avec Unity.
@@ -582,10 +588,8 @@ En plus de cela, j'ai beaucoup d'expérience avec ce logiciel, ayant réalisé m
 Cependant un autre problème est présent. La liaison des données. Il m'est impossible, sans le tester, de savoir si ce modèle de fonctionnement est compatible avec mon projet. Je sais qu'il est possible de transférer des informations de WPF à Unity cependant, je ne sais pas si la fréquence d'envoi est suffisante ou même si la quantité de données envoyées que je souhaite atteindre est possible.
 
 #### Communication
----
 Pour communiquer entre WPF et Unity, j'ai essayé plusieurs méthodes fonctionnant différemment et surtout de complexité différente.
 ##### Unity Controller
----
 Mon premier essai fut avec Unity Controller qui permet de créer un serveur qui communique entre une application C# et Unity.
 
 Pour l'installer il faut d'ajouter le paquet nuget "Unity Controller" au projet ainsi qu'un using "UnityController". Son implémentation est la plus simple des solutions testées sachant qu'elle ne prend que quelques lignes au total.
@@ -613,7 +617,6 @@ UnityCommands.UpdateText("GameObjectText", "Texte");
 Cette implémentation de la communication est extrêmement simple à mettre en place cependant, les possibilités sont très limitées. Les seules actions possibles sont le fait de changer le texte d'un GameObject, sa couleur, son image, etc. Il est impossible d'envoyer un message de code à code puis de l'interpréter. Cette façon de faire ne peut donc pas servir à la réalisation de mon projet qui demande un traitement des données.
 
 ##### `PipeLines`
----
 Contrairement à UnityController, les pipelines laissent plus de liberté, mais leur complexité est bien supérieure. J'ai rencontré divers problèmes en implémentant cette fonctionnalité.
 
 Dans mon cas, la communication se fait à sens unique, WPF donnant les informations à l'interface graphique se trouvant sur Unity. Il faut donc commencer par créer un serveur du côté WPF.
@@ -711,7 +714,7 @@ public async Task<string> ReadStringAsync()
 ```
 
 #### Intégration 
----
+
 L'intégration permet d'avoir un rectangle au sein de la page WPF qui sera constitué d'une application .exe. Dans ce cas, il s'agit d'Unity. Ça ne permet pas de commander le contenu de la fenêtre, mais uniquement sa taille, position et quand démarrer le .exe.
 
 Cette méthode permet de charger et démarrer le projet Unity qui a été buildée au préalable. UnityGrid étant une grille crée dans la vue du code WPF.
@@ -780,10 +783,15 @@ Après avoir eu du mal à modifier le slider, j'ai pu modifier les autres outils
 Une fois les plannings mis en place, la structure de ceux-ci rend le tout très efficace à executer. Mais encore faut-il créer les plannings. En prenant en compte qu'ils doivent être logiquent, respecter certaines règles et être liés les uns les autres. Cette liaison permet par exemple le voyage de plusieurs personnes dans un même véhicule, ou le fait de se retrouver chez un ami. C'est donc cette création qui m'a demandé beaucoup de temps et énormément de réflexion sur son fonctionnement. Comment les créer ? Que doit être aléatoir et que doit être prédéfini ? Comment structurer le tout ? </br>
 Beaucoup de questions qui sont revenues lors de la création des plannings. 
 
-## WPF
-Combobox + Enum
-Numeric Up Down
+## Outils WPF 
+### Combobox et enum
+Pour simplifier l'affichage et le lier d'avantage au code, j'ai voulu lié les données d'un combobox à un enum. Je m'attendais à quelque chose de très simple ayant entendu beacoup de bien du databinding de WPF. J'ai vite compris que ce n'était pas directement pris en charge et qu'il fallait ajouter un certain nombre de ligne pour permettre cette liaison. Il m'a fallut ajouter un ObjectDataProvider en xaml qui permet d'ensuite lier les items du combobox à l'enum. Il était beaucoup plus simple de faire une assignation depuis le code.
 
+### Description d'enums
+J'ai ensuite voulu rendre l'affichage plus claire et donc modifier les valeurs du combobox pour qu'elles correspondent aux description de chaque item du enum. Il faut cependant une fois de plus ajouter un certains nombre de ligne pour que cela soit possible. Il est impossible d'y accéder directement et simplement. Il est nécessaire de récupérer les attributs du enum via une méthode qui n'est pas fournit par microsoft. Il faut donc la faire soit même.
+
+### Numeric Up Down
+Pour permettre à l'utilisateur de choisir le nombre de courbe d'un graphique, je souhaitais utiliser un numérique up down qui semblait être l'outil le plus logique pour cette tâche. Cependant, il n'existe pas de numericUpDown en WPF. Il faut soit le créer manuellement soit utiliser une librairie. Ne voulant pas installer une nouvelle librairie simplement pour cela, j'ai utilisé un textbox et ai restraint les charactères possibles d'écrire pour finalement le remplacer par un combobox qui est plus simple d'utilisation et qui ne nécessite aucun traitement.
 
 # `Simulation`
 ## Structure
@@ -794,28 +802,74 @@ Interactions entre objets
 
 
 ## Fonctionnement
+### Général
 Dans ce projet, les objets sont très connectés les uns des autres. La simulation par exemple détient l'entièreté de tous les objets dans des listes, à l'exception des plannings. Elle s'occupe donc de créer les bâtiments, la population, les moyen de transports. Beaucoup de paramètres entres en compte dans la création. Certains de ces paramètres sont fixes et tirés de données inspirés de la réalité. D'autres, même si ayant des valeurs similaires par défaut, sont modifiables par l'utilisateur afin de personnaliser la simulation et observer différents cas de figures.</br>
-Lors de la création des bâtiments, un calcul est effectué pour déterminer le nombre de bâtiments à créer en fonction du nombre d'individus. Il doit y avoir au moins un bâtiments de chaque type pour que la simulation fonctionne correctement. </br>
-Les données utilisée pour définir le nombre de bâtiments de chaque type ont été inspirées par des données officiels de Genève.</br>
-<h1>AJOUTER TRANSPORTS</h1>
-Pour créer les individus, la tâche est plus complexe. Pour créer un individu, il est nécessaire de lui créer un planning. Pour ce faire, des lieux lui sont donné. Une fois en posession de ces lieux et après avoir définit l'âge de la personne(âge qui définit certains de ces lieux) un planning est créé. </br> 
-Ce planning est composé des jours de la semaines ainsi que de 48 périodes de 30 min représentant des activités. Chaque activités contient un lieu dans laquel l'individu ira. Les planning sont créé dynamiquement en fonction des lieux qui lui sont donné, permettant de créer un adulte qui va aller travailler, ou un enfant qui va aller à l'école par exemple.</br>
+Lors de la création des bâtiments, un calcul est effectué pour déterminer le nombre de bâtiments à créer en fonction du nombre d'individus. Il doit y avoir au moins un bâtiment de chaque type pour que la simulation fonctionne correctement. </br>
+Les données utilisées pour définir le nombre de bâtiments de chaque type ont été inspirées par des données officielles de Genève.</br>
+
+Il existe différents types de transports dont les transports publiques qui sont commun à la simulation et qui, comme dans des lieux, augmentent les chances d'attraper le virus dû au contact avec des inconnus, en plus du fait que l'espace est restraint.
+Les voitures elles sont unique à l'individus permettant de limiter au maximum la transmission.
+La marche elle est similaire à la voiture car les risques sont très faible mais reste dans un environnement externe peuplé signifiant que le risque n'est pas 0.</br>
+
+Pour créer les individus, la tâche est plus complexe. Il est nécessaire de lui créer un planning. Pour ce faire, des lieux lui sont donnés. Une fois en possession de ces lieux et après avoir défini l'âge de la personne, âge qui définit si l'individus est retraité, en emplois, ou à l'école, un planning est créé. </br> 
+Ce planning est composé des jours de la semaine ainsi que de 48 périodes de 30 min représentant des activités. Chaque activité contient un lieu dans lequel l'individu ira. Les plannings sont créés dynamiquement en fonction des lieux qui lui sont donnés, permettant de créer un adulte qui va aller travailler, ou un enfant qui va aller à l'école par exemple.</br>
 Une fois que le planning est créé, un individu sera alors créé et utilisera ce planning unique pour ce déplacer plus tard dans la simulation.
 </br></br>
-Une fois créé, ils sont stockés et utilisés lors de chaque changement de périodes. À chaque changement, chaque individus va passer à l'activité suivante dans son planning, donc soit changer de lieu, soit rester dans le même.</br>
-C'est ensuite au lieu de vérifier si il y a eu un changement d'état demandant de recalculer les chances d'infections dans celui-ci. Cela signifie que si 5 personnes se situe dans un lieu, et qu'aucune autre n'entre, ne sort, ou me change d'état, le calcul des chances d'infection ne s'effectuera pas et le dernier résultat sera utilisé. Cela permet de limiter un maximum les calculs inutiles et améliorer la fluidité.</br>
-Une fois les calculs effectués, chaque personne dans chaque lieu va effectuer un test qui permet de définir si elle a été contaminée ou non. Si c'est le cas, celle-ci va commencer par un temps d'incubation du virus puis une fois celui-ci terminé, deviendra contagieuse et pourra souffrir de symptômes. Ces symptômes peuvent eux-aussi augmenter les chances de propager le virus.</br>
-<h1>AJOUTER Maladies - détailler propagation (variables) - détailler mesures</h1>
-Création -
-Évolution (Itérations)
+Une fois créés, ils sont stockés et utilisés lors de chaque changement de périodes. À chaque changement, chaque individu va passer à l'activité suivante dans son planning, donc soit changer de lieu, soit rester dans le même.</br>
+C'est ensuite au lieu de vérifier s’il y a eu un changement d'état demandant de recalculer les chances d'infections dans celui-ci. Cela signifie que si 5 personnes se situent dans un lieu, et qu'aucune autre n'entre, ne sort, ou me change d'état, le calcul des chances d'infection ne s'effectuera pas et le dernier résultat sera utilisé. Cela permet de limiter un maximum les calculs inutiles et améliorer la fluidité.</br>
+Une fois les calculs effectués, chaque personne dans chaque lieu va effectuer un test qui permet de définir si elle a été contaminée ou non. Si c'est le cas, celle-ci va commencer par un temps d'incubation du virus puis une fois celui-ci terminé, deviendra contagieuse et pourra souffrir de symptômes. Ces symptômes peuvent eux aussi augmenter les chances de propager le virus.</br>
 
-## Source
-Propagation (Rapport)
-    - Qui 
-    - quoi 
-    - pourquoi 
-    - expliquer comment 
-    - justifier utilisation 
+Les individus sont susceptible d'attraper des maladies qui n'impactent pas réellement le corps mais qui diminiuent drastiquement la résistance au virus. Ces maladies sont plus courrantes chez les individus dont l'âge est avancé. Plus l'âge est grand plus leurs nombre ainsi que leur impacte sur le système est élevé. Si la résistance est trop faible, l'individu risque de devoir aller à l'hôpital, là où il recevra des soins. Les places à l'hôpital sont limitées bloquant l'accès si le nombre de cas est trop élevé. Si la résistance au virus atteint un état critique, l'individu décèdera même lorsqu'il est prit en charge par un hôpital.
+
+### Propagation
+La propagation est effectuée à l'intérieur d'un bâtiment. Lorsque plusieurs individus se situent dans un bâtiment et qu'au moins l'un d'eux est infecté, le calcul des chances d'infection entre en jeu. Le lieu calcul donc les chances qu'un autre individu soit infecté et chaque individu vérifie individuellement s'il a été infecté ou non. Ce calcul s'effectue pour chaque période. Si aucun changement n'est effectué entre deux périodes (changement d'état - entrée - sortie) alors le résultat précédent est utilisé pour les probabilités d'infections. Ce système permet de limiter les calculs inutiles.
+
+Pour aller plus en détails, chaque bâtiment possèdes des paramètres attribués qui peuvent faire varier le résultat du calcul de probabilité d'infections. Les paramètres utilisé sont les suivants :
+- Taille
+  - Hauteur
+  - Largeur
+  - Longueur
+- Ventilation avec l'extérieur
+- Mesures additionnels
+
+Les variations en tailles modifie les résultats de manière évidentes. Si 100 personnes sont dans un bus, le résultat sera très différent que si ces même 100 personnes se situent dans un stade de foot.
+
+La ventilation représente l'échange d'air avec lextérieur. Ce paramètres modifie beaucoup les chances de transmissions par aérosols ainsi que la déposition sur les surfaces. Les mesures additionnel se greffent à la ventilation, il s'agit par exemple de filtres d'air réduisant les particules de covid se trouvant dans la pièce.
+
+Les bâtiments ont aussi besoin de connâitres les individus qui se trouve à l'intérieur. Ils doivent savoir :
+- Le total de personnes
+- Le total d'infectés (contagieux)
+- Le pourcentage d'immunisé
+
+Ces paramètres permettent de réaliser les calculs de bases qui seront ensuite développé à l'aide de paramètres uniques de chaque individus. Les paramètres utilisé sur les individus sont les suivants:
+- Quanta exhalé par infectés
+- Si le masque est porté
+- L'efficacité du masque
+  - Inhalation
+  - Exhalation
+
+Ces paramètres sont différents suivant les individus et le mesures prisent. Si aucune mesure n'est prise pour les masques par exemple, ils seront simplement ignorés. Si ce n'est pas le cas, ils permettront de diminuer les risques de soit transmettre le virus ou de le recevoir. Ils affectent directment les quantas. Les quanta exhalé par les infectés eux sont influencer en premier par le lieu. Une personne se trouvant dans une salle de sport projetera plus de quanta qu'un élève dans une salle de classe par exemple. Les symptômes tel que la toux augmente aussi ce paramètre augmentant les probabilités d'infections du lieu.
+
+
+Différentes mesures sont disponibles pour limiter au maximum la transmission du virus. Le port du masque étant la première de celle-ci et ayant déjà été décrit plus haut. La distanciation étant diffile à appliquer sur un modèle tel que je l'ai fait. Les individus ne pouvant par réellement se distancer des autres car ils ne possèdent pas de positions hormis le fait d'être dans un bâtiment. J'ai donc ajouté aux mesures additionnels une valeur qui est proportionnelle à l'efficacité de la distanciation. Il est aussi possible de mettre en quarantaine les personnes infectées. Celle-ci sont confinée dans leur habitat et ne sortes qu'arpès la durée maximal du virus qui est de 14 jours.
+
+
+<h2>Ajouter images - Lien vers méthodes dans les commentaires du projet</h2>
+
+### Source propagation
+La source de mes calculs de transmission du virus par aérosol ont été réalisé par des experts dans le domaines : 
+- Profeseur en chimie Jose-Luis Jimenez de l'université du Colorado à Boulder
+- Docteur Zhe Peng de l'université du Colorado à Boulder
+
+Ils ont réalisé ensemble un fichier excel calculant différents risques d'attraper le covid en fonction de différents paramètres. 
+
+Durant mes recherche de sources, il s'agit de la plus complète et compréhensible que j'ai pu trouver. J'ai croisé de nombreux articles de plusieurs dizaines de pages décrivant différents calculs permettant de décrire certains moyens de transmissions. La majorité de ceux-ci comportait des formules au delà de mes compétences et étaient destinés à un public spécialisé dans le domaine. Ce qui n'est pas le cas de cette source. En plus d'être très compréhensible, il est très facile de modifier les paramètres pour comprendre qu'est ce qui affecte quoi et à quelle échelle.</br>
+
+Chaque paramètre est décrit précisemment. Excel permet aussi de savoir comment est calculé chaque résultat et quelles paramètres sont indispensables à la simulation.</br>
+Le calcul par aérosol s'effectue avec des paramètres de bases qui passent par la taille de la pièce en volume ainsi que différents paramètres prenant en compte la ventilation ainsi que la durée de vie du virus et sa déposition sur les surfaces.
+Les paramètres des individus entrent ensuite en compte en ajoutant le nombre d'individus, le nombre d'infecté, le nombre d'immunisé ainsi que des paramètres plus techniques représentant la respiration et les quanta exhalé et inhalé. Les mesures tel que le port du masque et leur efficacité est prise en compte. À l'aide de tous ces paramètres, il est ensuite possible de calculer un grand nombre de résultats, les plus intéressant étant les probabilités d'infections dans mon cas.
+
+Ce fichier en plus de citer ses sources et d'être réalisés par des spécialistes, m'a donc permit de transposer ces calculs dans la simulation et d'y intégrer certaines mesures facilement. Il m'a permit de gagner énormément de temps ainsi qu'en précision. À la place de prendre du temps à comprendre et convertir différents calculs provenant de différents sources, j'ai pu me concentrer sur leur pécision et la structure dans le code.
 
 # `GUI`
 ## Structure
@@ -830,9 +884,53 @@ Réception des données
 
 # `UI`
 ## Thème
-Création - Difficultés
+Pour la création de l'interface utilisateur, je voulais éviter a tout prix d'utiliser le design basique des programmes windows. J'ai fait quelque recherche et je suis tombé sur différents tutoriels montrant comment réaliser une interface en [WinForm](https://www.youtube.com/watch?v=BtOEztT1Qzk). C'est en m'inspirant de ce design que j'ai réalisé le thème du projet. C'est principalement la barre de menu se situant à gauche que j'ai voulu recréer. J'ai ensuite découvert les pages et window dans WPF qui permettent de réaliser exactement ce que je souhaitais. Une window pouvant inclure le contenu d'une page. Il suffit donc de cliquer sur un bouton du menu pour changer le contenu de la page.
+
+WPF ne permettant pas la modification d'éléments existant, j'ai du créer de A à Z de nombreux éléments tels que les checkbox, les radioboutons ainsi que les sliders. Le résultat final me semble très propre.
+
+![Thème de l'application](Medias/Rapport/Theme.png)
+<center><p style="font-size: 11px">Figure ##: Thème</p></center>
+
 ## Pages
-Simulation - paramètres graphiques - paramètres - légende - Informations
+### Simulation
+<center>
+
+![Icône simulation](Medias/Rapport/SimulationIcone.png)
+<p style="font-size: 11px">Figure ##: Icone de simulation</p>
+
+</center>
+
+Cette page permet la visualisation de la simulation s'effectuant. Elle permet de gérer certains paramètres mineurs tel que le rythme, s'il faut mettre pause ou la relancer. Elle permet avant tout de lancer la simulation et d'observer les résultats à l'aide de graphiques, de l'interface graphique ainsi que de données brutes. Affichage qui est totalement personnalisable par l'utilisateur dans la fenêtre "Paramètres graphiques"
+
+<h1>Image de la page de simulation une foie terminée</h1>
+
+### Paramètres simulation
+<center>
+
+![Icône simulation](Medias/Rapport/ParametresSimulationIcone.png)
+<p style="font-size: 11px">Figure ##: Icone de paramètres de la simulation</p>
+
+</center>
+
+Cette page permet de modifier les paramètres de la simulation au démarrage de celle-ci. Les paramètres les plus basiques sont le nombre d'individus ainsi que la quantité de personne infecté au départ. Il est ensuite possible de paramétré les mesures afin de définir si elles doivent entrer en compte et quand. Il est possible de définir à partir de combien d'infectés certaines mesures sont activée ou désactivée ou par exemple après un certain temps. Ces paramètres ne sont pas modifiable durant la simulation et donc uniquement avant celle-ci.
+
+### Paramètres graphiques
+<center>
+
+![Icône simulation](Medias/Rapport/ParametresGraphiquesIcone.png)
+<p style="font-size: 11px">Figure ##: Icone de paramètres graphiques</p>
+
+</center>
+
+La page des paramètres graphiques permet de totalement modifier l'interface de la page de simulation. Elle laisse à l'utilisateur de décider si des graphiques doivent être affichés, leur tailles, le type de graphique ainsi que les données à afficher. Certains graphiques comme la heatMap ne prennent pas en compte tous les type de données car ils sont très spécifiques.
+
+En plus des graphiques, l'interface graphique peut être ajoutée ou retirée comme bon semble l'utilisateur. Comme pour les graphiques, sa taille peut être modifiée.
+
+Finalement les données brutes. Il est possible d'afficher directement certaines données comme le nombre d'infectés actuel ou le nombre total depuis le début.
+
+Chaque case contenant l'un des objet précédement sité peut être déplacé librement dans la grille mise à disposition. Cette même grille peut être agrandi ou rapetissi pour laisser la place à plus ou moins de cases.
+
+légende - Informations
 
 # `Planning`
 ## Prévisionnel
@@ -860,20 +958,20 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 # `Conclusion`
 
 # `Table des figures`
-- [Figure 1: Maquette page de simulation](#611-page-simulation)
-- [Figure 2: Maquette page de paramètres graphiques 1](#612-page-paramètres-graphiques)
-- [Figure 3: Maquette page de paramètres graphiques 2](#612-page-paramètres-graphiques)
-- [Figure 4: Maquette page de paramètres](#613-page-paramètres)
-- [Figure 5: Maquette page d'informations](#614-page-informations)
-- [Figure 6: Maquette interface graphique](#62-interface-graphique)
-- [Figure 7: Exemple de graphiques](#9521-graphique)
-- [Figure 8: Exemple d'interface graphique](#9522-interface-graphique)
-- [Figure 9: Persona expérimenté](#971-utilisateur-expérimenté)
-- [Figure 10: Persona inexpérimenté](#972-utilisateur-inexpérimenté)
-- [Figure 11: Diagramme d'activité](#99-diagramme-d'activité)
-- [Figure 12: Diagrame de classe initial](#911-diagramme-de-classe-initial)
-- [Figure 13: Fidélité des données](#121-pipeline)
-- [Figure 14: Diagramme de fonctionnement](#102-structure)
+- [Figure 1: Maquette page de simulation](#page-simulation)
+- [Figure 2: Maquette page de paramètres graphiques 1](#page-paramètres-graphiques)
+- [Figure 3: Maquette page de paramètres graphiques 2](#page-paramètres-graphiques)
+- [Figure 4: Maquette page de paramètres](#page-paramètres)
+- [Figure 5: Maquette page d'informations](#page-informations)
+- [Figure 6: Maquette interface graphique](#interface-graphique)
+- [Figure 7: Exemple de graphiques](#graphique)
+- [Figure 8: Exemple d'interface graphique](#interface-graphique)
+- [Figure 9: Persona expérimenté](#utilisateur-expérimenté)
+- [Figure 10: Persona inexpérimenté](#utilisateur-inexpérimenté)
+- [Figure 11: Diagramme d'activité](#diagramme-d'activité)
+- [Figure 12: Diagrame de classe initial](#diagramme-de-classe-initial)
+- [Figure 13: Fidélité des données](#pipeline)
+- [Figure 14: Diagramme de fonctionnement](#structure)
 
 # `Bibliographie`
 
