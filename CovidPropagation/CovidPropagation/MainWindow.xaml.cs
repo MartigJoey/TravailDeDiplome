@@ -52,19 +52,20 @@ namespace CovidPropagation
 
         private void SimulationPage_Click(object sender, RoutedEventArgs e)
         {
+            pageSimulation.SetGrid(pageGraphicSettings.GetGrid(), pageGraphicSettings.GetGraphicsData());
             MainContent.Navigate(pageSimulation);
         }
 
         private void GraphicSettingsPage_Click(object sender, RoutedEventArgs e)
         {
-            LC lcPage = new LC();
-            lcPage.Show();
-            //MainContent.Navigate(pageSimulationSettings);
+            MainContent.Navigate(pageGraphicSettings);
         }
 
         private void SettingsPage_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Navigate(pageGraphicSettings); // Switch avec SimulationSettings
+            LC lcPage = new LC();
+            lcPage.Show();
+            //MainContent.Navigate(pageSimulationSettings);
         }
     }
 }

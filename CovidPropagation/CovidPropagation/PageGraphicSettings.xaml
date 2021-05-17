@@ -8,7 +8,10 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PageGraphicSettings">
     <DockPanel  x:Name="spnMain">
-        <Grid DockPanel.Dock="Top" x:Name="grdMenu" ScrollViewer.CanContentScroll="True" VerticalAlignment="Top">
+        <Grid DockPanel.Dock="Top" 
+              x:Name="grdMenu" 
+              ScrollViewer.CanContentScroll="True" 
+              VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="25*" MinWidth="180" />
                 <ColumnDefinition Width="25*" MinWidth="180" />
@@ -58,7 +61,7 @@
                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
                       ScrollViewer.VerticalScrollBarVisibility="Auto">
 
-            <Grid x:Name="grdContent" ShowGridLines="True">
+            <Grid x:Name="grdContent">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" MinWidth="150" />
                     <ColumnDefinition Width="*" MinWidth="150" />

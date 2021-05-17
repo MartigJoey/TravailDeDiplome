@@ -800,3 +800,29 @@
       - Simulation
       - Paramètres
       - Paramètres graphiques
+- Création de la strucutre GraphicsData
+  - Permet le transfert des données qu'un graphique affichera
+    - Position
+    - Taille
+    - Type
+    - Donnée X - Y - Courbes
+- Transfert des données des graphique de la page paramètres graphiques à la page simulation
+- Copie de la structure de la grille de la page paramètres graphiques vers la page simulation.
+  - Impossible de copier
+  - Recréation d'une grille en reprenant les bases
+  - Les graphiques sont dans la grille, mais celle-ci ne s'affichage pas
+    - Ajout de la nouvelle grille dans le composant "scrollviewer" a permit d'afficher le contenu de la grille
+    - Les objets déplacé s'affichent aussi à leur dernier emplacement.
+  - Modification du code pour prendre en compte la modification de la structure GraphicData lorsque
+    - Le graphique bouge
+    - Sa taille change
+      - X +
+      - X -
+      - Y +
+      - Y -
+    - Ses valeurs changes
+    - Il est suprimmé
+    - Il est ajouté
+  - Affichage des graphiques linéaires réussi et fonctionnel !
+    - (Pas encore lié avec la simulation. Uniquement de l'affichage)
+  - 

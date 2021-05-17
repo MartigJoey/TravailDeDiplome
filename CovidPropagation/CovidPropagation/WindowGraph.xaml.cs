@@ -7,21 +7,13 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace CovidPropagation
 {
-    public delegate void SaveEventHandler(object source, GraphicDataTransfer e);
+    public delegate void SaveEventHandler(object source, GraphicData e);
 
     /// <summary>
     /// Logique d'interaction pour WindowGraph.xaml
@@ -41,9 +33,10 @@ namespace CovidPropagation
         public WindowGraph(int cellX, int cellY, int sizeX, int sizeY)
         {
             InitializeComponent();
-
             this.cellX = cellX;
             this.cellY = cellY;
+            this.sizeX = sizeX;
+            this.sizeY = sizeY;
             cbxDatas = new ComboBox[MAX_NUMBER_OF_CURVES];
 
             int curvesRow = Grid.GetRow(cbxQuantityOfCurves);
@@ -108,7 +101,7 @@ namespace CovidPropagation
                 {
                     datas.Add(cbxDatas[i].SelectedIndex);
                 }
-                GraphicDataTransfer graphicDatas = new GraphicDataTransfer(cellX, cellY, sizeX, sizeY, cbxGraphType.SelectedIndex, cbxValueX.SelectedIndex, cbxValueY.SelectedIndex, datas.ToArray());
+                GraphicData graphicDatas = new GraphicData(cellX, cellY, sizeX, sizeY, datas.ToArray(), cbxGraphType.SelectedIndex, cbxValueX.SelectedIndex, cbxValueY.SelectedIndex);
                 OnSave(10, graphicDatas);
             }
         }

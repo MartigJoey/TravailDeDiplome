@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,9 +21,9 @@ namespace CovidPropagation
         private const int COLUMN_MIN_WIDTH = 150;
         private const int MAX_GRID_SIZE = 10;
 
-        public static GraphicDataTransfer[,] graphicDatas = new GraphicDataTransfer[MAX_GRID_SIZE, MAX_GRID_SIZE];
+        public static GraphicData[,] graphicDatas = new GraphicData[MAX_GRID_SIZE, MAX_GRID_SIZE];
         private bool[,] gridHasContent = new bool[MAX_GRID_SIZE, MAX_GRID_SIZE];
-        int oldX = MAX_GRID_SIZE + 1;
+        public int oldX = MAX_GRID_SIZE + 1;
         int oldY = MAX_GRID_SIZE + 1;
         int maxCellColumnSpan;
         int maxCellRowSpan;
@@ -82,8 +83,10 @@ namespace CovidPropagation
         private void AddGraph_Click(object sender, RoutedEventArgs e)
         {
             int[] emptyIndex = GetFirstEmptyCell();
+            int x = emptyIndex[0];
+            int y = emptyIndex[1];
 
-            if (emptyIndex[0] < MAX_GRID_SIZE)
+            if (x < MAX_GRID_SIZE)
             {
                 Grid cell = new Grid();
                 Button btnRemove = CreateGraphButton("GraphCloseStyle", "./Images/close.png");
@@ -151,10 +154,12 @@ namespace CovidPropagation
 
                 cell.Background = Brushes.Green;
 
-                Grid.SetColumn(cell, emptyIndex[0]);
-                Grid.SetRow(cell, emptyIndex[1]);
+                Grid.SetColumn(cell, x);
+                Grid.SetRow(cell, y);
 
-                gridHasContent[emptyIndex[0], emptyIndex[1]] = true;
+                gridHasContent[x, y] = true;
+                GraphicData grpData = new GraphicData(x, y, 1, 1, new int[] { 0 });
+                graphicDatas[x, y] = grpData;
                 dynamicGrid.Children.Add(cell);
             }
         }
@@ -196,6 +201,7 @@ namespace CovidPropagation
             int x = Grid.GetColumn(cell), y = Grid.GetRow(cell);
             int columnSpan = Grid.GetColumnSpan(cell), rowSpan = Grid.GetRowSpan(cell);
             SetCellsContent(x, y, x + columnSpan, y + rowSpan, false);
+            graphicDatas[x, y].SetAsNull();
             dynamicGrid.Children.Remove(cell);
         }
 
@@ -224,6 +230,8 @@ namespace CovidPropagation
                 Grid.SetColumn(cell, newCoordinates[0]);
                 Grid.SetRow(cell, newCoordinates[1]);
                 SetCellsContent(x, y, x + columnSpan, y + rowSpan, true); // Bloque le nouvel espace occupé
+                graphicDatas[x, y] = graphicDatas[oldX, oldY].CloneInNewLocation(x,y);
+                graphicDatas[oldX, oldY].SetAsNull();
             }
             else
             {
@@ -243,11 +251,11 @@ namespace CovidPropagation
             int columnSpan = Grid.GetColumnSpan(cell);
             int rowSpan = Grid.GetRowSpan(cell);
 
-            Debug.WriteLine(maxCellColumnSpan + " " + columnSpan + 1);
             if (ChechIfCellsEmpty(x + columnSpan, y, x + columnSpan + 1, y + rowSpan) && columnSpan < maxCellColumnSpan)
             {
                 Grid.SetColumnSpan(cell, columnSpan + 1);
                 SetCellsContent(x, y, x + columnSpan + 1, y + rowSpan, true);
+                graphicDatas[x, y].SpanX++;
             }
         }
 
@@ -265,6 +273,7 @@ namespace CovidPropagation
             {
                 Grid.SetColumnSpan(cell, columnSpan - 1);
                 SetCellsContent(x + 1, y, x + columnSpan + 1, y + rowSpan, false);
+                graphicDatas[x, y].SpanX--;
             }
         }
 
@@ -282,6 +291,8 @@ namespace CovidPropagation
             {
                 Grid.SetRowSpan(cell, rowSpan + 1);
                 SetCellsContent(x, y, x + columnSpan, y + rowSpan + 1, true);
+
+                graphicDatas[x, y].SpanY++;
             }
         }
 
@@ -300,6 +311,7 @@ namespace CovidPropagation
             {
                 Grid.SetRowSpan(cell, rowSpan - 1);
                 SetCellsContent(x, y + 1, x + columnSpan, y + rowSpan + 1, false);
+                graphicDatas[x, y].SpanY--;
             }
         }
 
@@ -320,15 +332,36 @@ namespace CovidPropagation
             graphicWindow.Show();
         }
 
-        static void OnSave(object source, GraphicDataTransfer e)
+        static void OnSave(object source, GraphicData e)
         {
-            string datas = "";
-            foreach (var item in e.Datas)
-            {
-                datas += " " + item;
-            }
-            MessageBox.Show("X:" + e.X + " Y:" + e.Y + "  ValueX:" + e.ValueX + "    ValueY:" + e.ValueY + " Type:" + e.GraphicType + "  Datas:" + datas);
             graphicDatas[e.X, e.Y] = e;
+        }
+
+        public GraphicData[,] GetGraphicsData()
+        {
+            return graphicDatas;
+        }
+
+        public Grid GetGrid()
+        {
+            Grid result = new Grid();
+            result.VerticalAlignment = VerticalAlignment.Stretch;
+            result.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+            for (int i = 0; i < grdContent.ColumnDefinitions.Count; i++)
+            {
+                ColumnDefinition newGridColumn = new ColumnDefinition();
+                newGridColumn.MinWidth = COLUMN_MIN_WIDTH;
+                result.ColumnDefinitions.Add(newGridColumn);
+            }
+
+            for (int i = 0; i < grdContent.RowDefinitions.Count; i++)
+            {
+                RowDefinition newGridRow = new RowDefinition();
+                newGridRow.MinHeight = ROW_MIN_HEIGHT;
+                result.RowDefinitions.Add(newGridRow);
+            }
+            return result;
         }
 
         private void AddGUI_Click(object sender, RoutedEventArgs e)
