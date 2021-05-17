@@ -783,7 +783,7 @@
   - Test avec Photos
   - Solution finale --> Utilisation d'un site faisant la conversion.
 
-# 17.05.2020 07h45 / 17h00
+# 17.05.2020 07h45 / 16h10
 - Documentation
   - Fonctionnement simulation
     - Général
