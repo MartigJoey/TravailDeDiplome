@@ -28,7 +28,7 @@ namespace CovidPropagation
         Legend legendPage;
         MainWindow mw;
         public GraphicData[,] graphicDatas;
-        string data;
+        Simulation sim;
         //public int SliderValue { get => (int)intervalSlider.Value; set => intervalSlider.Value = value; }
         public PageSimulation()
         {
@@ -36,12 +36,13 @@ namespace CovidPropagation
             legendPage = new Legend();
             //intervalSlider.Value = GlobalVariables.DEFAULT_INTERVAL;
             mw = (MainWindow)Application.Current.MainWindow;
-            Loaded += MyPage_Loaded;
+            Virus.Init();
+            
         }
 
-        private void MyPage_Loaded(object sender, RoutedEventArgs e)
+        static void OnTimerTick(object source, Simulation e)
         {
-            //intervalSlider.Value = Convert.ToInt32(intervalSlider.Maximum - mw.Sim.Interval);
+           // Debug.WriteLine(e.GetData());
         }
 
         private void OpenLegendWindow_Click(object sender, RoutedEventArgs e)
@@ -52,17 +53,25 @@ namespace CovidPropagation
 
         private void IntervalSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
-            //mw.Sim.Interval = Convert.ToInt32(intervalSlider.Maximum - intervalSlider.Value);
+            sim.Interval = Convert.ToInt32(intervalSlider.Maximum - intervalSlider.Value);
         }
 
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-            mw.Sim.Start();
+            if (sim == null)
+            {
+                sim = new Simulation(30, 0.1, 100000);
+                sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
+                sim.OnTickSP += new GetDataEventHandler(OnTimerTick);
+                sim.Iterate();
+                intervalSlider.Value = Convert.ToInt32(intervalSlider.Maximum - sim.Interval);
+            }
+            sim.Start();
         }
 
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
-            mw.Sim.Stop();
+            sim.Stop();
         }
 
         public void SetGrid(Grid grd, GraphicData[,] graphicDatas)
@@ -79,61 +88,37 @@ namespace CovidPropagation
             {
                 if (graph.SpanX > 0)
                 {
+                    object chart;
                     switch (graph.GraphicType)
                     {
+                        default:
                         case (int)GraphicsType.Linear:
-                            // CreateCartesian
-                            CartesianChart linearGraph = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
-                            AddCurvesToCartesianGraphic(linearGraph, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
-                            Grid.SetColumn(linearGraph, graph.X);
-                            Grid.SetRow(linearGraph, graph.Y);
-                            Grid.SetColumnSpan(linearGraph, graph.SpanX);
-                            Grid.SetRowSpan(linearGraph, graph.SpanY);
-                            grdContent.Children.Add(linearGraph);
+                            chart = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
+                            AddCurvesToCartesianGraphic((CartesianChart)chart, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
                             break;
                         case (int)GraphicsType.Vertical:
-                            // CreateCartesian
-                            CartesianChart verticalGraph = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
-                            AddColumnsToCartesianGraphic(verticalGraph, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
-                            Grid.SetColumn(verticalGraph, graph.X);
-                            Grid.SetRow(verticalGraph, graph.Y);
-                            Grid.SetColumnSpan(verticalGraph, graph.SpanX);
-                            Grid.SetRowSpan(verticalGraph, graph.SpanY);
-                            grdContent.Children.Add(verticalGraph);
+                            chart = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
+                            AddColumnsToCartesianGraphic((CartesianChart)chart, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
                             break;
                         case (int)GraphicsType.Horizontal:
-                            // CreateCartesian
-                            CartesianChart horizontalGraph = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
-                            AddRowsToCartesianGraphic(horizontalGraph, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
-                            Grid.SetColumn(horizontalGraph, graph.X);
-                            Grid.SetRow(horizontalGraph, graph.Y);
-                            Grid.SetColumnSpan(horizontalGraph, graph.SpanX);
-                            Grid.SetRowSpan(horizontalGraph, graph.SpanY);
-                            grdContent.Children.Add(horizontalGraph);
+                            chart = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
+                            AddRowsToCartesianGraphic((CartesianChart)chart, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
                             break;
                         case (int)GraphicsType.PieChart:
-                            // CreateCartesian
-                            PieChart pieGraph = CreatePieGraph();
-                            AddSectionToPieGraphic(pieGraph, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
-                            Grid.SetColumn(pieGraph, graph.X);
-                            Grid.SetRow(pieGraph, graph.Y);
-                            Grid.SetColumnSpan(pieGraph, graph.SpanX);
-                            Grid.SetRowSpan(pieGraph, graph.SpanY);
-                            grdContent.Children.Add(pieGraph);
+                            chart = CreatePieGraph();
+                            AddSectionToPieGraphic((PieChart)chart, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
                             break;
                         case (int)GraphicsType.HeatMap:
-                            // CreateCartesian
-                            CartesianChart heatMapGraph = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
-                            AddHeatMapToCartesianGraphic(heatMapGraph, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
-                            Grid.SetColumn(heatMapGraph, graph.X);
-                            Grid.SetRow(heatMapGraph, graph.Y);
-                            Grid.SetColumnSpan(heatMapGraph, graph.SpanX);
-                            Grid.SetRowSpan(heatMapGraph, graph.SpanY);
-                            grdContent.Children.Add(heatMapGraph);
-                            break;
-                        default:
+                            chart = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
+                            AddHeatMapToCartesianGraphic((CartesianChart)chart, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
                             break;
                     }
+
+                    Grid.SetColumn((UIElement)chart, graph.X);
+                    Grid.SetRow((UIElement)chart, graph.Y);
+                    Grid.SetColumnSpan((UIElement)chart, graph.SpanX);
+                    Grid.SetRowSpan((UIElement)chart, graph.SpanY);
+                    grdContent.Children.Add((UIElement)chart);
                 }
             }
         }

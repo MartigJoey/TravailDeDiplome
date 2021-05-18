@@ -847,3 +847,19 @@
     - Ajouté result
     - comparaison réalité
     - comparaison excel
+- 2ème Discussion avec M. Mathieu sur la structure du code et l'optimisation
+  - Restructurer le code pour éviter les listes
+- Restructuration de code de création des individu
+  - Suppression de certains filtres linq
+  - Optimisation du code
+  - Temps de création
+    - 10'000 = 500ms avant 5 secondes
+    - 100'000 = ~5 secondes avant 5 minutes
+    - 1'000'000 = ~1 minutes avant +10 min / crash
+- 3ème Discussion avec M. Mathieu sur la structure du code et l'optimisation
+  - Retour sur l'amélioration des performances
+  - Ajouter la différence / un paragraphe sur les changements dans la doc
+  - Conseils sur l'utilisation du profiler pour détecter où le programme prend trop de temps
+- Utilisation du profiler pour analyser la charge CPU
+  - Le profiler ne détecte pas les données à afficher "Il n'existe aucune donnée dans l'ensemble de filtres actuel."
+  - Il s'agit possiblement d'un driver qui pose problème [Source](https://developercommunity.visualstudio.com/t/performance-profiler-not-collecting-data-for-cpu-u-1/1069594). Cependant les versions de windows ne correspondent pas au mien.

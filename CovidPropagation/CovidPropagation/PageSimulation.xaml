@@ -14,56 +14,55 @@ Description : Simulation d'une propagation de virusgit co
     mc:Ignorable="d" 
     d:DesignHeight="1000" d:DesignWidth="800"
     Title="PageSimulation">
-    <ScrollViewer x:Name="slvScroller"
-                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto">
-        <Grid x:Name="grdContent" 
-              ScrollViewer.CanContentScroll="True" 
-              VerticalAlignment="Stretch"
-              HorizontalAlignment="Stretch"
-              ShowGridLines="True">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50*" MinWidth="25"/>
+            <ColumnDefinition Width="50*" MinWidth="25"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*" MaxHeight="25" MinHeight="25"/>
+            <RowDefinition Height="5*" MaxHeight="25" MinHeight="25"/>
+            <RowDefinition Height="5*" MaxHeight="25" MinHeight="25"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+        
+        <Slider Template="{StaticResource HorizontalSlider}" 
+                    x:Name="intervalSlider" 
+                    Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
+                    Minimum="0" Maximum="1000"
+                    IsSelectionRangeEnabled="True"
+                    Thumb.DragCompleted="IntervalSlider_DragCompleted">
+        </Slider>
 
-            <!--<Label Grid.Column="2" Grid.Row="1" 
-               x:Name="lblDatas">
-            Datas
-        </Label>-->
+        <Button Click="Start_Click" Style="{StaticResource smallButton}" 
+                    x:Name="btnStart" 
+                    Grid.Column="0" Grid.Row="1"
+                    Content="Start"/>
 
-        <!--
-        <Grid Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50*" MinWidth="50" />
-                <ColumnDefinition Width="50*" MinWidth="50" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="50"/>
-            </Grid.RowDefinitions>
-            
-            <Slider Template="{StaticResource HorizontalSlider}" 
-                x:Name="intervalSlider" 
-                Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
-                Minimum="0" Maximum="1000"
-                IsSelectionRangeEnabled="True"
-                Thumb.DragCompleted="IntervalSlider_DragCompleted">
-            </Slider>
-
-            <Button Click="Start_Click" Style="{StaticResource smallButton}" 
-                x:Name="btnStart" 
-                Grid.Column="0" Grid.Row="1"
-                Content="Start"/>
-
-            <Button Click="Stop_Click" Style="{StaticResource smallButton}"
-                x:Name="btnStop" 
-                Grid.Column="1" Grid.Row="1"
-                Content="Stop"
-                Height="auto"/>
-        </Grid>
-        -->
-            <!--
-        <Button Click="OpenLegendWindow_Click" Style="{StaticResource smallButton}" 
-              Grid.Column="2" Grid.Row="5"
-              Content="Légende"/>
-        -->
-      </Grid>
-    </ScrollViewer>
+        <Button Click="Stop_Click" Style="{StaticResource smallButton}"
+                    x:Name="btnStop" 
+                    Grid.Column="1" Grid.Row="1"
+                    Content="Stop"
+                    Height="auto"/>
+        
+        <ScrollViewer x:Name="slvScroller"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      Grid.Column="0"
+                      Grid.Row="3"
+                      Grid.RowSpan="2"
+                      Grid.ColumnSpan="2">
+            <Grid x:Name="grdContent" 
+                  ScrollViewer.CanContentScroll="True" 
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  ShowGridLines="True">
+                <!--
+            <Button Click="OpenLegendWindow_Click" Style="{StaticResource smallButton}" 
+                  Grid.Column="2" Grid.Row="5"
+                  Content="Légende"/>
+            -->
+          </Grid>
+        </ScrollViewer>
+    </Grid>
 </Page>

@@ -40,6 +40,7 @@ namespace CovidPropagation
                 workDays[SATURDAY_INDEX] = true;
                 nbWorkDays--;
             }
+
             while (nbWorkDays > 0)
             {
                 workDays[rdm.NextInclusive(0, FRIDAY_INDEX)] = true;

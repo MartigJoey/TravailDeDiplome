@@ -75,13 +75,13 @@ namespace CovidPropagation
             int afterNoonFreeTimeTimeFrame = 0;
             int eveningActivityTimeFrame = 0;
 
+            // Calcul la durée de la période sans les activités
             int morningTimeFrame = morningTimeFrameMax - rdm.NextWithMinimum(0, morningVariation, 0);
             int noonTimeFrame = rdm.Next(noonMin, noonTimeFrameMax + 1);
             int afterNoonWorkTimeFrame = afterNoonTimeFrameMax - rdm.NextWithMinimum(0, afterNoonVariation, 0);
             int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, 3);
 
-            #region Activities
-
+            // Cakcul la durée de la période des activités
             if (morningTimeFrame < morningTimeFrameTotal)
                 morningWorkTimeFrame = morningTimeFrameTotal - morningTimeFrame;
 
@@ -93,8 +93,8 @@ namespace CovidPropagation
 
             if (eveningTimeFrame < eveningTimeFrameMax)
                 eveningActivityTimeFrame = eveningTimeFrameMax - eveningTimeFrame;
-            #endregion
 
+            // Calcul le nombre restant de période à combler avant la fin de la journée
             nightTimeFrame = (morningTimeFrame + morningWorkTimeFrame) +
                            (noonTimeFrame) +
                            (afterNoonWorkTimeFrame + afterNoonFreeTimeTimeFrame) +
@@ -106,25 +106,28 @@ namespace CovidPropagation
             KeyValuePair<Site, SitePersonStatus> hometSite = personSites.Where(h => h.Key.Type.Contains(SiteType.Home)).OrderBy(x => rdm.Next()).First();
             KeyValuePair<Site, SitePersonStatus> workSite = personSites.Where(w => w.Value == SitePersonStatus.Worker).OrderBy(x => rdm.Next()).First();
 
+            // Choisi le lieu où manger, sur le lieu de travail ou ailleurs
             KeyValuePair<Site, SitePersonStatus> noonSite;
-            // Manger sur le lieu de travail ou ailleurs
             if (rdm.NextBoolean())
                 noonSite = personSites.Where(e => e.Key.Type.Contains(SiteType.Eat) && e.Value == SitePersonStatus.Client).OrderBy(x => rdm.Next()).First();
             else
                 noonSite = workSite;
 
+            // Choisis le lieu de l'après-midi
             KeyValuePair<Site, SitePersonStatus> afterNoonFreeTimeSite = personSites.Where(
                     f => f.Value == SitePersonStatus.Client ||
                     f.Value == SitePersonStatus.Other &&
                     !f.Key.Type.Contains(SiteType.Transport)
                 ).OrderBy(x => rdm.Next()).First();
 
+            // Choisi le lieu de l'activité du soir
             KeyValuePair<Site, SitePersonStatus> eveningActivitySite = personSites.Where(
                     a => a.Value == SitePersonStatus.Client ||
                     a.Value == SitePersonStatus.Other &&
                     a.Key.Type.Contains(SiteType.Eat)
                 ).OrderBy(x => rdm.Next()).First();
 
+            // Choisis le type de transport
             KeyValuePair<Site, SitePersonStatus> transportSite = personSites.Where(t => t.Key.Type.Contains(SiteType.Transport)).OrderBy(x => rdm.Next()).First();
 
             timeFrames = new List<TimeFrame>(totalTimeFrame);

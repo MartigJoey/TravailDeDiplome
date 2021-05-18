@@ -156,7 +156,7 @@ namespace CovidPropagation
                 cell.Children.Add(btnHeightMinus);
                 cell.Children.Add(btnGraphSettings);
 
-                cell.Background = Brushes.Green;
+                cell.Background = Brushes.White;
 
                 Grid.SetColumn(cell, x);
                 Grid.SetRow(cell, y);
@@ -369,16 +369,6 @@ namespace CovidPropagation
         }
 
         private void AddGUI_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Save_Click(object sender, RoutedEventArgs e)
         {
 
         }

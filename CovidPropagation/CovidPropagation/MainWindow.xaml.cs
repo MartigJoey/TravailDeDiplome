@@ -25,9 +25,6 @@ namespace CovidPropagation
         PageSimulation pageSimulation;
         PageSimulationSettings pageSimulationSettings;
         PageGraphicSettings pageGraphicSettings;
-        Simulation sim;
-
-        public Simulation Sim { get => sim; set => sim = value; }
 
         public MainWindow()
         {
@@ -36,18 +33,7 @@ namespace CovidPropagation
             pageSimulationSettings = new PageSimulationSettings();
             pageGraphicSettings = new PageGraphicSettings();
             MainContent.NavigationUIVisibility = NavigationUIVisibility.Hidden; // Cache la barre de navigation du contenu
-            Virus.Init();
-            Sim = new Simulation(30, 0.1, 1000);
-            Sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
-            //Sim.Iterate();
-            //Sim.Start();
-            
-            Sim.OnTickSP += new GetDataEventHandler(OnTimerTick);
-        }
 
-        static void OnTimerTick(object source, Simulation e)
-        {
-            Debug.WriteLine(e.GetData());
         }
 
         private void SimulationPage_Click(object sender, RoutedEventArgs e)
@@ -65,7 +51,7 @@ namespace CovidPropagation
         {
             LC lcPage = new LC();
             lcPage.Show();
-            //MainContent.Navigate(pageSimulationSettings);
+            MainContent.Navigate(pageSimulationSettings);
         }
     }
 }

@@ -12,6 +12,7 @@ namespace CovidPropagation
         Transport,
         Hospital,
         Eat,
-        WorkPlace
+        WorkPlace,
+        School
     }
 }
