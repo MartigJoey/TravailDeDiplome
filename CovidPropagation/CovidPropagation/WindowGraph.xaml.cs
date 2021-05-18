@@ -27,18 +27,21 @@ namespace CovidPropagation
         int sizeX;
         int sizeY;
         ComboBox[] cbxDatas;
+        GraphicData graphicDatas;
         int currentCurvesIndex;
         object chart;
 
-        public WindowGraph(int cellX, int cellY, int sizeX, int sizeY)
+        public WindowGraph(int cellX, int cellY, int sizeX, int sizeY, GraphicData graphicDatas)
         {
             InitializeComponent();
             this.cellX = cellX;
             this.cellY = cellY;
             this.sizeX = sizeX;
             this.sizeY = sizeY;
+            this.graphicDatas = graphicDatas;
             cbxDatas = new ComboBox[MAX_NUMBER_OF_CURVES];
 
+            // Créé et positionne les combobox de valeurs pour leur futur utilisation.
             int curvesRow = Grid.GetRow(cbxQuantityOfCurves);
             int curvesColumn = Grid.GetColumn(cbxQuantityOfCurves);
             for (int i = 1; i <= MAX_NUMBER_OF_CURVES; i++)
@@ -50,14 +53,15 @@ namespace CovidPropagation
                 Grid.SetRow(cbxDatas[i - 1], curvesRow);
                 Grid.SetColumn(cbxDatas[i - 1], curvesColumn);
 
-                cbxDatas[i - 1].ItemsSource = from GraphicsCurvesData n 
-                                               in Enum.GetValues(typeof(GraphicsCurvesData))
+                cbxDatas[i - 1].ItemsSource = from GraphicsDisplayData n 
+                                               in Enum.GetValues(typeof(GraphicsDisplayData))
                                                select GetEnumDescription(n);
 
                 cbxDatas[i - 1].SelectedIndex = 0;
                 grdContent.Children.Add(cbxDatas[i - 1]);
             }
 
+            // Sélectionne les description des enums et les insères dans les combobox.
             cbxValueX.ItemsSource = from GraphicsAxisData n
                                     in Enum.GetValues(typeof(GraphicsAxisData))
                                     select GetEnumDescription(n);
@@ -69,15 +73,27 @@ namespace CovidPropagation
             cbxGraphType.ItemsSource = from GraphicsType n
                                        in Enum.GetValues(typeof(GraphicsType))
                                        select GetEnumDescription(n);
-            cbxValueX.SelectedIndex = 0;
-            cbxValueY.SelectedIndex = 1;
-            cbxGraphType.SelectedIndex = 0;
+
+            cbxValueX.SelectedIndex = this.graphicDatas.AxisX;
+            cbxValueY.SelectedIndex = this.graphicDatas.AxisY;
+            cbxGraphType.SelectedIndex = this.graphicDatas.GraphicType;
 
 
-            currentCurvesIndex = 0;
+            currentCurvesIndex = this.graphicDatas.Datas.Length - 1;
             cbxQuantityOfCurves.SelectedIndex = currentCurvesIndex;
+
+            for (int i = 0; i < this.graphicDatas.Datas.Length; i++)
+            {
+                cbxDatas[i].Visibility = Visibility.Visible;
+                cbxDatas[i].SelectedIndex = this.graphicDatas.Datas[i];
+            }
         }
 
+        /// <summary>
+        /// Récupère la description des valeurs d'un enum pour un affichage plus logique.
+        /// </summary>
+        /// <param name="value">Valeur du enum à convertir en description.</param>
+        /// <returns>Description du enum</returns>
         public static string GetEnumDescription(Enum value)
         {
             string result;
@@ -92,6 +108,9 @@ namespace CovidPropagation
             return result;
         }
 
+        /// <summary>
+        /// Lorsque l'utilisateur sauvegarde les valeurs modifiées.
+        /// </summary>
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (OnSave != null)
@@ -103,19 +122,27 @@ namespace CovidPropagation
                 }
                 GraphicData graphicDatas = new GraphicData(cellX, cellY, sizeX, sizeY, datas.ToArray(), cbxGraphType.SelectedIndex, cbxValueX.SelectedIndex, cbxValueY.SelectedIndex);
                 OnSave(10, graphicDatas);
+                this.Close();
             }
         }
 
+        /// <summary>
+        /// Lorsque l'utilisateur décide d'annuler ses modification du graphique.
+        /// </summary>
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-
+            this.Close();
         }
 
+        /// <summary>
+        /// Lorsqu'un type de graphique est selectionné, affiche le bon graphique ainsi que les paramètres disponibles.
+        /// </summary>
         private void GraphType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cbxValueX != null)
             {
                 cbxValueX.IsEnabled = true;
+                cbxValueY.IsEnabled = true;
                 cbxQuantityOfCurves.IsEnabled = true;
             }
             switch ((GraphicsType)cbxGraphType.SelectedIndex)
@@ -135,6 +162,12 @@ namespace CovidPropagation
                 case GraphicsType.PieChart:
                     chart = CreatePieGraph();
                     SetData(DisplayPieSectionOnGraph);
+                    if (cbxValueX != null)
+                    {
+                        cbxValueX.IsEnabled = false;
+                        cbxValueY.IsEnabled = false;
+                        cbxQuantityOfCurves.SelectedIndex = 1;
+                    }
                     break;
                 case GraphicsType.HeatMap:
                     chart = CreateCartesianGraph();
@@ -151,6 +184,10 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Lorsque le nombre de données à afficher est modifié par l'utilisateur.
+        /// Modifie les données qui sont affichées dans le graphique pour en ajouter ou en retirer.
+        /// </summary>
         private void DataQuantity_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             currentCurvesIndex = cbxQuantityOfCurves.Items.IndexOf(cbxQuantityOfCurves.SelectedItem);
@@ -172,12 +209,15 @@ namespace CovidPropagation
                 case GraphicsType.HeatMap:
                     SetData(DisplayHeatMapOnGraph);
                     break;
-
                 default:
                     break;
             }
         }
 
+        /// <summary>
+        /// Affiche le nombre de combobox nécessaire en fonction du nombre de données à afficher choisis par l'utilisateur
+        /// </summary>
+        /// <param name="callback">Méthode qui sera appelée pour l'affichage des données du graphique (Courbe, colonne, etc.)</param>
         private void SetData(Func<int, bool, bool> callback)
         {
             if (cbxDatas != null)
@@ -200,20 +240,39 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// SetData utilisé pour les graphiques heatmap qui ne contient qu'une "courbe" de valeur et qui n'a donc besoin que d'un unique appelle.
+        /// </summary>
+        /// <param name="callback">Méthode qui sera appelée pour l'affichage des données du graphique (Courbe, colonne, etc.)</param>
+        private void SetData(Func<bool> callback)
+        {
+            if (cbxDatas != null)
+            {
+               callback();
+            }
+        }
+
+
+        /// <summary>
+        /// Affiche les courbes sur un graphique cartesien.
+        /// Définit si une courbe doit rester affichée, être ajoutée, ou supprimée.
+        /// </summary>
+        /// <param name="index">Index de la courbe à modifier.</param>
+        /// <param name="isDisplayed">Si la courbe doit être affichée ou non.</param>
+        /// <returns>Valeur obligatoir à l'utilisation de callback</returns>
         private bool DisplayCurvesOnGraph(int index, bool isDisplayed)
         {
-            if (chart == null)
-                chart = CreateCartesianGraph();
+            chart ??= CreateCartesianGraph();
 
             CartesianChart cartesianChart = (CartesianChart)chart;
 
+            // Si l'index doit être affiché et n'existe pas déjà
             if (isDisplayed && index > cartesianChart.Series.GetLastIndex())
             {
                 Random rdm = GlobalVariables.rdm;
                 cartesianChart.Series.Add(new LineSeries
                 {
                     Title = cbxDatas[index].SelectedItem.ToString(),
-                    Foreground = Brushes.White,
                     Values = new ChartValues<double> { 
                         rdm.Next(1, 10), 
                         rdm.Next(1, 10), 
@@ -223,7 +282,7 @@ namespace CovidPropagation
                     }
                 });
             }
-            else
+            else if(!isDisplayed) // Sinon retire le dernier index
             {
                 int lastIndex = cartesianChart.Series.GetLastIndex();
                 if (lastIndex > 0 && lastIndex > currentCurvesIndex)
@@ -232,6 +291,13 @@ namespace CovidPropagation
             return true;
         }
 
+        /// <summary>
+        /// Affiche les colonnes sur un graphique cartesien.
+        /// Définit si une colonne doit rester affichée, être ajoutée, ou supprimée.
+        /// </summary>
+        /// <param name="index">Index de la colonne à modifier.</param>
+        /// <param name="isDisplayed">Si la colonne doit être affichée ou non.</param>
+        /// <returns>Valeur obligatoir à l'utilisation de callback</returns>
         private bool DisplayColumnsOnGraph(int index, bool isDisplayed)
         {
             if (chart == null)
@@ -245,7 +311,6 @@ namespace CovidPropagation
                 cartesianChart.Series.Add(new ColumnSeries
                 {
                     Title = cbxDatas[index].SelectedItem.ToString(),
-                    Foreground = Brushes.White,
                     Values = new ChartValues<double> {
                         rdm.Next(1, 10),
                         rdm.Next(1, 10),
@@ -264,6 +329,13 @@ namespace CovidPropagation
             return true;
         }
 
+        /// <summary>
+        /// Affiche les lignes sur un graphique cartesien.
+        /// Définit si une ligne doit rester affichée, être ajoutée, ou supprimée.
+        /// </summary>
+        /// <param name="index">Index de la ligne à modifier.</param>
+        /// <param name="isDisplayed">Si la ligne doit être affichée ou non.</param>
+        /// <returns>Valeur obligatoir à l'utilisation de callback</returns>
         private bool DisplayRowsOnGraph(int index, bool isDisplayed)
         {
             if (chart == null)
@@ -277,7 +349,6 @@ namespace CovidPropagation
                 cartesianChart.Series.Add(new RowSeries
                 {
                     Title = cbxDatas[index].SelectedItem.ToString(),
-                    Foreground = Brushes.White,
                     Values = new ChartValues<double> {
                         rdm.Next(1, 10),
                         rdm.Next(1, 10),
@@ -296,6 +367,13 @@ namespace CovidPropagation
             return true;
         }
 
+        /// <summary>
+        /// Affiche les sections sur un graphique cylindrique.
+        /// Définit si une section doit rester affichée, être ajoutée, ou supprimée.
+        /// </summary>
+        /// <param name="index">Index de la section à modifier.</param>
+        /// <param name="isDisplayed">Si la section doit être affichée ou non.</param>
+        /// <returns>Valeur obligatoir à l'utilisation de callback</returns>
         private bool DisplayPieSectionOnGraph(int index, bool isDisplayed)
         {
             if (chart == null)
@@ -309,7 +387,6 @@ namespace CovidPropagation
                 pieChart.Series.Add(new PieSeries
                 {
                     Title = cbxDatas[index].SelectedItem.ToString(),
-                    Foreground = Brushes.White,
                     Values = new ChartValues<double> {
                         rdm.Next(1, 10)
                     }
@@ -324,7 +401,13 @@ namespace CovidPropagation
             return true;
         }
 
-        private bool DisplayHeatMapOnGraph(int index, bool isDisplayed)
+        /// <summary>
+        /// Remplit le graphique heatmap de valeur s'il n'y en a pas déjà.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="isDisplayed"></param>
+        /// <returns>Valeur obligatoir à l'utilisation de callback</returns>
+        private bool DisplayHeatMapOnGraph()
         {
             // Index & isDisplayed useless
             if (chart == null)
@@ -396,6 +479,12 @@ namespace CovidPropagation
             return true;
         }
 
+        /// <summary>
+        /// Lorsque la valeur choisie par l'utilisateur pour une courbe est modifié.
+        /// Change la valeur le nom de la courbe ainsi que ses valeurs.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CbxDatas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cbxData = (ComboBox)sender;
@@ -442,21 +531,27 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Créé un graphique cartesien avec des valeurs par défaut.
+        /// </summary>
+        /// <returns>Graphique créé.</returns>
         private CartesianChart CreateCartesianGraph()
         {
             CartesianChart cartesianChart = new CartesianChart();
             cartesianChart.Series = new SeriesCollection();
             cartesianChart.LegendLocation = LegendLocation.Right;
-            
+            cartesianChart.Foreground = Brushes.Gray;
+
             Axis axisX = new Axis();
-            axisX.Title = GraphicsAxisData.Time.ToString();
-            axisX.Labels = new[] { "Lun", "Mar", "Mer", "Jeu", "Ven" };
+            axisX.Foreground = Brushes.Gray;
             axisX.MaxValue = double.NaN;
+            axisX.Title = GetEnumDescription((GraphicsAxisData)graphicDatas.AxisX);
             cartesianChart.AxisX.Add(axisX);
 
             Axis axisY = new Axis();
-            axisY.Title = GraphicsAxisData.NumberOfPeople.ToString();
+            axisY.Foreground = Brushes.Gray;
             axisY.MaxValue = double.NaN;
+            axisY.Title = GetEnumDescription((GraphicsAxisData)graphicDatas.AxisY);
             cartesianChart.AxisY.Add(axisY);
 
             DataContext = this;
@@ -468,6 +563,10 @@ namespace CovidPropagation
             return cartesianChart;
         }
 
+        /// <summary>
+        /// Créé un graphique cylindrique.
+        /// </summary>
+        /// <returns>Le graphique cylindrique créé.</returns>
         private PieChart CreatePieGraph()
         {
             PieChart pieChart = new PieChart();
@@ -484,37 +583,28 @@ namespace CovidPropagation
             return pieChart;
         }
 
+        /// <summary>
+        /// Lorsque la valeur d0un des axes est modifée.
+        /// Change le nom de l'axe ainsi que ses valeurs.
+        /// </summary>
         private void AxisValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cbxAxis = (ComboBox)sender;
+            GraphicsAxisData axisData = (GraphicsAxisData)cbxAxis.SelectedIndex;
+            CartesianChart cartesianChart = (CartesianChart)chart;
             Axis axis;
-            switch (chart)
+
+            if ((string)cbxAxis.Tag == "X")
+                axis = cartesianChart.AxisX[0];
+            else
+                axis = cartesianChart.AxisY[0];
+
+            if (axisData > 0)
             {
-                case CartesianChart cartesianChart:
-                    switch ((GraphicsAxisData)cbxAxis.SelectedIndex)
-                    {
-                        case GraphicsAxisData.NumberOfPeople:
-                            if ((string)cbxAxis.Tag == "X")
-                                axis = cartesianChart.AxisX[0];
-                            else
-                                axis = cartesianChart.AxisY[0];
-
-                            axis.Title = "Nombre de personnes";
-                            axis.Labels = null;
-                            break;
-                        case GraphicsAxisData.Time:
-                            if ((string)cbxAxis.Tag == "X")
-                                axis = cartesianChart.AxisX[0];
-                            else
-                                axis = cartesianChart.AxisY[0];
-
-                            axis.Title = "Temps";
-                            axis.Labels = new[] { "Lun", "Mar", "Mer", "Jeu", "Ven" };
-                            break;
-                    }
-                    break;
-                default:
-                    break;
+                if ((string)cbxAxis.Tag == "X")
+                    axis.Title = GetEnumDescription(axisData);
+                else
+                    axis.Title = GetEnumDescription(axisData);
             }
         }
     }

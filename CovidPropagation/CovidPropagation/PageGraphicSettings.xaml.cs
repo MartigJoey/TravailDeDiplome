@@ -21,7 +21,11 @@ namespace CovidPropagation
         private const int COLUMN_MIN_WIDTH = 150;
         private const int MAX_GRID_SIZE = 10;
 
-        public static GraphicData[,] graphicDatas = new GraphicData[MAX_GRID_SIZE, MAX_GRID_SIZE];
+        private const int DEFAULT_AXIS_X_VALUE = 0;
+        private const int DEFAULT_AXIS_Y_VALUE = 3;
+        private const int DEFAULT_GRAPHIC_TYPE = 0;
+
+        public static GraphicData[,] graphicsDatas = new GraphicData[MAX_GRID_SIZE, MAX_GRID_SIZE];
         private bool[,] gridHasContent = new bool[MAX_GRID_SIZE, MAX_GRID_SIZE];
         public int oldX = MAX_GRID_SIZE + 1;
         int oldY = MAX_GRID_SIZE + 1;
@@ -158,8 +162,8 @@ namespace CovidPropagation
                 Grid.SetRow(cell, y);
 
                 gridHasContent[x, y] = true;
-                GraphicData grpData = new GraphicData(x, y, 1, 1, new int[] { 0 });
-                graphicDatas[x, y] = grpData;
+                GraphicData grpData = new GraphicData(x, y, 1, 1, new int[] { 0 }, DEFAULT_GRAPHIC_TYPE, DEFAULT_AXIS_X_VALUE, DEFAULT_AXIS_Y_VALUE);
+                graphicsDatas[x, y] = grpData;
                 dynamicGrid.Children.Add(cell);
             }
         }
@@ -201,7 +205,7 @@ namespace CovidPropagation
             int x = Grid.GetColumn(cell), y = Grid.GetRow(cell);
             int columnSpan = Grid.GetColumnSpan(cell), rowSpan = Grid.GetRowSpan(cell);
             SetCellsContent(x, y, x + columnSpan, y + rowSpan, false);
-            graphicDatas[x, y].SetAsNull();
+            graphicsDatas[x, y].SetAsNull();
             dynamicGrid.Children.Remove(cell);
         }
 
@@ -230,8 +234,8 @@ namespace CovidPropagation
                 Grid.SetColumn(cell, newCoordinates[0]);
                 Grid.SetRow(cell, newCoordinates[1]);
                 SetCellsContent(x, y, x + columnSpan, y + rowSpan, true); // Bloque le nouvel espace occupé
-                graphicDatas[x, y] = graphicDatas[oldX, oldY].CloneInNewLocation(x,y);
-                graphicDatas[oldX, oldY].SetAsNull();
+                graphicsDatas[x, y] = graphicsDatas[oldX, oldY].CloneInNewLocation(x,y);
+                graphicsDatas[oldX, oldY].SetAsNull();
             }
             else
             {
@@ -255,7 +259,7 @@ namespace CovidPropagation
             {
                 Grid.SetColumnSpan(cell, columnSpan + 1);
                 SetCellsContent(x, y, x + columnSpan + 1, y + rowSpan, true);
-                graphicDatas[x, y].SpanX++;
+                graphicsDatas[x, y].SpanX++;
             }
         }
 
@@ -273,7 +277,7 @@ namespace CovidPropagation
             {
                 Grid.SetColumnSpan(cell, columnSpan - 1);
                 SetCellsContent(x + 1, y, x + columnSpan + 1, y + rowSpan, false);
-                graphicDatas[x, y].SpanX--;
+                graphicsDatas[x, y].SpanX--;
             }
         }
 
@@ -292,7 +296,7 @@ namespace CovidPropagation
                 Grid.SetRowSpan(cell, rowSpan + 1);
                 SetCellsContent(x, y, x + columnSpan, y + rowSpan + 1, true);
 
-                graphicDatas[x, y].SpanY++;
+                graphicsDatas[x, y].SpanY++;
             }
         }
 
@@ -311,7 +315,7 @@ namespace CovidPropagation
             {
                 Grid.SetRowSpan(cell, rowSpan - 1);
                 SetCellsContent(x, y + 1, x + columnSpan, y + rowSpan + 1, false);
-                graphicDatas[x, y].SpanY--;
+                graphicsDatas[x, y].SpanY--;
             }
         }
 
@@ -327,19 +331,19 @@ namespace CovidPropagation
             graphCellY = Grid.GetRow(cell);
             sizeX = Grid.GetColumnSpan(cell);
             sizeY = Grid.GetRowSpan(cell);
-            WindowGraph graphicWindow = new WindowGraph(graphCellX, graphCellY, sizeX, sizeY);
+            WindowGraph graphicWindow = new WindowGraph(graphCellX, graphCellY, sizeX, sizeY, graphicsDatas[graphCellX, graphCellY]);
             graphicWindow.OnSave += new SaveEventHandler(OnSave);
             graphicWindow.Show();
         }
 
         static void OnSave(object source, GraphicData e)
         {
-            graphicDatas[e.X, e.Y] = e;
+            graphicsDatas[e.X, e.Y] = e;
         }
 
         public GraphicData[,] GetGraphicsData()
         {
-            return graphicDatas;
+            return graphicsDatas;
         }
 
         public Grid GetGrid()

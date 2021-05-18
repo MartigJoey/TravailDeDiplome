@@ -30,7 +30,7 @@
         <ObjectDataProvider x:Key="GraphicsCurves" MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="local:GraphicsCurvesData"/>
+                <x:Type TypeName="local:GraphicsDisplayData"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </Window.Resources>

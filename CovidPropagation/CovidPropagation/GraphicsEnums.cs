@@ -21,20 +21,43 @@ namespace CovidPropagation
 
     public enum GraphicsAxisData
     {
-        [Description("Temps")]
-        Time,
+        [Description("Périodes")]
+        Period,
+        [Description("Jour")]
+        Day,
+        [Description("Semaine")]
+        Week,
         [Description("Nombre de personnes")]
-        NumberOfPeople
+        QuantityOfPeople,
+        [Description("Nombre de cas")]
+        QuantityOfCase,
+        [Description("Nombre de décès")]
+        QuantityOfDeath,
+        [Description("Nombre d'hospitalisation")]
+        QuantityOfHospitalisation,
+        [Description("Nombre d'immunisés")]
+        QuantityOfImmune,
+        [Description("Nombre de contaminés")]
+        QuantityOfContamination,
+        [Description("Nombre de reproduction")]
+        Re,
+
     }
 
-    public enum GraphicsCurvesData
+    public enum GraphicsDisplayData
     {
+        [Description("Personnes")]
+        Persons,
         [Description("Cas")]
-        cases,
-        [Description("Sain")]
-        healthy,
+        Cases,
+        [Description("Sains")]
+        Healthy,
         [Description("Décès")]
-        Death,
+        Death, 
+        [Description("Immunisés")]
+        Immune, 
+        [Description("Hospitalisés")]
+        Hospitalisation,
         [Description("Re")]
         Re
     }

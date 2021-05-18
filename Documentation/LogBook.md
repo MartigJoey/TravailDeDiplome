@@ -825,4 +825,25 @@
     - Il est ajouté
   - Affichage des graphiques linéaires réussi et fonctionnel !
     - (Pas encore lié avec la simulation. Uniquement de l'affichage)
+
+# 18.05.2021 08h05 / 17h00
+- Ajout des graphiques de différents type 
+  - Léger bug des valeurs pas défaut des graphiques qui utilise directement la valeur des enum et non leur description
+  - Tentative d'ajout d'un méthode d'extension pour récupérer les description des enums mais sans succès.
+  - Graphiques ajoutés
+    - Vertical
+    - Horizontal
+    - Cylindrique
+    - HeatMap
+  - Changement de la couleur du texte des légendes en blanc
+  - Réglage d'un bug qui inversait les axes X et Y
   - 
+- Ajout de commentaire dans WindowGraph
+- Ajout d'une méthode pour SetData pour les graphiques HeatMap.
+- Discussion avec M. Mathieu
+  - Retour sur l'évaluation intermédiaire 2
+    - Numéroté table des matières
+    - Licenses livecharts
+    - Ajouté result
+    - comparaison réalité
+    - comparaison excel
