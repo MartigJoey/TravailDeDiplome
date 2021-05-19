@@ -29,20 +29,20 @@ namespace CovidPropagation
         MainWindow mw;
         public GraphicData[,] graphicDatas;
         Simulation sim;
-        //public int SliderValue { get => (int)intervalSlider.Value; set => intervalSlider.Value = value; }
         public PageSimulation()
         {
             InitializeComponent();
             legendPage = new Legend();
-            //intervalSlider.Value = GlobalVariables.DEFAULT_INTERVAL;
             mw = (MainWindow)Application.Current.MainWindow;
             Virus.Init();
-            
         }
 
+        /// <summary>
+        /// Lorsque la simulation fait une itération, récupère les données de celle-ci
+        /// </summary>
         static void OnTimerTick(object source, Simulation e)
         {
-           // Debug.WriteLine(e.GetData());
+            Debug.WriteLine(e.GetData());
         }
 
         private void OpenLegendWindow_Click(object sender, RoutedEventArgs e)
@@ -51,11 +51,17 @@ namespace CovidPropagation
             legendPage.Focus();
         }
 
+        /// <summary>
+        /// Modifie l'interval et donc la vitesse de la simulation en fonction de la valeur du slider.
+        /// </summary>
         private void IntervalSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             sim.Interval = Convert.ToInt32(intervalSlider.Maximum - intervalSlider.Value);
         }
 
+        /// <summary>
+        /// Créé la simulation si celle-ci n'est pas initialisée ou relance le timer.
+        /// </summary>
         private void Start_Click(object sender, RoutedEventArgs e)
         {
             if (sim == null)
@@ -69,19 +75,31 @@ namespace CovidPropagation
             sim.Start();
         }
 
+        /// <summary>
+        /// Met en pause la simulation
+        /// </summary>
         private void Stop_Click(object sender, RoutedEventArgs e)
         {
             sim.Stop();
         }
 
+        /// <summary>
+        /// Modifie la grille de cette page pour qu'elle correspondent à celle modifiée dans les paramètres graphiques.
+        /// </summary>
+        /// <param name="grd">Grille contenant les colonnes et lignes à afficher.</param>
+        /// <param name="graphicDatas">Données des graphiques à afficher dans la grille.</param>
         public void SetGrid(Grid grd, GraphicData[,] graphicDatas)
         {
             this.graphicDatas = graphicDatas;
-            grdContent = grd;
-            slvScroller.Content = grdContent;
+            //grdContent = grd;
+            slvScroller.Content = grd;
             DisplayGraphics();
         }
 
+        /// <summary>
+        /// Affiche le bon type de graphique au bon endroit dans la grille.
+        /// Change le contenu du graphique en fonction de son type.
+        /// </summary>
         private void DisplayGraphics()
         {
             foreach (GraphicData graph in graphicDatas)
@@ -123,6 +141,12 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Créé un graphique cartésien permettant l'ajout de courbe, colonne, ligne, heatmap.
+        /// </summary>
+        /// <param name="axeXDatas">Donnée sur l'axe X</param>
+        /// <param name="axeYDatas">Donnée sur l'axe Y</param>
+        /// <returns>Le graphique créé.</returns>
         private CartesianChart CreateCartesianGraph(GraphicsAxisData axeXDatas, GraphicsAxisData axeYDatas)
         {
             CartesianChart cartesianChart = new CartesianChart();
@@ -161,6 +185,11 @@ namespace CovidPropagation
             return pieChart;
         }
 
+        /// <summary>
+        /// Créé un axe pour un graphique cartésien.
+        /// </summary>
+        /// <param name="axeDatas">Nom de l'axe.</param>
+        /// <returns>L'axe créé.</returns>
         private Axis CreateAxis(GraphicsAxisData axeDatas)
         {
             Axis axis = new Axis();
@@ -170,6 +199,11 @@ namespace CovidPropagation
             return axis;
         }
 
+        /// <summary>
+        /// Ajoute une ou plusieurs courbes à un graphique cartésien.
+        /// </summary>
+        /// <param name="chart">graphique où la courbe sera ajoutée.</param>
+        /// <param name="curvesData">Type de données à afficher par courbe.</param>
         private void AddCurvesToCartesianGraphic(CartesianChart chart, GraphicsDisplayData[] curvesData)
         {
             for (int i = 0; i < curvesData.Length; i++)
@@ -190,6 +224,11 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Ajoute une ou plusieurs colonnes à un graphique cartésien.
+        /// </summary>
+        /// <param name="chart">graphique où la colonne sera ajoutée.</param>
+        /// <param name="curvesData">Type de données à afficher par colonne.</param>
         private void AddColumnsToCartesianGraphic(CartesianChart chart, GraphicsDisplayData[] curvesData)
         {
             for (int i = 0; i < curvesData.Length; i++)
@@ -210,6 +249,11 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Ajoute une ou plusieurs lignes à un graphique cartésien.
+        /// </summary>
+        /// <param name="chart">graphique où la ligne sera ajoutée.</param>
+        /// <param name="curvesData">Type de données à afficher par ligne.</param>
         private void AddRowsToCartesianGraphic(CartesianChart chart, GraphicsDisplayData[] curvesData)
         {
             for (int i = 0; i < curvesData.Length; i++)
@@ -230,6 +274,11 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Ajoute une ou plusieurs section à un graphique cylindrique.
+        /// </summary>
+        /// <param name="chart">Graphique où la section sera ajoutée.</param>
+        /// <param name="curvesData">Type de données à afficher par section.</param>
         private void AddSectionToPieGraphic(PieChart chart, GraphicsDisplayData[] curvesData)
         {
             for (int i = 0; i < curvesData.Length; i++)
@@ -246,7 +295,11 @@ namespace CovidPropagation
             }
         }
 
-
+        /// <summary>
+        /// Ajoute une heatMap à un graphique cartésien.
+        /// </summary>
+        /// <param name="chart">graphique où la heatMap sera ajoutée.</param>
+        /// <param name="curvesData">Type de données à afficher dans la heatMap.</param>
         private void AddHeatMapToCartesianGraphic(CartesianChart chart, GraphicsDisplayData[] curvesData)
         {
             Random rdm = GlobalVariables.rdm;

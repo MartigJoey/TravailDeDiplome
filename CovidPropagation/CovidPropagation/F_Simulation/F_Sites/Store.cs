@@ -14,7 +14,7 @@ namespace CovidPropagation
     class Store : Site
     {
 
-        private static SiteType[] storeTypes = new SiteType[] { SiteType.Hobby, SiteType.WorkPlace };
+        private static SiteType[] storeTypes = new SiteType[] { SiteType.WorkPlace };
         public Store(double length = GlobalVariables.BUILDING_LENGTH,
                            double width = GlobalVariables.BUILDING_WIDTH,
                            double height = GlobalVariables.BUILDING_HEIGHT,

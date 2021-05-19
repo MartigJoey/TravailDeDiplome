@@ -1,115 +1,140 @@
-# `Table des matières`
-- [`Table des matières`](#table-des-matières)
-- [`Résumé`](#résumé)
-- [`Abstract`](#abstract)
-- [`Introduction`](#introduction)
-  - [WPF](#wpf)
-    - [Simulation](#simulation)
-    - [UI](#ui)
-  - [XML](#xml)
-  - [Graphiques](#graphiques)
-  - [Unity](#unity)
-- [`Maquettes`](#maquettes)
-  - [UI](#ui-1)
-    - [Page Simulation](#page-simulation)
-    - [Page Paramètres graphiques](#page-paramètres-graphiques)
-    - [Page Paramètres](#page-paramètres)
-    - [Page Informations](#page-informations)
-  - [Interface Graphique](#interface-graphique)
-- [`Organisation`](#organisation)
-  - [Planification](#planification)
-  - [Tâches](#tâches)
-  - [Versionning - Backup](#versionning---backup)
-  - [Communications](#communications)
-- [`Technologies utilisées`](#technologies-utilisées)
-  - [C](#c)
-  - [Microsoft Visual studio](#microsoft-visual-studio)
-  - [WPF](#wpf-1)
-  - [Unity](#unity-1)
-  - [XML](#xml-1)
-  - [LiveCharts](#livecharts)
-  - [JSON](#json)
-- [`Cahier des charges`](#cahier-des-charges)
-  - [Titre](#titre)
-  - [Fonctionnalités](#fonctionnalités)
-  - [Matériel et logiciels](#matériel-et-logiciels)
-  - [Prérequis](#prérequis)
-  - [Descriptif complet du projet](#descriptif-complet-du-projet)
-    - [Méthodologie](#méthodologie)
-    - [Description de l’application](#description-de-lapplication)
-      - [Graphique](#graphique)
-      - [Interface graphique](#interface-graphique-1)
-      - [Propagation](#propagation)
-      - [Population](#population)
-        - [Temporalité](#temporalité)
-        - [Individus](#individus)
-        - [Hôpitaux / écoles / entreprise](#hôpitaux--écoles--entreprise)
-  - [Protocole de tests](#protocole-de-tests)
-  - [Persona](#persona)
-    - [Utilisateur expérimenté](#utilisateur-expérimenté)
-    - [Utilisateur inexpérimenté](#utilisateur-inexpérimenté)
-  - [User stories](#user-stories)
-    - [Ashley](#ashley)
-    - [Kanan](#kanan)
-  - [Diagramme d'activité](#diagramme-dactivité)
-  - [Planning](#planning)
-  - [Diagramme de classe initial](#diagramme-de-classe-initial)
-  - [Interactions](#interactions)
-    - [Menu principal](#menu-principal)
-    - [Population](#population-1)
-    - [Virus](#virus)
-    - [Affichage](#affichage)
-    - [Simulation](#simulation-1)
-  - [Livrables](#livrables)
-- [`Environnement`](#environnement)
-- [`Architecture`](#architecture)
-  - [Arborescence](#arborescence)
-  - [Structure](#structure)
-- [`Analyse interface graphique`](#analyse-interface-graphique)
-  - [Comparaison technologies](#comparaison-technologies)
-    - [WinForm (Windows Forms)](#winform-windows-forms)
-    - [WPF (Windows Presentation Foundation)](#wpf-windows-presentation-foundation)
-    - [Unity](#unity-2)
-      - [Communication](#communication)
-        - [Unity Controller](#unity-controller)
-        - [`PipeLines`](#pipelines)
-      - [Intégration](#intégration)
-  - [Choix de la solution](#choix-de-la-solution)
-- [`Problèmes rencontrés`](#problèmes-rencontrés)
-  - [Pipeline](#pipeline)
-  - [WPF UI](#wpf-ui)
-  - [Planning](#planning-1)
-  - [Outils WPF](#outils-wpf)
-    - [Combobox et enum](#combobox-et-enum)
-    - [Description d'enums](#description-denums)
-    - [Numeric Up Down](#numeric-up-down)
-- [`Simulation`](#simulation-2)
-  - [Structure](#structure-1)
-    - [Intéraction entre objets](#intéraction-entre-objets)
-  - [Fonctionnement](#fonctionnement)
-    - [Général](#général)
-    - [Propagation](#propagation-1)
-    - [Source propagation](#source-propagation)
-- [`GUI`](#gui)
-  - [Structure](#structure-2)
-  - [Fonctionnement](#fonctionnement-1)
-- [`UI`](#ui-2)
-  - [Thème](#thème)
-  - [Pages](#pages)
-    - [Simulation](#simulation-3)
-    - [Paramètres simulation](#paramètres-simulation)
-    - [Paramètres graphiques](#paramètres-graphiques)
-- [`Planning`](#planning-2)
-  - [Prévisionnel](#prévisionnel)
-  - [Effectif](#effectif)
-- [`Bilan personnel`](#bilan-personnel)
-- [`Conclusion`](#conclusion)
-- [`Table des figures`](#table-des-figures)
-- [`Bibliographie`](#bibliographie)
-- [`Annexes`](#annexes)
-- [`Livrables`](#livrables-1)
 
-# `Résumé`
+
+<center><h1>Travail de diplôme</h1></center>
+<center><h2>Joey Martig</h2></center>
+<center><h3>19.04.2021 - 11.06.2021</h3></center>
+
+<center>
+
+![Image page de carde](Medias/Rapport/PageDeCarde.png)
+
+</center>
+
+
+
+<center><h3>M. Michaël Mathieu</h3></center>
+<center><h2>CFPT Informatique - Technicien ES</h2></center>
+<center><h3>19.04.2021 - 11.06.2021</h3></center>
+
+
+<div style="page-break-after: always;"></div>
+
+# 1. `Table des matières`
+- [1. `Table des matières`](#1-table-des-matières)
+- [2. `Résumé`](#2-résumé)
+- [3. `Abstract`](#3-abstract)
+- [4. `Introduction`](#4-introduction)
+  - [4.1. WPF](#41-wpf)
+    - [4.1.1. Simulation](#411-simulation)
+    - [4.1.2. UI](#412-ui)
+  - [4.2. XML](#42-xml)
+  - [4.3. Graphiques](#43-graphiques)
+  - [4.4. Unity](#44-unity)
+- [5. `Maquettes`](#5-maquettes)
+  - [5.1. UI](#51-ui)
+    - [5.1.1. Page Simulation](#511-page-simulation)
+    - [5.1.2. Page Paramètres graphiques](#512-page-paramètres-graphiques)
+    - [5.1.3. Page Paramètres](#513-page-paramètres)
+    - [5.1.4. Page Informations](#514-page-informations)
+  - [5.2. Interface Graphique](#52-interface-graphique)
+- [6. `Organisation`](#6-organisation)
+  - [6.1. Planification](#61-planification)
+  - [6.2. Tâches](#62-tâches)
+  - [6.3. Versionning - Backup](#63-versionning---backup)
+  - [6.4. Communications](#64-communications)
+- [7. `Technologies utilisées`](#7-technologies-utilisées)
+  - [7.1. C](#71-c)
+  - [7.2. Microsoft Visual studio](#72-microsoft-visual-studio)
+  - [7.3. WPF](#73-wpf)
+  - [7.4. Unity](#74-unity)
+  - [7.5. XML](#75-xml)
+  - [7.6. LiveCharts](#76-livecharts)
+  - [7.7. JSON](#77-json)
+- [8. `Cahier des charges`](#8-cahier-des-charges)
+  - [8.1. Titre](#81-titre)
+  - [8.2. Fonctionnalités](#82-fonctionnalités)
+  - [8.3. Matériel et logiciels](#83-matériel-et-logiciels)
+  - [8.4. Prérequis](#84-prérequis)
+  - [8.5. Descriptif complet du projet](#85-descriptif-complet-du-projet)
+    - [8.5.1. Méthodologie](#851-méthodologie)
+    - [8.5.2. Description de l’application](#852-description-de-lapplication)
+      - [8.5.2.1. Graphique](#8521-graphique)
+      - [8.5.2.2. Interface graphique](#8522-interface-graphique)
+      - [8.5.2.3. Propagation](#8523-propagation)
+      - [8.5.2.4. Population](#8524-population)
+        - [8.5.2.4.1. Temporalité](#85241-temporalité)
+        - [8.5.2.4.2. Individus](#85242-individus)
+        - [8.5.2.4.3. Hôpitaux / écoles / entreprise](#85243-hôpitaux--écoles--entreprise)
+  - [8.6. Protocole de tests](#86-protocole-de-tests)
+  - [8.7. Persona](#87-persona)
+    - [8.7.1. Utilisateur expérimenté](#871-utilisateur-expérimenté)
+    - [8.7.2. Utilisateur inexpérimenté](#872-utilisateur-inexpérimenté)
+  - [8.8. User stories](#88-user-stories)
+    - [8.8.1. Ashley](#881-ashley)
+    - [8.8.2. Kanan](#882-kanan)
+  - [8.9. Diagramme d'activité](#89-diagramme-dactivité)
+  - [8.10. Planning](#810-planning)
+  - [8.11. Diagramme de classe initial](#811-diagramme-de-classe-initial)
+  - [8.12. Interactions](#812-interactions)
+    - [8.12.1. Menu principal](#8121-menu-principal)
+    - [8.12.2. Population](#8122-population)
+    - [8.12.3. Virus](#8123-virus)
+    - [8.12.4. Affichage](#8124-affichage)
+    - [8.12.5. Simulation](#8125-simulation)
+  - [8.13. Livrables](#813-livrables)
+- [9. `Environnement`](#9-environnement)
+- [10. `Architecture`](#10-architecture)
+  - [10.1. Arborescence](#101-arborescence)
+  - [10.2. Structure](#102-structure)
+- [11. `Analyse interface graphique`](#11-analyse-interface-graphique)
+  - [11.1. Comparaison technologies](#111-comparaison-technologies)
+    - [11.1.1. WinForm (Windows Forms)](#1111-winform-windows-forms)
+    - [11.1.2. WPF (Windows Presentation Foundation)](#1112-wpf-windows-presentation-foundation)
+    - [11.1.3. Unity](#1113-unity)
+      - [11.1.3.1. Communication](#11131-communication)
+        - [11.1.3.1.1. Unity Controller](#111311-unity-controller)
+        - [11.1.3.1.2. `PipeLines`](#111312-pipelines)
+      - [11.1.3.2. Intégration](#11132-intégration)
+  - [11.2. Choix de la solution](#112-choix-de-la-solution)
+- [12. `Problèmes rencontrés`](#12-problèmes-rencontrés)
+  - [12.1. Pipeline](#121-pipeline)
+  - [12.2. WPF UI](#122-wpf-ui)
+  - [12.3. Planning](#123-planning)
+  - [12.4. Outils WPF](#124-outils-wpf)
+    - [12.4.1. Combobox et enum](#1241-combobox-et-enum)
+    - [12.4.2. Description d'enums](#1242-description-denums)
+    - [12.4.3. Numeric Up Down](#1243-numeric-up-down)
+  - [12.5. Optimisation](#125-optimisation)
+- [13. `Simulation`](#13-simulation)
+  - [13.1. Structure](#131-structure)
+    - [13.1.1. Intéraction entre objets](#1311-intéraction-entre-objets)
+  - [13.2. Fonctionnement](#132-fonctionnement)
+    - [13.2.1. Général](#1321-général)
+    - [13.2.2. Propagation](#1322-propagation)
+    - [13.2.3. Source propagation](#1323-source-propagation)
+    - [13.2.4. Résultats](#1324-résultats)
+  - [13.3. Performances](#133-performances)
+- [14. `GUI`](#14-gui)
+  - [14.1. Structure](#141-structure)
+  - [14.2. Fonctionnement](#142-fonctionnement)
+- [15. `UI`](#15-ui)
+  - [15.1. Structure](#151-structure)
+  - [15.2. Thème](#152-thème)
+  - [15.3. Pages](#153-pages)
+    - [15.3.1. Simulation](#1531-simulation)
+    - [15.3.2. Paramètres graphiques](#1532-paramètres-graphiques)
+    - [15.3.3. Paramètres simulation](#1533-paramètres-simulation)
+- [16. `Planning`](#16-planning)
+  - [16.1. Prévisionnel](#161-prévisionnel)
+  - [16.2. Effectif](#162-effectif)
+- [17. `Bilan personnel`](#17-bilan-personnel)
+- [18. `Conclusion`](#18-conclusion)
+- [19. `Table des figures`](#19-table-des-figures)
+- [20. `Bibliographie`](#20-bibliographie)
+- [21. `Annexes`](#21-annexes)
+- [22. `Livrables`](#22-livrables)
+
+# 2. `Résumé`
 
 Le but de ce projet est de réussir à simuler une population dans un environnement agencé comme une ville. Chaque individu est unique et possède un planning qu'il suivra en se déplaçant dans différents lieux. Le virus se propagera au sein de cette simulation d'individus en individu en fonction des contacts au sein de celle-ci.
 
@@ -119,7 +144,7 @@ Pour visualiser la simulation, l'utilisateur a accès à une grande variété de
 
 Finalement, la majorité des données utilisée pour la réalisation de ce projet sont des données officielles permettant de se rapprocher au maximum de la réalité. Lorsqu'aucune donnée n'est disponible pour certains paramètres, celle-ci est tout de même inspirée au maximum des effets de la réalité pour éviter que son impact soit trop important et ne modifie trop les résultats.
 
-# `Abstract`
+# 3. `Abstract`
 The goal of this project is to create a simulation that is able to create a population and its environment which is arranged like a city. Every person in the simulation is unique and follow a planning that tell them to go in different places. The virus spread in the simulation from person to person when they enter in physical contact.
 
 The simulation can be configured by the user by modifying its size and the measures taken to prevent the spreading of the virus. Letting the user see the impact of such measures.
@@ -128,7 +153,7 @@ A vast variety of graphics are available to the user for him to visualize the st
 
 All the data used to create this project are officials covid Datas, bringing the simulation as close to reality as possible. If no data is available, then it is inspired by a real event and its effect is minimized to avoid it to change the outcome of the simulation.
 
-# `Introduction`
+# 4. `Introduction`
 Dans le cadre du cursus technicien, nous sommes amenés à réaliser un travail de diplôme qui dure du 19 avril aux 11 juin. Durant cette période, plusieurs évaluations intermédiaires sont prévues, la première se situant 10 jours après le début du travail de diplôme. La seconde évaluation est prévue le 17 mai, la troisième le 31 mai et la dernière est le rendu final le 11 juin et dure 9 jours contrairement aux autres sprints qui durent 10 jours. 
 
 Il est nécessaire de réaliser un poster pour ce travail ainsi que de remplir un journal de bord comprenant nos activités et nos réflexions.
@@ -137,32 +162,32 @@ Le but de mon projet est de simuler une propagation du covid dans une simulation
 
 Ce document contient des références à la documentation qui sont au format ####. Ces références permettent d'accéder directement au code source en faisant une recherche avec la référence dans celcui-ci.
 
-## WPF
+## 4.1. WPF
 Le programme WPF est le coeur de l'application, il réunit toutes les sections du projet et les gère.
-### Simulation
+### 4.1.1. Simulation
 La simulation génère tous les objets nécessaires au fonctionnement de celle-ci. Ses paramètres peuvent être modifiés depuis L'UI. Ses paramètres concernant le virus sont écrits dans un fichier XML. La simulation gère aussi la temporalité permettant la propagation et les déplacements.
 
-### UI
+### 4.1.2. UI
 L'interface utilisateur est gérée par les grilles WPF permettant un affichage responsive. Elle permet à l'utilisateur de modifier les paramètres de la simulation ainsi que les paramètres d'affichage des graphiques. 
 
-## XML
+## 4.2. XML
 Les paramètres jugés fixes du virus sont stockés dans un fichier XML.
 
-## Graphiques
+## 4.3. Graphiques
 Les graphiques sont créés par la librairie liveCharts qui permet l'affichage de nombreux type de graphiques ainsi qu'un grand contrôle sur ceux-ci. Les données sont mises à jour en temps réel et des animations intégrées à la librairie.
 
-## Unity
+## 4.4. Unity
 Le programme Unity s'occupe de gérer l'interface graphique qui comprend les bâtiments, véhicules et individus. L'interface est animée en fonction de la temporalité de l'application WPF. La simulation et l'interface graphique avancent donc ensemble. La communication s'effectue à travers un pipeline nommé. Les données de la simulation sont envoyées par celui-ci. Le programme Unity est intégré directement dans le projet WPF.
 
-# `Maquettes`
-## UI
-### Page Simulation
+# 5. `Maquettes`
+## 5.1. UI
+### 5.1.1. Page Simulation
 ![Maquette page simulation](Medias/Rapport/MaquetteSimulationPage.png)
 <center><p style="font-size: 11px">Figure 1: Maquette page de simulation</p></center>
 
 La page simulation permet la visualisation de la simulation via les graphiques, l'interface graphique ou des données brutes.
 
-### Page Paramètres graphiques
+### 5.1.2. Page Paramètres graphiques
 ![Maquette page paramètres graphiques 1](Medias/Rapport/MaquetteGraphicSettings1.png)
 <center><p style="font-size: 11px">Figure 2: Maquette page de paramètres graphiques 1</p></center>
 Cette page permet à l'utilisateur de modifier l'interface graphique qui s'affichera dans la page simulation.
@@ -171,25 +196,25 @@ Cette page permet à l'utilisateur de modifier l'interface graphique qui s'affic
 <center><p style="font-size: 11px">Figure 3: Maquette page de paramètres graphiques 2</p></center>
 Cette section permet de modifier en détail les paramètres d'un graphique.
 
-### Page Paramètres
+### 5.1.3. Page Paramètres
 ![Maquette page paramètres](Medias/Rapport/MaquettePageParametre.png)
 <center><p style="font-size: 11px">Figure 4: Maquette page de paramètres</p></center>
 Cette page permet à l'utilisateur de modifier les paramètres de la simulation.
 
-### Page Informations
+### 5.1.4. Page Informations
 ![Maquette page informations](Medias/Rapport/MaquettePageInformations.png)
 <center><p style="font-size: 11px">Figure 5: Maquette page d'informations</p></center>
 Cette page sert d'aide à l'utilisateur sur le fonctionnement de l'application et contient aussi des informations sur sa logique et ses sources.
 
-## Interface Graphique
+## 5.2. Interface Graphique
 ![Maquette interface graphique](Medias/Rapport/MaquetteInterfaceGraphique.png)
 <center><p style="font-size: 11px">Figure 6: Maquette interface graphique</p></center>
 L'interface graphique permet de visualiser ce qui se passe dans la simulation. Les bâtiments, les véhicules et les individus sont affichés ainsi que leur déplacement et leur statut.
 
-# `Organisation`
-## Planification
+# 6. `Organisation`
+## 6.1. Planification
 Pour la planification du travail de diplôme, j'ai décidé d'utiliser Excel qui permet de réaliser un planning simple et très compréhensible. Le planning me servant de fil conducteur et de moyen d'organiser l'ordre d'exécution des tâches que j'ai créé. 
-## Tâches
+## 6.2. Tâches
 Le traçage des tâches s'effectue sur github en suivant le modèle de scrum. Les tâches à effectuer sont dans une section "To Do" les tâches qui sont en cours, sont dans la section "In progress" et finalement les tâches terminées sont dans la section "Done".
 
 Les sprints sont tous séparés ayant des tâches différentes.
@@ -197,56 +222,58 @@ Les sprints sont tous séparés ayant des tâches différentes.
 ![Tâches](Medias/Rapport/Taches.png)
 <center><p style="font-size: 11px">Figure 7: Gestion des tâches</p></center>
 
-## Versionning - Backup
+## 6.3. Versionning - Backup
 Le versionning est fait à l'aide de github. Au moins deux sauvegardes sont faites chaque jour. Une à midi et une en fin de journée. En cas de perte de données, je ne perds qu'une demi-journée dans le pire des cas. 
 
 Ayant eu des problèmes avec git par le passé. ( Corruptions de fichiers - conflits ) J'ai décidé de faire une sauvegarde supplémentaire sur un disque dur externe. La fréquence de sauvegarde étant plus faible, mais suffisante étant donné qu'il s'agit d'une sauvegarde de secours.
 
 
-## Communications
+## 6.4. Communications
 Nous nous sommes mis d'accord sur le fait de se contacter au moins une fois par semaine pour vérifier l'avancement du projet ou poser différentes questions. Sachant que nous pouvons nous contacter à tout moment par mails. Nous avons établi des intervalles réguliers chaque semaine:
 - Mardi --> Meet
 - Vendredi --> En personne
 
-# `Technologies utilisées`
-## C#
+# 7. `Technologies utilisées`
+## 7.1. C#
 C# est un langage de programmation orienté objet développé dans les années 2000 par Microsoft. Sa première version a été adoptée comme standard international en 2002 par Ecma.
 Il est régulièrement mis à jour, des versions majeures sont publiées tous les 2 à 3 ans environ.
 La dernière version de C# est la version 8.0 et c’est avec celle-ci que j’ai développé l’application.
 Son environnement de développement Visual Studio permet de créer des applications Windows
 facilement.
 
-## Microsoft Visual studio
+## 7.2. Microsoft Visual studio
 Microsoft Visual Studio est une suite de logiciels disponibles sur Windows et mac. La dernière version qui est la version utilisée dans la réalisation de ce projet est la version 2019.
 
 Il permet de générer des services web XML, des applications web ASP .NET, des applications Visual basic, Visual C++, Visual C#. C#, C++ et basic utilisent tous les mêmes IDE, ce qui permet de partager certaines ressources.
 
-## WPF
+## 7.3. WPF
 Windows Presentation Foundation (WPF) ou nom de code Avalon est une spécification graphique de .NET 3.0. Il utilise le XAML qui le rapproche d'une page HTML avec un système de balise. Il est apparu en 2006.
 
 WPF comparé à WinForms permet par exemple l'affichage d'une interface responsive et l'utilisation du GPU pour certaines fonctionnalités.
 
-## Unity
+## 7.4. Unity
 Unity est un moteur de jeu développé par Unity Technologies. Il est majoritairement utilisé par des petits studios et des indépendants pour la création de jeux. Il est compatible avec le C# et le JavaScript qui permet de réaliser les scripts. Il permet de développer des jeux compatibles avec Windows, Mac OS X, iOS, Android, TV OS, PlayStation 3, PlayStation Vita, PlayStation 4, Xbox 360, Xbox One, Xbox One X, Windows Phone 8, Windows 10 Mobile , PlayStation Mobile, Tizen, Oculus Rift, Wii U, Nintendo 3DS, Nintendo Switch, WebGL.
 
-## XML
+## 7.5. XML
 XML qui est un acronyme pour Extensible Markup Language. C'est un langage de balises et fait parti du sous-ensemble du standard Generalized Markup Language (SGML). Il a été créé en 1999.
 
 Le bute premier du XML étant de permettre au SGML d'être utilisé sur le web de la même manière que le HTML.
 Dans mon cas, il  permettra de stocker certaines données du programme.
 
-## LiveCharts
+## 7.6. LiveCharts
 LiveCharts est une librairie C# permettant de créer des graphiques. Il permet d'inclure une grande quantité de graphiques à des projets, de lier les données au code. Lorsque les données changent, les graphiques s'adaptent automatiquement et sont animés. Les graphiques sont personnalisables et interactable. Il est même possible d'importer des cartes composées de régions en tant que graphique.
 
 En plus d'ajouter énormément d'éléments graphiques et animations, LiveCharts est très performant et peut par exemple afficher des graphiques contenant plus de 100'000 points tout en restant fluides.
 
-## JSON
+Cette librairie est open-source et ne nécessite donc pas de license. Une version 2.0 est actuellement en cours de développement promettant principalement d'augmenter les performances.
+
+## 7.7. JSON
 JavaScript Object Notation (JSON) est un format de données dérivé de la notation des objets JavaScript. Il permet d'afficher la structure d'une information comme par exemple un objet C# ainsi que ses données. C'est le format de données qui me permet de communiquer avec le programme Unity depuis le programme WPF.
 
-# `Cahier des charges`
-## Titre
+# 8. `Cahier des charges`
+## 8.1. Titre
 Covid propagation
-## Fonctionnalités
+## 8.2. Fonctionnalités
 - Simulation
   - Population
     - Mesures
@@ -279,27 +306,27 @@ Covid propagation
   - Informations sur le virus
     - Dangerosité
 
-## Matériel et logiciels
+## 8.3. Matériel et logiciels
 - PC techniciens
 - Visual studio 2019
 - Une connexion internet
 - Github
 
-## Prérequis
+## 8.4. Prérequis
 - C#
 - Visual studio 2019
 
-## Descriptif complet du projet
-### Méthodologie
+## 8.5. Descriptif complet du projet
+### 8.5.1. Méthodologie
 Scrum
 
-### Description de l’application
+### 8.5.2. Description de l’application
 Simuler un grand nombre de personnes possédant toutes des variables différentes (âge, résistance immunitaire,
 etc.), y introduire le virus et observer sa propagation. Il est possible d’affecter des mesures de sécurité, telles que le port du masque ou la distanciation pour observer la possible réduction de la propagation.
 L'affichage permet de voir en temps réel la propagation du virus et permet de visualiser chaque individu distinctement au besoin. Des graphiques sont aussi présents pour avoir une idée en chiffres de ce que signifie
 l'affichage.
 
-#### Graphique
+#### 8.5.2.1. Graphique
 Les données des graphiques sont choisies par l'utilisateur et donc personnalisables. Plusieurs graphiques peuvent être affichés en même temps. Leur position est définie par l'utilisateur au sein de la page de l'application.
 
 L'interface graphique est fournie par [LiveChart](https://lvcharts.net/App/examples/wpf/start). Les données sont directement fournies par l'application ainsi que les échelles de grandeurs qui sont ajustées automatiquement.
@@ -307,13 +334,13 @@ Les graphiques à courbes et en forme camembert sont disponibles.
 ![Exemple de graphiques](Medias/Rapport/Graph.png)
 <center><p style="font-size: 11px">Figure 8: Exemple de graphiques</p></center>
 
-#### Interface graphique
+#### 8.5.2.2. Interface graphique
 En plus des graphiques, une interface graphique affichant les individus ainsi que leur lieur de travail, habitation et déplacement est disponible. Elle permet d'avoir une visualisation plus naturelle de la situation. Elle est très simple, car simuler une ville est une tâche trop complexe et longue pour être ajoutée au projet. Il s'agit donc d'une aide visuelle simple de la simulation. Il n'y a donc pas de routes ou autres éléments complexe similaire.
 Voici deux exemples d'interface graphique :
 ![Interface graphique](Medias/Rapport/ExemplesInterfaceGraphique.png)
 <center><p style="font-size: 11px">Figure 9: Exemple d'interface graphique</p></center>
 
-#### Propagation
+#### 8.5.2.3. Propagation
 
 La propagation se fait à l'aide de calcul et de différentes variables. 1000 m<sup>2</sup> contenant 10 individus à l'intérieur aura de faibles chances de transmettre le virus. Le même nombre de personnes dans un espace clos de 10 m<sup>2</sup> aura des résultats totalement différents.
  
@@ -322,7 +349,7 @@ La complexité de ce type de calcul étant d'une difficulté largement supérieu
 
 [Fiche Excel](https://docs.google.com/spreadsheets/d/1ZWG4LslRBUjMC00Rsi65TKmfVJyzVUf2)
 
-#### Population
+#### 8.5.2.4. Population
 
 La population est constituée d'objets C# générés partiellement, aléatoirement en fonction des paramètres de la simulation. Ils informent la simulation en cas de changement d'état (sain, infecté, etc.). Des itérations sont faites dans la simulation pour calculer si un individu est infecté ou non durant le temps écoulé. Il a un planning simple à suivre dans sa journée qui peut être constituée de par exemple :
 - Être dans son habitation
@@ -335,13 +362,13 @@ La population est constituée d'objets C# générés partiellement, aléatoireme
 
 Ce planning est différent en fonction des individus même si vaguement le même. Durant sa journée, il croisera d'autres individus et à chaque itération, il aura des chances d'être infecté si des personnes aux alentours le sont. En fonction du lieu, il rencontrera des personnes différentes, parfois les mêmes comme dans son travail où ses collègues sont fixes. Dans le bus, des variations seront possibles. Son cercle d'amis ainsi que sa famille, lorsqu'il se trouve dans son habitation, seront les individus risquant de le contaminer.
 
-##### Temporalité
+##### 8.5.2.4.1. Temporalité
 
 Le quotidien des individus est défini par la simulation lors de leur création. Elles peuvent évoluer avec l'âge des individus. 
 
 Une itération est équivalente à ~30min dans la simulation. À chaque itération, chaque individu calcul ses chances d'attraper le virus en fonction de son environnement et des mesures prises. Elle permet aussi à un individu d'évoluer dans son quotidien en passant d'une tâche à une autre par exemple. Leur permettant aussi de changer de lieu et tous les événements liés à l'agenda des individus ainsi que la propagation du virus. La "durée" de la simulation est définie par l'utilisateur et peut donc durer plusieurs jours.
 
-##### Individus
+##### 8.5.2.4.2. Individus
 
 Les individus possèdent différents paramètres qui vont modifier leur quotidien ainsi que leur résistance au virus. La valeur la plus essentielle est l'âge de ces personnes. L'âge permet de contribuer à la modification de la résistance au virus. Il modifie aussi le quotidien en définissant si la personne va travailler, va à l'école, est libre de faire ce qu'il souhaite ou rien si trop jeune. L'âge évolue avec le temps de la simulation.
 
@@ -363,7 +390,7 @@ Chaque individu créé commence avec une valeur entre 80 et 100. Sachant qu'envi
 
 Les maladies sont inspirées de maladie réelle impactant l'effet du covid. Cependant, dans la simulation, elle n'affecte que la résistance au virus. Ces maladies apparaissent de façons aléatoires et plus fréquemment sur les individus dont l'âge est élevé. Elles ne se propagent pas. Elles sont en partie assignées au départ par la simulation puis apparaissent avec le temps. Elles réduisent la résistance au covid de 1% à 20% en fonction de la maladie et de l'âge de la personne.
 
-##### Hôpitaux / écoles / entreprise
+##### 8.5.2.4.3. Hôpitaux / écoles / entreprise
 
 Ces différents lieux fonctionnent de façon similaire. Ils ont tous des individus en leurs seins qui peuvent se transmettre le virus. Ils ont des tailles différentes en fonction du nombre de personnes pouvant être à l'intérieur. 
 
@@ -373,22 +400,22 @@ Les écoles ont une situation similaire en ayant des élèves ainsi que des prof
 
 Les entreprises elles fonctionnent en groupe d'individus, similaire aux classes des écoles, mais sans personnel ayant des mesures différentes des autres.
 
-## Protocole de tests
+## 8.6. Protocole de tests
 Ce projet étant en c#, je vais utiliser les tests unitaires intégrés dans visual studio.
 
 Les tests unitaires ne garantissant pas qu'il n'y ait aucun bug dans l'application, je vais créer des scénarios que je testerais avant et après chaque implémentation de fonctionnalités. Ces scénarios auront pour but de couvrir un maximum de possibilités pour éviter l'apparition de bug dû à une modification du code ou l'ajout d'une fonctionnalité. Ils permettent aussi de trouver d'éventuels des problèmes d'ergonomie en me plongeant à la place d'un utilisateur.
 
-## Persona
-### Utilisateur expérimenté
+## 8.7. Persona
+### 8.7.1. Utilisateur expérimenté
 ![Perona experimenté](Medias/Rapport/Persona_Ashley.png)
 <p style="text-align: center">Figure 10: Persona experimenté</p>
 
-### Utilisateur inexpérimenté
+### 8.7.2. Utilisateur inexpérimenté
 ![Perona inexpérimenté](Medias/Rapport/Persona_Kanan.png)
 <p style="text-align: center">Figure 11: Persona inexpérimenté</p>
 
-## User stories
-### Ashley
+## 8.8. User stories
+### 8.8.1. Ashley
 **En tant que** Ashley<br>
 **Je veux** comparer différentes situations avec différentes personnes en prenant des mesures identiques<br>
 **Afin de** pouvoir observer les différences et déterminer quelles mesures est efficaces dans quelle situation.<br>
@@ -399,7 +426,7 @@ J'observe la simulation et prends note des résultats.<br>
 Une fois terminée, j'en lance une autre avec certains paramètres différents et prends note des résultats.<br>
 Je compare les résultats avec la simulation précédente et effectue ma conclusion.
 
-### Kanan
+### 8.8.2. Kanan
 **En tant que** Kanan<br>
 **Je veux** vérifier l'efficacité de différentes mesures prisent pour éviter la propagation du covid<br>
 **Afin de** afin de me donner une idée concrète et visuelle de l'efficacité de ses mesures.<br>
@@ -411,19 +438,19 @@ Des aides sont disponibles me permettant de comprendre les données qui sont aff
 Après avoir terminé cette simulation, j'en lance une autre en désactivant les mesures. <br>
 Je relance la simulation et observe la différence entre les deux simulations. <br>
 
-## Diagramme d'activité
+## 8.9. Diagramme d'activité
 ![Diagramme d'activité](Medias/Rapport/DiagrammeDactivite.png)
 <p style="text-align: center">Figure 12: Diagramme d'activité</p>
 
-## Planning
+## 8.10. Planning
 https://docs.google.com/spreadsheets/d/1tSpIbcDVvGnzMhEN71UDwPOxEy0oapQSSbxzjqXt3RA/edit?usp=sharing
 
-## Diagramme de classe initial
+## 8.11. Diagramme de classe initial
 ![Diagramme de classe initial](Medias/Rapport/InitialClassDiagram.png)
 <p style="text-align: center">Figure 13: Diagrame de classe initiale</p>
 
-## Interactions
-### Menu principal
+## 8.12. Interactions
+### 8.12.1. Menu principal
 - Affiche un preview de l'affichage de la simulation
 - Btn Paramètres
   - Population
@@ -435,7 +462,7 @@ https://docs.google.com/spreadsheets/d/1tSpIbcDVvGnzMhEN71UDwPOxEy0oapQSSbxzjqXt
 - Btn lancer la simulation
   - Change l'affichage de la totalité de l'application, affiche une barre de chargement indiquant l'état de création de la simulation.
 
-### Population
+### 8.12.2. Population
 Affiche une page avec les paramètres suivant :
 - Écoles / lieux de travail
   - Différentes selon l'âge
@@ -491,7 +518,7 @@ Affiche une page avec les paramètres suivant :
   - Réaffiche les données précédemment affichées
 - Btn sauvegarder
   - Sauvegarde les paramètres choisis par l'utilisateur
-### Virus
+### 8.12.3. Virus
 Affiche une page avec les paramètres suivant :
 - Effet sur le corps
   - Permet de modifier le pourcentage de propagation en fonction du symptôme (toux)
@@ -505,7 +532,7 @@ Affiche une page avec les paramètres suivant :
   - Permet de définir si oui ou non il y a des asymptomatiques
   - Permet de définir le pourcentage d'asymptomatiques
 
-### Affichage
+### 8.12.4. Affichage
 Affiche une page avec les paramètres suivant :
 - Graphiques
   - Permet de sélectionner différents styles de graphiques à afficher
@@ -514,7 +541,7 @@ Affiche une page avec les paramètres suivant :
   - Plusieurs graphiques possibles à sélectionner
 - Affichage d'une "carte" permettant une visualisation plus simple
 
-### Simulation
+### 8.12.5. Simulation
 Affiche une page :
 - Affichage d'une barre de chargement lors de la génération de la simulation
   - Évolue en fonction du nombre d'individus créé
@@ -523,7 +550,7 @@ Affiche une page :
   - Possibilité d'afficher jusqu'à 4 graphiques sur le même onglet
 - S'actualise toutes les secondes (environ)
 
-## Livrables
+## 8.13. Livrables
 - Mind Map
 - Planning
 - Rapport de projet
@@ -531,13 +558,13 @@ Affiche une page :
 - Journal de travail ou LogBook
 - Résumé / Abstract
 
-# `Environnement`
+# 9. `Environnement`
 L'environnement de travail est composé d'un pc technicien, 3 écrans, clavier, souris et d'un SSD amovible avec Windows 10 pro version 10.0.19042 Build 19042. Le code est réalisé à l'aide de visual studio 2019 versions 16.9.2. La documentation et le logbook sont réalisés à l'aide de visual studio code et des extensions Markdown All in One et Mardown PDF.
 
 Le projet WPF utilise .core 3.1 qui est la version lts.
 La version d'Unity est la 2020.3.4f1 qui est aussi la version lts.
-# `Architecture`
-## Arborescence
+# 10. `Architecture`
+## 10.1. Arborescence
 ```
 ├── CovidPropagation
 │   ├── .vs
@@ -553,21 +580,21 @@ La version d'Unity est la 2020.3.4f1 qui est aussi la version lts.
     ├── TestUnity_WPF
     └── testWPF_Unity.sln
 ```
-## Structure
+## 10.2. Structure
 ![Diagramme de fonctionnement](Medias/rapport/DiagrammeDeFonctionnement.png)
 <center><p style="font-size: 11px">Figure 14: Diagramme de fonctionnement</p></center>
 
-# `Analyse interface graphique`
+# 11. `Analyse interface graphique`
 Cette analyse concerne l'interface graphique et le choix de la technologie à utiliser pour réaliser celle-ci.
 
-## Comparaison technologies
+## 11.1. Comparaison technologies
 
-### WinForm (Windows Forms)
+### 11.1.1. WinForm (Windows Forms)
 Lors du CFC ainsi que de l'apprentissage technicien, nous avons toujours utilisé cet interface pour réaliser l'entièreté de nos projets. Je connais donc bien cet environnement contrairement au WPF. En plus de cela, l'interface graphique réalisée dans le poc est en WinForm. Me permettant donc de simplement importer le projet déjà existant.
 
 Cependant, WinForm ainsi que l'interface graphique déjà existante apportent de gros problèmes tels que les timers. Lorsqu'il y a une charge CPU trop lourde, les timers perdent leurs rythmes et n'arrivent plus à suivre. Le résultat de cette surcharge est que plus rien ne fait de sens. Les animations n'ont plus le temps de s'effectuer rendant les individus immobiles ou presque.
 
-### WPF (Windows Presentation Foundation)
+### 11.1.2. WPF (Windows Presentation Foundation)
 
 WPF est plus récent que WinForms et a donc certains avantages non négligeables en comparaison. Il est beaucoup plus complet en termes d'esthétique et donc d'UI que WinForms. En plus de cela, il est possible de créer des objets en 2D ou 3D. Ces objets contrairement à WinForms sont gérés par le GPU plutôt qu'être entièrement basé sur le CPU. Cette différence à elle seule fait pencher la balance pour WPF.
 
@@ -580,16 +607,16 @@ Le possible problème de timer bien que probablement réduit du au fait que la c
 
 Il faut aussi noter que je n'ai aucune expérience en WPF et vais donc devoir m'y habituer durant un certain temps avant d'être efficace à 100%.
 
-### Unity
+### 11.1.3. Unity
 Unity est un moteur de jeu en 2D et 3D. Il est possible de l'intégrer directement à une application WPF. Ça me semble être le meilleur choix si l'on prend en compte les problèmes de timer des deux autres technologies. Unity possède de façon native des méthodes qui sont appelées à chaque frame permettant le bon déroulement de la simulation.
 
 En plus de cela, j'ai beaucoup d'expérience avec ce logiciel, ayant réalisé mon TPI avec celui-ci. Je peux donc affirmer qu'il est beaucoup plus simple de réaliser l'interface graphique avec Unity.
 
 Cependant un autre problème est présent. La liaison des données. Il m'est impossible, sans le tester, de savoir si ce modèle de fonctionnement est compatible avec mon projet. Je sais qu'il est possible de transférer des informations de WPF à Unity cependant, je ne sais pas si la fréquence d'envoi est suffisante ou même si la quantité de données envoyées que je souhaite atteindre est possible.
 
-#### Communication
+#### 11.1.3.1. Communication
 Pour communiquer entre WPF et Unity, j'ai essayé plusieurs méthodes fonctionnant différemment et surtout de complexité différente.
-##### Unity Controller
+##### 11.1.3.1.1. Unity Controller
 Mon premier essai fut avec Unity Controller qui permet de créer un serveur qui communique entre une application C# et Unity.
 
 Pour l'installer il faut d'ajouter le paquet nuget "Unity Controller" au projet ainsi qu'un using "UnityController". Son implémentation est la plus simple des solutions testées sachant qu'elle ne prend que quelques lignes au total.
@@ -616,7 +643,7 @@ UnityCommands.UpdateText("GameObjectText", "Texte");
 
 Cette implémentation de la communication est extrêmement simple à mettre en place cependant, les possibilités sont très limitées. Les seules actions possibles sont le fait de changer le texte d'un GameObject, sa couleur, son image, etc. Il est impossible d'envoyer un message de code à code puis de l'interpréter. Cette façon de faire ne peut donc pas servir à la réalisation de mon projet qui demande un traitement des données.
 
-##### `PipeLines`
+##### 11.1.3.1.2. `PipeLines`
 Contrairement à UnityController, les pipelines laissent plus de liberté, mais leur complexité est bien supérieure. J'ai rencontré divers problèmes en implémentant cette fonctionnalité.
 
 Dans mon cas, la communication se fait à sens unique, WPF donnant les informations à l'interface graphique se trouvant sur Unity. Il faut donc commencer par créer un serveur du côté WPF.
@@ -713,7 +740,7 @@ public async Task<string> ReadStringAsync()
 }
 ```
 
-#### Intégration 
+#### 11.1.3.2. Intégration 
 
 L'intégration permet d'avoir un rectangle au sein de la page WPF qui sera constitué d'une application .exe. Dans ce cas, il s'agit d'Unity. Ça ne permet pas de commander le contenu de la fenêtre, mais uniquement sa taille, position et quand démarrer le .exe.
 
@@ -734,14 +761,14 @@ process.StartInfo.Arguments = "-parentHWND " + unityHandle.ToInt32() + " " +
 process.Start();
 ```
 
-## Choix de la solution
+## 11.2. Choix de la solution
 Mon attention se porte premièrement sur Unity qui me semble être la solution avec le meilleur rendue et permet de contourner certains problèmes présents dans les deux autres options. Le premier test que j'ai effectué ne permet pas de transmettre des données complexes, uniquement des strings ou images, mais pas de liste c# ou autres éléments que je pourrais utiliser. </br>
 Le second test que j'ai effectué avec les pipelines permet de transférer une grande quantité de données (Int32) en string. Il est donc possible de transférer des objets en json d'un projet à l'autre.</br>
 C'est cette deuxième option que j'ai donc choisie pour réaliser l'interface graphique. Permettant donc d'utiliser Unity qui est beaucoup plus simple à utiliser pour la réalisation de ce genre de fonctionnalité.
 
 
-# `Problèmes rencontrés`
-## Pipeline
+# 12. `Problèmes rencontrés`
+## 12.1. Pipeline
 Durant l'implémentation des pipelines, j'ai rencontré divers problèmes, le premier étant que la structure originale des pipelines utilise une communication synchrone. Lors de l'attente de données, le programme Unity s'arrêtait complètement jusqu'à la réception de la donnée attendue. Une fois reçue, une exécutait une frame puis attendait à nouveau des données. Le rproblèmes était similaire dans le code WPF qui, après avoir envoyé des données, attendait qu'Unity les ait réceptionnées pour continuer.
 
  Pour pallier à ce problème, j'ai opté pour l'implémentation de l'asynchrone dans la réception et dans l'envoi des données. Concernant l'envoie, j'ai rencontré un léger problème qui m'empêchait d'accéder à une méthode en asynchrone, car j'envoyais le contenu d'un textbox appartenant donc au thread principal. Ce problème a été réglé avec l'utilisation de Dispatcher.Invoke. Ce problème de thread m'a malgré tout pris un certain temps à régler du au fait que WPF, Unity et WinForms utilisent tous une façon d'invoque différente rendant les recherches plus compliquées.
@@ -755,7 +782,7 @@ await Task.Run(() =>
 });
 ```
 
- Le gros poisson concerne la réception des données. Comme étant un code bloquant, j'ai cherché différentes façons d'appeler mon code de manière constante. Le placer dans la méthode update(appelée chaque frame) ne fonctionnant tout simplement pas, j'ai opté pour la méthode "InvokeRepeating" qui permet de donner un interval dans lequel une méthode sera exécutée.
+ La plus grosse section concerne la réception des données. Comme étant un code bloquant, j'ai cherché différentes façons d'appeler mon code de manière constante. Le placer dans la méthode update(appelée chaque frame) ne fonctionnant tout simplement pas, j'ai opté pour la méthode "InvokeRepeating" qui permet de donner un interval dans lequel une méthode sera exécutée.
 
  InvokeRepeating couplé avec de l'asynchrone m'a permis d'éviter le programme de s'arrêter à chaque attente de données tout en étant capable d'en recevoir. Cependant, les données reçues n'étaient pas fidèles aux données envoyées.
  
@@ -772,37 +799,40 @@ ChangingText.GetComponent<Text>().text = result;
 ReadPipeData();
 ```
 
-## WPF UI
+## 12.2. WPF UI
 N'ayant encore jamais travaillé avec WPF, la structure du projet m'a déconcerté au départ, mais j'ai rapidement pu prendre la main. Cependant, pour réaliser une apparence spéciale, j'ai dû modifier certains outils mis à disposition par WPF. Les boutons étant très similaires à WinForms ne m'ont pas posé de problèmes. 
 
 Ce n'est qu'après avoir eu envie de modifier l'affichage d'un slider et après des recherches, que je me suis rendu compte qu'il était impossible de modifier le slider existant pour satisfaire aux paramètres que j'avais choisis. Pour le modifier, il m'a fallu créer un template du slider qui revient à récupérer le code XAML du slider et le modifier à la main. Il m'a fallu un certain temps pour comprendre chaque composant ainsi que leurs paramètres. Même si ça permet de modifier dans le moindre détail l'outil, j'ai été étonné qu'il n'existe par de paramètres facilement modifiables comme le background des boutons par exemple. 
 
 Après avoir eu du mal à modifier le slider, j'ai pu modifier les autres outils (RadioBoutons, Checkbox) avec aisance.
 
-## Planning
+## 12.3. Planning
 Une fois les plannings mis en place, la structure de ceux-ci rend le tout très efficace à executer. Mais encore faut-il créer les plannings. En prenant en compte qu'ils doivent être logiquent, respecter certaines règles et être liés les uns les autres. Cette liaison permet par exemple le voyage de plusieurs personnes dans un même véhicule, ou le fait de se retrouver chez un ami. C'est donc cette création qui m'a demandé beaucoup de temps et énormément de réflexion sur son fonctionnement. Comment les créer ? Que doit être aléatoir et que doit être prédéfini ? Comment structurer le tout ? </br>
 Beaucoup de questions qui sont revenues lors de la création des plannings. 
 
-## Outils WPF 
-### Combobox et enum
+## 12.4. Outils WPF 
+### 12.4.1. Combobox et enum
 Pour simplifier l'affichage et le lier d'avantage au code, j'ai voulu lié les données d'un combobox à un enum. Je m'attendais à quelque chose de très simple ayant entendu beacoup de bien du databinding de WPF. J'ai vite compris que ce n'était pas directement pris en charge et qu'il fallait ajouter un certain nombre de ligne pour permettre cette liaison. Il m'a fallut ajouter un ObjectDataProvider en xaml qui permet d'ensuite lier les items du combobox à l'enum. Il était beaucoup plus simple de faire une assignation depuis le code.
 
-### Description d'enums
+### 12.4.2. Description d'enums
 J'ai ensuite voulu rendre l'affichage plus claire et donc modifier les valeurs du combobox pour qu'elles correspondent aux description de chaque item du enum. Il faut cependant une fois de plus ajouter un certains nombre de ligne pour que cela soit possible. Il est impossible d'y accéder directement et simplement. Il est nécessaire de récupérer les attributs du enum via une méthode qui n'est pas fournit par microsoft. Il faut donc la faire soit même.
 
-### Numeric Up Down
+### 12.4.3. Numeric Up Down
 Pour permettre à l'utilisateur de choisir le nombre de courbe d'un graphique, je souhaitais utiliser un numérique up down qui semblait être l'outil le plus logique pour cette tâche. Cependant, il n'existe pas de numericUpDown en WPF. Il faut soit le créer manuellement soit utiliser une librairie. Ne voulant pas installer une nouvelle librairie simplement pour cela, j'ai utilisé un textbox et ai restraint les charactères possibles d'écrire pour finalement le remplacer par un combobox qui est plus simple d'utilisation et qui ne nécessite aucun traitement.
 
-# `Simulation`
-## Structure
-Diagramme de classe final -
-Interactions entre objets
+## 12.5. Optimisation
+Durant la création de la simulation, j'ai beaucoup utilisé de requête linq qui me permettaient de filtrer certaines listes. Comme par exemple, tous les bâtiments se trouvaient dans la même liste. Pour assigné des bâtiments de certains type aux individus, il était nécessaire de filtrer cette liste de bâtiment. Ce filtre prend énormément de temps et de ressource ce qui a grandement ralenti le programme. Il m'a fallu l'aide de M. Mathieu et l'utilisation d'un profiler pour détecter la source du problème et la modifier par la suite. Modification qui a permit de facilement et grandement augmenter les performances de l'application. 
 
-### Intéraction entre objets
+# 13. `Simulation`
+## 13.1. Structure
+
+![Diagramme de classe](Medias/Rapport/SimulationClassDiagram.png)
+
+### 13.1.1. Intéraction entre objets
 
 
-## Fonctionnement
-### Général
+## 13.2. Fonctionnement
+### 13.2.1. Général
 Dans ce projet, les objets sont très connectés les uns des autres. La simulation par exemple détient l'entièreté de tous les objets dans des listes, à l'exception des plannings. Elle s'occupe donc de créer les bâtiments, la population, les moyen de transports. Beaucoup de paramètres entres en compte dans la création. Certains de ces paramètres sont fixes et tirés de données inspirés de la réalité. D'autres, même si ayant des valeurs similaires par défaut, sont modifiables par l'utilisateur afin de personnaliser la simulation et observer différents cas de figures.</br>
 Lors de la création des bâtiments, un calcul est effectué pour déterminer le nombre de bâtiments à créer en fonction du nombre d'individus. Il doit y avoir au moins un bâtiment de chaque type pour que la simulation fonctionne correctement. </br>
 Les données utilisées pour définir le nombre de bâtiments de chaque type ont été inspirées par des données officielles de Genève.</br>
@@ -821,7 +851,7 @@ Une fois les calculs effectués, chaque personne dans chaque lieu va effectuer u
 
 Les individus sont susceptible d'attraper des maladies qui n'impactent pas réellement le corps mais qui diminiuent drastiquement la résistance au virus. Ces maladies sont plus courrantes chez les individus dont l'âge est avancé. Plus l'âge est grand plus leurs nombre ainsi que leur impacte sur le système est élevé. Si la résistance est trop faible, l'individu risque de devoir aller à l'hôpital, là où il recevra des soins. Les places à l'hôpital sont limitées bloquant l'accès si le nombre de cas est trop élevé. Si la résistance au virus atteint un état critique, l'individu décèdera même lorsqu'il est prit en charge par un hôpital.
 
-### Propagation
+### 13.2.2. Propagation
 La propagation est effectuée à l'intérieur d'un bâtiment. Lorsque plusieurs individus se situent dans un bâtiment et qu'au moins l'un d'eux est infecté, le calcul des chances d'infection entre en jeu. Le lieu calcul donc les chances qu'un autre individu soit infecté et chaque individu vérifie individuellement s'il a été infecté ou non. Ce calcul s'effectue pour chaque période. Si aucun changement n'est effectué entre deux périodes (changement d'état - entrée - sortie) alors le résultat précédent est utilisé pour les probabilités d'infections. Ce système permet de limiter les calculs inutiles.
 
 Pour aller plus en détails, chaque bâtiment possèdes des paramètres attribués qui peuvent faire varier le résultat du calcul de probabilité d'infections. Les paramètres utilisé sont les suivants :
@@ -856,7 +886,7 @@ Différentes mesures sont disponibles pour limiter au maximum la transmission du
 
 <h2>Ajouter images - Lien vers méthodes dans les commentaires du projet</h2>
 
-### Source propagation
+### 13.2.3. Source propagation
 La source de mes calculs de transmission du virus par aérosol ont été réalisé par des experts dans le domaines : 
 - Profeseur en chimie Jose-Luis Jimenez de l'université du Colorado à Boulder
 - Docteur Zhe Peng de l'université du Colorado à Boulder
@@ -871,19 +901,46 @@ Les paramètres des individus entrent ensuite en compte en ajoutant le nombre d'
 
 Ce fichier en plus de citer ses sources et d'être réalisés par des spécialistes, m'a donc permit de transposer ces calculs dans la simulation et d'y intégrer certaines mesures facilement. Il m'a permit de gagner énormément de temps ainsi qu'en précision. À la place de prendre du temps à comprendre et convertir différents calculs provenant de différents sources, j'ai pu me concentrer sur leur pécision et la structure dans le code.
 
-# `GUI`
-## Structure
+<i>Le fichier excel est disponible en annexe sous format .xlsx ou .pdf .</i>
+
+### 13.2.4. Résultats
+<h2>résultats obtenus par votre application et les comparer avec la situation que nous avons vécu et par rapport aux chiffres du fichier Excel.</h2>
+
+## 13.3. Performances
+L'optimisation est nécessaire pour que ce type de programme soit utilisable. Avant de commencer l'optimisation, la création d'une simulation contenant 100'000 individus pouvait prendre jusqu'à 5 min et 1'000'000 plus de 10 minutes et même parfois un plantage de l'application. Cette durée de création se raproche beaucoup de la courbe quadratic ou même cubic (Figure ##).
+
+Après avoir modifié quelques lignes, le programme peut créer la simulation beaucoup plus vite et de façon linéair (Figure ##). Ce qui signifie qu'au lieu de prendre de plus en plus de temps à créer plus d'individus, la durée est proportionnelle à la quanité d'individus. L'utilisation de requête linq ralentit énormément le programme et leur supression a permit cette amélioration fulgurante.
+
+![Big'o notation](Medias/Rapport/Big_O_Notation.png)
+<center><p style="font-size: 11px">Figure ##: Big'o notations</p></center>
+
+L'application étant très gourmante en ram, les performances de celle-ci jouent un rôle très important dans la vitesse de création de la simulation. Pour générer 1 millions d'individus, la durée de création est nettement plus faible avec un ram plus performante.
+
+J'ai effectué différents tests en créant des simulations de tailles variantes sur deux types de ram. Une ram cadencé à 3600Mhz ainsi qu'une ram cadencé à 2133Mhz. Pour la création de 100'000 individus, les tests effectués avec la ram à 3600Mhz sont nettement plus rapide. La ram la plus rapid est en moyenne 2 secondes plus efficace que la ram la plus lente.
+
+- Ram 3600Mhz
+  - 10'000 individus --> ~5 secondes
+- Ram 2133Mhz
+  - 10'000 individus --> ~7 secondes
+
+On peut donc observer une nettre différence entre les deux tests. Les performances de la ram sont donc très importantes pour obtenir le maximum du programme. Cependant, pour des utilisateur lambdas, l'utilisation de ram dépassant les 2133Mhz est très rare.
+
+<h3>Parler du profiler</h3>
+# 14. `GUI`
+## 14.1. Structure
 Diagramme de classe final -
 Interactions entre objets - 
 Réception des données
 
-## Fonctionnement
+## 14.2. Fonctionnement
 Création -
 Évolution (Itérations) -
 Réception des données
 
-# `UI`
-## Thème
+# 15. `UI`
+## 15.1. Structure
+![Diagramme de classe](Medias/Rapport/UIClassDiagram.png)
+## 15.2. Thème
 Pour la création de l'interface utilisateur, je voulais éviter a tout prix d'utiliser le design basique des programmes windows. J'ai fait quelque recherche et je suis tombé sur différents tutoriels montrant comment réaliser une interface en [WinForm](https://www.youtube.com/watch?v=BtOEztT1Qzk). C'est en m'inspirant de ce design que j'ai réalisé le thème du projet. C'est principalement la barre de menu se situant à gauche que j'ai voulu recréer. J'ai ensuite découvert les pages et window dans WPF qui permettent de réaliser exactement ce que je souhaitais. Une window pouvant inclure le contenu d'une page. Il suffit donc de cliquer sur un bouton du menu pour changer le contenu de la page.
 
 WPF ne permettant pas la modification d'éléments existant, j'ai du créer de A à Z de nombreux éléments tels que les checkbox, les radioboutons ainsi que les sliders. Le résultat final me semble très propre.
@@ -891,36 +948,21 @@ WPF ne permettant pas la modification d'éléments existant, j'ai du créer de A
 ![Thème de l'application](Medias/Rapport/Theme.png)
 <center><p style="font-size: 11px">Figure ##: Thème</p></center>
 
-## Pages
-### Simulation
-<center>
+## 15.3. Pages
+### 15.3.1. Simulation
 
-![Icône simulation](Medias/Rapport/SimulationIcone.png)
-<p style="font-size: 11px">Figure ##: Icone de simulation</p>
 
-</center>
+<div style="text-align:center"><img src="Medias/Rapport/SimulationIcone.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Icone de simulation</p></center>
 
 Cette page permet la visualisation de la simulation s'effectuant. Elle permet de gérer certains paramètres mineurs tel que le rythme, s'il faut mettre pause ou la relancer. Elle permet avant tout de lancer la simulation et d'observer les résultats à l'aide de graphiques, de l'interface graphique ainsi que de données brutes. Affichage qui est totalement personnalisable par l'utilisateur dans la fenêtre "Paramètres graphiques"
 
 <h1>Image de la page de simulation une foie terminée</h1>
 
-### Paramètres simulation
-<center>
+### 15.3.2. Paramètres graphiques
 
-![Icône simulation](Medias/Rapport/ParametresSimulationIcone.png)
-<p style="font-size: 11px">Figure ##: Icone de paramètres de la simulation</p>
-
-</center>
-
-Cette page permet de modifier les paramètres de la simulation au démarrage de celle-ci. Les paramètres les plus basiques sont le nombre d'individus ainsi que la quantité de personne infecté au départ. Il est ensuite possible de paramétré les mesures afin de définir si elles doivent entrer en compte et quand. Il est possible de définir à partir de combien d'infectés certaines mesures sont activée ou désactivée ou par exemple après un certain temps. Ces paramètres ne sont pas modifiable durant la simulation et donc uniquement avant celle-ci.
-
-### Paramètres graphiques
-<center>
-
-![Icône simulation](Medias/Rapport/ParametresGraphiquesIcone.png)
-<p style="font-size: 11px">Figure ##: Icone de paramètres graphiques</p>
-
-</center>
+<div style="text-align:center"><img src="Medias/Rapport/ParametresGraphiquesIcone.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Icone de paramètres graphiques</p></center>
 
 La page des paramètres graphiques permet de totalement modifier l'interface de la page de simulation. Elle laisse à l'utilisateur de décider si des graphiques doivent être affichés, leur tailles, le type de graphique ainsi que les données à afficher. Certains graphiques comme la heatMap ne prennent pas en compte tous les type de données car ils sont très spécifiques.
 
@@ -930,10 +972,17 @@ Finalement les données brutes. Il est possible d'afficher directement certaines
 
 Chaque case contenant l'un des objet précédement sité peut être déplacé librement dans la grille mise à disposition. Cette même grille peut être agrandi ou rapetissi pour laisser la place à plus ou moins de cases.
 
+### 15.3.3. Paramètres simulation
+
+<div style="text-align:center"><img src="Medias/Rapport/ParametresSimulationIcone.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Icone de paramètres de la simulation</p></center>
+
+Cette page permet de modifier les paramètres de la simulation au démarrage de celle-ci. Les paramètres les plus basiques sont le nombre d'individus ainsi que la quantité de personne infecté au départ. Il est ensuite possible de paramétré les mesures afin de définir si elles doivent entrer en compte et quand. Il est possible de définir à partir de combien d'infectés certaines mesures sont activée ou désactivée ou par exemple après un certain temps. Ces paramètres ne sont pas modifiable durant la simulation et donc uniquement avant celle-ci.
+
 légende - Informations
 
-# `Planning`
-## Prévisionnel
+# 16. `Planning`
+## 16.1. Prévisionnel
 Dans le cadre de ce projet, je vais commencer par réfléchir à la structure générale de celui-ci et de ces interactions entre les différentes sections (Simulation - Graphique - etc.) ainsi que toujours trouver le meilleur moyen d'optimiser le code et la structure pour permettre la simulation d'un plus grand nombre d'individus.
 
 Les timers de Visual studio étant très aléatoire dès lors que le programme nécessite une trop grande charge de travail, je vais essayer de trouver une alternative ou de corriger ce problème en modifiant le timer.
@@ -951,13 +1000,13 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 ![Planning prévisionnel Sprint 3](Medias/Rapport/PlanningPrevisionnelSprint3.png)
 ![Planning prévisionnel Sprint 4](Medias/Rapport/PlanningPrevisionnelSprint4.png)
 
-## Effectif
+## 16.2. Effectif
 
-# `Bilan personnel`
+# 17. `Bilan personnel`
 
-# `Conclusion`
+# 18. `Conclusion`
 
-# `Table des figures`
+# 19. `Table des figures`
 - [Figure 1: Maquette page de simulation](#page-simulation)
 - [Figure 2: Maquette page de paramètres graphiques 1](#page-paramètres-graphiques)
 - [Figure 3: Maquette page de paramètres graphiques 2](#page-paramètres-graphiques)
@@ -973,7 +1022,7 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 - [Figure 13: Fidélité des données](#pipeline)
 - [Figure 14: Diagramme de fonctionnement](#structure)
 
-# `Bibliographie`
+# 20. `Bibliographie`
 
 19.04.2021
   - Utilisés dans la compairson entre les différentes technologies de l'interface graphique
@@ -1012,7 +1061,7 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
   - Utilisé dans la création des individus
     - [ge.ch - OCSTAT - Statistiques concernant les ménages](https://www.ge.ch/statistique/tel/publications/2014/analyses/communications/an-cs-2014-48.pdf)
 
-# `Annexes`
+# 21. `Annexes`
 - Projet C#
 - Images
   - Diagramme de classe
@@ -1020,7 +1069,7 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
   - Planning effectif
 - Journal de bord
 
-# `Livrables`
+# 22. `Livrables`
 - Documentation
 - Logbook
 - Programme C#

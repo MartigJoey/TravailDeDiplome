@@ -41,15 +41,15 @@ namespace CovidPropagation
 
         private Random rdm = new Random();
         private int _averageAge;
-        private double _probabilityOfInfected;
+        private double _probabilityOfBeingInfected;
         private int _nbPersons;
 
         Dictionary<SiteType, List<Site>> buildingSitesDictionnary;
-        Dictionary<Type, Site[]> buildingSitesDictionnaryArray;
 
-        List<Site> buildingSites;
+        List<Site> sites;
         List<Site> homes;
         List<Site> allTransports;
+        Outside outside;
         List<Person> population;
         Stopwatch sp;
         bool startStop;
@@ -57,16 +57,16 @@ namespace CovidPropagation
 
         public int Interval { get => interval; set => interval = value; }
 
-        public Simulation(int avgAge, double nbInfected, int nbPersons)
+        public Simulation(int avgAge, double probabilityOfBeingInfected, int nbPersons)
         {
             _averageAge = avgAge;
-            _probabilityOfInfected = nbInfected;
+            _probabilityOfBeingInfected = probabilityOfBeingInfected;
             _nbPersons = nbPersons;
-            buildingSites = new List<Site>();
+            sites = new List<Site>();
             buildingSitesDictionnary = new Dictionary<SiteType, List<Site>>();
-            buildingSitesDictionnaryArray = new Dictionary<Type, Site[]>();
             homes = new List<Site>();
             allTransports = new List<Site>();
+            outside = new Outside();
             population = new List<Person>(nbPersons);
             sp = new Stopwatch();
 
@@ -85,7 +85,7 @@ namespace CovidPropagation
             speedTest.Start();
             CreateBuildings();
             speedTest.Stop();
-            Debug.WriteLine("Building" + speedTest.ElapsedMilliseconds + "  Count" + buildingSites.Count);
+            Debug.WriteLine("Building" + speedTest.ElapsedMilliseconds + "  Count" + sites.Count);
             speedTest.Restart();
             CreateTransports();
             speedTest.Stop();
@@ -120,7 +120,7 @@ namespace CovidPropagation
                     }
 
                     population.ForEach(p => p.ChangeActivity());
-                    buildingSites.ForEach(p => p.CalculateprobabilityOfInfection());
+                    sites.ForEach(p => p.CalculateprobabilityOfInfection());
                     population.ForEach(p => p.ChechState());
 
                     sp.Stop();
@@ -157,15 +157,15 @@ namespace CovidPropagation
                    $"Average age             : {(double)population.Average(p => p.Age)} {Environment.NewLine}" +
                    $"Infecté(s)              : {(double)population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count()} {Environment.NewLine}" +
                    $"Moyenne quanta exhalé   : {(double)population.Average(p => p.QuantaExhalationRate)} {Environment.NewLine}" +
-                   $"Probabilité d'infection : {(double)buildingSites.Sum(b => b.ProbabilityOfInfection)} {Environment.NewLine}" +
+                   $"Probabilité d'infection : {(double)sites.Sum(b => b.ProbabilityOfInfection)} {Environment.NewLine}" +
 
-                   $"Quanta concentre        : {(double)buildingSites.Sum(b => b.AvgQuantaConcentration)} {Environment.NewLine}" +
-                   $"inhal mask eff          : {(double)buildingSites.Sum(b => b.InhalationMaskEfficiency)} {Environment.NewLine}" +
-                   $"Fraction persons w mask : {(double)buildingSites.Sum(b => b.FractionPersonsWithMask)} {Environment.NewLine}" +
+                   $"Quanta concentre        : {(double)sites.Sum(b => b.AvgQuantaConcentration)} {Environment.NewLine}" +
+                   $"inhal mask eff          : {(double)sites.Sum(b => b.InhalationMaskEfficiency)} {Environment.NewLine}" +
+                   $"Fraction persons w mask : {(double)sites.Sum(b => b.FractionPersonsWithMask)} {Environment.NewLine}" +
 
-                   $"Quanta inhalé par person: {(double)buildingSites.Sum(b => b.QuantaInhaledPerPerson)} {Environment.NewLine}" +
-                   $"Re                      : {buildingSites.Sum(b => b.VirusAraisingCases)} {Environment.NewLine}" +
-                   $"Wearmasks               : {buildingSites.Sum(b => b.FractionPersonsWithMask) / buildingSites.Where(b => b.GetType() != typeof(Home)).Count()}" +
+                   $"Quanta inhalé par person: {(double)sites.Sum(b => b.QuantaInhaledPerPerson)} {Environment.NewLine}" +
+                   $"Re                      : {sites.Sum(b => b.VirusAraisingCases)} {Environment.NewLine}" +
+                   $"Wearmasks               : {sites.Sum(b => b.FractionPersonsWithMask) / sites.Where(b => b.GetType() != typeof(Home)).Count()}" +
                    $"Temps                   : {TimeManager.CurrentDayString} {TimeManager.CurrentHour}";
         }
 
@@ -203,13 +203,12 @@ namespace CovidPropagation
                     new KeyValuePair<object, double>(typeof(Hospital), PROBABILITY_OF_BEING_A_HOSPITAL),
                     new KeyValuePair<object, double>(typeof(Supermarket), PROBABILITY_OF_BEING_A_SUPERMARKET),
             };
-            buildingSites.Add(new Outside());
+            sites.Add(outside);
 
             #region list
             buildingSitesDictionnary.Add(SiteType.Hospital, new List<Site>());
             buildingSitesDictionnary.Add(SiteType.Store, new List<Site>());
             buildingSitesDictionnary.Add(SiteType.WorkPlace, new List<Site>());
-            buildingSitesDictionnary.Add(SiteType.Hobby, new List<Site>());
             buildingSitesDictionnary.Add(SiteType.Eat, new List<Site>());
             buildingSitesDictionnary.Add(SiteType.School, new List<Site>());
             //buildingSitesDictionnaryArray.Add(typeof(Company), new Site[nbBuildings]);
@@ -217,61 +216,77 @@ namespace CovidPropagation
             while (nbBuildings > 0)
             {
                 Type result = (Type)rdm.NextProbability(companyType);
+                Site site;
 
                 if (result == typeof(Company))
                 {
-                    Company company = new Company();
-                    buildingSitesDictionnary[SiteType.WorkPlace].Add(company);
+                    site = new Company();
+                    buildingSitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
                 else if (result == typeof(Store))
                 {
-                    Store store = new Store();
-                    buildingSitesDictionnary[SiteType.Store].Add(store);
-                    buildingSitesDictionnary[SiteType.WorkPlace].Add(store);
-                    buildingSitesDictionnary[SiteType.Hobby].Add(store);
+                    site = new Store();
+                    buildingSitesDictionnary[SiteType.Store].Add(site);
+                    buildingSitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
                 else if (result == typeof(Restaurant))
                 {
-                    Restaurant restaurant = new Restaurant();
-                    buildingSitesDictionnary[SiteType.Eat].Add(restaurant);
-                    buildingSitesDictionnary[SiteType.WorkPlace].Add(restaurant);
+                    site = new Restaurant();
+                    buildingSitesDictionnary[SiteType.Eat].Add(site);
+                    buildingSitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
                 else if (result == typeof(School))
                 {
-                    School school = new School();
-                    buildingSitesDictionnary[SiteType.School].Add(school);
-                    buildingSitesDictionnary[SiteType.WorkPlace].Add(school);
+                    site = new School();
+                    buildingSitesDictionnary[SiteType.School].Add(site);
+                    buildingSitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
                 else if (result == typeof(Hospital))
                 {
-                    Hospital hospital = new Hospital();
-                    buildingSitesDictionnary[SiteType.Hospital].Add(hospital);
-                    buildingSitesDictionnary[SiteType.WorkPlace].Add(hospital);
+                    site = new Hospital();
+                    buildingSitesDictionnary[SiteType.Hospital].Add(site);
+                    buildingSitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
                 else
                 {
-                    Supermarket supermarket = new Supermarket();
-                    buildingSitesDictionnary[SiteType.Store].Add(supermarket);
-                    buildingSitesDictionnary[SiteType.WorkPlace].Add(supermarket);
+                    site = new Supermarket();
+                    buildingSitesDictionnary[SiteType.Store].Add(site);
+                    buildingSitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
-
+                sites.Add(site);
                 nbBuildings--;
             }
+            #endregion
 
+            #region missingBuildings
+            Site missingSite;
             if (buildingSitesDictionnary[SiteType.Hospital].Count == 0)
-                buildingSitesDictionnary[SiteType.Hospital].Add(new Hospital());
+            {
+                missingSite = new Hospital();
+                sites.Add(missingSite);
+                buildingSitesDictionnary[SiteType.Hospital].Add(missingSite);
+            }
 
             if (buildingSitesDictionnary[SiteType.Store].Count == 0)
-                buildingSitesDictionnary[SiteType.Store].Add(new Store());
-
-            if (buildingSitesDictionnary[SiteType.Hobby].Count == 0)
-                buildingSitesDictionnary[SiteType.Hobby].Add(new Restaurant());
-
+            {
+                missingSite = new Store();
+                sites.Add(missingSite);
+                buildingSitesDictionnary[SiteType.Store].Add(missingSite);
+            }
+                
             if (buildingSitesDictionnary[SiteType.Eat].Count == 0)
-                buildingSitesDictionnary[SiteType.Eat].Add(new Restaurant());
-
+            {
+                missingSite = new Restaurant();
+                sites.Add(missingSite);
+                buildingSitesDictionnary[SiteType.Eat].Add(missingSite);
+            }
+                
             if (buildingSitesDictionnary[SiteType.School].Count == 0)
-                buildingSitesDictionnary[SiteType.School].Add(new School());
+            {
+                missingSite = new School();
+                sites.Add(missingSite);
+                buildingSitesDictionnary[SiteType.School].Add(missingSite);
+            }
 
             #endregion
         }
@@ -305,104 +320,98 @@ namespace CovidPropagation
                 int age;
                 int nbWorkDays;
                 Home home = new Home();
-                PersonState personState;
-                List<KeyValuePair<Site, SitePersonStatus>> personSitesFree;
                 Hospital hospital = (Hospital)buildingSitesDictionnary[SiteType.Hospital][rdm.Next(0, buildingSitesDictionnary[SiteType.Hospital].Count)];
+                Dictionary<SiteType, List<Site>> personSites = new Dictionary<SiteType, List<Site>>();
+                PersonState personState;
 
-                if (rdm.NextBoolean(_probabilityOfInfected))
+                if (rdm.NextBoolean(_probabilityOfBeingInfected))
                     personState = PersonState.Infectious;
                 else
                     personState = PersonState.Healthy;
 
+                // Sélectionne les lieux dans lesquels l'individu va se déplacer en fonction des probabilité qu'il a d'être soit retraité soit mineur soit en âge de travailler.
                 if (GlobalVariables.rdm.NextBoolean(retirementProbability))
                 {
-                    personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
-                        new KeyValuePair<Site, SitePersonStatus>(
-                            home,
-                            SitePersonStatus.Other
-                        ),
-                        new KeyValuePair<Site, SitePersonStatus>(
+                    personSites = new Dictionary<SiteType, List<Site>>() {
+                        { SiteType.Home, new List<Site>{home} },
+                        { SiteType.Store, new List<Site>{
                             buildingSitesDictionnary[SiteType.Store][rdm.Next(0, buildingSitesDictionnary[SiteType.Store].Count)],
-                            SitePersonStatus.Client
-                        ),
-                        new KeyValuePair<Site, SitePersonStatus>(
+                            buildingSitesDictionnary[SiteType.Store][rdm.Next(0, buildingSitesDictionnary[SiteType.Store].Count)],
+                            buildingSitesDictionnary[SiteType.Store][rdm.Next(0, buildingSitesDictionnary[SiteType.Store].Count)]
+                            }
+                        },
+                        { SiteType.Eat, new List<Site>{
                             buildingSitesDictionnary[SiteType.Eat][rdm.Next(0, buildingSitesDictionnary[SiteType.Eat].Count)],
-                            SitePersonStatus.Client
-                        ),
-                        new KeyValuePair<Site, SitePersonStatus>(
-                            GetVehicle(),
-                            SitePersonStatus.Other
-                        )
+                            buildingSitesDictionnary[SiteType.Eat][rdm.Next(0, buildingSitesDictionnary[SiteType.Eat].Count)],
+                            buildingSitesDictionnary[SiteType.Eat][rdm.Next(0, buildingSitesDictionnary[SiteType.Eat].Count)]
+                            }
+                        },
+                        { SiteType.Transport, new List<Site>{ GetVehicle() } }
                     };
                     age = 70; // Changer pour age random
                     nbWorkDays = 0;
                 }
                 else if (GlobalVariables.rdm.NextBoolean(minorProbability))
                 {
-                    personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
-                       new KeyValuePair<Site, SitePersonStatus>(
-                            home,
-                            SitePersonStatus.Other
-                       ),
-                       new KeyValuePair<Site, SitePersonStatus>(
+                    personSites = new Dictionary<SiteType, List<Site>>() {
+                        { SiteType.Home, new List<Site>{home} },
+                        { SiteType.Store, new List<Site>{
                             buildingSitesDictionnary[SiteType.Store][rdm.Next(0, buildingSitesDictionnary[SiteType.Store].Count)],
-                            SitePersonStatus.Client
-                       ),
-                       new KeyValuePair<Site, SitePersonStatus>(
+                            buildingSitesDictionnary[SiteType.Store][rdm.Next(0, buildingSitesDictionnary[SiteType.Store].Count)],
+                            buildingSitesDictionnary[SiteType.Store][rdm.Next(0, buildingSitesDictionnary[SiteType.Store].Count)]
+                            }
+                        },
+                        { SiteType.Eat, new List<Site>{
                             buildingSitesDictionnary[SiteType.Eat][rdm.Next(0, buildingSitesDictionnary[SiteType.Eat].Count)],
-                            SitePersonStatus.Client
-                       ),
-                       new KeyValuePair<Site, SitePersonStatus>(
-                            buildingSites.Where(b => typeof(Outside) == b.GetType()).First(),
-                            SitePersonStatus.Other
-                       ),
-                       new KeyValuePair<Site, SitePersonStatus>(
-                            buildingSitesDictionnary[SiteType.School][rdm.Next(0, buildingSitesDictionnary[SiteType.School].Count)],
-                            SitePersonStatus.Worker
-                       )
-                   };
+                            buildingSitesDictionnary[SiteType.Eat][rdm.Next(0, buildingSitesDictionnary[SiteType.Eat].Count)],
+                            buildingSitesDictionnary[SiteType.Eat][rdm.Next(0, buildingSitesDictionnary[SiteType.Eat].Count)]
+                            }
+                        },
+                        { SiteType.Transport, new List<Site>{ 
+                            outside 
+                            } 
+                        },
+                        { SiteType.WorkPlace, new List<Site>{ 
+                            buildingSitesDictionnary[SiteType.School][rdm.Next(0, buildingSitesDictionnary[SiteType.School].Count)] 
+                            } 
+                        },
+                    };
                     age = 15; // Changer pour age random
                     nbWorkDays = 5;
                 }
                 else
                 {
-                    personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
-                         new KeyValuePair<Site, SitePersonStatus>(
-                             home,
-                             SitePersonStatus.Other
-                         ),
-                         new KeyValuePair<Site, SitePersonStatus>(
-                             buildingSitesDictionnary[SiteType.Store][rdm.Next(0, buildingSitesDictionnary[SiteType.Store].Count)],
-                             SitePersonStatus.Client
-                         ),
-                         new KeyValuePair<Site, SitePersonStatus>(
-                             buildingSitesDictionnary[SiteType.Eat][rdm.Next(0, buildingSitesDictionnary[SiteType.Eat].Count)],
-                             SitePersonStatus.Client
-                         ),
-                         new KeyValuePair<Site, SitePersonStatus>(
-                             buildingSitesDictionnary[SiteType.WorkPlace][rdm.Next(0, buildingSitesDictionnary[SiteType.WorkPlace].Count)],
-                             SitePersonStatus.Worker
-                         ),
-                         new KeyValuePair<Site, SitePersonStatus>(
-                             GetVehicle(),
-                             SitePersonStatus.Other
-                         )
-                     };
-                    //Site workplace = buildingSitesDictionnary[SiteType.WorkPlace][rdm.Next(0, buildingSitesDictionnary[SiteType.WorkPlace].Count)];
-                    //buildingSitesDictionnary.Add(SiteType.Hobby, new List<Site>());
-
+                    personSites = new Dictionary<SiteType, List<Site>>() {
+                        { SiteType.Home, new List<Site>{home} },
+                        { SiteType.Store, new List<Site>{
+                            buildingSitesDictionnary[SiteType.Store][rdm.Next(0, buildingSitesDictionnary[SiteType.Store].Count)],
+                            buildingSitesDictionnary[SiteType.Store][rdm.Next(0, buildingSitesDictionnary[SiteType.Store].Count)],
+                            buildingSitesDictionnary[SiteType.Store][rdm.Next(0, buildingSitesDictionnary[SiteType.Store].Count)]
+                            }
+                        },
+                        { SiteType.Eat, new List<Site>{
+                            buildingSitesDictionnary[SiteType.Eat][rdm.Next(0, buildingSitesDictionnary[SiteType.Eat].Count)],
+                            buildingSitesDictionnary[SiteType.Eat][rdm.Next(0, buildingSitesDictionnary[SiteType.Eat].Count)],
+                            buildingSitesDictionnary[SiteType.Eat][rdm.Next(0, buildingSitesDictionnary[SiteType.Eat].Count)]
+                            }
+                        },
+                        { SiteType.Transport, new List<Site>{
+                            outside,
+                            GetVehicle()
+                            }
+                        },
+                        { SiteType.WorkPlace, new List<Site>{ 
+                            buildingSitesDictionnary[SiteType.WorkPlace][rdm.Next(0, buildingSitesDictionnary[SiteType.WorkPlace].Count)] 
+                            } 
+                        }
+                    };
                     age = 30; // Changer pour age random
                     nbWorkDays = 5;
                 }
-                // Param:
-                // Site workplace
-                // Site home
-                // List<Site> hobbies
-                // Pointeur sur les listes --> Store, Eat
 
                 homes.Add(home);
-                buildingSites.Add(home);
-                Planning planning = new Planning(personSitesFree, nbWorkDays);
+                sites.Add(home);
+                Planning planning = new Planning(personSites, nbWorkDays);
                 population.Add(new Person(planning, hospital, age, personState));
                 nbPeople--;
             }
@@ -439,6 +448,22 @@ namespace CovidPropagation
             return 1;
         }
 
+        /// <summary>
+        /// Récupère un véhicule qu'un individu utilisera.
+        /// </summary>
+        /// <returns></returns>
+        private Site GetVehicle()
+        {
+            KeyValuePair<object, double>[] transportsProbability = new KeyValuePair<object, double>[] {
+                new KeyValuePair<object, double>(new Car(), PROBABILITY_OF_USING_A_CAR),
+                new KeyValuePair<object, double>(sites.Where(b => typeof(Outside) == b.GetType()).First(), PROBABILITY_OF_WALKING),
+                new KeyValuePair<object, double>(new Bike(), PROBABILITY_OF_USING_A_BIKE), 
+                //new KeyValuePair<object, double>(allBuildingSites.Where(b => typeof(Bus) == b.GetType()).OrderBy(x => rdm.Next()).First(), PROBABILITY_OF_USING_A_BUS),
+            };
+            return (Site)rdm.NextProbability(transportsProbability);
+        }
+
+        /*
         private int CreateRetired()
         {
             KeyValuePair<object, double>[] retiredPresetsProbability = new KeyValuePair<object, double>[] {
@@ -470,13 +495,13 @@ namespace CovidPropagation
                     else
                         locations.Add(typeof(Car), new Outside());
 
-                    locations.Add(typeof(Outside), buildingSites.Where(b => typeof(Outside) == b.GetType()).First());
-                    locations.Add(typeof(Company), buildingSites.Where(b => typeof(Company) == b.GetType()).First());
-                    locations.Add(typeof(Hospital), buildingSites.Where(b => typeof(Hospital) == b.GetType()).First());
-                    locations.Add(typeof(Restaurant), buildingSites.Where(b => typeof(Restaurant) == b.GetType()).First());
-                    locations.Add(typeof(School), buildingSites.Where(b => typeof(School) == b.GetType()).First());
-                    locations.Add(typeof(Store), buildingSites.Where(b => typeof(Store) == b.GetType()).First());
-                    locations.Add(typeof(Supermarket), buildingSites.Where(b => typeof(Supermarket) == b.GetType()).First());
+                    locations.Add(typeof(Outside), sites.Where(b => typeof(Outside) == b.GetType()).First());
+                    locations.Add(typeof(Company), sites.Where(b => typeof(Company) == b.GetType()).First());
+                    locations.Add(typeof(Hospital), sites.Where(b => typeof(Hospital) == b.GetType()).First());
+                    locations.Add(typeof(Restaurant), sites.Where(b => typeof(Restaurant) == b.GetType()).First());
+                    locations.Add(typeof(School), sites.Where(b => typeof(School) == b.GetType()).First());
+                    locations.Add(typeof(Store), sites.Where(b => typeof(Store) == b.GetType()).First());
+                    locations.Add(typeof(Supermarket), sites.Where(b => typeof(Supermarket) == b.GetType()).First());
 
                     //population.Add(new Person(planning));
                     nbCreated = 1;
@@ -511,20 +536,6 @@ namespace CovidPropagation
 
             return nbCreated = 1;
         }
-
-        /// <summary>
-        /// Récupère un véhicule qu'un individu utilisera.
-        /// </summary>
-        /// <returns></returns>
-        private Site GetVehicle()
-        {
-            KeyValuePair<object, double>[] transportsProbability = new KeyValuePair<object, double>[] {
-                new KeyValuePair<object, double>(new Car(), PROBABILITY_OF_USING_A_CAR),
-                new KeyValuePair<object, double>(buildingSites.Where(b => typeof(Outside) == b.GetType()).First(), PROBABILITY_OF_WALKING),
-                new KeyValuePair<object, double>(new Bike(), PROBABILITY_OF_USING_A_BIKE), 
-                //new KeyValuePair<object, double>(allBuildingSites.Where(b => typeof(Bus) == b.GetType()).OrderBy(x => rdm.Next()).First(), PROBABILITY_OF_USING_A_BUS),
-            };
-            return (Site)rdm.NextProbability(transportsProbability);
-        }
+        */
     }
 }

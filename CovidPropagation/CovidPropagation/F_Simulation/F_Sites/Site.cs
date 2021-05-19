@@ -28,8 +28,6 @@ namespace CovidPropagation
         bool workersMustWearMasks;
 
         #region probability
-        double hospitalisationRate = 20;
-        double deathRate = 4;
         // Size
         protected double length;
         protected double width;
@@ -137,17 +135,17 @@ namespace CovidPropagation
                     AerosolTransmission aerosolTransmission = Virus.GetTransmission(typeof(AerosolTransmission)) as AerosolTransmission;
                     NbPersons = persons.Count;
                     NbInfectivePersons = CountNumberInfectivePersons();
-                    FractionOfImmune = GetFractionOfImmune(NbPersons);
+                    FractionOfImmune = GetFractionOfImmune();
 
                     NbPersonsWithMask = CountPersonsWithMask(); 
-                    FractionPersonsWithMask = GetFractionpersonsWithMask(NbPersonsWithMask, NbPersons);
+                    FractionPersonsWithMask = GetFractionPersonsWithMask();
 
-                    InhalationMaskEfficiency = GetInhalationMaskEfficiency(NbPersonsWithMask);
-                    ExhalationMaskEfficiency = GetExhalationMaskEfficiency(NbPersonsWithMask);
+                    InhalationMaskEfficiency = GetInhalationMaskEfficiency();
+                    ExhalationMaskEfficiency = GetExhalationMaskEfficiency();
 
                     ProbabilityOfBeingInfective = GetprobabilityOfBeingInfective(); // actuellement valeur fixe
 
-                    QuantaExhalationRateOfInfected = GetQuantaExhalationRateofInfected(NbInfectivePersons);
+                    QuantaExhalationRateOfInfected = GetQuantaExhalationRateofInfected();
                     NetEmissionRate = GetNetEmissionRate(QuantaExhalationRateOfInfected, ExhalationMaskEfficiency, 
                                                                 FractionPersonsWithMask, NbInfectivePersons);
 
@@ -201,12 +199,21 @@ namespace CovidPropagation
             personLeaving.RemoveMask();
         }
 
+        /// <summary>
+        /// Applique oui ou non la mesure du port des masques aux client et/ou aux employés.
+        /// </summary>
+        /// <param name="clientsMustWearMasks">True si les clients doivent porter le masque.</param>
+        /// <param name="workersMustWearMasks">True si les employés doivent porter le masque</param>
         public void SetMaskMeasure(bool clientsMustWearMasks, bool workersMustWearMasks)
         {
             this.clientsMustWearMasks = clientsMustWearMasks;
             this.workersMustWearMasks = workersMustWearMasks;
         }
 
+        /// <summary>
+        /// Définit si les distanciation social sont en place ou non.
+        /// Change les mesures de controles additionnels en fonction du paramètre.
+        /// </summary>
         public void SetDistanciations(bool isDistanciationSet)
         {
             additionalControlMeasures = isDistanciationSet.ConvertToInt();
@@ -214,60 +221,103 @@ namespace CovidPropagation
         }
 
         #region Calculs
+
+        /// <summary>
+        /// Compte le nombre d'infecté dans le bâtiments.
+        /// </summary>
+        /// <returns>Nombre d'infectés.</returns>
         private int CountNumberInfectivePersons()
         {
             return persons.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count();
         }
-        private double GetFractionOfImmune(double nbPersons)
+
+        /// <summary>
+        /// Compte le pourcentage d'individus infectés dans le bâtiment.
+        /// </summary>
+        /// <returns>Pourcentage d'infecté dans le bâtiment.</returns>
+        private double GetFractionOfImmune()
         {
-            return (double)persons.Where(p => p.CurrentState == PersonState.Immune).Count() / nbPersons * 100d;
+            return (double)persons.Where(p => p.CurrentState == PersonState.Immune).Count() / NbPersons * 100d;
         }
+
+        /// <summary>
+        /// Compte le nombre de personnes qui portent le masque dans le bâtiment.
+        /// </summary>
+        /// <returns>Nombre de personnes qui portent le masque.</returns>
         private int CountPersonsWithMask()
         {
             return persons.Where(p => p.HasMask).Count();
         }
 
-        private double GetFractionpersonsWithMask(double nbPersonsWithMask, double nbPersons)
+        /// <summary>
+        /// Récupère le pourcentage de personnes qui porte le masque dans le bâtiment.
+        /// </summary>
+        /// <returns>Pourcentage de personnes portant le masque.</returns>
+        private double GetFractionPersonsWithMask()
         {
-            return nbPersonsWithMask / (nbPersons / 100d) / 100d; //fractionPersonsWithMask = fractionPersonsWithMask.SetValueIfNaN();
+            return NbPersonsWithMask / (NbPersons / 100d) / 100d; //fractionPersonsWithMask = fractionPersonsWithMask.SetValueIfNaN();
         }
 
-        private double GetInhalationMaskEfficiency(double nbPersonsWithMask)
+        /// <summary>
+        /// Récupère la moyenne d'éfficacité de filtrage, lors d'une inhalation, des masque présents dans le bâtiment.
+        /// </summary>
+        /// <returns>Moyenne d'efficacité des masques</returns>
+        private double GetInhalationMaskEfficiency()
         {
             double inhalationMaskEfficiency = (double)persons.Where(p => p.HasMask)
                                                              .Sum(p => p.InhalationMaskEfficiency) 
-                                                             / nbPersonsWithMask; 
+                                                             / NbPersonsWithMask; 
             return inhalationMaskEfficiency.SetValueIfNaN();
         }
 
-        private double GetExhalationMaskEfficiency(double nbPersonsWithMask)
+        /// <summary>
+        /// Récupère la moyenne d'éfficacité de filtrage, lors d'une exhalation, des masque présents dans le bâtiment.
+        /// </summary>
+        /// <returns>Moyenne d'efficacité des masques</returns>
+        private double GetExhalationMaskEfficiency()
         {
             double exhalationMaskEfficiency = (double)persons.Where(p => p.HasMask)
                                                              .Sum(p => p.ExhalationMaskEfficiency) 
-                                                             / nbPersonsWithMask; 
+                                                             / NbPersonsWithMask; 
             return exhalationMaskEfficiency.SetValueIfNaN();
         }
         
+        /// <summary>
+        /// Récupère la probabilité qu'une personne soit infectieuse.
+        /// </summary>
+        /// <returns>Probabilité qu'une personne soit infectieuse.</returns>
         private double GetprobabilityOfBeingInfective()
         {
             double probabilityOfBeingInfective = 0.0011;//(double)persons.Where(p => (int)p.CurrentState > 2).Count() / (double)nbPersons; // A modifier pour entrer en accord avec la simulation
             return probabilityOfBeingInfective.SetValueIfNaN();
         }
 
-        private double GetQuantaExhalationRateofInfected(double nbInfectivePersons)
+        /// <summary>
+        /// Récupère la moyenne de quanta exhalé par les personnes infectées et contagieuses.
+        /// </summary>
+        /// <returns>Moyenne des quantas exhalés</returns>
+        private double GetQuantaExhalationRateofInfected()
         {
             double quantaExhalationRateOfInfected = persons.Where(p => (int)p.CurrentState > (int)PersonState.Infectious)
                                                             .Sum(p => p.QuantaExhalationRate * (1 - p.ExhalationMaskEfficiency * p.HasMask.ConvertToInt())) 
-                                                            / nbInfectivePersons; 
+                                                            / NbInfectivePersons; 
 
             return quantaExhalationRateOfInfected.SetValueIfNaN();
         }
 
+        /// <summary>
+        /// Récupère les emissions de quantas en prenom en compte le nombre d'infecté ainsi que le nombre de personne portant le masque et leur efficacités.
+        /// </summary>
+        /// <returns>Emissions de quantas</returns>
         private double GetNetEmissionRate(double quantaExhalationRateOfInfected, double exhalationMaskEfficiency, double fractionPersonsWithMask, double nbInfectivePersons)
         {
             return quantaExhalationRateOfInfected * (1 - exhalationMaskEfficiency * fractionPersonsWithMask) * nbInfectivePersons;
         }
 
+        /// <summary>
+        /// Récupère la moyenne de concentration de quanta durant la durée d'un évènement.
+        /// </summary>
+        /// <returns>Moyenne de concentration de quanta durant une période T.</returns>
         private double GetAverageQuantaConcentration(double netEmissionRate, double eventDuration)
         {
             double avgQuantaConcentration = Math.Abs(netEmissionRate) / 
@@ -278,6 +328,10 @@ namespace CovidPropagation
             return avgQuantaConcentration.SetValueIfNaN();
         }
 
+        /// <summary>
+        /// Calcul la moyenne de quantas inhalé par personne durant une période en prenant en compte les masques et leur efficacité.
+        /// </summary>
+        /// <returns>Moyenne de quantas inhalé par personnes.</returns>
         private double GetQuantaInhaledPerPerson(double avgQuantaConcentration, double eventDuration, double inhalationMaskEfficiency, double fractionPersonsWithMask)
         {
             double quantaInhaledPerPerson = avgQuantaConcentration * Math.Abs(SumFirstOrderLossRate) * eventDuration * (1 - inhalationMaskEfficiency * fractionPersonsWithMask);

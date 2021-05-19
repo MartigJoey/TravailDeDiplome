@@ -20,7 +20,7 @@ namespace CovidPropagation
         private TimeFrame[] _timeFrames;
         public TimeFrame[] TimeFrames { get => _timeFrames; }
 
-        public Day(List<KeyValuePair<Site, SitePersonStatus>> personSites, bool isWorkDay)
+        public Day(Dictionary<SiteType, List<Site>> personSites, bool isWorkDay)
         {
             if (isWorkDay)
                 _timeFrames = CreateWorkDay(personSites);
@@ -57,7 +57,7 @@ namespace CovidPropagation
         /// </summary>
         /// <param name="personSites">Lieux avec lequel le planning sera créé</param>
         /// <returns></returns>
-        private TimeFrame[] CreateWorkDay(List<KeyValuePair<Site, SitePersonStatus>> personSites)
+        private TimeFrame[] CreateWorkDay(Dictionary<SiteType, List<Site>> personSites)
         {
             int totalTimeFrame = GlobalVariables.NUMBER_OF_TIMEFRAME;
             Random rdm = GlobalVariables.rdm;
@@ -75,13 +75,13 @@ namespace CovidPropagation
             int afterNoonFreeTimeTimeFrame = 0;
             int eveningActivityTimeFrame = 0;
 
-            // Calcul la durée de la période sans les activités
             int morningTimeFrame = morningTimeFrameMax - rdm.NextWithMinimum(0, morningVariation, 0);
             int noonTimeFrame = rdm.Next(noonMin, noonTimeFrameMax + 1);
             int afterNoonWorkTimeFrame = afterNoonTimeFrameMax - rdm.NextWithMinimum(0, afterNoonVariation, 0);
             int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, 3);
 
-            // Cakcul la durée de la période des activités
+            #region Activities
+
             if (morningTimeFrame < morningTimeFrameTotal)
                 morningWorkTimeFrame = morningTimeFrameTotal - morningTimeFrame;
 
@@ -93,8 +93,8 @@ namespace CovidPropagation
 
             if (eveningTimeFrame < eveningTimeFrameMax)
                 eveningActivityTimeFrame = eveningTimeFrameMax - eveningTimeFrame;
+            #endregion
 
-            // Calcul le nombre restant de période à combler avant la fin de la journée
             nightTimeFrame = (morningTimeFrame + morningWorkTimeFrame) +
                            (noonTimeFrame) +
                            (afterNoonWorkTimeFrame + afterNoonFreeTimeTimeFrame) +
@@ -103,32 +103,42 @@ namespace CovidPropagation
             nightTimeFrame = totalTimeFrame - nightTimeFrame;
 
             // Choisis les lieux où l'individus va passer son temps en fonction des données reçues.
-            KeyValuePair<Site, SitePersonStatus> hometSite = personSites.Where(h => h.Key.Type.Contains(SiteType.Home)).OrderBy(x => rdm.Next()).First();
-            KeyValuePair<Site, SitePersonStatus> workSite = personSites.Where(w => w.Value == SitePersonStatus.Worker).OrderBy(x => rdm.Next()).First();
+            KeyValuePair<Site, SitePersonStatus> hometSite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[SiteType.Home][rdm.Next(0, personSites[SiteType.Home].Count)],
+                SitePersonStatus.Other
+                );
 
-            // Choisi le lieu où manger, sur le lieu de travail ou ailleurs
+            KeyValuePair<Site, SitePersonStatus> workSite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[SiteType.WorkPlace][rdm.Next(0, personSites[SiteType.WorkPlace].Count)],
+                SitePersonStatus.Worker
+                );
+
             KeyValuePair<Site, SitePersonStatus> noonSite;
+
+            // Manger sur le lieu de travail ou ailleurs
             if (rdm.NextBoolean())
-                noonSite = personSites.Where(e => e.Key.Type.Contains(SiteType.Eat) && e.Value == SitePersonStatus.Client).OrderBy(x => rdm.Next()).First();
+                noonSite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[SiteType.Eat][rdm.Next(0, personSites[SiteType.Eat].Count)],
+                SitePersonStatus.Client
+                );
             else
                 noonSite = workSite;
 
-            // Choisis le lieu de l'après-midi
-            KeyValuePair<Site, SitePersonStatus> afterNoonFreeTimeSite = personSites.Where(
-                    f => f.Value == SitePersonStatus.Client ||
-                    f.Value == SitePersonStatus.Other &&
-                    !f.Key.Type.Contains(SiteType.Transport)
-                ).OrderBy(x => rdm.Next()).First();
+            SiteType afterNoonSiteType = (SiteType)rdm.Next(0, (int)SiteType.Eat);
+            KeyValuePair<Site, SitePersonStatus> afterNoonFreeTimeSite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[afterNoonSiteType][rdm.Next(0, personSites[afterNoonSiteType].Count)],
+                SitePersonStatus.Worker
+                );
 
-            // Choisi le lieu de l'activité du soir
-            KeyValuePair<Site, SitePersonStatus> eveningActivitySite = personSites.Where(
-                    a => a.Value == SitePersonStatus.Client ||
-                    a.Value == SitePersonStatus.Other &&
-                    a.Key.Type.Contains(SiteType.Eat)
-                ).OrderBy(x => rdm.Next()).First();
+            KeyValuePair<Site, SitePersonStatus> eveningActivitySite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[SiteType.Eat][rdm.Next(0, personSites[SiteType.Eat].Count)],
+                SitePersonStatus.Client
+                );
 
-            // Choisis le type de transport
-            KeyValuePair<Site, SitePersonStatus> transportSite = personSites.Where(t => t.Key.Type.Contains(SiteType.Transport)).OrderBy(x => rdm.Next()).First();
+            KeyValuePair<Site, SitePersonStatus> transportSite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[SiteType.Transport][rdm.Next(0, personSites[SiteType.Transport].Count)],
+                SitePersonStatus.Other
+                );
 
             timeFrames = new List<TimeFrame>(totalTimeFrame);
             // Changer les siteType pour définir le type
@@ -146,7 +156,7 @@ namespace CovidPropagation
         /// </summary>
         /// <param name="personSites">Lieux avec lequel le planning sera créé</param>
         /// <returns></returns>
-        private TimeFrame[] CreateFreeDay(List<KeyValuePair<Site, SitePersonStatus>> personSites)
+        private TimeFrame[] CreateFreeDay(Dictionary<SiteType, List<Site>> personSites)
         {
             int totalTimeFrame = GlobalVariables.NUMBER_OF_TIMEFRAME;
             Random rdm = GlobalVariables.rdm;
@@ -190,12 +200,39 @@ namespace CovidPropagation
 
             nightTimeFrame = totalTimeFrame - nightTimeFrame;
 
-            KeyValuePair<Site, SitePersonStatus> homeSite = personSites.Where(h => h.Key.Type.Contains(SiteType.Home)).OrderBy(x => rdm.Next()).First();
-            KeyValuePair<Site, SitePersonStatus> morningActivitySite = personSites.Where(h => h.Key.Type.Contains(SiteType.Hobby)).OrderBy(x => rdm.Next()).First();
-            KeyValuePair<Site, SitePersonStatus> noonSite = personSites.Where(h => h.Key.Type.Contains(SiteType.Eat)).OrderBy(x => rdm.Next()).First();
-            KeyValuePair<Site, SitePersonStatus> afterNoonActivitySite = personSites.Where(h => h.Key.Type.Contains(SiteType.Hobby)).OrderBy(x => rdm.Next()).First();
-            KeyValuePair<Site, SitePersonStatus> eveningActivitySite = personSites.Where(h => h.Key.Type.Contains(SiteType.Eat)).OrderBy(x => rdm.Next()).First();
-            KeyValuePair<Site, SitePersonStatus> transportSite = personSites.Where(h => h.Key.Type.Contains(SiteType.Transport)).OrderBy(x => rdm.Next()).First();
+            KeyValuePair<Site, SitePersonStatus> homeSite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[SiteType.Home][rdm.Next(0, personSites[SiteType.Home].Count)],
+                SitePersonStatus.Other
+                );
+
+            SiteType morningActivitySiteType = (SiteType)rdm.Next(0, (int)SiteType.Eat);
+            KeyValuePair<Site, SitePersonStatus> morningActivitySite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[morningActivitySiteType][rdm.Next(0, personSites[morningActivitySiteType].Count)],
+                SitePersonStatus.Client
+                );
+
+            KeyValuePair<Site, SitePersonStatus> noonSite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[SiteType.Eat][rdm.Next(0, personSites[SiteType.Eat].Count)],
+                SitePersonStatus.Client
+                );
+
+            SiteType afterNoonActivitySiteType = (SiteType)rdm.Next(0, (int)SiteType.Eat);
+            KeyValuePair<Site, SitePersonStatus> afterNoonActivitySite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[afterNoonActivitySiteType][rdm.Next(0, personSites[afterNoonActivitySiteType].Count)],
+                SitePersonStatus.Other
+                );
+
+            SiteType eveningActivitySiteType = (SiteType)rdm.Next(0, (int)SiteType.Eat);
+            KeyValuePair<Site, SitePersonStatus> eveningActivitySite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[eveningActivitySiteType][rdm.Next(0, personSites[eveningActivitySiteType].Count)],
+                SitePersonStatus.Other
+                );
+
+
+            KeyValuePair<Site, SitePersonStatus> transportSite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[SiteType.Transport][rdm.Next(0, personSites[SiteType.Transport].Count)],
+                SitePersonStatus.Other
+                );
 
             timeFrames = new List<TimeFrame>(totalTimeFrame);
             CreateMorning(timeFrames, homeSite, morningTimeFrame, morningActivitySite, morningActivityTimeFrame, transportSite);

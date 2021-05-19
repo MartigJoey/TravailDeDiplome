@@ -863,3 +863,36 @@
 - Utilisation du profiler pour analyser la charge CPU
   - Le profiler ne détecte pas les données à afficher "Il n'existe aucune donnée dans l'ensemble de filtres actuel."
   - Il s'agit possiblement d'un driver qui pose problème [Source](https://developercommunity.visualstudio.com/t/performance-profiler-not-collecting-data-for-cpu-u-1/1069594). Cependant les versions de windows ne correspondent pas au mien.
+
+# 19.05.2021 7h40 / 17h00
+- Oubli de push le travail de 18
+  - Pas de problème en terme de la continuation de l'optimisation du code
+  - Impossible de continuer les graphiques
+  - Documentation à la place
+- Détection du différence de rapidité entre le pc école et mon pc
+  - Pour la création de 100'000 individus mon pc est 2 secondes plus rapide soit ~30% de gain. 
+  - La ram de mon pc est overclockée à 3600Mhz pouvant expliqué cette différence en sachant le CPU est lui aussi plus récent.
+- Réglage du bug du profiler concernant les performances CPU.
+  - Mise à jour de visual studio
+    - Sans succès
+  - Réparation de visual studio
+    - Succès
+- Documentation
+  - Performances
+    - CPU
+    - Ram
+  - Ajout page de garde
+  - 
+- Modification de la classe Day et planning
+  - Modification du paramètre personSite de list Keyvaluepaire à dictionnaire
+  - Suppression de toutes les requêtes linq
+- Pour 100'000 individus, ~4,5 secondes
+- Pour 500'000 individus, ~23 secondes
+- Pour 1'000'000 individus, ~49 secondes
+- Le profiler bug à nouveau
+  - Réparation de visual studio
+- Mise à jour du planning
+- Ajout de commentaires dans les page Simulation - Paramètres graphiques et paramètres
+- Ajout de commentaires dans la classe Site
+  - Refactorisation de certaines méthodes
+- 

@@ -13,7 +13,7 @@ namespace CovidPropagation
 {
     public class Home : Site
     {
-        private static SiteType[] homeTypes = new SiteType[] { SiteType.Home, SiteType.Hobby, SiteType.Eat };
+        private static SiteType[] homeTypes = new SiteType[] { SiteType.Home, SiteType.Eat };
         public Home(double length = GlobalVariables.BUILDING_LENGTH,
                            double width = GlobalVariables.BUILDING_WIDTH,
                            double height = GlobalVariables.BUILDING_HEIGHT,

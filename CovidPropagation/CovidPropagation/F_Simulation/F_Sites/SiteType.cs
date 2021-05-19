@@ -7,11 +7,10 @@ namespace CovidPropagation
     public enum SiteType
     {
         Home,
-        Hobby,
         Store,
+        Eat, // Est utilisé comme valeur maximum de la sélection d'index de hobby
         Transport,
         Hospital,
-        Eat,
         WorkPlace,
         School
     }

@@ -25,7 +25,7 @@ namespace CovidPropagation
         private Day[] _days = new Day[GlobalVariables.NUMBER_OF_DAY];
         public Day[] Days { get => _days; }
 
-        public Planning(List<KeyValuePair<Site, SitePersonStatus>> personSites, int nbWorkDays)
+        public Planning(Dictionary<SiteType, List<Site>> personSites, int nbWorkDays)
         {
             bool[] workDays = new bool[GlobalVariables.NUMBER_OF_DAY];
             Random rdm = GlobalVariables.rdm;
