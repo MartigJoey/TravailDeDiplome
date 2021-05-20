@@ -38,7 +38,7 @@ namespace CovidPropagation
 
         private void SimulationPage_Click(object sender, RoutedEventArgs e)
         {
-            pageSimulation.SetGrid(pageGraphicSettings.GetGrid(), pageGraphicSettings.GetGraphicsData());
+            pageSimulation.SetGrid(pageGraphicSettings.GetGrid(), pageGraphicSettings.GetChartsData());
             MainContent.Navigate(pageSimulation);
         }
 

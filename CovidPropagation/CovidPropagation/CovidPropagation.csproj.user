@@ -22,7 +22,7 @@
     <Compile Update="PageSimulationSettings.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="WindowGraph.xaml.cs">
+    <Compile Update="WindowChart.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -45,7 +45,7 @@
     <Page Update="PageSimulationSettings.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="WindowGraph.xaml">
+    <Page Update="WindowChart.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

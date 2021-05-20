@@ -23,9 +23,9 @@ namespace CovidPropagation
 
         private const int DEFAULT_AXIS_X_VALUE = 0;
         private const int DEFAULT_AXIS_Y_VALUE = 3;
-        private const int DEFAULT_GRAPHIC_TYPE = 0;
+        private const int DEFAULT_CHART_TYPE = 0;
 
-        public static GraphicData[,] graphicsDatas = new GraphicData[MAX_GRID_SIZE, MAX_GRID_SIZE];
+        public static ChartData[,] chartsDatas = new ChartData[MAX_GRID_SIZE, MAX_GRID_SIZE];
         private bool[,] gridHasContent = new bool[MAX_GRID_SIZE, MAX_GRID_SIZE];
         public int oldX = MAX_GRID_SIZE + 1;
         int oldY = MAX_GRID_SIZE + 1;
@@ -84,7 +84,7 @@ namespace CovidPropagation
             }
         }
 
-        private void AddGraph_Click(object sender, RoutedEventArgs e)
+        private void AddChart_Click(object sender, RoutedEventArgs e)
         {
             int[] emptyIndex = GetFirstEmptyCell();
             int x = emptyIndex[0];
@@ -93,16 +93,16 @@ namespace CovidPropagation
             if (x < MAX_GRID_SIZE)
             {
                 Grid cell = new Grid();
-                Button btnRemove = CreateGraphButton("GraphCloseStyle", "./Images/close.png");
-                Button btnMove = CreateGraphButton("GraphButtonStyle", "./Images/cursor-move.png");
+                Button btnRemove = CreateChartButton("GraphCloseStyle", "./Images/close.png");
+                Button btnMove = CreateChartButton("GraphButtonStyle", "./Images/cursor-move.png");
 
-                Button btnWidthPlus = CreateGraphButton("GraphButtonStyle", "./Images/arrow-right.png");
-                Button btnWidthMinus = CreateGraphButton("GraphButtonStyle", "./Images/arrow-left.png");
+                Button btnWidthPlus = CreateChartButton("GraphButtonStyle", "./Images/arrow-right.png");
+                Button btnWidthMinus = CreateChartButton("GraphButtonStyle", "./Images/arrow-left.png");
 
-                Button btnHeightPlus = CreateGraphButton("GraphButtonStyle", "./Images/arrow-down.png");
-                Button btnHeightMinus = CreateGraphButton("GraphButtonStyle", "./Images/arrow-up.png");
+                Button btnHeightPlus = CreateChartButton("GraphButtonStyle", "./Images/arrow-down.png");
+                Button btnHeightMinus = CreateChartButton("GraphButtonStyle", "./Images/arrow-up.png");
 
-                Button btnGraphSettings = CreateGraphButton("GraphButtonStyle", "./Images/cog.png");
+                Button btnChartSettings = CreateChartButton("GraphButtonStyle", "./Images/cog.png");
 
                 RowDefinition firstRow = new RowDefinition();
                 firstRow.MinHeight = 30;
@@ -114,16 +114,16 @@ namespace CovidPropagation
                 cell.VerticalAlignment = VerticalAlignment.Stretch;
                 cell.HorizontalAlignment = HorizontalAlignment.Stretch;
 
-                btnMove.PreviewMouseDown += GraphDragOn_MouseDown;
-                btnMove.PreviewMouseUp += GraphDragOff_MouseUp;
-                btnRemove.Click += RemoveGraph_Click;
+                btnMove.PreviewMouseDown += ChartDragOn_MouseDown;
+                btnMove.PreviewMouseUp += ChartDragOff_MouseUp;
+                btnRemove.Click += RemoveChart_Click;
 
-                btnWidthPlus.Click += GrapheWidthUp_Click;
-                btnWidthMinus.Click += GrapheWidthDown_Click;
-                btnHeightPlus.Click += GrapheHeightUp_Click;
-                btnHeightMinus.Click += GrapheHeightDown_Click;
+                btnWidthPlus.Click += ChartWidthUp_Click;
+                btnWidthMinus.Click += ChartWidthDown_Click;
+                btnHeightPlus.Click += ChartHeightUp_Click;
+                btnHeightMinus.Click += ChartHeightDown_Click;
 
-                btnGraphSettings.Click += OpenGraphSettings_Click;
+                btnChartSettings.Click += OpenChartSettings_Click;
 
                 Grid.SetColumn(btnWidthPlus, 0);
                 Grid.SetRow(btnWidthPlus, 0);
@@ -143,10 +143,10 @@ namespace CovidPropagation
                 Grid.SetColumn(btnRemove, 5);
                 Grid.SetRow(btnRemove, 0);
 
-                Grid.SetColumn(btnGraphSettings, 0);
-                Grid.SetColumnSpan(btnGraphSettings, 6);
-                Grid.SetRow(btnGraphSettings, 1);
-                Grid.SetRowSpan(btnGraphSettings, 4);
+                Grid.SetColumn(btnChartSettings, 0);
+                Grid.SetColumnSpan(btnChartSettings, 6);
+                Grid.SetRow(btnChartSettings, 1);
+                Grid.SetRowSpan(btnChartSettings, 4);
 
                 cell.Children.Add(btnMove);
                 cell.Children.Add(btnRemove);
@@ -154,7 +154,7 @@ namespace CovidPropagation
                 cell.Children.Add(btnWidthMinus);
                 cell.Children.Add(btnHeightPlus);
                 cell.Children.Add(btnHeightMinus);
-                cell.Children.Add(btnGraphSettings);
+                cell.Children.Add(btnChartSettings);
 
                 cell.Background = Brushes.White;
 
@@ -162,8 +162,8 @@ namespace CovidPropagation
                 Grid.SetRow(cell, y);
 
                 gridHasContent[x, y] = true;
-                GraphicData grpData = new GraphicData(x, y, 1, 1, new int[] { 0 }, DEFAULT_GRAPHIC_TYPE, DEFAULT_AXIS_X_VALUE, DEFAULT_AXIS_Y_VALUE);
-                graphicsDatas[x, y] = grpData;
+                ChartData grpData = new ChartData(x, y, 1, 1, new int[] { 0 }, DEFAULT_CHART_TYPE, DEFAULT_AXIS_X_VALUE, DEFAULT_AXIS_Y_VALUE);
+                chartsDatas[x, y] = grpData;
                 dynamicGrid.Children.Add(cell);
             }
         }
@@ -184,7 +184,7 @@ namespace CovidPropagation
             }
         }
 
-        private Button CreateGraphButton(string style, string imageSource)
+        private Button CreateChartButton(string style, string imageSource)
         {
             Button btn = new Button();
             btn.Style = this.FindResource(style) as Style;
@@ -197,7 +197,7 @@ namespace CovidPropagation
             return btn;
         }
 
-        private void RemoveGraph_Click(object sender, RoutedEventArgs e)
+        private void RemoveChart_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
             Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
@@ -205,11 +205,11 @@ namespace CovidPropagation
             int x = Grid.GetColumn(cell), y = Grid.GetRow(cell);
             int columnSpan = Grid.GetColumnSpan(cell), rowSpan = Grid.GetRowSpan(cell);
             SetCellsContent(x, y, x + columnSpan, y + rowSpan, false);
-            graphicsDatas[x, y].SetAsNull();
+            chartsDatas[x, y].SetAsNull();
             dynamicGrid.Children.Remove(cell);
         }
 
-        private void GraphDragOn_MouseDown(object sender, MouseButtonEventArgs e)
+        private void ChartDragOn_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Button btn = (Button)sender;
             Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
@@ -219,7 +219,7 @@ namespace CovidPropagation
             SetCellsContent(oldX, oldY, oldX + columnSpan, oldY + rowSpan, false); // Libère l'espace anciennement occupé
         }
 
-        private void GraphDragOff_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ChartDragOff_MouseUp(object sender, MouseButtonEventArgs e)
         {
             Button btn = (Button)sender;
             Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
@@ -234,8 +234,8 @@ namespace CovidPropagation
                 Grid.SetColumn(cell, newCoordinates[0]);
                 Grid.SetRow(cell, newCoordinates[1]);
                 SetCellsContent(x, y, x + columnSpan, y + rowSpan, true); // Bloque le nouvel espace occupé
-                graphicsDatas[x, y] = graphicsDatas[oldX, oldY].CloneInNewLocation(x,y);
-                graphicsDatas[oldX, oldY].SetAsNull();
+                chartsDatas[x, y] = chartsDatas[oldX, oldY].CloneInNewLocation(x,y);
+                chartsDatas[oldX, oldY].SetAsNull();
             }
             else
             {
@@ -245,7 +245,7 @@ namespace CovidPropagation
             oldY = MAX_GRID_SIZE + 1;
         }
 
-        private void GrapheWidthUp_Click(object sender, RoutedEventArgs e)
+        private void ChartWidthUp_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
             Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
@@ -259,11 +259,11 @@ namespace CovidPropagation
             {
                 Grid.SetColumnSpan(cell, columnSpan + 1);
                 SetCellsContent(x, y, x + columnSpan + 1, y + rowSpan, true);
-                graphicsDatas[x, y].SpanX++;
+                chartsDatas[x, y].SpanX++;
             }
         }
 
-        private void GrapheWidthDown_Click(object sender, RoutedEventArgs e)
+        private void ChartWidthDown_Click(object sender, RoutedEventArgs e)
         {
 
             Button btn = (Button)sender;
@@ -277,11 +277,11 @@ namespace CovidPropagation
             {
                 Grid.SetColumnSpan(cell, columnSpan - 1);
                 SetCellsContent(x + 1, y, x + columnSpan + 1, y + rowSpan, false);
-                graphicsDatas[x, y].SpanX--;
+                chartsDatas[x, y].SpanX--;
             }
         }
 
-        private void GrapheHeightUp_Click(object sender, RoutedEventArgs e)
+        private void ChartHeightUp_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
             Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
@@ -296,11 +296,11 @@ namespace CovidPropagation
                 Grid.SetRowSpan(cell, rowSpan + 1);
                 SetCellsContent(x, y, x + columnSpan, y + rowSpan + 1, true);
 
-                graphicsDatas[x, y].SpanY++;
+                chartsDatas[x, y].SpanY++;
             }
         }
 
-        private void GrapheHeightDown_Click(object sender, RoutedEventArgs e)
+        private void ChartHeightDown_Click(object sender, RoutedEventArgs e)
         {
 
             Button btn = (Button)sender;
@@ -315,35 +315,35 @@ namespace CovidPropagation
             {
                 Grid.SetRowSpan(cell, rowSpan - 1);
                 SetCellsContent(x, y + 1, x + columnSpan, y + rowSpan + 1, false);
-                graphicsDatas[x, y].SpanY--;
+                chartsDatas[x, y].SpanY--;
             }
         }
 
-        private void OpenGraphSettings_Click(object sender, RoutedEventArgs e)
+        private void OpenChartSettings_Click(object sender, RoutedEventArgs e)
         {
-            int graphCellX;
-            int graphCellY;
+            int chartCellX;
+            int chartCellY;
             int sizeX;
             int sizeY;
             Button btn = (Button)sender;
             Grid cell = VisualTreeHelper.GetParent(btn) as Grid;
-            graphCellX = Grid.GetColumn(cell);
-            graphCellY = Grid.GetRow(cell);
+            chartCellX = Grid.GetColumn(cell);
+            chartCellY = Grid.GetRow(cell);
             sizeX = Grid.GetColumnSpan(cell);
             sizeY = Grid.GetRowSpan(cell);
-            WindowGraph graphicWindow = new WindowGraph(graphCellX, graphCellY, sizeX, sizeY, graphicsDatas[graphCellX, graphCellY]);
-            graphicWindow.OnSave += new SaveEventHandler(OnSave);
-            graphicWindow.Show();
+            WindowChart chartWindow = new WindowChart(chartCellX, chartCellY, sizeX, sizeY, chartsDatas[chartCellX, chartCellY]);
+            chartWindow.OnSave += new SaveEventHandler(OnSave);
+            chartWindow.Show();
         }
 
-        static void OnSave(object source, GraphicData e)
+        static void OnSave(object source, ChartData e)
         {
-            graphicsDatas[e.X, e.Y] = e;
+            chartsDatas[e.X, e.Y] = e;
         }
 
-        public GraphicData[,] GetGraphicsData()
+        public ChartData[,] GetChartsData()
         {
-            return graphicsDatas;
+            return chartsDatas;
         }
 
         public Grid GetGrid()

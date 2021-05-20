@@ -864,7 +864,7 @@
   - Le profiler ne détecte pas les données à afficher "Il n'existe aucune donnée dans l'ensemble de filtres actuel."
   - Il s'agit possiblement d'un driver qui pose problème [Source](https://developercommunity.visualstudio.com/t/performance-profiler-not-collecting-data-for-cpu-u-1/1069594). Cependant les versions de windows ne correspondent pas au mien.
 
-# 19.05.2021 7h40 / 17h00
+# 19.05.2021 07h40 / 17h00
 - Oubli de push le travail de 18
   - Pas de problème en terme de la continuation de l'optimisation du code
   - Impossible de continuer les graphiques
@@ -895,4 +895,56 @@
 - Ajout de commentaires dans les page Simulation - Paramètres graphiques et paramètres
 - Ajout de commentaires dans la classe Site
   - Refactorisation de certaines méthodes
-- 
+
+# 19.05.2021 08h05 / 17h00
+- Réflection sur le moyen de mettre à jour les données des graphiques en fonction du type de graphique
+  - List de graphique parcourue et mise à jour ?
+    - Couplé à un event qui est trigger par le timeManager
+      - Période
+      - Jour
+      - Semaines
+  - ~~Event qui est trigger à chaque tick ?~~
+  - ~~La valeur de l'axe Y correspond au premier type de valeur du graphique~~
+- Modification des variables nommée "Graph" pour "Chart"
+  - Bug
+    - Les graphiques ne s'affichent plus dans la page simulation
+    - Il s'agissait d'une assignation qui avait été mis en commentaire car elle ne changait rien sur le moment.
+- Ajout d'évènements dans la classe TimeManager
+  - Changements de période
+  - Changements de jours
+  - Changements de semaines
+- Ajout de méthodes d'extensions dans les graphiques cartésien permettant la modification de leur valeurs.
+- Déplacements des évènements de TimeManager à la simulation
+  - Ajout d'une structure comportant les données à afficher
+- Modification du fonctionnement de la simulation
+  - Elle s'initialize manuellement et non à la création (ctor)
+  - Permet de s'abonner plus facilement aux évènements  
+- LiveCharts
+  - Utilisation du tag des valeurs pour stocké le type de valeur à récupérer lors de la mise à jour des données.
+- La mise à jour de valeur est fonctionnel avec les graphiques cylindriques
+- Test de la simulation à l'aide du graphique cylindrique et 100'000 individu dont 10% d'infectés:
+  - Données visualisée 
+    - Nombre de personnes saines
+    - Nombre de personnes infectées
+    - Nombre de personnes immunisées
+  - Résultats:
+    - Le nombre de contamination augmente petit à petit
+    - Le nombre de contamination surpasse le nombre de personnes saines
+    - Le nombre d'immunisé commence à augmenter, diminuant le nombre de cas
+    - Le virus disparait, il ne reste qu'une partie de la population immunisée et une partie saine qui n'a donc jamais été infectée.
+- Graphique linéaire fonctionnelle
+  - Beaucoup de lag lorsqu'il y a trop de données
+- Réflection sur le fonctionnement des graphiques
+  - Graphiques périodiques
+  - Graphiques journalier
+  - Graphiques hebdomadaire
+  - Graphiques Mensuel
+  - Graphiques Totaux
+  - Affichent une fois les données par durée ou affichent toutes les données depuis le début mais à l'interval désigné ? Ou les deux au choix ?
+  - Choix dans la création de graphiques
+  - Penser à Ajouté un nombre maximum de valeur par graphiques et un slider qui permet de retourner en arrière sur le graphique.
+- Modification de la structure du code pour accepter ce type possibilités
+- L'ajout de données à chaque itération dans les graphiques est trop gourmande
+    - ~~Mise à jour des données toutes les secondes à la place d'à chaque itération~~
+    - Tentative d'optimiser l'affichage des graphiques
+      - Contient du linq qui devra être remplacé

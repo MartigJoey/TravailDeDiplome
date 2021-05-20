@@ -13,12 +13,12 @@ using System.Windows.Media;
 
 namespace CovidPropagation
 {
-    public delegate void SaveEventHandler(object source, GraphicData e);
+    public delegate void SaveEventHandler(object source, ChartData e);
 
     /// <summary>
     /// Logique d'interaction pour WindowGraph.xaml
     /// </summary>
-    public partial class WindowGraph : Window
+    public partial class WindowChart : Window
     {
         public event SaveEventHandler OnSave;
         private const int MAX_NUMBER_OF_CURVES = 5;
@@ -27,11 +27,11 @@ namespace CovidPropagation
         int sizeX;
         int sizeY;
         ComboBox[] cbxDatas;
-        GraphicData graphicDatas;
+        ChartData graphicDatas;
         int currentCurvesIndex;
         object chart;
 
-        public WindowGraph(int cellX, int cellY, int sizeX, int sizeY, GraphicData graphicDatas)
+        public WindowChart(int cellX, int cellY, int sizeX, int sizeY, ChartData graphicDatas)
         {
             InitializeComponent();
             this.cellX = cellX;
@@ -53,8 +53,8 @@ namespace CovidPropagation
                 Grid.SetRow(cbxDatas[i - 1], curvesRow);
                 Grid.SetColumn(cbxDatas[i - 1], curvesColumn);
 
-                cbxDatas[i - 1].ItemsSource = from GraphicsDisplayData n 
-                                               in Enum.GetValues(typeof(GraphicsDisplayData))
+                cbxDatas[i - 1].ItemsSource = from ChartsDisplayData n 
+                                               in Enum.GetValues(typeof(ChartsDisplayData))
                                                select GetEnumDescription(n);
 
                 cbxDatas[i - 1].SelectedIndex = 0;
@@ -62,21 +62,26 @@ namespace CovidPropagation
             }
 
             // Sélectionne les description des enums et les insères dans les combobox.
-            cbxValueX.ItemsSource = from GraphicsAxisData n
-                                    in Enum.GetValues(typeof(GraphicsAxisData))
+            cbxValueX.ItemsSource = from ChartsAxisData n
+                                    in Enum.GetValues(typeof(ChartsAxisData))
                                     select GetEnumDescription(n);
 
-            cbxValueY.ItemsSource = from GraphicsAxisData n
-                                    in Enum.GetValues(typeof(GraphicsAxisData))
+            cbxValueY.ItemsSource = from ChartsAxisData n
+                                    in Enum.GetValues(typeof(ChartsAxisData))
                                     select GetEnumDescription(n);
 
-            cbxGraphType.ItemsSource = from GraphicsType n
-                                       in Enum.GetValues(typeof(GraphicsType))
+            cbxGraphType.ItemsSource = from ChartsType n
+                                       in Enum.GetValues(typeof(ChartsType))
                                        select GetEnumDescription(n);
+
+            cbxDisplayInterval.ItemsSource = from ChartsDisplayInterval n
+                                             in Enum.GetValues(typeof(ChartsDisplayInterval))
+                                             select GetEnumDescription(n);
 
             cbxValueX.SelectedIndex = this.graphicDatas.AxisX;
             cbxValueY.SelectedIndex = this.graphicDatas.AxisY;
-            cbxGraphType.SelectedIndex = this.graphicDatas.GraphicType;
+            cbxGraphType.SelectedIndex = this.graphicDatas.ChartType;
+            cbxDisplayInterval.SelectedIndex = this.graphicDatas.DisplayInterval;
 
 
             currentCurvesIndex = this.graphicDatas.Datas.Length - 1;
@@ -120,7 +125,7 @@ namespace CovidPropagation
                 {
                     datas.Add(cbxDatas[i].SelectedIndex);
                 }
-                GraphicData graphicDatas = new GraphicData(cellX, cellY, sizeX, sizeY, datas.ToArray(), cbxGraphType.SelectedIndex, cbxValueX.SelectedIndex, cbxValueY.SelectedIndex);
+                ChartData graphicDatas = new ChartData(cellX, cellY, sizeX, sizeY, datas.ToArray(), cbxGraphType.SelectedIndex, cbxValueX.SelectedIndex, cbxValueY.SelectedIndex);
                 OnSave(10, graphicDatas);
                 this.Close();
             }
@@ -145,21 +150,21 @@ namespace CovidPropagation
                 cbxValueY.IsEnabled = true;
                 cbxQuantityOfCurves.IsEnabled = true;
             }
-            switch ((GraphicsType)cbxGraphType.SelectedIndex)
+            switch ((ChartsType)cbxGraphType.SelectedIndex)
             {
-                case GraphicsType.Linear:
+                case ChartsType.Linear:
                     chart = CreateCartesianGraph();
                     SetData(DisplayCurvesOnGraph);
                     break;
-                case GraphicsType.Vertical:
+                case ChartsType.Vertical:
                     chart = CreateCartesianGraph(); 
                     SetData(DisplayColumnsOnGraph);
                     break;
-                case GraphicsType.Horizontal:
+                case ChartsType.Horizontal:
                     chart = CreateCartesianGraph();
                     SetData(DisplayRowsOnGraph);
                     break;
-                case GraphicsType.PieChart:
+                case ChartsType.PieChart:
                     chart = CreatePieGraph();
                     SetData(DisplayPieSectionOnGraph);
                     if (cbxValueX != null)
@@ -169,7 +174,7 @@ namespace CovidPropagation
                         cbxQuantityOfCurves.SelectedIndex = 1;
                     }
                     break;
-                case GraphicsType.HeatMap:
+                case ChartsType.HeatMap:
                     chart = CreateCartesianGraph();
                     SetData(DisplayHeatMapOnGraph);
                     if (cbxValueX != null)
@@ -192,21 +197,21 @@ namespace CovidPropagation
         {
             currentCurvesIndex = cbxQuantityOfCurves.Items.IndexOf(cbxQuantityOfCurves.SelectedItem);
             
-            switch ((GraphicsType)cbxGraphType.SelectedIndex)
+            switch ((ChartsType)cbxGraphType.SelectedIndex)
             {
-                case GraphicsType.Linear:
+                case ChartsType.Linear:
                     SetData(DisplayCurvesOnGraph);
                     break;
-                case GraphicsType.Vertical:
+                case ChartsType.Vertical:
                     SetData(DisplayColumnsOnGraph);
                     break;
-                case GraphicsType.Horizontal:
+                case ChartsType.Horizontal:
                     SetData(DisplayRowsOnGraph);
                     break;
-                case GraphicsType.PieChart:
+                case ChartsType.PieChart:
                     SetData(DisplayPieSectionOnGraph);
                     break;
-                case GraphicsType.HeatMap:
+                case ChartsType.HeatMap:
                     SetData(DisplayHeatMapOnGraph);
                     break;
                 default:
@@ -488,9 +493,9 @@ namespace CovidPropagation
         private void CbxDatas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cbxData = (ComboBox)sender;
-            switch ((GraphicsType)cbxGraphType.SelectedIndex)
+            switch ((ChartsType)cbxGraphType.SelectedIndex)
             {
-                case GraphicsType.Linear:
+                case ChartsType.Linear:
                     CartesianChart linearChart = (CartesianChart)chart;
                     linearChart.Series[Convert.ToInt32(cbxData.Tag)] = new LineSeries
                     {
@@ -498,7 +503,7 @@ namespace CovidPropagation
                         Values = linearChart.Series[Convert.ToInt32(cbxData.Tag)].Values
                     };
                     break;
-                case GraphicsType.Vertical:
+                case ChartsType.Vertical:
                     CartesianChart verticalChart = (CartesianChart)chart;
                     verticalChart.Series[Convert.ToInt32(cbxData.Tag)] = new ColumnSeries
                     {
@@ -506,7 +511,7 @@ namespace CovidPropagation
                         Values = verticalChart.Series[Convert.ToInt32(cbxData.Tag)].Values
                     };
                     break;
-                case GraphicsType.Horizontal:
+                case ChartsType.Horizontal:
                     CartesianChart horizontalChart = (CartesianChart)chart;
                     horizontalChart.Series[Convert.ToInt32(cbxData.Tag)] = new RowSeries
                     {
@@ -514,7 +519,7 @@ namespace CovidPropagation
                         Values = horizontalChart.Series[Convert.ToInt32(cbxData.Tag)].Values
                     };
                     break;
-                case GraphicsType.PieChart:
+                case ChartsType.PieChart:
                     PieChart pieChart = (PieChart)chart;
                     pieChart.Series[Convert.ToInt32(cbxData.Tag)] = new PieSeries
                     {
@@ -522,7 +527,7 @@ namespace CovidPropagation
                         Values = pieChart.Series[Convert.ToInt32(cbxData.Tag)].Values
                     };
                     break;
-                case GraphicsType.HeatMap:
+                case ChartsType.HeatMap:
                     chart = CreateCartesianGraph();
                     SetData(DisplayHeatMapOnGraph);
                     break;
@@ -545,13 +550,13 @@ namespace CovidPropagation
             Axis axisX = new Axis();
             axisX.Foreground = Brushes.Gray;
             axisX.MaxValue = double.NaN;
-            axisX.Title = GetEnumDescription((GraphicsAxisData)graphicDatas.AxisX);
+            axisX.Title = GetEnumDescription((ChartsAxisData)graphicDatas.AxisX);
             cartesianChart.AxisX.Add(axisX);
 
             Axis axisY = new Axis();
             axisY.Foreground = Brushes.Gray;
             axisY.MaxValue = double.NaN;
-            axisY.Title = GetEnumDescription((GraphicsAxisData)graphicDatas.AxisY);
+            axisY.Title = GetEnumDescription((ChartsAxisData)graphicDatas.AxisY);
             cartesianChart.AxisY.Add(axisY);
 
             DataContext = this;
@@ -590,7 +595,7 @@ namespace CovidPropagation
         private void AxisValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cbxAxis = (ComboBox)sender;
-            GraphicsAxisData axisData = (GraphicsAxisData)cbxAxis.SelectedIndex;
+            ChartsAxisData axisData = (ChartsAxisData)cbxAxis.SelectedIndex;
             CartesianChart cartesianChart = (CartesianChart)chart;
             Axis axis;
 
@@ -599,7 +604,7 @@ namespace CovidPropagation
             else
                 axis = cartesianChart.AxisY[0];
 
-            if (axisData > 0)
+            if (axisData >= 0)
             {
                 if ((string)cbxAxis.Tag == "X")
                     axis.Title = GetEnumDescription(axisData);

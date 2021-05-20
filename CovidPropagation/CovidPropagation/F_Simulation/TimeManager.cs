@@ -11,9 +11,9 @@ namespace CovidPropagation
 {
     static class TimeManager
     {
-        static private int currentDay;
-        static private int currentTimeFrame;
-        static private string[] daysOfWeek = new string[] { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"};
+        private static int currentDay;
+        private static int currentTimeFrame;
+        private static string[] daysOfWeek = new string[] { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"};
 
         public static int CurrentDay { get => currentDay; }
         public static string CurrentDayString { get => daysOfWeek[currentDay]; }
@@ -78,6 +78,24 @@ namespace CovidPropagation
             }
 
             return new int[] { tempCurrentDay, tempCurrentTimeFrame };
+        }
+
+        public static bool DoesDayChangeOnThisTimeFrame()
+        {
+            bool result = false;
+            if (currentTimeFrame == 0)
+                result = true;
+
+            return result;
+        }
+
+        public static bool DoesWeekChangeOnThisTimeFrame()
+        {
+            bool result = false;
+            if (currentTimeFrame == 0 && currentDay == 0)
+                result = true;
+
+            return result;
         }
 
         /// <summary>

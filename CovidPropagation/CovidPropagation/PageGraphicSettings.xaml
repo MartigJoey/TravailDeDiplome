@@ -39,7 +39,7 @@
                     x:Name="btnRemoveColumn" 
                     >Retirer colonne</Button>
 
-            <Button Click="AddGraph_Click" Grid.Column="0" Grid.Row="1"  Style="{StaticResource smallButton}" 
+            <Button Click="AddChart_Click" Grid.Column="0" Grid.Row="1"  Style="{StaticResource smallButton}" 
                     x:Name="btnAddGraph" 
                     >Ajouter Graphique</Button>
 

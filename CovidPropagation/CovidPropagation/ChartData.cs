@@ -5,27 +5,29 @@ using System.Text;
 
 namespace CovidPropagation
 {
-    public struct GraphicData
+    public struct ChartData
     {
-        public GraphicData(int x, int y, int sizeX, int sizeY, int[] datas, int graphicType = 0, int valueX = 0, int valueY = 0)
+        public ChartData(int x, int y, int sizeX, int sizeY, int[] datas, int graphicType = 0, int valueX = 0, int valueY = 0, int DisplayInterval = 0)
         {
             X = x;
             Y = y;
             SpanX = sizeX;
             SpanY = sizeY;
-            GraphicType = graphicType;
+            Datas = datas;
+            ChartType = graphicType;
             AxisX = valueX;
             AxisY = valueY;
-            Datas = datas;
+            this.DisplayInterval = DisplayInterval;
         }
 
         public int X { get; set; }
         public int Y { get; set; }
         public int SpanX { get; set; }
         public int SpanY { get; set; }
-        public int GraphicType { get; set; }
+        public int ChartType { get; set; }
         public int AxisX { get; set; }
         public int AxisY { get; set; }
+        public int DisplayInterval { get; set; }
         public int[] Datas { get; set; }
 
         public override string ToString()
@@ -34,9 +36,10 @@ namespace CovidPropagation
                    $"Y: {Y}{Environment.NewLine}" +
                    $"SizeX: {SpanX}{Environment.NewLine}" +
                    $"SizeY: {SpanY}{Environment.NewLine}" +
-                   $"GraphicType: {GraphicType}{Environment.NewLine}" +
+                   $"GraphicType: {ChartType}{Environment.NewLine}" +
                    $"ValueX: {AxisX}{Environment.NewLine}" +
                    $"ValueY: {AxisY}{Environment.NewLine}" +
+                   $"UpdateInterval: {DisplayInterval}{Environment.NewLine}" +
                    $"Datas: {Environment.NewLine}";
             foreach (int item in Datas)
             {
@@ -51,15 +54,15 @@ namespace CovidPropagation
             Y = 0;
             SpanX = 0;
             SpanY = 0;
-            GraphicType = 0;
+            ChartType = 0;
             AxisX = 0;
             AxisY = 0;
             Datas = new int[0];
         }
 
-        public GraphicData CloneInNewLocation(int newX, int newY)
+        public ChartData CloneInNewLocation(int newX, int newY)
         {
-            return new GraphicData(newX, newY, SpanX, SpanY, Datas, GraphicType, AxisX, AxisY);
+            return new ChartData(newX, newY, SpanX, SpanY, Datas, ChartType, AxisX, AxisY, DisplayInterval);
         }
     }
 }

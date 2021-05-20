@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CovidPropagation
 {
-    public enum GraphicsType
+    public enum ChartsType
     {
         [Description("Linéaire")]
         Linear,
@@ -19,10 +19,10 @@ namespace CovidPropagation
         HeatMap
     }
 
-    public enum GraphicsAxisData
+    public enum ChartsAxisData
     {
         [Description("Périodes")]
-        Period,
+        TimeFrame,
         [Description("Jour")]
         Day,
         [Description("Semaine")]
@@ -41,10 +41,9 @@ namespace CovidPropagation
         QuantityOfContamination,
         [Description("Nombre de reproduction")]
         Re,
-
     }
 
-    public enum GraphicsDisplayData
+    public enum ChartsDisplayData
     {
         [Description("Personnes")]
         Persons,
@@ -59,6 +58,20 @@ namespace CovidPropagation
         [Description("Hospitalisés")]
         Hospitalisation,
         [Description("Re")]
-        Re
+        Re,
+        [Description("Contamination")]
+        Contamination
+    }
+
+    public enum ChartsDisplayInterval
+    {
+        [Description("Jour")]
+        Day,
+        [Description("Semaine")]
+        Week,
+        [Description("Mois")]
+        Month,
+        [Description("Total")]
+        Total,
     }
 }

@@ -5,6 +5,9 @@
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
+using LiveCharts.Geared;
+using LiveCharts.Helpers;
+using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -164,5 +167,62 @@ namespace CovidPropagation
 
             return result;
         }
+
+        #region Charts
+        public static void OnTimeFrameChange(this PieChart chart, List<SimulationDatas> e)
+        {
+            foreach (PieSeries serie in chart.Series)
+            {
+                serie.Values = e.Select(d => (object)d.GetDataFromEnum((ChartsDisplayData)serie.Tag)).ToArray().AsGearedValues();
+            }
+        }
+
+        public static void OnTimeFrameChange(this CartesianChart chart, List<SimulationDatas> e)
+        {
+            chart.AddNewValueToChart((ChartData)chart.Tag, e);
+        }
+
+        public static void OnDayChange(this CartesianChart chart, List<SimulationDatas> e)
+        {
+            chart.AddNewValueToChart((ChartData)chart.Tag, e);
+        }
+
+        public static void OnWeekChange(this CartesianChart chart, List<SimulationDatas> e)
+        {
+            chart.AddNewValueToChart((ChartData)chart.Tag, e);
+        }
+
+        private static void AddNewValueToChart(this CartesianChart chart, ChartData datas, List<SimulationDatas> e)
+        {
+            switch ((ChartsType)datas.ChartType)
+            {
+                case ChartsType.Linear:
+                    foreach (LineSeries serie in chart.Series)
+                    {
+                        var temporalCv = e.Select(d => d.GetDataFromEnum((ChartsDisplayData)serie.Tag)).ToArray();
+                        serie.Values = temporalCv.AsGearedValues();
+                    }
+                    break;
+                case ChartsType.Vertical:
+
+                    foreach (ColumnSeries serie in chart.Series)
+                    {
+                        serie.Values = e.Select(d => (object)d.GetDataFromEnum((ChartsDisplayData)serie.Tag)).ToArray().AsGearedValues();
+                    }
+                    break;
+                case ChartsType.Horizontal:
+                    foreach (RowSeries serie in chart.Series)
+                    {
+                        serie.Values = e.Select(d => (object)d.GetDataFromEnum((ChartsDisplayData)serie.Tag)).ToArray().AsGearedValues();
+                    }
+                    break;
+                case ChartsType.HeatMap:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        #endregion
     }
 }

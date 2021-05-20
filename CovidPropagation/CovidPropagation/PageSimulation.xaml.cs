@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Reflection;
 using LiveCharts.Defaults;
 using System.Linq;
+using LiveCharts.Geared;
 
 namespace CovidPropagation
 {
@@ -27,22 +28,28 @@ namespace CovidPropagation
     {
         Legend legendPage;
         MainWindow mw;
-        public GraphicData[,] graphicDatas;
+        public ChartData[,] chartDatas;
         Simulation sim;
+        Dictionary<ChartsType, object> charts;
+        
         public PageSimulation()
         {
             InitializeComponent();
             legendPage = new Legend();
             mw = (MainWindow)Application.Current.MainWindow;
+            charts = new Dictionary<ChartsType, object>();
+            sim = new Simulation();
             Virus.Init();
         }
 
         /// <summary>
         /// Lorsque la simulation fait une itération, récupère les données de celle-ci
         /// </summary>
-        static void OnTimerTick(object source, Simulation e)
+        static void OnTimerTick(Simulation e)
         {
-            Debug.WriteLine(e.GetData());
+            //Debug.WriteLine(e.GetData());
+            // Sera utilisé pour envoyer des informations au GUI
+            // Pas pour récupérer des données.
         }
 
         private void OpenLegendWindow_Click(object sender, RoutedEventArgs e)
@@ -64,9 +71,9 @@ namespace CovidPropagation
         /// </summary>
         private void Start_Click(object sender, RoutedEventArgs e)
         {
-            if (sim == null)
+            if (!sim.IsInitialized)
             {
-                sim = new Simulation(30, 0.1, 100000);
+                sim.Initialize(30, 0.1, 50000);
                 sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
                 sim.OnTickSP += new GetDataEventHandler(OnTimerTick);
                 sim.Iterate();
@@ -87,57 +94,92 @@ namespace CovidPropagation
         /// Modifie la grille de cette page pour qu'elle correspondent à celle modifiée dans les paramètres graphiques.
         /// </summary>
         /// <param name="grd">Grille contenant les colonnes et lignes à afficher.</param>
-        /// <param name="graphicDatas">Données des graphiques à afficher dans la grille.</param>
-        public void SetGrid(Grid grd, GraphicData[,] graphicDatas)
+        /// <param name="chartDatas">Données des graphiques à afficher dans la grille.</param>
+        public void SetGrid(Grid grd, ChartData[,] chartDatas)
         {
-            this.graphicDatas = graphicDatas;
-            //grdContent = grd;
-            slvScroller.Content = grd;
-            DisplayGraphics();
+            this.chartDatas = chartDatas;
+            grdContent = grd;
+            slvScroller.Content = grdContent;
+            charts.Clear();
+            DisplayCharts();
         }
 
         /// <summary>
         /// Affiche le bon type de graphique au bon endroit dans la grille.
         /// Change le contenu du graphique en fonction de son type.
         /// </summary>
-        private void DisplayGraphics()
+        private void DisplayCharts()
         {
-            foreach (GraphicData graph in graphicDatas)
+            foreach (ChartData chartData in chartDatas)
             {
-                if (graph.SpanX > 0)
+                if (chartData.SpanX > 0)
                 {
                     object chart;
-                    switch (graph.GraphicType)
+                    // Créé les graphiques, leur ajoute leur contenu et s'abonne à un évènement qui mettra à jour les données.
+                    switch (chartData.ChartType)
                     {
                         default:
-                        case (int)GraphicsType.Linear:
-                            chart = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
-                            AddCurvesToCartesianGraphic((CartesianChart)chart, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
+                        case (int)ChartsType.Linear:
+                            chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
+                            ((CartesianChart)chart).Tag = chartData;
+                            AddCurvesToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
+                            SubscribeToTimeChange((CartesianChart)chart, chartData);
                             break;
-                        case (int)GraphicsType.Vertical:
-                            chart = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
-                            AddColumnsToCartesianGraphic((CartesianChart)chart, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
+                        case (int)ChartsType.Vertical:
+                            chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
+                            ((CartesianChart)chart).Tag = chartData;
+                            AddColumnsToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
+                            SubscribeToTimeChange((CartesianChart)chart, chartData);
                             break;
-                        case (int)GraphicsType.Horizontal:
-                            chart = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
-                            AddRowsToCartesianGraphic((CartesianChart)chart, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
+                        case (int)ChartsType.Horizontal:
+                            chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
+                            ((CartesianChart)chart).Tag = chartData;
+                            AddRowsToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
+                            SubscribeToTimeChange((CartesianChart)chart, chartData);
                             break;
-                        case (int)GraphicsType.PieChart:
-                            chart = CreatePieGraph();
-                            AddSectionToPieGraphic((PieChart)chart, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
+                        case (int)ChartsType.PieChart:
+                            chart = CreatePieChart();
+                            AddSectionToPieChart((PieChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
+                            sim.OnTimeFramChange += new TimeFrameChangeEventHandler(((PieChart)chart).OnTimeFrameChange);
                             break;
-                        case (int)GraphicsType.HeatMap:
-                            chart = CreateCartesianGraph((GraphicsAxisData)graph.AxisX, (GraphicsAxisData)graph.AxisY);
-                            AddHeatMapToCartesianGraphic((CartesianChart)chart, Array.ConvertAll(graph.Datas, d => (GraphicsDisplayData)d));
+                        case (int)ChartsType.HeatMap:
+                            chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
+                            ((CartesianChart)chart).Tag = chartData;
+                            AddHeatMapToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
+                            SubscribeToTimeChange((CartesianChart)chart, chartData);
                             break;
                     }
+                    Grid.SetColumn((UIElement)chart, chartData.X);
+                    Grid.SetRow((UIElement)chart, chartData.Y);
+                    Grid.SetColumnSpan((UIElement)chart, chartData.SpanX);
+                    Grid.SetRowSpan((UIElement)chart, chartData.SpanY);
 
-                    Grid.SetColumn((UIElement)chart, graph.X);
-                    Grid.SetRow((UIElement)chart, graph.Y);
-                    Grid.SetColumnSpan((UIElement)chart, graph.SpanX);
-                    Grid.SetRowSpan((UIElement)chart, graph.SpanY);
                     grdContent.Children.Add((UIElement)chart);
                 }
+            }
+        }
+
+        private void SubscribeToTimeChange(CartesianChart chart, ChartData chartData)
+        {
+            ChartsAxisData temporalAxis = ChartsAxisData.QuantityOfCase;
+
+            if (chartData.AxisX <= (int)ChartsAxisData.Week)
+                temporalAxis = (ChartsAxisData)chartData.AxisX;
+            else if (chartData.AxisY <= (int)ChartsAxisData.Week)
+                temporalAxis = (ChartsAxisData)chartData.AxisY;
+
+            switch (temporalAxis)
+            {
+                default:
+                case ChartsAxisData.TimeFrame:
+                    sim.OnTimeFramChange += new TimeFrameChangeEventHandler(chart.OnTimeFrameChange);
+                    break;
+                case ChartsAxisData.Day:
+                    sim.OnDayChange += new DayChangeEventHandler(chart.OnDayChange);
+                    break;
+                case ChartsAxisData.Week:
+                    sim.OnWeekChange += new WeekChangeEventHandler(chart.OnWeekChange);
+                    break;
             }
         }
 
@@ -147,12 +189,14 @@ namespace CovidPropagation
         /// <param name="axeXDatas">Donnée sur l'axe X</param>
         /// <param name="axeYDatas">Donnée sur l'axe Y</param>
         /// <returns>Le graphique créé.</returns>
-        private CartesianChart CreateCartesianGraph(GraphicsAxisData axeXDatas, GraphicsAxisData axeYDatas)
+        private CartesianChart CreateCartesianChart(ChartsAxisData axeXDatas, ChartsAxisData axeYDatas)
         {
             CartesianChart cartesianChart = new CartesianChart();
             cartesianChart.Series = new SeriesCollection();
             cartesianChart.LegendLocation = LegendLocation.Top;
             cartesianChart.Foreground = Brushes.Gray;
+            cartesianChart.DisableAnimations = true;
+            cartesianChart.Hoverable = false;
 
             Axis axisX = CreateAxis(axeXDatas);
             cartesianChart.AxisX.Add(axisX);
@@ -171,12 +215,14 @@ namespace CovidPropagation
         /// Créé un graphique cylindrique.
         /// </summary>
         /// <returns>Le graphique cylindrique créé.</returns>
-        private PieChart CreatePieGraph()
+        private PieChart CreatePieChart()
         {
             PieChart pieChart = new PieChart();
             pieChart.Series = new SeriesCollection();
             pieChart.LegendLocation = LegendLocation.Right;
             pieChart.Foreground = Brushes.Gray;
+            pieChart.DisableAnimations = true;
+            pieChart.Hoverable = false;
 
             DataContext = this;
             pieChart.VerticalAlignment = VerticalAlignment.Stretch;
@@ -190,7 +236,7 @@ namespace CovidPropagation
         /// </summary>
         /// <param name="axeDatas">Nom de l'axe.</param>
         /// <returns>L'axe créé.</returns>
-        private Axis CreateAxis(GraphicsAxisData axeDatas)
+        private Axis CreateAxis(ChartsAxisData axeDatas)
         {
             Axis axis = new Axis();
             axis.Title = GetEnumDescription(axeDatas);
@@ -204,23 +250,23 @@ namespace CovidPropagation
         /// </summary>
         /// <param name="chart">graphique où la courbe sera ajoutée.</param>
         /// <param name="curvesData">Type de données à afficher par courbe.</param>
-        private void AddCurvesToCartesianGraphic(CartesianChart chart, GraphicsDisplayData[] curvesData)
+        private void AddCurvesToCartesianChart(CartesianChart chart, ChartsDisplayData[] curvesData)
         {
             for (int i = 0; i < curvesData.Length; i++)
             {
                 Random rdm = GlobalVariables.rdm;
+                SeriesCollection newSerie = new SeriesCollection();
+                ChartValues<double> values = new ChartValues<double>();
                 chart.Series.Add(new LineSeries
                 {
                     Title = curvesData[i].ToString(),
                     Foreground = Brushes.Gray,
-                    Values = new ChartValues<double> {
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10)
-                    }
+                    Tag = curvesData[i],
+                    PointGeometry = null,
+                    Values = values,
+                    DataLabels = false
                 });
+                chart.Series[0].Values = values.AsGearedValues().WithQuality(Quality.Low);
             }
         }
 
@@ -229,7 +275,7 @@ namespace CovidPropagation
         /// </summary>
         /// <param name="chart">graphique où la colonne sera ajoutée.</param>
         /// <param name="curvesData">Type de données à afficher par colonne.</param>
-        private void AddColumnsToCartesianGraphic(CartesianChart chart, GraphicsDisplayData[] curvesData)
+        private void AddColumnsToCartesianChart(CartesianChart chart, ChartsDisplayData[] curvesData)
         {
             for (int i = 0; i < curvesData.Length; i++)
             {
@@ -238,6 +284,7 @@ namespace CovidPropagation
                 {
                     Title = curvesData[i].ToString(),
                     Foreground = Brushes.Gray,
+                    Tag = curvesData[i],
                     Values = new ChartValues<double> {
                         rdm.Next(1, 10),
                         rdm.Next(1, 10),
@@ -254,7 +301,7 @@ namespace CovidPropagation
         /// </summary>
         /// <param name="chart">graphique où la ligne sera ajoutée.</param>
         /// <param name="curvesData">Type de données à afficher par ligne.</param>
-        private void AddRowsToCartesianGraphic(CartesianChart chart, GraphicsDisplayData[] curvesData)
+        private void AddRowsToCartesianChart(CartesianChart chart, ChartsDisplayData[] curvesData)
         {
             for (int i = 0; i < curvesData.Length; i++)
             {
@@ -263,6 +310,7 @@ namespace CovidPropagation
                 {
                     Title = curvesData[i].ToString(),
                     Foreground = Brushes.Gray,
+                    Tag = curvesData[i],
                     Values = new ChartValues<double> {
                         rdm.Next(1, 10),
                         rdm.Next(1, 10),
@@ -279,7 +327,7 @@ namespace CovidPropagation
         /// </summary>
         /// <param name="chart">Graphique où la section sera ajoutée.</param>
         /// <param name="curvesData">Type de données à afficher par section.</param>
-        private void AddSectionToPieGraphic(PieChart chart, GraphicsDisplayData[] curvesData)
+        private void AddSectionToPieChart(PieChart chart, ChartsDisplayData[] curvesData)
         {
             for (int i = 0; i < curvesData.Length; i++)
             {
@@ -288,9 +336,10 @@ namespace CovidPropagation
                 {
                     Title = curvesData[i].ToString(),
                     Foreground = Brushes.Gray,
+                    Tag = curvesData[i],
                     Values = new ChartValues<double> {
-                    rdm.Next(1, 10)
-                }
+                        rdm.Next(1, 10)
+                    }
                 });
             }
         }
@@ -300,7 +349,7 @@ namespace CovidPropagation
         /// </summary>
         /// <param name="chart">graphique où la heatMap sera ajoutée.</param>
         /// <param name="curvesData">Type de données à afficher dans la heatMap.</param>
-        private void AddHeatMapToCartesianGraphic(CartesianChart chart, GraphicsDisplayData[] curvesData)
+        private void AddHeatMapToCartesianChart(CartesianChart chart, ChartsDisplayData[] curvesData)
         {
             Random rdm = GlobalVariables.rdm;
 
@@ -350,6 +399,7 @@ namespace CovidPropagation
             HeatSeries heatSeries = new HeatSeries();
             heatSeries.Values = values;
             heatSeries.Title = curvesData[0].ToString();
+            heatSeries.Tag = curvesData[0];
             heatSeries.GradientStopCollection = new GradientStopCollection()
             {
                 new GradientStop(Colors.Green, 0),
