@@ -5,6 +5,7 @@
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
+using LiveCharts;
 using LiveCharts.Geared;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
@@ -15,6 +16,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Windows;
 
 namespace CovidPropagation
 {
@@ -169,51 +171,53 @@ namespace CovidPropagation
         }
 
         #region Charts
-        public static void OnTimeFrameChange(this PieChart chart, List<SimulationDatas> e)
+        public static void OnTimeFrameChange(this PieChart chart, SimulationDatas e)
         {
+            ChartValues<double> cv;
             foreach (PieSeries serie in chart.Series)
             {
-                serie.Values = e.Select(d => (object)d.GetDataFromEnum((ChartsDisplayData)serie.Tag)).ToArray().AsGearedValues();
+                cv = new ChartValues<double>();
+                cv.Add(e.GetDataFromEnum((ChartsDisplayData)serie.Tag).Last());
+                serie.Values = cv;
             }
         }
 
-        public static void OnTimeFrameChange(this CartesianChart chart, List<SimulationDatas> e)
+        public static void OnTimeFrameChange(this CartesianChart chart, SimulationDatas e)
         {
             chart.AddNewValueToChart((ChartData)chart.Tag, e);
         }
 
-        public static void OnDayChange(this CartesianChart chart, List<SimulationDatas> e)
+        public static void OnDayChange(this CartesianChart chart, SimulationDatas e)
         {
             chart.AddNewValueToChart((ChartData)chart.Tag, e);
         }
 
-        public static void OnWeekChange(this CartesianChart chart, List<SimulationDatas> e)
+        public static void OnWeekChange(this CartesianChart chart, SimulationDatas e)
         {
             chart.AddNewValueToChart((ChartData)chart.Tag, e);
         }
 
-        private static void AddNewValueToChart(this CartesianChart chart, ChartData datas, List<SimulationDatas> e)
+        private static void AddNewValueToChart(this CartesianChart chart, ChartData datas, SimulationDatas e)
         {
             switch ((ChartsType)datas.ChartType)
             {
                 case ChartsType.Linear:
                     foreach (LineSeries serie in chart.Series)
                     {
-                        var temporalCv = e.Select(d => d.GetDataFromEnum((ChartsDisplayData)serie.Tag)).ToArray();
-                        serie.Values = temporalCv.AsGearedValues();
+                        serie.Values = e.GetDataFromEnum((ChartsDisplayData)serie.Tag).AsGearedValues().WithQuality(Quality.Low);
                     }
                     break;
                 case ChartsType.Vertical:
-
+                    // Affichage différent
                     foreach (ColumnSeries serie in chart.Series)
                     {
-                        serie.Values = e.Select(d => (object)d.GetDataFromEnum((ChartsDisplayData)serie.Tag)).ToArray().AsGearedValues();
+                        serie.Values = e.GetDataFromEnum((ChartsDisplayData)serie.Tag).AsGearedValues();
                     }
                     break;
                 case ChartsType.Horizontal:
                     foreach (RowSeries serie in chart.Series)
                     {
-                        serie.Values = e.Select(d => (object)d.GetDataFromEnum((ChartsDisplayData)serie.Tag)).ToArray().AsGearedValues();
+                        serie.Values = e.GetDataFromEnum((ChartsDisplayData)serie.Tag).AsGearedValues();
                     }
                     break;
                 case ChartsType.HeatMap:

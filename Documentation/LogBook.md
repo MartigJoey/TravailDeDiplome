@@ -948,3 +948,8 @@
     - ~~Mise à jour des données toutes les secondes à la place d'à chaque itération~~
     - Tentative d'optimiser l'affichage des graphiques
       - Contient du linq qui devra être remplacé
+
+# 21.05.2021 08h00 / 17h00
+- Modification de la structure des données transférées pour éviter les requêtes linq
+  - Modification du code des PieChart afin d'éviter un bug qui rend la lecture impossible
+  - 

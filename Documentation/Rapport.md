@@ -924,8 +924,6 @@ J'ai effectué différents tests en créant des simulations de tailles variantes
   - 10'000 individus --> ~7 secondes
 
 On peut donc observer une nettre différence entre les deux tests. Les performances de la ram sont donc très importantes pour obtenir le maximum du programme. Cependant, pour des utilisateur lambdas, l'utilisation de ram dépassant les 2133Mhz est très rare.
-
-<h3>Parler du profiler</h3>
 # 14. `GUI`
 ## 14.1. Structure
 Diagramme de classe final -

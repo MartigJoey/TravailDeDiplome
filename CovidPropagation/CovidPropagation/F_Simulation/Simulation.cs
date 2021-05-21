@@ -16,9 +16,9 @@ using System.Threading.Tasks;
 namespace CovidPropagation
 {
     public delegate void GetDataEventHandler(Simulation e); 
-    public delegate void TimeFrameChangeEventHandler(List<SimulationDatas> e);
-    public delegate void DayChangeEventHandler(List<SimulationDatas> e);
-    public delegate void WeekChangeEventHandler(List<SimulationDatas> e);
+    public delegate void TimeFrameChangeEventHandler(SimulationDatas e);
+    public delegate void DayChangeEventHandler(SimulationDatas e);
+    public delegate void WeekChangeEventHandler(SimulationDatas e);
 
     public class Simulation : EventArgs
     {
@@ -127,18 +127,21 @@ namespace CovidPropagation
         /// </summary>
         public async void Iterate()
         {
-            List<SimulationDatas> timeFrameDatas = new List<SimulationDatas>();
-            timeFrameDatas.Add(GetAllDatas());
+            SimulationDatas timeFrameDatas = new SimulationDatas();
+            timeFrameDatas.Initialize();
+            timeFrameDatas.AddDatas(GetAllDatas());
             if (OnTimeFramChange != null)
                 OnTimeFramChange(timeFrameDatas);
 
-            List<SimulationDatas> dayDatas = new List<SimulationDatas>();
-            dayDatas.Add(GetAllDatas());
+            SimulationDatas dayDatas = new SimulationDatas();
+            dayDatas.Initialize();
+            dayDatas.AddDatas(GetAllDatas());
             if (TimeManager.DoesDayChangeOnThisTimeFrame() && OnDayChange != null)
                 OnDayChange(dayDatas);
 
-            List<SimulationDatas> weekDatas = new List<SimulationDatas>();
-            weekDatas.Add(GetAllDatas());
+            SimulationDatas weekDatas = new SimulationDatas();
+            weekDatas.Initialize();
+            weekDatas.AddDatas(GetAllDatas());
             if (TimeManager.DoesWeekChangeOnThisTimeFrame() && OnWeekChange != null)
                 OnWeekChange(weekDatas);
 
@@ -157,13 +160,13 @@ namespace CovidPropagation
                     population.ForEach(p => p.ChechState());
 
                     if (OnTimeFramChange != null)
-                        timeFrameDatas.Add(GetAllDatas());
+                        timeFrameDatas.AddDatas(GetAllDatas());
 
                     if (OnDayChange != null)
-                        dayDatas.Add(GetAllDatas());
+                        dayDatas.AddDatas(GetAllDatas());
 
                     if (OnWeekChange != null)
-                        weekDatas.Add(GetAllDatas());
+                        weekDatas.AddDatas(GetAllDatas());
 
                     // Affiche au maximum une fois par seconde
                     if (sumEllapsedTime >= 1000)
@@ -205,7 +208,9 @@ namespace CovidPropagation
                     if (sp.ElapsedMilliseconds < Interval)
                     {
                         long interval = Interval;
-                        await Task.Delay((int)(Interval - sp.ElapsedMilliseconds));
+                        int delay = (int)(Interval - sp.ElapsedMilliseconds);
+                        await Task.Delay(delay);
+                        sumEllapsedTime += delay;
                     }
                     sumEllapsedTime += (int)sp.ElapsedMilliseconds;
                     sp.Reset();
@@ -222,15 +227,16 @@ namespace CovidPropagation
         public SimulationDatas GetAllDatas()
         {
             SimulationDatas datas = new SimulationDatas();
+            datas.Initialize();
             // MODIFIER LES REQUETES POUR DES VALEURS FIXES
-            datas.NumberOfPeople = population.Count;
-            datas.NumberOfInfected = population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count();
-            datas.NumberOfImmune = population.Where(p => (int)p.CurrentState == (int)PersonState.Immune).Count();
-            datas.NumberOfHospitalisation = 10;//sites.Where(b => b.GetType() == typeof(Hospital) && (Hospital)b).Count();
-            datas.NumberOfDeath = 1;
-            datas.NumberOfContamination = 42;
-            datas.NumberOfHealthy = population.Where(p => (int)p.CurrentState == (int)PersonState.Healthy).Count(); ;
-            datas.NumberOfReproduction = sites.Sum(b => b.VirusAraisingCases);
+            datas.NumberOfPeople.Add(population.Count);
+            datas.NumberOfInfected.Add(population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count());
+            datas.NumberOfImmune.Add(population.Where(p => (int)p.CurrentState == (int)PersonState.Immune).Count());
+            datas.NumberOfHospitalisation.Add(10);//sites.Where(b => b.GetType() == typeof(Hospital) && (Hospital)b).Count();
+            datas.NumberOfDeath.Add(1);
+            datas.NumberOfContamination.Add(42);
+            datas.NumberOfHealthy.Add(population.Where(p => (int)p.CurrentState == (int)PersonState.Healthy).Count());
+            datas.NumberOfReproduction.Add(sites.Sum(b => b.VirusAraisingCases));
 
             return datas;
             /*return $"Nombre de personne      : {population.Count} {Environment.NewLine}" +

@@ -60,7 +60,8 @@
             <RowDefinition Height="5*" MinHeight="30"/>
             <RowDefinition Height="5*" MinHeight="30"/>
             <RowDefinition Height="5*" MinHeight="30"/>
-            <RowDefinition Height="42*" MinHeight="50"/>
+            <RowDefinition Height="5*" MinHeight="30"/>
+            <RowDefinition Height="37*" MinHeight="50"/>
             <RowDefinition Height="8*" MaxHeight="25" MinHeight="25"/>
         </Grid.RowDefinitions>
         <ContentPresenter Grid.ColumnSpan="4" Content="{Binding}" ContentTemplate="{StaticResource TitleBar}"/>
@@ -80,7 +81,8 @@
                   SelectionChanged="GraphType_SelectionChanged"
                   Grid.Row="1"
                   Grid.Column="1"
-                  ItemsSource="{Binding Source={StaticResource ChartsType}}"
+                  ItemsSource="{Binding Source={StaticResource ChartsType}}" 
+                  Margin="0,2,0,2"
                   />
 
         <Label Grid.Row="2"
@@ -94,10 +96,9 @@
                   Grid.Row="2"
                   Grid.Column="1"
                   ItemsSource="{Binding Source={StaticResource ChartsDisplayInterval}}"
+                  Margin="0,2,0,2"
                   />
-        
-        
-        
+
         <Label Grid.Row="3"
                Grid.Column="0"
                Foreground="{StaticResource foreGroundLight}"
@@ -109,6 +110,7 @@
                   Grid.Row="3"
                   Grid.Column="1"
                   ItemsSource="{Binding Source={StaticResource ChartsAxis}}"
+                  Margin="0,2,0,2"
                   />
 
         <Label Grid.Row="4"
@@ -122,6 +124,7 @@
                   Grid.Row="4"
                   Grid.Column="1"
                   ItemsSource="{Binding Source={StaticResource ChartsAxis}}"
+                  Margin="0,2,0,2"
                   />
 
         <Label Grid.Row="5"
@@ -131,7 +134,9 @@
         <ComboBox x:Name="cbxQuantityOfCurves"
                  SelectionChanged="DataQuantity_SelectionChanged"
                  Grid.Row="5"
-                 Grid.Column="1"/>
+                 Grid.Column="1"
+                 Margin="0,2,0,2"
+                  />
 
         <Label Grid.Row="6"
                Grid.Column="0"
@@ -141,13 +146,14 @@
         <Button x:Name="btnSave" Click="Save_Click" 
                 Content="Save" 
                 Style="{StaticResource smallButton}" 
-                Grid.Row="11"
-                Grid.Column="2"/>
+                Grid.Row="12"
+                Grid.Column="2"
+                />
 
         <Button x:Name="btnCancel" Click="Cancel_Click" 
                 Content="cancel"
                 Style="{StaticResource smallButton}" 
-                Grid.Row="11"
+                Grid.Row="12"
                 Grid.Column="3"/>
     </Grid>
 </Window>

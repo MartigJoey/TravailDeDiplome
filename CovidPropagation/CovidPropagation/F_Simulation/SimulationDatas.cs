@@ -6,37 +6,49 @@ namespace CovidPropagation
 {
     public struct SimulationDatas
     {
-        public int NumberOfPeople { get; set; }
+        public void Initialize()
+        {
+            NumberOfPeople = new List<double>();
+            NumberOfInfected = new List<double>();
+            NumberOfImmune = new List<double>();
+            NumberOfReproduction = new List<double>();
+            NumberOfHealthy = new List<double>();
+            NumberOfHospitalisation = new List<double>();
+            NumberOfDeath = new List<double>();
+            NumberOfContamination = new List<double>();
+        }
 
-        public int NumberOfInfected { get; set; }
+        public List<double> NumberOfPeople { get; set; }
 
-        public int NumberOfImmune { get; set; }
+        public List<double> NumberOfInfected { get; set; }
 
-        public double NumberOfReproduction { get; set; }
+        public List<double> NumberOfImmune { get; set; }
 
-        public int NumberOfHealthy { get; set; }
+        public List<double> NumberOfReproduction { get; set; }
 
-        public int NumberOfHospitalisation { get; set; }
+        public List<double> NumberOfHealthy { get; set; }
 
-        public int NumberOfDeath { get; set; }
+        public List<double> NumberOfHospitalisation { get; set; }
 
-        public int NumberOfContamination { get; set; }
+        public List<double> NumberOfDeath { get; set; }
+
+        public List<double> NumberOfContamination { get; set; }
 
         public void AddDatas(SimulationDatas newDatas)
         {
-            NumberOfPeople = newDatas.NumberOfPeople;
-            NumberOfInfected = newDatas.NumberOfInfected;
-            NumberOfImmune = newDatas.NumberOfImmune;
-            NumberOfReproduction = newDatas.NumberOfReproduction;
-            NumberOfHealthy = newDatas.NumberOfHealthy;
-            NumberOfHospitalisation = newDatas.NumberOfHospitalisation;
-            NumberOfDeath = newDatas.NumberOfDeath;
-            NumberOfContamination = newDatas.NumberOfContamination;
+            NumberOfPeople.AddRange(newDatas.NumberOfPeople);
+            NumberOfInfected.AddRange(newDatas.NumberOfInfected);
+            NumberOfImmune.AddRange(newDatas.NumberOfImmune);
+            NumberOfReproduction.AddRange(newDatas.NumberOfReproduction);
+            NumberOfHealthy.AddRange(newDatas.NumberOfHealthy);
+            NumberOfHospitalisation.AddRange(newDatas.NumberOfHospitalisation);
+            NumberOfDeath.AddRange(newDatas.NumberOfDeath);
+            NumberOfContamination.AddRange(newDatas.NumberOfContamination);
         }
 
-        public double GetDataFromEnum(ChartsDisplayData enumData)
+        public List<double> GetDataFromEnum(ChartsDisplayData enumData)
         {
-            double result;
+            List<double> result;
             switch (enumData)
             {
                 default:

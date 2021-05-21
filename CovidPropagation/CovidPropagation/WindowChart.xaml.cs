@@ -58,6 +58,7 @@ namespace CovidPropagation
                                                select GetEnumDescription(n);
 
                 cbxDatas[i - 1].SelectedIndex = 0;
+                cbxDatas[i - 1].Margin = new Thickness(0, 2, 0, 2);
                 grdContent.Children.Add(cbxDatas[i - 1]);
             }
 
@@ -257,7 +258,6 @@ namespace CovidPropagation
             }
         }
 
-
         /// <summary>
         /// Affiche les courbes sur un graphique cartesien.
         /// Définit si une courbe doit rester affichée, être ajoutée, ou supprimée.
@@ -284,7 +284,9 @@ namespace CovidPropagation
                         rdm.Next(1, 10), 
                         rdm.Next(1, 10), 
                         rdm.Next(1, 10) 
-                    }
+                    },
+                    PointGeometry = null,
+                    DataLabels = false
                 });
             }
             else if(!isDisplayed) // Sinon retire le dernier index
@@ -322,7 +324,9 @@ namespace CovidPropagation
                         rdm.Next(1, 10),
                         rdm.Next(1, 10),
                         rdm.Next(1, 10)
-                    }
+                    },
+                    PointGeometry = null,
+                    DataLabels = false
                 });
             }
             else
@@ -360,7 +364,9 @@ namespace CovidPropagation
                         rdm.Next(1, 10),
                         rdm.Next(1, 10),
                         rdm.Next(1, 10)
-                    }
+                    },
+                    PointGeometry = null,
+                    DataLabels = false
                 });
             }
             else
@@ -394,7 +400,9 @@ namespace CovidPropagation
                     Title = cbxDatas[index].SelectedItem.ToString(),
                     Values = new ChartValues<double> {
                         rdm.Next(1, 10)
-                    }
+                    },
+                    PointGeometry = null,
+                    DataLabels = false
                 });
             }
             else
@@ -546,6 +554,8 @@ namespace CovidPropagation
             cartesianChart.Series = new SeriesCollection();
             cartesianChart.LegendLocation = LegendLocation.Right;
             cartesianChart.Foreground = Brushes.Gray;
+            cartesianChart.DisableAnimations = true;
+            cartesianChart.Hoverable = false;
 
             Axis axisX = new Axis();
             axisX.Foreground = Brushes.Gray;
@@ -577,6 +587,8 @@ namespace CovidPropagation
             PieChart pieChart = new PieChart();
             pieChart.Series = new SeriesCollection();
             pieChart.LegendLocation = LegendLocation.Right;
+            pieChart.DisableAnimations = true;
+            pieChart.Hoverable = false;
 
             DataContext = this;
             pieChart.VerticalAlignment = VerticalAlignment.Stretch;
