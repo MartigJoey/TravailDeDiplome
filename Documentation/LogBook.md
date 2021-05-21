@@ -952,4 +952,32 @@
 # 21.05.2021 08h00 / 17h00
 - Modification de la structure des données transférées pour éviter les requêtes linq
   - Modification du code des PieChart afin d'éviter un bug qui rend la lecture impossible
-  - 
+  - Réflection sur l'interval d'affichage
+    - Jours
+      - Affichage des jours sur une semaine ?
+        - Semaine ou nombre de jour max modifiable ?
+        - Scrollbar pour voir les jours précédent / suivants
+      - Affichage des jours en général jusqu'à une valeure max ?
+      - Affichage du contenu des jours(Timeframes) mis à jour tous les jours ?
+        - Trop complexe pour les graphiques à colonnes
+  - Modification des combobox pour restraindre certains choix
+- Ajout de boutons permettant de modifier la section des données visibles des graphiques
+  - Les boutons sont fonctionnelles et permettent:
+    -  Déplacements de jours en jours
+    -  Déplacements avant et après
+    -  Ajout d'un combobox permettant de définir la distance à parcouris en avant ou en arrière
+- Ajout d'un combobox permettant de choisir la durée à afficher
+  - Jour
+  - Semaine
+  - Mois
+  - Total
+- Un bouton permettant de suivre l'avancement des données automatiquement
+  - Avance bloquée par le fait que "ActualMaxValue" des axes ne correspond pas aux valeurs contenues mais à la taille maximum possible de l'axe actuellement.
+  - Problème reglé en comptant le nombre de valeur dans une série
+- Les graphiques à colonnes ne peuvent pas afficher assez de données pour correspondre aux graphiques à courbes
+  - Il est nécessaire de faire des regroupements
+    - Par jours pour les semaines
+    - Par semaines pour les mois
+    - Données brutes pour les jours
+  - Fonctionnel pour les graphiques à colonnes mais nécessites des changements dans le fonctionnement des boutons
+    - Créer un bouton pour chaque type lors de la création. Similaire aux création de contenu des graphiques

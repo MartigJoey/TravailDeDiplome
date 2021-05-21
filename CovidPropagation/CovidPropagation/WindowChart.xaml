@@ -88,7 +88,7 @@
         <Label Grid.Row="2"
                Grid.Column="0"
                Foreground="{StaticResource foreGroundLight}"
-               >Interval de mise à jour :</Label>
+               >Interval d'affichage :</Label>
         <ComboBox x:Name="cbxDisplayInterval" 
                   SelectedIndex="0"
                   SelectionChanged="AxisValue_SelectionChanged"

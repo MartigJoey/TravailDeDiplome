@@ -104,6 +104,158 @@ namespace CovidPropagation
             DisplayCharts();
         }
 
+        private void MoveChartDataForward_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = (Button)sender;
+            Grid chartGrid = VisualTreeHelper.GetParent(btn) as Grid;
+            ComboBox cbx = (ComboBox)chartGrid.Children[2];
+            CartesianChart chart = (CartesianChart)chartGrid.Children[4];
+            Axis axisX = chart.AxisX[0];
+            ChartData chartData = (ChartData)chart.Tag;
+
+            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex);
+
+            axisX.MinValue += interval;
+            axisX.MaxValue += interval;
+
+            if (interval != 0)
+                chartData.AutoDisplay = false;
+
+            chart.Tag = chartData;
+        }
+
+        private void MoveChartDataBackward_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = (Button)sender;
+            Grid chartGrid = VisualTreeHelper.GetParent(btn) as Grid;
+            ComboBox cbx = (ComboBox)chartGrid.Children[2];
+            CartesianChart chart = (CartesianChart)chartGrid.Children[4];
+            Axis axisX = chart.AxisX[0];
+            ChartData chartData = (ChartData)chart.Tag;
+
+            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex);
+
+            if (axisX.MinValue - interval >= 0 && interval != 0)
+            {
+                axisX.MinValue -= interval;
+                axisX.MaxValue -= interval;
+            }
+            else
+            {
+                axisX.MinValue = 0;
+                axisX.MaxValue = interval;
+            }
+
+            if(interval != 0)
+                chartData.AutoDisplay = false;
+
+            chart.Tag = chartData;
+        }
+
+        private void Datas_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox cbx = (ComboBox)sender;
+            Grid chartGrid = VisualTreeHelper.GetParent(cbx) as Grid;
+            CartesianChart chart = (CartesianChart)chartGrid.Children[4];
+            Axis axisX = chart.AxisX[0];
+            ChartData chartData = (ChartData)chart.Tag;
+
+            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex);
+            double maxValue = chart.Series[0].Values.Count;
+
+            if (axisX != null && maxValue - interval > 0 && interval != 0)
+            {
+                axisX.MinValue = maxValue - interval;
+                axisX.MaxValue = maxValue;
+            }else if(interval == 0)
+            {
+                axisX.MinValue = 0;
+                axisX.MaxValue = maxValue;
+                chartData.AutoDisplay = true;
+            }
+            else
+            {
+                axisX.MinValue = 0;
+                axisX.MaxValue = interval;
+            }
+
+            chartData.DisplayInterval = cbx.SelectedIndex;
+            chart.Tag = chartData;
+        }
+
+        private void MoveChartAuto_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = (Button)sender;
+            Grid chartGrid = VisualTreeHelper.GetParent(btn) as Grid;
+            ComboBox cbx = (ComboBox)chartGrid.Children[2];
+            CartesianChart chart = (CartesianChart)chartGrid.Children[4];
+            Axis axisX = chart.AxisX[0];
+            ChartData chartData = (ChartData)chart.Tag;
+            chartData.AutoDisplay = true;
+            chart.Tag = chartData;
+
+            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex);
+            double maxValue = chart.Series[0].Values.Count;
+
+            if (maxValue - interval > 0)
+            {
+                axisX.MinValue = maxValue - interval; 
+                axisX.MaxValue = maxValue;
+            }
+            else
+            {
+                axisX.MinValue = 0;
+                axisX.MaxValue = interval;
+            }
+        }
+
+        private int GetInterval(ChartsDisplayInterval enumInterval)
+        {
+            int interval;
+            switch (enumInterval)
+            {
+                default:
+                case ChartsDisplayInterval.Day:
+                    interval = 48;
+                    break;
+                case ChartsDisplayInterval.Week:
+                    interval = 336;
+                    break;
+                case ChartsDisplayInterval.Month:
+                    interval = 1440;
+                    break;
+                case ChartsDisplayInterval.Total:
+                    interval = 0;
+                    break;
+            }
+            return interval;
+        }
+
+        private Button CreateChartButton(string content)
+        {
+            Button btn = new Button();
+            btn.Style = this.FindResource("GraphButtonStyle") as Style;
+            btn.Content = content;
+            btn.Foreground = Brushes.White;
+            btn.FontSize = 15;
+            btn.VerticalAlignment = VerticalAlignment.Stretch;
+            btn.HorizontalAlignment = HorizontalAlignment.Stretch;
+            return btn;
+        }
+
+        private ComboBox CreateChartCombobox()
+        {
+            ComboBox cbx = new ComboBox();
+            cbx.VerticalAlignment = VerticalAlignment.Stretch;
+            cbx.HorizontalAlignment = HorizontalAlignment.Stretch;
+            cbx.ItemsSource = from ChartsDisplayInterval n
+                              in Enum.GetValues(typeof(ChartsDisplayInterval))
+                              select GetEnumDescription(n);
+
+            cbx.SelectedIndex = 0;
+            return cbx;
+        }
+
         /// <summary>
         /// Affiche le bon type de graphique au bon endroit dans la grille.
         /// Change le contenu du graphique en fonction de son type.
@@ -149,12 +301,89 @@ namespace CovidPropagation
                             SubscribeToTimeChange((CartesianChart)chart, chartData);
                             break;
                     }
-                    Grid.SetColumn((UIElement)chart, chartData.X);
-                    Grid.SetRow((UIElement)chart, chartData.Y);
-                    Grid.SetColumnSpan((UIElement)chart, chartData.SpanX);
-                    Grid.SetRowSpan((UIElement)chart, chartData.SpanY);
 
-                    grdContent.Children.Add((UIElement)chart);
+                    if (chartData.ChartType != (int)ChartsType.PieChart)
+                    {
+                        Grid chartGrid = new Grid();
+                        ColumnDefinition firstColumn = new ColumnDefinition();
+                        ColumnDefinition secondColumn = new ColumnDefinition();
+                        ColumnDefinition thirdColumn = new ColumnDefinition();
+                        ColumnDefinition thourthColumn = new ColumnDefinition();
+                        ColumnDefinition fifthColumn = new ColumnDefinition();
+
+                        firstColumn.MinWidth = 20;
+                        firstColumn.MaxWidth = 20;
+                        secondColumn.MinWidth = 20;
+                        secondColumn.MaxWidth = 20;
+                        thirdColumn.MinWidth = 70;
+                        thirdColumn.MaxWidth = 70;
+                        thourthColumn.MinWidth = 50;
+                        thourthColumn.MaxWidth = 50;
+
+                        chartGrid.ColumnDefinitions.Add(firstColumn);
+                        chartGrid.ColumnDefinitions.Add(secondColumn);
+                        chartGrid.ColumnDefinitions.Add(thirdColumn);
+                        chartGrid.ColumnDefinitions.Add(thourthColumn);
+                        chartGrid.ColumnDefinitions.Add(fifthColumn);
+
+                        RowDefinition firstRow = new RowDefinition();
+                        RowDefinition chartRow = new RowDefinition();
+
+                        firstRow.MinHeight = 20;
+                        firstRow.MaxHeight = 20;
+
+                        chartGrid.RowDefinitions.Add(firstRow);
+                        chartGrid.RowDefinitions.Add(chartRow);
+
+                        Button btnLeft = CreateChartButton("<");
+                        Button btnRight = CreateChartButton(">");
+                        ComboBox cbxTimeIncrement = CreateChartCombobox();
+                        Button btnAuto = CreateChartButton("auto.");
+
+                        btnLeft.Click += MoveChartDataBackward_Click;
+                        btnRight.Click += MoveChartDataForward_Click;
+                        cbxTimeIncrement.SelectionChanged += Datas_SelectionChanged;
+                        btnAuto.Click += MoveChartAuto_Click;
+
+                        Grid.SetColumn(btnLeft, 0);
+                        Grid.SetRow(btnLeft, 0);
+
+                        Grid.SetColumn(btnRight, 1);
+                        Grid.SetRow(btnRight, 0);
+
+                        Grid.SetColumn(cbxTimeIncrement, 2);
+                        Grid.SetRow(cbxTimeIncrement, 0);
+
+                        Grid.SetColumn(btnAuto, 3);
+                        Grid.SetRow(btnAuto, 0);
+
+                        Grid.SetColumn((UIElement)chart, 1);
+                        Grid.SetRow((UIElement)chart, 1);
+                        Grid.SetColumnSpan((UIElement)chart, 5);
+                        Grid.SetRowSpan((UIElement)chart, 1);
+
+                        chartGrid.Children.Add(btnLeft);
+                        chartGrid.Children.Add(btnRight);
+                        chartGrid.Children.Add(cbxTimeIncrement);
+                        chartGrid.Children.Add(btnAuto);
+                        chartGrid.Children.Add((UIElement)chart);
+
+                        Grid.SetColumn(chartGrid, chartData.X);
+                        Grid.SetRow(chartGrid, chartData.Y);
+                        Grid.SetColumnSpan(chartGrid, chartData.SpanX);
+                        Grid.SetRowSpan(chartGrid, chartData.SpanY);
+
+                        grdContent.Children.Add(chartGrid);
+                    }
+                    else
+                    {
+                        Grid.SetColumn((UIElement)chart, chartData.X);
+                        Grid.SetRow((UIElement)chart, chartData.Y);
+                        Grid.SetColumnSpan((UIElement)chart, chartData.SpanX);
+                        Grid.SetRowSpan((UIElement)chart, chartData.SpanY);
+
+                        grdContent.Children.Add((UIElement)chart);
+                    }
                 }
             }
         }
@@ -199,9 +428,12 @@ namespace CovidPropagation
             cartesianChart.Hoverable = false;
 
             Axis axisX = CreateAxis(axeXDatas);
+            axisX.MinValue = 0;
+            axisX.MaxValue = 1; // Nombre de période sur une semaine.
             cartesianChart.AxisX.Add(axisX);
 
             Axis axisY = CreateAxis(axeYDatas);
+            axisY.MinValue = 0;
             cartesianChart.AxisY.Add(axisY);
 
             DataContext = this;
@@ -254,8 +486,6 @@ namespace CovidPropagation
         {
             for (int i = 0; i < curvesData.Length; i++)
             {
-                Random rdm = GlobalVariables.rdm;
-                SeriesCollection newSerie = new SeriesCollection();
                 ChartValues<double> values = new ChartValues<double>();
                 chart.Series.Add(new LineSeries
                 {
@@ -264,7 +494,7 @@ namespace CovidPropagation
                     Tag = curvesData[i],
                     PointGeometry = null,
                     Values = values,
-                    DataLabels = false
+                    DataLabels = false,
                 });
                 chart.Series[0].Values = values.AsGearedValues().WithQuality(Quality.Low);
             }
@@ -279,19 +509,14 @@ namespace CovidPropagation
         {
             for (int i = 0; i < curvesData.Length; i++)
             {
-                Random rdm = GlobalVariables.rdm;
+                ChartValues<double> values = new ChartValues<double>();
                 chart.Series.Add(new ColumnSeries
                 {
                     Title = curvesData[i].ToString(),
                     Foreground = Brushes.Gray,
                     Tag = curvesData[i],
-                    Values = new ChartValues<double> {
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10)
-                    }
+                    Values = values,
+                    DataLabels = false
                 });
             }
         }

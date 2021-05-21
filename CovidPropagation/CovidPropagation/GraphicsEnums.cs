@@ -72,6 +72,6 @@ namespace CovidPropagation
         [Description("Mois")]
         Month,
         [Description("Total")]
-        Total,
+        Total
     }
 }
