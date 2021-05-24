@@ -113,7 +113,7 @@ namespace CovidPropagation
             Axis axisX = chart.AxisX[0];
             ChartData chartData = (ChartData)chart.Tag;
 
-            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex);
+            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
 
             axisX.MinValue += interval;
             axisX.MaxValue += interval;
@@ -133,7 +133,7 @@ namespace CovidPropagation
             Axis axisX = chart.AxisX[0];
             ChartData chartData = (ChartData)chart.Tag;
 
-            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex);
+            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
 
             if (axisX.MinValue - interval >= 0 && interval != 0)
             {
@@ -152,6 +152,31 @@ namespace CovidPropagation
             chart.Tag = chartData;
         }
 
+        private int GetInterval(ChartsDisplayInterval enumInterval, ChartsType type)
+        {
+            int interval;
+            switch (enumInterval)
+            {
+                default:
+                case ChartsDisplayInterval.Day:
+                    interval = 48;
+                    break;
+                case ChartsDisplayInterval.Week:
+                    interval = 336;
+                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical)
+                        interval = 7;
+                    break;
+                case ChartsDisplayInterval.Month:
+                    interval = 1440; if (type == ChartsType.Horizontal || type == ChartsType.Vertical)
+                        interval = 4;
+                    break;
+                case ChartsDisplayInterval.Total:
+                    interval = 0;
+                    break;
+            }
+            return interval;
+        }
+
         private void Datas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cbx = (ComboBox)sender;
@@ -159,28 +184,10 @@ namespace CovidPropagation
             CartesianChart chart = (CartesianChart)chartGrid.Children[4];
             Axis axisX = chart.AxisX[0];
             ChartData chartData = (ChartData)chart.Tag;
-
-            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex);
-            double maxValue = chart.Series[0].Values.Count;
-
-            if (axisX != null && maxValue - interval > 0 && interval != 0)
-            {
-                axisX.MinValue = maxValue - interval;
-                axisX.MaxValue = maxValue;
-            }else if(interval == 0)
-            {
-                axisX.MinValue = 0;
-                axisX.MaxValue = maxValue;
-                chartData.AutoDisplay = true;
-            }
-            else
-            {
-                axisX.MinValue = 0;
-                axisX.MaxValue = interval;
-            }
-
             chartData.DisplayInterval = cbx.SelectedIndex;
             chart.Tag = chartData;
+
+            sim.TriggerDisplayChanges();
         }
 
         private void MoveChartAuto_Click(object sender, RoutedEventArgs e)
@@ -194,41 +201,8 @@ namespace CovidPropagation
             chartData.AutoDisplay = true;
             chart.Tag = chartData;
 
-            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex);
-            double maxValue = chart.Series[0].Values.Count;
+            sim.TriggerDisplayChanges();
 
-            if (maxValue - interval > 0)
-            {
-                axisX.MinValue = maxValue - interval; 
-                axisX.MaxValue = maxValue;
-            }
-            else
-            {
-                axisX.MinValue = 0;
-                axisX.MaxValue = interval;
-            }
-        }
-
-        private int GetInterval(ChartsDisplayInterval enumInterval)
-        {
-            int interval;
-            switch (enumInterval)
-            {
-                default:
-                case ChartsDisplayInterval.Day:
-                    interval = 48;
-                    break;
-                case ChartsDisplayInterval.Week:
-                    interval = 336;
-                    break;
-                case ChartsDisplayInterval.Month:
-                    interval = 1440;
-                    break;
-                case ChartsDisplayInterval.Total:
-                    interval = 0;
-                    break;
-            }
-            return interval;
         }
 
         private Button CreateChartButton(string content)
@@ -292,7 +266,7 @@ namespace CovidPropagation
                         case (int)ChartsType.PieChart:
                             chart = CreatePieChart();
                             AddSectionToPieChart((PieChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
-                            sim.OnTimeFramChange += new TimeFrameChangeEventHandler(((PieChart)chart).OnTimeFrameChange);
+                            sim.OnTimeFramChange += new TimeFrameChangeEventHandler(((PieChart)chart).OnDataUpdatePieChart);
                             break;
                         case (int)ChartsType.HeatMap:
                             chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
@@ -396,18 +370,20 @@ namespace CovidPropagation
                 temporalAxis = (ChartsAxisData)chartData.AxisX;
             else if (chartData.AxisY <= (int)ChartsAxisData.Week)
                 temporalAxis = (ChartsAxisData)chartData.AxisY;
-
             switch (temporalAxis)
             {
                 default:
                 case ChartsAxisData.TimeFrame:
-                    sim.OnTimeFramChange += new TimeFrameChangeEventHandler(chart.OnTimeFrameChange);
+                    sim.OnTimeFramChange += new TimeFrameChangeEventHandler(chart.OnDataUpdate);
+                    sim.OnDisplay += new DispalyChangeEventHandler(chart.Display);
                     break;
                 case ChartsAxisData.Day:
-                    sim.OnDayChange += new DayChangeEventHandler(chart.OnDayChange);
+                    sim.OnDayChange += new DayChangeEventHandler(chart.OnDataUpdate);
+                    sim.OnDisplay += new DispalyChangeEventHandler(chart.Display);
                     break;
                 case ChartsAxisData.Week:
-                    sim.OnWeekChange += new WeekChangeEventHandler(chart.OnWeekChange);
+                    sim.OnWeekChange += new WeekChangeEventHandler(chart.OnDataUpdate);
+                    sim.OnDisplay += new DispalyChangeEventHandler(chart.Display);
                     break;
             }
         }

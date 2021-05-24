@@ -100,7 +100,7 @@ C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\De
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.dll
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.pdb
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.genruntimeconfig.cache
-C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\WindowGraph.g.cs
-C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\WindowGraph.baml
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\WindowChart.g.cs
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\WindowChart.baml
+C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\WindowChart.g.cs
+C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\WindowChart.baml

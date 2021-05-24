@@ -19,6 +19,7 @@ namespace CovidPropagation
     public delegate void TimeFrameChangeEventHandler(SimulationDatas e);
     public delegate void DayChangeEventHandler(SimulationDatas e);
     public delegate void WeekChangeEventHandler(SimulationDatas e);
+    public delegate void DispalyChangeEventHandler(SimulationDatas e, bool idDisplayChange);
 
     public class Simulation : EventArgs
     {
@@ -44,6 +45,7 @@ namespace CovidPropagation
         public event TimeFrameChangeEventHandler OnTimeFramChange;
         public event DayChangeEventHandler OnDayChange;
         public event WeekChangeEventHandler OnWeekChange;
+        public event DispalyChangeEventHandler OnDisplay;
         public event GetDataEventHandler OnTickSP;
 
         private Random rdm = new Random();
@@ -61,6 +63,8 @@ namespace CovidPropagation
         bool startStop;
         bool isInitialized;
         int interval;
+
+        SimulationDatas timeFrameDatas;
 
         public int Interval { get => interval; set => interval = value; }
         public bool IsInitialized { get => isInitialized; }
@@ -127,7 +131,7 @@ namespace CovidPropagation
         /// </summary>
         public async void Iterate()
         {
-            SimulationDatas timeFrameDatas = new SimulationDatas();
+            timeFrameDatas = new SimulationDatas();
             timeFrameDatas.Initialize();
             timeFrameDatas.AddDatas(GetAllDatas());
             if (OnTimeFramChange != null)
@@ -175,6 +179,7 @@ namespace CovidPropagation
                         if (OnTimeFramChange != null)
                         {
                             OnTimeFramChange(timeFrameDatas);
+                            OnDisplay(timeFrameDatas, false);
                         }
                         sumEllapsedTime = 0;
                     }
@@ -184,6 +189,7 @@ namespace CovidPropagation
                         if (OnDayChange != null)
                         {
                             OnDayChange(dayDatas);
+                            OnDisplay(dayDatas, false);
                         }
 
                         if (TimeManager.CurrentDay == 0)
@@ -191,6 +197,7 @@ namespace CovidPropagation
                             if (OnWeekChange != null)
                             {
                                 OnWeekChange(weekDatas);
+                                OnDisplay(weekDatas, false);
                             }
                         }
 
@@ -217,6 +224,11 @@ namespace CovidPropagation
                 }
                 await Task.Delay(100);
             }
+        }
+
+        public void TriggerDisplayChanges()
+        {
+            OnDisplay(timeFrameDatas, true);
         }
         #region GetDatas
 
