@@ -981,3 +981,37 @@
     - Données brutes pour les jours
   - Fonctionnel pour les graphiques à colonnes mais nécessites des changements dans le fonctionnement des boutons
     - Créer un bouton pour chaque type lors de la création. Similaire aux création de contenu des graphiques
+
+# 25.05.2021 08h05 / 17h00
+- Modification de la structure de modification des données des graphiques et d'affichage
+  - Séparation de l'ajout de données et de l'affichage
+  - Création d'un nouvel évènement gérant l'affichage
+  - Supression des évènement OnWeek et OnMonth qui étaient identique à l'évènement OnTimeFrame
+    - Changement du code pour appeler OnTimeFrame qui est renommé en OnDataUpdate
+  - Bug, l'affichage des données des graphiques à colonnes ne s'affichent qu'en jours lors d'un déplacement.
+    - Réglé and ajoutant du code qui permet cet affichage dans la méthode d'ajout de données
+    - ⚠ redondance de code ⚠
+- Ajout de commentaires dans "PageSimulation"
+- Graphiques à lignes fonctionnels
+- Pour les graphiques à colonne et en ligne, 48 colonnes est beaucoup trop pour des affichages plus petits (1 case) ou simplement lorsqu'il y a plus de données à afficher
+  - Modification de l'affichage des graphiques pour n'afficher que 12 valeurs
+    - Fonctionne mais lorsque le graphique est trop petit et affiche trop de données le même problème surgit
+- Discussion avec M. Mathieu sur la comparaison avec la réalité
+  - Comparaison avec l'Inde
+    - Classe pauvre moins impactée
+      - Système immunitaire++
+  - Graphique HeatMap possiblement compliqué à implémenter
+- Premier affichage de données à l'aide du graphique HeatMap
+  - Ne peu changer de semaines
+  - Réactualise constamment les couleurs en fonction de la nouvelle valeur max
+- Le graphique HeatMap fonctionne et peut avancer ou reculer dans le temps mais l'affichage automatique ne fonctionne pas sur lui.
+  - Un bug survient si l'on retourne en arrière dès le début
+- HeatMap fonctionnelle
+- Test de longue durée avec la heatmap, elle consomme trop lorsque beaucoup de données se situent dedans
+- Bug des graphiques à colonne
+  - La valeur minimum n'évolue pas avec le reste
+  - Simple erreur d'écriture du nom de variable ne mettant pas à jours la valeur maximum de l'axe
+- ~~Les valeurs du graphique à ligne disparaissent après ~3 lignes~~
+  - Les valeurs min et max de l'axe Y ne correspondent pas aux données.
+    - Modification de la mise à jour de données à reglé le problème
+- 

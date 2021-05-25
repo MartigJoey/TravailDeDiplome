@@ -88,25 +88,25 @@
         <Label Grid.Row="2"
                Grid.Column="0"
                Foreground="{StaticResource foreGroundLight}"
-               >Interval d'affichage :</Label>
-        <ComboBox x:Name="cbxDisplayInterval" 
+               >Valeur sur l'axe X :</Label>
+        <ComboBox x:Name="cbxValueX" 
                   SelectedIndex="0"
                   SelectionChanged="AxisValue_SelectionChanged"
                   Tag="X"
                   Grid.Row="2"
                   Grid.Column="1"
-                  ItemsSource="{Binding Source={StaticResource ChartsDisplayInterval}}"
+                  ItemsSource="{Binding Source={StaticResource ChartsAxis}}"
                   Margin="0,2,0,2"
                   />
 
         <Label Grid.Row="3"
                Grid.Column="0"
                Foreground="{StaticResource foreGroundLight}"
-               >Valeur sur l'axe X :</Label>
-        <ComboBox x:Name="cbxValueX" 
-                  SelectedIndex="0"
+               >Valeur sur l'axe Y :</Label>
+        <ComboBox x:Name="cbxValueY" 
+                  SelectedIndex="1"
                   SelectionChanged="AxisValue_SelectionChanged"
-                  Tag="X"
+                  Tag="Y"
                   Grid.Row="3"
                   Grid.Column="1"
                   ItemsSource="{Binding Source={StaticResource ChartsAxis}}"
@@ -116,29 +116,15 @@
         <Label Grid.Row="4"
                Grid.Column="0"
                Foreground="{StaticResource foreGroundLight}"
-               >Valeur sur l'axe Y :</Label>
-        <ComboBox x:Name="cbxValueY" 
-                  SelectedIndex="1"
-                  SelectionChanged="AxisValue_SelectionChanged"
-                  Tag="Y"
-                  Grid.Row="4"
-                  Grid.Column="1"
-                  ItemsSource="{Binding Source={StaticResource ChartsAxis}}"
-                  Margin="0,2,0,2"
-                  />
-
-        <Label Grid.Row="5"
-               Grid.Column="0"
-               Foreground="{StaticResource foreGroundLight}"
                >Quantité de données :</Label>
         <ComboBox x:Name="cbxQuantityOfCurves"
                  SelectionChanged="DataQuantity_SelectionChanged"
-                 Grid.Row="5"
+                 Grid.Row="4"
                  Grid.Column="1"
                  Margin="0,2,0,2"
                   />
 
-        <Label Grid.Row="6"
+        <Label Grid.Row="5"
                Grid.Column="0"
                Foreground="{StaticResource foreGroundLight}"
                >Données :</Label>

@@ -16,9 +16,7 @@ using System.Threading.Tasks;
 namespace CovidPropagation
 {
     public delegate void GetDataEventHandler(Simulation e); 
-    public delegate void TimeFrameChangeEventHandler(SimulationDatas e);
-    public delegate void DayChangeEventHandler(SimulationDatas e);
-    public delegate void WeekChangeEventHandler(SimulationDatas e);
+    public delegate void DataUpdateEventHandler(SimulationDatas e);
     public delegate void DispalyChangeEventHandler(SimulationDatas e, bool idDisplayChange);
 
     public class Simulation : EventArgs
@@ -42,9 +40,7 @@ namespace CovidPropagation
         private const int MAX_WORKING_AGE = 65;
 
 
-        public event TimeFrameChangeEventHandler OnTimeFramChange;
-        public event DayChangeEventHandler OnDayChange;
-        public event WeekChangeEventHandler OnWeekChange;
+        public event DataUpdateEventHandler OnDataUpdate;
         public event DispalyChangeEventHandler OnDisplay;
         public event GetDataEventHandler OnTickSP;
 
@@ -64,7 +60,7 @@ namespace CovidPropagation
         bool isInitialized;
         int interval;
 
-        SimulationDatas timeFrameDatas;
+        SimulationDatas chartsDatas;
 
         public int Interval { get => interval; set => interval = value; }
         public bool IsInitialized { get => isInitialized; }
@@ -131,26 +127,13 @@ namespace CovidPropagation
         /// </summary>
         public async void Iterate()
         {
-            timeFrameDatas = new SimulationDatas();
-            timeFrameDatas.Initialize();
-            timeFrameDatas.AddDatas(GetAllDatas());
-            if (OnTimeFramChange != null)
-                OnTimeFramChange(timeFrameDatas);
-
-            SimulationDatas dayDatas = new SimulationDatas();
-            dayDatas.Initialize();
-            dayDatas.AddDatas(GetAllDatas());
-            if (TimeManager.DoesDayChangeOnThisTimeFrame() && OnDayChange != null)
-                OnDayChange(dayDatas);
-
-            SimulationDatas weekDatas = new SimulationDatas();
-            weekDatas.Initialize();
-            weekDatas.AddDatas(GetAllDatas());
-            if (TimeManager.DoesWeekChangeOnThisTimeFrame() && OnWeekChange != null)
-                OnWeekChange(weekDatas);
+            chartsDatas = new SimulationDatas();
+            chartsDatas.Initialize();
+            chartsDatas.AddDatas(GetAllDatas());
+            if (OnDataUpdate != null)
+                OnDataUpdate(chartsDatas);
 
             int sumEllapsedTime = 0;
-            int lastDay = 0;
 
             while (true)
             {
@@ -163,45 +146,19 @@ namespace CovidPropagation
                     sites.ForEach(p => p.CalculateprobabilityOfInfection());
                     population.ForEach(p => p.ChechState());
 
-                    if (OnTimeFramChange != null)
-                        timeFrameDatas.AddDatas(GetAllDatas());
-
-                    if (OnDayChange != null)
-                        dayDatas.AddDatas(GetAllDatas());
-
-                    if (OnWeekChange != null)
-                        weekDatas.AddDatas(GetAllDatas());
+                    if (OnDataUpdate != null)
+                        chartsDatas.AddDatas(GetAllDatas());
 
                     // Affiche au maximum une fois par seconde
                     if (sumEllapsedTime >= 1000)
                     {
                         // Trigger les évènements qui vont mettre à jour les graphiques
-                        if (OnTimeFramChange != null)
+                        if (OnDataUpdate != null)
                         {
-                            OnTimeFramChange(timeFrameDatas);
-                            OnDisplay(timeFrameDatas, false);
+                            OnDataUpdate(chartsDatas);
+                            OnDisplay(chartsDatas, false);
                         }
                         sumEllapsedTime = 0;
-                    }
-
-                    if (lastDay != TimeManager.CurrentDay)
-                    {
-                        if (OnDayChange != null)
-                        {
-                            OnDayChange(dayDatas);
-                            OnDisplay(dayDatas, false);
-                        }
-
-                        if (TimeManager.CurrentDay == 0)
-                        {
-                            if (OnWeekChange != null)
-                            {
-                                OnWeekChange(weekDatas);
-                                OnDisplay(weekDatas, false);
-                            }
-                        }
-
-                        lastDay = TimeManager.CurrentDay;
                     }
 
                     // Trigger l'évènement OnTick qui va mettre à jour le GUI
@@ -228,7 +185,7 @@ namespace CovidPropagation
 
         public void TriggerDisplayChanges()
         {
-            OnDisplay(timeFrameDatas, true);
+            OnDisplay(chartsDatas, true);
         }
         #region GetDatas
 

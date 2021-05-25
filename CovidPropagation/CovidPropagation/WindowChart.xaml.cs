@@ -75,14 +75,9 @@ namespace CovidPropagation
                                        in Enum.GetValues(typeof(ChartsType))
                                        select GetEnumDescription(n);
 
-            cbxDisplayInterval.ItemsSource = from ChartsDisplayInterval n
-                                             in Enum.GetValues(typeof(ChartsDisplayInterval))
-                                             select GetEnumDescription(n);
-
             cbxValueX.SelectedIndex = this.graphicDatas.AxisX;
             cbxValueY.SelectedIndex = this.graphicDatas.AxisY;
             cbxGraphType.SelectedIndex = this.graphicDatas.ChartType;
-            cbxDisplayInterval.SelectedIndex = this.graphicDatas.DisplayInterval;
 
 
             currentCurvesIndex = this.graphicDatas.Datas.Length - 1;
@@ -180,7 +175,10 @@ namespace CovidPropagation
                     SetData(DisplayHeatMapOnGraph);
                     if (cbxValueX != null)
                     {
+                        cbxValueX.SelectedIndex = 1;
+                        cbxValueY.SelectedIndex = 0;
                         cbxValueX.IsEnabled = false;
+                        cbxValueY.IsEnabled = false;
                         cbxQuantityOfCurves.IsEnabled = false;
                         cbxQuantityOfCurves.SelectedIndex = 0;
                     }

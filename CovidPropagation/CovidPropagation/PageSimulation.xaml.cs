@@ -104,19 +104,34 @@ namespace CovidPropagation
             DisplayCharts();
         }
 
+        /// <summary>
+        /// Permet de déplacer l'affichage de données dans le temps en fonction de l'interval actuel du graphique.
+        /// (Passer au jours suivant par exemple.)
+        /// </summary>
         private void MoveChartDataForward_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
             Grid chartGrid = VisualTreeHelper.GetParent(btn) as Grid;
-            ComboBox cbx = (ComboBox)chartGrid.Children[2];
             CartesianChart chart = (CartesianChart)chartGrid.Children[4];
-            Axis axisX = chart.AxisX[0];
+            ComboBox cbx = (ComboBox)chartGrid.Children[2];
             ChartData chartData = (ChartData)chart.Tag;
+            Axis axis;
+            int interval;
 
-            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
+            if (chartData.ChartType == (int)ChartsType.HeatMap)
+                interval = GetInterval(ChartsDisplayInterval.Week, (ChartsType)chartData.ChartType);
+            else
+                interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
 
-            axisX.MinValue += interval;
-            axisX.MaxValue += interval;
+            Debug.WriteLine(interval);
+
+            if ((ChartsType)chartData.ChartType == ChartsType.Horizontal)
+                axis = chart.AxisY[0];
+            else
+                axis = chart.AxisX[0];
+
+            axis.MinValue += interval;
+            axis.MaxValue += interval;
 
             if (interval != 0)
                 chartData.AutoDisplay = false;
@@ -124,26 +139,39 @@ namespace CovidPropagation
             chart.Tag = chartData;
         }
 
+        /// <summary>
+        /// Permet de déplacer l'affichage de données dans le temps en fonction de l'interval actuel du graphique.
+        /// (Passer au jours précédent par exemple.)
+        /// </summary>
         private void MoveChartDataBackward_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
             Grid chartGrid = VisualTreeHelper.GetParent(btn) as Grid;
-            ComboBox cbx = (ComboBox)chartGrid.Children[2];
             CartesianChart chart = (CartesianChart)chartGrid.Children[4];
-            Axis axisX = chart.AxisX[0];
+            ComboBox cbx = (ComboBox)chartGrid.Children[2];
             ChartData chartData = (ChartData)chart.Tag;
+            Axis axis;
+            int interval;
 
-            int interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
+            if (chartData.ChartType == (int)ChartsType.HeatMap)
+                interval = GetInterval(ChartsDisplayInterval.Week, (ChartsType)chartData.ChartType);
+            else
+                interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
 
-            if (axisX.MinValue - interval >= 0 && interval != 0)
+            if ((ChartsType)chartData.ChartType == ChartsType.Horizontal)
+                axis = chart.AxisY[0];
+            else
+                axis = chart.AxisX[0];
+
+            if (axis.MinValue - interval >= 0 && interval != 0)
             {
-                axisX.MinValue -= interval;
-                axisX.MaxValue -= interval;
+                axis.MinValue -= interval;
+                axis.MaxValue -= interval;
             }
             else
             {
-                axisX.MinValue = 0;
-                axisX.MaxValue = interval;
+                axis.MinValue = 0;
+                axis.MaxValue = interval;
             }
 
             if(interval != 0)
@@ -152,6 +180,13 @@ namespace CovidPropagation
             chart.Tag = chartData;
         }
 
+        /// <summary>
+        /// Permet de récupérer la valeur de l'interval en timeFrames.
+        /// Les valeurs sont différentes suivant le type de graphiques car leur affichage le demande.
+        /// </summary>
+        /// <param name="enumInterval">Interval du graphique.</param>
+        /// <param name="type">Type de graphique.</param>
+        /// <returns>Interval actuel pour ce graphique.</returns>
         private int GetInterval(ChartsDisplayInterval enumInterval, ChartsType type)
         {
             int interval;
@@ -160,14 +195,17 @@ namespace CovidPropagation
                 default:
                 case ChartsDisplayInterval.Day:
                     interval = 48;
+                    if (type == ChartsType.Vertical || type == ChartsType.Horizontal)
+                        interval = 12;
                     break;
                 case ChartsDisplayInterval.Week:
                     interval = 336;
-                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical)
+                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical || type == ChartsType.HeatMap)
                         interval = 7;
                     break;
                 case ChartsDisplayInterval.Month:
-                    interval = 1440; if (type == ChartsType.Horizontal || type == ChartsType.Vertical)
+                    interval = 1440; 
+                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical)
                         interval = 4;
                     break;
                 case ChartsDisplayInterval.Total:
@@ -177,12 +215,15 @@ namespace CovidPropagation
             return interval;
         }
 
-        private void Datas_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        /// <summary>
+        /// Lorsque la sélection de l'interval de temps des graphiques change.
+        /// Réaffiche les graphiques pour appliquer la modification.
+        /// </summary>
+        private void TimeInterval_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cbx = (ComboBox)sender;
             Grid chartGrid = VisualTreeHelper.GetParent(cbx) as Grid;
             CartesianChart chart = (CartesianChart)chartGrid.Children[4];
-            Axis axisX = chart.AxisX[0];
             ChartData chartData = (ChartData)chart.Tag;
             chartData.DisplayInterval = cbx.SelectedIndex;
             chart.Tag = chartData;
@@ -190,13 +231,15 @@ namespace CovidPropagation
             sim.TriggerDisplayChanges();
         }
 
+        /// <summary>
+        /// Active le mode autoDisplay sur le graphique.
+        /// Une fois activé, l'affichage suis les dernières données du graphique automatiquement.
+        /// </summary>
         private void MoveChartAuto_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
             Grid chartGrid = VisualTreeHelper.GetParent(btn) as Grid;
-            ComboBox cbx = (ComboBox)chartGrid.Children[2];
             CartesianChart chart = (CartesianChart)chartGrid.Children[4];
-            Axis axisX = chart.AxisX[0];
             ChartData chartData = (ChartData)chart.Tag;
             chartData.AutoDisplay = true;
             chart.Tag = chartData;
@@ -205,6 +248,11 @@ namespace CovidPropagation
 
         }
 
+        /// <summary>
+        /// Créé un bouton qui permet de modifier le contenu des graphiques en se déplacant dans le jours/semaine/mois suivant ou précédent ou en activant l'affichage automatique.
+        /// </summary>
+        /// <param name="content">Contenu textuel du bouton.</param>
+        /// <returns>Bonton lié au graphique.</returns>
         private Button CreateChartButton(string content)
         {
             Button btn = new Button();
@@ -217,6 +265,10 @@ namespace CovidPropagation
             return btn;
         }
 
+        /// <summary>
+        /// Créé un combobo permettant la sélection de l'interval à afficher (Jours, semaine, mois et total)
+        /// </summary>
+        /// <returns>Combobox contenant les valeurs temporels.</returns>
         private ComboBox CreateChartCombobox()
         {
             ComboBox cbx = new ComboBox();
@@ -249,30 +301,32 @@ namespace CovidPropagation
                             chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
                             ((CartesianChart)chart).Tag = chartData;
                             AddCurvesToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
-                            SubscribeToTimeChange((CartesianChart)chart, chartData);
+                            SubscribeToChartEvents((CartesianChart)chart, chartData);
                             break;
                         case (int)ChartsType.Vertical:
                             chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
                             ((CartesianChart)chart).Tag = chartData;
                             AddColumnsToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
-                            SubscribeToTimeChange((CartesianChart)chart, chartData);
+                            SubscribeToChartEvents((CartesianChart)chart, chartData);
                             break;
                         case (int)ChartsType.Horizontal:
                             chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
                             ((CartesianChart)chart).Tag = chartData;
                             AddRowsToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
-                            SubscribeToTimeChange((CartesianChart)chart, chartData);
+                            SubscribeToChartEvents((CartesianChart)chart, chartData);
+                            ((CartesianChart)chart).AxisX[0].MaxValue = double.NaN;
                             break;
                         case (int)ChartsType.PieChart:
                             chart = CreatePieChart();
                             AddSectionToPieChart((PieChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
-                            sim.OnTimeFramChange += new TimeFrameChangeEventHandler(((PieChart)chart).OnDataUpdatePieChart);
+                            sim.OnDataUpdate += new DataUpdateEventHandler(((PieChart)chart).OnDataUpdatePieChart);
                             break;
                         case (int)ChartsType.HeatMap:
                             chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
                             ((CartesianChart)chart).Tag = chartData;
                             AddHeatMapToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
-                            SubscribeToTimeChange((CartesianChart)chart, chartData);
+                            SubscribeToChartEvents((CartesianChart)chart, chartData);
+                            ((CartesianChart)chart).AxisX[0].MaxValue = double.NaN;
                             break;
                     }
 
@@ -314,9 +368,12 @@ namespace CovidPropagation
                         ComboBox cbxTimeIncrement = CreateChartCombobox();
                         Button btnAuto = CreateChartButton("auto.");
 
+                        if (chartData.ChartType == (int)ChartsType.HeatMap)
+                            cbxTimeIncrement.IsEnabled = false;
+
                         btnLeft.Click += MoveChartDataBackward_Click;
                         btnRight.Click += MoveChartDataForward_Click;
-                        cbxTimeIncrement.SelectionChanged += Datas_SelectionChanged;
+                        cbxTimeIncrement.SelectionChanged += TimeInterval_SelectionChanged;
                         btnAuto.Click += MoveChartAuto_Click;
 
                         Grid.SetColumn(btnLeft, 0);
@@ -362,30 +419,15 @@ namespace CovidPropagation
             }
         }
 
-        private void SubscribeToTimeChange(CartesianChart chart, ChartData chartData)
+        /// <summary>
+        /// S'abonne aux évènements permettant l'ajout de donéées ainsi que la modification de l'affichage.
+        /// </summary>
+        /// <param name="chart"></param>
+        /// <param name="chartData"></param>
+        private void SubscribeToChartEvents(CartesianChart chart, ChartData chartData)
         {
-            ChartsAxisData temporalAxis = ChartsAxisData.QuantityOfCase;
-
-            if (chartData.AxisX <= (int)ChartsAxisData.Week)
-                temporalAxis = (ChartsAxisData)chartData.AxisX;
-            else if (chartData.AxisY <= (int)ChartsAxisData.Week)
-                temporalAxis = (ChartsAxisData)chartData.AxisY;
-            switch (temporalAxis)
-            {
-                default:
-                case ChartsAxisData.TimeFrame:
-                    sim.OnTimeFramChange += new TimeFrameChangeEventHandler(chart.OnDataUpdate);
-                    sim.OnDisplay += new DispalyChangeEventHandler(chart.Display);
-                    break;
-                case ChartsAxisData.Day:
-                    sim.OnDayChange += new DayChangeEventHandler(chart.OnDataUpdate);
-                    sim.OnDisplay += new DispalyChangeEventHandler(chart.Display);
-                    break;
-                case ChartsAxisData.Week:
-                    sim.OnWeekChange += new WeekChangeEventHandler(chart.OnDataUpdate);
-                    sim.OnDisplay += new DispalyChangeEventHandler(chart.Display);
-                    break;
-            }
+            sim.OnDataUpdate += new DataUpdateEventHandler(chart.OnDataUpdate);
+            sim.OnDisplay += new DispalyChangeEventHandler(chart.Display);
         }
 
         /// <summary>
@@ -549,8 +591,8 @@ namespace CovidPropagation
         /// Ajoute une heatMap à un graphique cartésien.
         /// </summary>
         /// <param name="chart">graphique où la heatMap sera ajoutée.</param>
-        /// <param name="curvesData">Type de données à afficher dans la heatMap.</param>
-        private void AddHeatMapToCartesianChart(CartesianChart chart, ChartsDisplayData[] curvesData)
+        /// <param name="heatMapData">Type de données à afficher dans la heatMap.</param>
+        private void AddHeatMapToCartesianChart(CartesianChart chart, ChartsDisplayData[] heatMapData)
         {
             Random rdm = GlobalVariables.rdm;
 
@@ -588,19 +630,35 @@ namespace CovidPropagation
                 new HeatPoint(3, 5, rdm.Next(0, 10)),
                 new HeatPoint(3, 6, rdm.Next(0, 10)),
 
-                new HeatPoint(4, 0, rdm.Next(0, 10)),
-                new HeatPoint(4, 1, rdm.Next(0, 10)),
-                new HeatPoint(4, 2, rdm.Next(0, 10)),
-                new HeatPoint(4, 3, rdm.Next(0, 10)),
-                new HeatPoint(4, 4, rdm.Next(0, 10)),
-                new HeatPoint(4, 5, rdm.Next(0, 10)),
-                new HeatPoint(4, 6, rdm.Next(0, 10))
+                new HeatPoint(3, 0, rdm.Next(0, 10)),
+                new HeatPoint(3, 1, rdm.Next(0, 10)),
+                new HeatPoint(3, 2, rdm.Next(0, 10)),
+                new HeatPoint(3, 3, rdm.Next(0, 10)),
+                new HeatPoint(3, 4, rdm.Next(0, 10)),
+                new HeatPoint(3, 5, rdm.Next(0, 10)),
+                new HeatPoint(3, 6, rdm.Next(0, 10)),
+
+                new HeatPoint(3, 0, rdm.Next(0, 10)),
+                new HeatPoint(3, 1, rdm.Next(0, 10)),
+                new HeatPoint(3, 2, rdm.Next(0, 10)),
+                new HeatPoint(3, 3, rdm.Next(0, 10)),
+                new HeatPoint(3, 4, rdm.Next(0, 10)),
+                new HeatPoint(3, 5, rdm.Next(0, 10)),
+                new HeatPoint(3, 6, rdm.Next(0, 10)),
+
+                new HeatPoint(3, 0, rdm.Next(0, 10)),
+                new HeatPoint(3, 1, rdm.Next(0, 10)),
+                new HeatPoint(3, 2, rdm.Next(0, 10)),
+                new HeatPoint(3, 3, rdm.Next(0, 10)),
+                new HeatPoint(3, 4, rdm.Next(0, 10)),
+                new HeatPoint(3, 5, rdm.Next(0, 10)),
+                new HeatPoint(3, 6, rdm.Next(0, 10)),
             };
 
             HeatSeries heatSeries = new HeatSeries();
             heatSeries.Values = values;
-            heatSeries.Title = curvesData[0].ToString();
-            heatSeries.Tag = curvesData[0];
+            heatSeries.Title = heatMapData[0].ToString();
+            heatSeries.Tag = heatMapData[0];
             heatSeries.GradientStopCollection = new GradientStopCollection()
             {
                 new GradientStop(Colors.Green, 0),

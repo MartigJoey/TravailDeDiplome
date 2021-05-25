@@ -6,6 +6,7 @@
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
 using LiveCharts;
+using LiveCharts.Defaults;
 using LiveCharts.Geared;
 using LiveCharts.Helpers;
 using LiveCharts.Wpf;
@@ -171,6 +172,11 @@ namespace CovidPropagation
         }
 
         #region Charts
+
+        /// <summary>
+        /// Lorsque les données d'un graphique cylindrique sont mise à jours.
+        /// Récupère la dernière données de chaque section de la simulation et l'affiche.
+        /// </summary>
         public static void OnDataUpdatePieChart(this PieChart chart, SimulationDatas e)
         {
             ChartValues<double> cv;
@@ -184,10 +190,10 @@ namespace CovidPropagation
 
         public static void OnDataUpdate(this CartesianChart chart, SimulationDatas e)
         {
-            chart.AddNewValueToChart((ChartData)chart.Tag, e);
+            chart.AddNewValues((ChartData)chart.Tag, e);
         }
 
-        private static void AddNewValueToChart(this CartesianChart chart, ChartData datas, SimulationDatas e)
+        private static void AddNewValues(this CartesianChart chart, ChartData datas, SimulationDatas e)
         {
             ChartValues<double> cv;
 
@@ -206,7 +212,19 @@ namespace CovidPropagation
                             foreach (ColumnSeries serie in chart.Series)
                             {
                                 cv = new ChartValues<double>();
-                                cv.AddRange(e.GetDataFromEnum((ChartsDisplayData)serie.Tag));
+                                List<double> day = new List<double>();
+                                List<double> daysAvg = new List<double>();
+                                List<double> columnDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
+                                for (int i = 0; i < columnDatas.Count; i++)
+                                {
+                                    day.Add(columnDatas[i]);
+                                    if (i % 4 == 0)
+                                    {
+                                        daysAvg.Add(day.Average());
+                                        day.Clear();
+                                    }
+                                }
+                                cv.AddRange(daysAvg);
                                 serie.Values = cv;
                             }
                             break;
@@ -251,41 +269,135 @@ namespace CovidPropagation
                             }
                             break;
                         case ChartsDisplayInterval.Total:
+                            foreach (ColumnSeries serie in chart.Series)
+                            {
+                                cv = new ChartValues<double>();
+                                List<double> day = new List<double>();
+                                List<double> avg = new List<double>();
+                                List<double> columnDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
+                                avg.Add(columnDatas.Average());
+                                cv.AddRange(avg);
+                                serie.Values = cv;
+                            }
                             break;
                         default:
                             break;
                     }
                     break;
                 case ChartsType.Horizontal:
-                    foreach (RowSeries serie in chart.Series)
+                    switch ((ChartsDisplayInterval)datas.DisplayInterval)
                     {
-                        cv = new ChartValues<double>();
-                        cv.AddRange(e.GetDataFromEnum((ChartsDisplayData)serie.Tag));
-                        serie.Values = cv;
+                        case ChartsDisplayInterval.Day:
+                            foreach (RowSeries serie in chart.Series)
+                            {
+                                cv = new ChartValues<double>();
+                                List<double> day = new List<double>();
+                                List<double> daysAvg = new List<double>();
+                                List<double> columnDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
+                                for (int i = 0; i < columnDatas.Count; i++)
+                                {
+                                    day.Add(columnDatas[i]);
+                                    if (i % 4 == 0)
+                                    {
+                                        daysAvg.Add(day.Average());
+                                        day.Clear();
+                                    }
+                                }
+                                cv.AddRange(daysAvg);
+                                serie.Values = cv;
+                            }
+                            break;
+                        case ChartsDisplayInterval.Week:
+                            foreach (RowSeries serie in chart.Series)
+                            {
+                                cv = new ChartValues<double>();
+                                List<double> day = new List<double>();
+                                List<double> daysAvg = new List<double>();
+                                List<double> columnDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
+                                for (int i = 0; i < columnDatas.Count; i++)
+                                {
+                                    day.Add(columnDatas[i]);
+                                    if (i % 48 == 0)
+                                    {
+                                        daysAvg.Add(day.Average());
+                                        day.Clear();
+                                    }
+                                }
+                                cv.AddRange(daysAvg);
+                                serie.Values = cv;
+                            }
+                            break;
+                        case ChartsDisplayInterval.Month:
+                            foreach (RowSeries serie in chart.Series)
+                            {
+                                cv = new ChartValues<double>();
+                                List<double> day = new List<double>();
+                                List<double> daysAvg = new List<double>();
+                                List<double> columnDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
+                                for (int i = 0; i < columnDatas.Count; i++)
+                                {
+                                    day.Add(columnDatas[i]);
+                                    if (i % 336 == 0)
+                                    {
+                                        daysAvg.Add(day.Average());
+                                        day.Clear();
+                                    }
+                                }
+                                cv.AddRange(daysAvg);
+                                serie.Values = cv;
+                            }
+                            break;
+                        case ChartsDisplayInterval.Total:
+                            foreach (RowSeries serie in chart.Series)
+                            {
+                                cv = new ChartValues<double>();
+                                List<double> day = new List<double>();
+                                List<double> avg = new List<double>();
+                                List<double> columnDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
+                                avg.Add(columnDatas.Average());
+                                cv.AddRange(avg);
+                                serie.Values = cv;
+                            }
+                            break;
+                        default:
+                            break;
                     }
                     break;
                 case ChartsType.HeatMap:
-                    foreach (ColumnSeries serie in chart.Series)
+                    ChartValues<HeatPoint> values = new ChartValues<HeatPoint>();
+                    HeatSeries serieHM = (HeatSeries)chart.Series[0];
+                    List<double> simDatas = e.GetDataFromEnum((ChartsDisplayData)serieHM.Tag);
+
+                    for (int i = 1; i <= simDatas.GetLastIndex(); i++)
                     {
-                        cv = new ChartValues<double>();
-                        List<double> day = new List<double>();
-                        List<double> avg = new List<double>();
-                        List<double> columnDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
-                        avg.Add(columnDatas.Average());
-                        cv.AddRange(avg);
-                        serie.Values = cv;
+                        for (int j = 1; j <= 12; j++)
+                        {
+                            if (simDatas.GetLastIndex() >= i * 12 + j)
+                                values.Add(new HeatPoint(i - 1, j - 1, simDatas[i * 12 + j]));
+                        }
                     }
+                    serieHM.Values = values;
                     break;
                 default:
                     break;
             }
         }
 
+        /// <summary>
+        /// Affiche les données des graphiques dans le format des différents graphiques.
+        /// Affiche les données suivant l'interval de temps donné.
+        /// Pour les graphiques à colonne et en ligne, les données sont réduites. 
+        /// Par exemple, pour afficher une semaine, à la palce d'afficher 48*7 colonnes, 7 colonnes sont affichées correspondant aux jours.
+        /// </summary>
+        /// <param name="chart"></param>
+        /// <param name="e"></param>
+        /// <param name="isDisplayChange"></param>
         public static void Display(this CartesianChart chart, SimulationDatas e, bool isDisplayChange)
         {
             ChartValues<double> cv;
             int interval;
             Axis axisX = chart.AxisX[0];
+            Axis axisY = chart.AxisY[0];
             double maxValue = chart.Series[0].Values.Count;
             ChartData datas = (ChartData)chart.Tag;
 
@@ -330,26 +442,37 @@ namespace CovidPropagation
                         break;
                     case ChartsType.Vertical:
                         // Affichage différent
-                        axisX.MaxValue = maxValue;
                         switch ((ChartsDisplayInterval)datas.DisplayInterval)
                         {
                             default:
                             case ChartsDisplayInterval.Day:
-                                Debug.WriteLine("Day");
-                                foreach (ColumnSeries serie in chart.Series)
+                                interval = 12;
+                                foreach (Series serie in chart.Series)
                                 {
                                     cv = new ChartValues<double>();
-                                    cv.AddRange(e.GetDataFromEnum((ChartsDisplayData)serie.Tag));
+                                    List<double> day = new List<double>();
+                                    List<double> daysAvg = new List<double>();
+                                    List<double> columnDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
+                                    for (int i = 0; i < columnDatas.Count; i++)
+                                    {
+                                        day.Add(columnDatas[i]);
+                                        if (i % 4 == 0)
+                                        {
+                                            daysAvg.Add(day.Average());
+                                            day.Clear();
+                                        }
+                                    }
+                                    cv.AddRange(daysAvg);
                                     serie.Values = cv;
                                 }
-                                interval = 48;
-                                if (maxValue - interval > 0 && interval != 0)
+                                Debug.WriteLine("_V______________");
+                                Debug.WriteLine(chart.Series[0].Values.Count + " " + maxValue);
+                                maxValue = Math.Ceiling((double)maxValue / interval) * interval;
+                                Debug.WriteLine(maxValue + " " + interval);
+
+                                if (maxValue - interval > 0)
                                 {
                                     axisX.MinValue = maxValue - interval;
-                                }
-                                else if (interval == 0)
-                                {
-                                    axisX.MinValue = 0;
                                     axisX.MaxValue = maxValue;
                                 }
                                 else
@@ -360,7 +483,6 @@ namespace CovidPropagation
                                 break;
                             case ChartsDisplayInterval.Week:
                                 interval = 7;
-                                Debug.WriteLine("Week");
                                 foreach (ColumnSeries serie in chart.Series)
                                 {
                                     cv = new ChartValues<double>();
@@ -379,16 +501,11 @@ namespace CovidPropagation
                                     cv.AddRange(daysAvg);
                                     serie.Values = cv;
                                 }
-                                maxValue = chart.Series[0].Values.Count;
-                                Debug.WriteLine(maxValue);
+                                maxValue = Math.Ceiling((double)maxValue / interval) * interval;
 
-                                if (maxValue - interval > 0 && interval != 0)
+                                if (maxValue - interval > 0)
                                 {
                                     axisX.MinValue = maxValue - interval;
-                                }
-                                else if (interval == 0)
-                                {
-                                    axisX.MinValue = 0;
                                     axisX.MaxValue = maxValue;
                                 }
                                 else
@@ -417,15 +534,11 @@ namespace CovidPropagation
                                     cv.AddRange(daysAvg);
                                     serie.Values = cv;
                                 }
-                                maxValue = chart.Series[0].Values.Count;
+                                maxValue = Math.Ceiling((double)maxValue / interval) * interval;
 
-                                if (maxValue - interval > 0 && interval != 0)
+                                if (maxValue - interval > 0)
                                 {
                                     axisX.MinValue = maxValue - interval;
-                                }
-                                else if (interval == 0)
-                                {
-                                    axisX.MinValue = 0;
                                     axisX.MaxValue = maxValue;
                                 }
                                 else
@@ -449,9 +562,139 @@ namespace CovidPropagation
                         }
                         break;
                     case ChartsType.Horizontal:
+                        // Affichage différent
+                        switch ((ChartsDisplayInterval)datas.DisplayInterval)
+                        {
+                            default:
+                            case ChartsDisplayInterval.Day:
+                                interval = 12;
+                                foreach (RowSeries serie in chart.Series)
+                                {
+                                    cv = new ChartValues<double>();
+                                    List<double> day = new List<double>();
+                                    List<double> daysAvg = new List<double>();
+                                    List<double> rowDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
+                                    for (int i = 0; i < rowDatas.Count; i++)
+                                    {
+                                        day.Add(rowDatas[i]);
+                                        if (i % 4 == 0)
+                                        {
+                                            daysAvg.Add(day.Average());
+                                            day.Clear();
+                                        }
+                                    }
+                                    cv.AddRange(daysAvg);
+                                    serie.Values = cv;
+                                }
+                                maxValue = Math.Ceiling((double)maxValue / interval) * interval;
 
+                                if (maxValue - interval > 0)
+                                {
+                                    axisY.MinValue = maxValue - interval;
+                                    axisY.MaxValue = maxValue;
+                                }
+                                else
+                                {
+                                    axisY.MinValue = 0;
+                                    axisY.MaxValue = interval;
+                                }
+                                break;
+                            case ChartsDisplayInterval.Week:
+                                interval = 7;
+                                foreach (RowSeries serie in chart.Series)
+                                {
+                                    cv = new ChartValues<double>();
+                                    List<double> day = new List<double>();
+                                    List<double> daysAvg = new List<double>();
+                                    List<double> columnDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
+                                    for (int i = 0; i < columnDatas.Count; i++)
+                                    {
+                                        day.Add(columnDatas[i]);
+                                        if (i % 48 == 0)
+                                        {
+                                            daysAvg.Add(day.Average());
+                                            day.Clear();
+                                        }
+                                    }
+                                    cv.AddRange(daysAvg);
+                                    serie.Values = cv;
+                                }
+                                maxValue = Math.Ceiling((double)maxValue / interval) * interval;
+
+                                if (maxValue - interval > 0)
+                                {
+                                    axisY.MinValue = maxValue - interval;
+                                    axisY.MaxValue = maxValue;
+                                }
+                                else
+                                {
+                                    axisY.MinValue = 0;
+                                    axisY.MaxValue = interval;
+                                }
+                                break;
+                            case ChartsDisplayInterval.Month:
+                                interval = 4;
+                                foreach (RowSeries serie in chart.Series)
+                                {
+                                    cv = new ChartValues<double>();
+                                    List<double> day = new List<double>();
+                                    List<double> daysAvg = new List<double>();
+                                    List<double> columnDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
+                                    for (int i = 0; i < columnDatas.Count; i++)
+                                    {
+                                        day.Add(columnDatas[i]);
+                                        if (i % 336 == 0)
+                                        {
+                                            daysAvg.Add(day.Average());
+                                            day.Clear();
+                                        }
+                                    }
+                                    cv.AddRange(daysAvg);
+                                    serie.Values = cv;
+                                }
+                                maxValue = Math.Ceiling((double)maxValue / interval) * interval;
+
+                                if (maxValue - interval > 0)
+                                {
+                                    axisY.MinValue = maxValue - interval;
+                                    axisY.MaxValue = maxValue;
+                                }
+                                else
+                                {
+                                    axisY.MinValue = 0;
+                                    axisY.MaxValue = interval;
+                                }
+                                break;
+                            case ChartsDisplayInterval.Total:
+                                foreach (RowSeries serie in chart.Series)
+                                {
+                                    cv = new ChartValues<double>();
+                                    List<double> day = new List<double>();
+                                    List<double> avg = new List<double>();
+                                    List<double> columnDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
+                                    avg.Add(columnDatas.Average());
+                                    cv.AddRange(avg);
+                                    serie.Values = cv;
+                                }
+                                break;
+                        }
                         break;
                     case ChartsType.HeatMap:
+                        interval = 7;
+                        HeatSeries serieHM = (HeatSeries)chart.Series[0];
+                        maxValue = Math.Ceiling((double)serieHM.Values.Count / 12d / (double)interval) * interval;
+                        Debug.WriteLine(maxValue);
+                        if (maxValue - interval > 0 && interval != 0)
+                        {
+                            axisX.MinValue = maxValue - interval;
+                            axisX.MaxValue = maxValue;
+                        }
+                        else
+                        {
+                            axisX.MinValue = 0;
+                            axisX.MaxValue = interval;
+                        }
+                        axisY.MaxValue = 12;
                         break;
                     default:
                         break;
