@@ -118,12 +118,8 @@ namespace CovidPropagation
             Axis axis;
             int interval;
 
-            if (chartData.ChartType == (int)ChartsType.HeatMap)
-                interval = GetInterval(ChartsDisplayInterval.Week, (ChartsType)chartData.ChartType);
-            else
-                interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
+            interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
 
-            Debug.WriteLine(interval);
 
             if ((ChartsType)chartData.ChartType == ChartsType.Horizontal)
                 axis = chart.AxisY[0];
@@ -153,10 +149,7 @@ namespace CovidPropagation
             Axis axis;
             int interval;
 
-            if (chartData.ChartType == (int)ChartsType.HeatMap)
-                interval = GetInterval(ChartsDisplayInterval.Week, (ChartsType)chartData.ChartType);
-            else
-                interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
+            interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
 
             if ((ChartsType)chartData.ChartType == ChartsType.Horizontal)
                 axis = chart.AxisY[0];
@@ -195,7 +188,7 @@ namespace CovidPropagation
                 default:
                 case ChartsDisplayInterval.Day:
                     interval = 48;
-                    if (type == ChartsType.Vertical || type == ChartsType.Horizontal)
+                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical || type == ChartsType.HeatMap)
                         interval = 12;
                     break;
                 case ChartsDisplayInterval.Week:
@@ -205,7 +198,7 @@ namespace CovidPropagation
                     break;
                 case ChartsDisplayInterval.Month:
                     interval = 1440; 
-                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical)
+                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical || type == ChartsType.HeatMap)
                         interval = 4;
                     break;
                 case ChartsDisplayInterval.Total:
@@ -367,9 +360,6 @@ namespace CovidPropagation
                         Button btnRight = CreateChartButton(">");
                         ComboBox cbxTimeIncrement = CreateChartCombobox();
                         Button btnAuto = CreateChartButton("auto.");
-
-                        if (chartData.ChartType == (int)ChartsType.HeatMap)
-                            cbxTimeIncrement.IsEnabled = false;
 
                         btnLeft.Click += MoveChartDataBackward_Click;
                         btnRight.Click += MoveChartDataForward_Click;
