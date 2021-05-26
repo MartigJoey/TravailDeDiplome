@@ -9,7 +9,7 @@ namespace CovidPropagation
         private int _quantaAddedMin;
         private int _quantaAddedMax;
 
-        public CoughSymptom(int quantaAddedMin = 100, int quantaAddedMax = 200)
+        public CoughSymptom(int quantaAddedMin, int quantaAddedMax)
         {
             _quantaAddedMin = quantaAddedMin;
             _quantaAddedMax = quantaAddedMax;

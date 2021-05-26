@@ -7,6 +7,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace CovidPropagation
@@ -41,6 +42,11 @@ namespace CovidPropagation
 
         }
 
+        /// <summary>
+        /// Fait entrer un individu pour cause de covid dans le bâtiment s'il y a de la place
+        /// </summary>
+        /// <param name="patient">Patient qui essai d'entrer.</param>
+        /// <returns>Si le patient a pu entrer ou non.</returns>
         public bool EnterForCovid(Person patient)
         {
             bool result = false;
@@ -52,17 +58,37 @@ namespace CovidPropagation
             return result;
         }
 
+        /// <summary>
+        /// Fait quitter un individu étant admis pour cause de covid.
+        /// </summary>
+        /// <param name="patient">Patient qui quitte l'hôpital.</param>
         public void LeaveForCovid(Person patient)
         {
             covidPatient.Remove(patient);
         }
 
+        /// <summary>
+        /// Traite le patient. Réduit le nombre de maladies plus rapidement que la normale.
+        /// Recalcile la résistance au virus du patient.
+        /// Vérifie s'il doit quitter l'hôpital car il est remit.
+        /// </summary>
         public void TreatPatients()
         {
             covidPatient.ForEach(p => { 
-                p.GetCovidTreatment();
+                p.GetHospitalTreatment();
                 p.RecalculateVirusResistance(2);
+                if (p.CurrentState < PersonState.Infected)
+                    p.MustLeaveHospital = true;
             });
+        }
+
+        /// <summary>
+        /// Compte le nombre de patients covid.
+        /// </summary>
+        /// <returns>Nombre de patient covid.</returns>
+        public int CountPatients()
+        {
+            return covidPatient.Count;
         }
     }
 }

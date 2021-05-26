@@ -144,6 +144,7 @@ namespace CovidPropagation
 
                     population.ForEach(p => p.ChangeActivity());
                     sites.ForEach(p => p.CalculateprobabilityOfInfection());
+                    sitesDictionnary[SiteType.Hospital].ForEach(h => ((Hospital)h).TreatPatients());
                     population.ForEach(p => p.ChechState());
 
                     if (OnDataUpdate != null)
@@ -201,8 +202,8 @@ namespace CovidPropagation
             datas.NumberOfPeople.Add(population.Count);
             datas.NumberOfInfected.Add(population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count());
             datas.NumberOfImmune.Add(population.Where(p => (int)p.CurrentState == (int)PersonState.Immune).Count());
-            datas.NumberOfHospitalisation.Add(10);//sites.Where(b => b.GetType() == typeof(Hospital) && (Hospital)b).Count();
-            datas.NumberOfDeath.Add(1);
+            datas.NumberOfHospitalisation.Add(sitesDictionnary[SiteType.Hospital].Sum(b => ((Hospital)b).CountPatients()));
+            datas.NumberOfDeath.Add(population.Where(p => p.CurrentState == PersonState.Dead).Count());
             datas.NumberOfContamination.Add(42);
             datas.NumberOfHealthy.Add(population.Where(p => (int)p.CurrentState == (int)PersonState.Healthy).Count());
             datas.NumberOfReproduction.Add(sites.Sum(b => b.VirusAraisingCases));

@@ -118,7 +118,10 @@ namespace CovidPropagation
             Axis axis;
             int interval;
 
-            interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
+            if (chartData.ChartType == (int)ChartsType.HeatMap)
+                interval = GetInterval(ChartsDisplayInterval.Week, (ChartsType)chartData.ChartType);
+            else
+                interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
 
 
             if ((ChartsType)chartData.ChartType == ChartsType.Horizontal)
@@ -149,12 +152,18 @@ namespace CovidPropagation
             Axis axis;
             int interval;
 
-            interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
+            if (chartData.ChartType == (int)ChartsType.HeatMap)
+                interval = GetInterval(ChartsDisplayInterval.Week, (ChartsType)chartData.ChartType);
+            else
+                interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
 
             if ((ChartsType)chartData.ChartType == ChartsType.Horizontal)
                 axis = chart.AxisY[0];
             else
                 axis = chart.AxisX[0];
+
+            // Modifier la ligne en dessous pour qu'elle permette de se déplacer uniquement de jours en jours/semaines/mois et de ne pas être décalé.
+            //Math.Ceiling((double)maxValue / interval) * interval;
 
             if (axis.MinValue - interval >= 0 && interval != 0)
             {
@@ -188,7 +197,7 @@ namespace CovidPropagation
                 default:
                 case ChartsDisplayInterval.Day:
                     interval = 48;
-                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical || type == ChartsType.HeatMap)
+                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical)
                         interval = 12;
                     break;
                 case ChartsDisplayInterval.Week:
@@ -198,7 +207,7 @@ namespace CovidPropagation
                     break;
                 case ChartsDisplayInterval.Month:
                     interval = 1440; 
-                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical || type == ChartsType.HeatMap)
+                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical)
                         interval = 4;
                     break;
                 case ChartsDisplayInterval.Total:
@@ -393,6 +402,12 @@ namespace CovidPropagation
                         Grid.SetRow(chartGrid, chartData.Y);
                         Grid.SetColumnSpan(chartGrid, chartData.SpanX);
                         Grid.SetRowSpan(chartGrid, chartData.SpanY);
+
+                        if ((ChartsType)chartData.ChartType == ChartsType.HeatMap)
+                        {
+                            cbxTimeIncrement.SelectedIndex = 1;
+                            cbxTimeIncrement.IsEnabled = false;
+                        }
 
                         grdContent.Children.Add(chartGrid);
                     }

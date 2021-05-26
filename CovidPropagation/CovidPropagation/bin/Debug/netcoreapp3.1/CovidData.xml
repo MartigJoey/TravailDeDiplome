@@ -4,16 +4,21 @@
   <IncubationDurationMin>2</IncubationDurationMin>
   <IncubationDurationMax>14</IncubationDurationMax>
   <IncubationDurationMedian>5.1</IncubationDurationMedian>
-  <Duration>14</Duration>
-  <HospitalRate>5</HospitalRate> <!-- Au pif, à modifier -->
-  <DeathRate>1</DeathRate> <!-- Au pif, à modifier -->
-  <DecayRateOfVirus>0.62</DecayRateOfVirus> <!-- Au pif, à modifier -->
-  <DepositionOnSurfaceRate>0.3</DepositionOnSurfaceRate> <!-- Au pif, à modifier -->
+  <DurationMin>10</DurationMin>
+  <DurationMax>20</DurationMax>
+  <DurationMedian>14</DurationMedian>
+  <HospitalRate>20</HospitalRate>
+  <DeathRate>4</DeathRate>
+  <DecayRateOfVirus>0.62</DecayRateOfVirus>
+  <DepositionOnSurfaceRate>0.3</DepositionOnSurfaceRate>
   <Transmissions>
-    <Transmission>TransmissionsMethodBlabla</Transmission>
-	<!-- https://patient.info/news-and-features/coronavirus-how-quickly-do-covid-19-symptoms-develop-and-how-long-do-they-last#:~:text=Fever%20(88%25).,develop%20other%20symptoms.-->
+    <Aerosol></Aerosol>
   </Transmissions>
+	<!-- https://patient.info/news-and-features/coronavirus-how-quickly-do-covid-19-symptoms-develop-and-how-long-do-they-last#:~:text=Fever%20(88%25).,develop%20other%20symptoms.-->
   <Symptoms>
-    <Symptom>SymptomsMethodBlabla</Symptom>
+    <Cough>
+	<QuantaMin>100</QuantaMin>
+	<QuantaMax>200</QuantaMax>
+	</Cough>
   </Symptoms>
 </Datas>

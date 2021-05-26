@@ -368,56 +368,15 @@ namespace CovidPropagation
                     HeatSeries serieHM = (HeatSeries)chart.Series[0];
                     List<double> simDatas = e.GetDataFromEnum((ChartsDisplayData)serieHM.Tag);
 
-                    switch ((ChartsDisplayInterval)datas.DisplayInterval)
+                    for (int i = 1; i <= simDatas.GetLastIndex(); i++)
                     {
-                        default:
-                        case ChartsDisplayInterval.Day:
-                            for (int i = 1; i <= simDatas.GetLastIndex(); i++)
-                            {
-                                for (int j = 1; j <= 12; j++)
-                                {
-                                    if (simDatas.GetLastIndex() >= i * 12 + j)
-                                        values.Add(new HeatPoint(i - 1, j - 1, simDatas[i * 12 + j]));
-                                }
-                            }
-                            serieHM.Values = values;
-                            break;
-                        case ChartsDisplayInterval.Week:
-                            for (int i = 1; i <= simDatas.GetLastIndex(); i++)
-                            {
-                                for (int j = 1; j <= 12; j++)
-                                {
-                                    if (simDatas.GetLastIndex() >= i * 12 + j)
-                                        values.Add(new HeatPoint(i - 1, j - 1, simDatas[i * 12 + j]));
-                                }
-                            }
-                            serieHM.Values = values;
-                            break;
-                        case ChartsDisplayInterval.Month:
-                            for (int i = 1; i <= simDatas.GetLastIndex(); i++)
-                            {
-                                for (int j = 1; j <= 12; j++)
-                                {
-                                    if (simDatas.GetLastIndex() >= i * 12 + j)
-                                        values.Add(new HeatPoint(i - 1, j - 1, simDatas[i * 12 + j]));
-                                }
-                            }
-                            serieHM.Values = values;
-                            break;
-                        case ChartsDisplayInterval.Total:
-                            for (int i = 1; i <= simDatas.GetLastIndex(); i++)
-                            {
-                                for (int j = 1; j <= 12; j++)
-                                {
-                                    if (simDatas.GetLastIndex() >= i * 12 + j)
-                                        values.Add(new HeatPoint(i - 1, j - 1, simDatas[i * 12 + j]));
-                                }
-                            }
-                            serieHM.Values = values;
-                            break;
+                        for (int j = 1; j <= 12; j++)
+                        {
+                            if (simDatas.GetLastIndex() >= i * 12 + j)
+                                values.Add(new HeatPoint(i - 1, j - 1, simDatas[i * 12 + j]));
+                        }
                     }
-
-                    
+                    serieHM.Values = values;
                     break;
                 default:
                     break;
@@ -723,113 +682,36 @@ namespace CovidPropagation
                     case ChartsType.HeatMap:
                         ChartValues<HeatPoint> values = new ChartValues<HeatPoint>();
                         HeatSeries serieHM = (HeatSeries)chart.Series[0];
-                        List<double> simDatas = e.GetDataFromEnum((ChartsDisplayData)serieHM.Tag);
-                        switch ((ChartsDisplayInterval)datas.DisplayInterval)
+                        List<double> heatSeriesData = e.GetDataFromEnum((ChartsDisplayData)serieHM.Tag);
+                        interval = 7;
+                        //int qtyDatasRequired = interval * 12;
+                        //
+                        //if (heatSeriesData.Count > qtyDatasRequired)
+                        //    heatSeriesData = heatSeriesData.Skip(Math.Max(0, heatSeriesData.Count() - qtyDatasRequired)).ToList();
+                        //
+                        for (int i = 1; i < serieHM.Values.Count; i++)
                         {
-                            default:
-                            case ChartsDisplayInterval.Day:
-                                interval = 12;
-                                maxValue = Math.Ceiling((double)serieHM.Values.Count / 12d / (double)interval) * interval;
-                                for (int i = 1; i <= simDatas.GetLastIndex(); i++)
-                                {
-                                    for (int j = 1; j <= 12; j++)
-                                    {
-                                        if (simDatas.GetLastIndex() >= i * 12 + j)
-                                            values.Add(new HeatPoint(i - 1, j - 1, simDatas[i * 12 + j]));
-                                    }
-                                }
-                                serieHM.Values = values;
-
-                                if (maxValue - interval > 0 && interval != 0)
-                                {
-                                    axisX.MinValue = maxValue - interval;
-                                    axisX.MaxValue = maxValue;
-                                }
-                                else
-                                {
-                                    axisX.MinValue = 0;
-                                    axisX.MaxValue = interval;
-                                }
-                                axisY.MaxValue = 12;
-                                break;
-                            case ChartsDisplayInterval.Week:
-                                interval = 7;
-                                maxValue = Math.Ceiling((double)serieHM.Values.Count / 12d / (double)interval) * interval;
-                                for (int i = 1; i <= simDatas.GetLastIndex(); i++)
-                                {
-                                    for (int j = 1; j <= interval; j++)
-                                    {
-                                        if (simDatas.GetLastIndex() >= i * interval + j)
-                                            values.Add(new HeatPoint(i - 1, j - 1, simDatas[i * interval + j]));
-                                    }
-                                }
-                                serieHM.Values = values;
-
-                                if (maxValue - interval > 0 && interval != 0)
-                                {
-                                    axisX.MinValue = maxValue - interval;
-                                    axisX.MaxValue = maxValue;
-                                }
-                                else
-                                {
-                                    axisX.MinValue = 0;
-                                    axisX.MaxValue = interval;
-                                }
-                                axisY.MaxValue = 12;
-                                break;
-                            case ChartsDisplayInterval.Month:
-                                interval = 4;
-                                maxValue = Math.Ceiling((double)serieHM.Values.Count / 12d / (double)interval) * interval;
-                                for (int i = 1; i <= simDatas.GetLastIndex(); i++)
-                                {
-                                    for (int j = 1; j <= interval; j++)
-                                    {
-                                        if (simDatas.GetLastIndex() >= i * interval + j)
-                                            values.Add(new HeatPoint(i - 1, j - 1, simDatas[i * interval + j]));
-                                    }
-                                }
-                                serieHM.Values = values;
-
-                                if (maxValue - interval > 0 && interval != 0)
-                                {
-                                    axisX.MinValue = maxValue - interval;
-                                    axisX.MaxValue = maxValue;
-                                }
-                                else
-                                {
-                                    axisX.MinValue = 0;
-                                    axisX.MaxValue = interval;
-                                }
-                                axisY.MaxValue = 12;
-                                break;
-                            case ChartsDisplayInterval.Total:
-                                interval = 0;
-                                maxValue = Math.Ceiling((double)serieHM.Values.Count / 12d / (double)interval) * interval;
-                                for (int i = 1; i <= simDatas.GetLastIndex(); i++)
-                                {
-                                    for (int j = 1; j <= 12; j++)
-                                    {
-                                        if (simDatas.GetLastIndex() >= i * 12 + j)
-                                            values.Add(new HeatPoint(i - 1, j - 1, simDatas[i * 12 + j]));
-                                    }
-                                }
-                                serieHM.Values = values;
-
-                                if (maxValue - interval > 0 && interval != 0)
-                                {
-                                    axisX.MinValue = maxValue - interval;
-                                    axisX.MaxValue = maxValue;
-                                }
-                                else
-                                {
-                                    axisX.MinValue = 0;
-                                    axisX.MaxValue = interval;
-                                }
-                                axisY.MaxValue = 12;
-                                break;
+                            for (int j = 1; j <= 12; j++)
+                            {
+                                if (serieHM.Values.Count > i * 12 + j)
+                                    values.Add(new HeatPoint(i - 1, j - 1, ((HeatPoint)serieHM.Values[i * 12 + j]).Weight));
+                            }
                         }
-                        break;
-                    default:
+
+                        maxValue = Math.Ceiling((double)serieHM.Values.Count / 12d / (double)interval) * interval;
+                        serieHM.Values = values;
+
+                        if (maxValue - interval > 0 && interval != 0)
+                        {
+                            axisX.MinValue = maxValue - interval;
+                            axisX.MaxValue = maxValue;
+                        }
+                        else
+                        {
+                            axisX.MinValue = 0;
+                            axisX.MaxValue = interval;
+                        }
+                        axisY.MaxValue = 12;
                         break;
                 }
             }

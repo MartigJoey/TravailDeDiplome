@@ -1014,4 +1014,25 @@
 - ~~Les valeurs du graphique à ligne disparaissent après ~3 lignes~~
   - Les valeurs min et max de l'axe Y ne correspondent pas aux données.
     - Modification de la mise à jour de données à reglé le problème
-- 
+
+# 26.05.2021 08h05 / 16h10
+- Test de la quantité de maladies ainsi que le nombre d'entrée à l'hopital.
+  - Les deux sont fonctionnels mais le graphique utilisé consomme trop de ressources
+  - Optimisation des graphiques nécessaires
+- Test de l'hospitalisation et du décès
+  - très peu de décès hospitalisé durant le test
+  - Beaucoup plus lent et moins nombreux
+  - Le nombre de décès ne correspondait pas au nombre de cas
+    - Le décès n'était pas lié au covid mais simplement à sa résistance qui menait les individus à décéder même lorsqu'ils n'étaient pas infectés.
+  - ~~Les individus ne sortent pas de l'hôpital~~
+  - Ajout de commentaires supplémentaires dans le code
+    - Person
+    - Simulation
+    - Virus
+- Modification des valeurs fixes du virus pour des randoms entre une valeur maximum et minimum
+- Modification de la récupération des valeurs du virus dans le fichier XML
+  - utilisation de XMLDocument à la place de XMLReader
+- Modification de la heatMap pour ne fonctionner uniquement en semaines.
+- Besoins d'optimiser l'affichage des graphiques qui prennent trop de mémoire
+  - Sûrement dû au fait que même si toutes les valeurs ne sont pas affichées, elles sont calculées.
+  - 
