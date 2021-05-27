@@ -15,15 +15,17 @@
             <RowDefinition Height="6*" MaxHeight="30" MinHeight="30"/>
             <RowDefinition Height="94*"/>
         </Grid.RowDefinitions>
-            <ContentPresenter Grid.ColumnSpan="3" Content="{Binding}" ContentTemplate="{StaticResource TitleBar}"/>
+        <ContentPresenter Grid.ColumnSpan="3" Content="{Binding}" ContentTemplate="{StaticResource TitleBar}"/>
         <ScrollViewer x:Name="slvScroller"
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       Grid.Column="0"
                       Grid.Row="1">
             <Grid x:Name="grdContent">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50*" />
-                    <ColumnDefinition Width="50*" />
+                    <ColumnDefinition Width="25*" />
+                    <ColumnDefinition Width="25*" />
+                    <ColumnDefinition Width="25*" />
+                    <ColumnDefinition Width="25*" />
                 </Grid.ColumnDefinitions>
             </Grid>
         </ScrollViewer>

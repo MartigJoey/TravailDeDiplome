@@ -148,9 +148,6 @@ namespace CovidPropagation
                     if (sumEllapsedTime >= 1000)
                     {
                         // Trigger les évènements qui vont mettre à jour les graphiques
-                        if (OnDataUpdate != null)
-                            OnDataUpdate(chartsDatas);
-
                         if (OnDisplay != null)
                             OnDisplay(chartsDatas, false);
 

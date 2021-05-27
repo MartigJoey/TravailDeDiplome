@@ -368,12 +368,12 @@ namespace CovidPropagation
                     HeatSeries serieHM = (HeatSeries)chart.Series[0];
                     List<double> simDatas = e.GetDataFromEnum((ChartsDisplayData)serieHM.Tag);
 
-                    for (int i = 1; i <= simDatas.GetLastIndex(); i++)
+                    for (int i = 0; i <= simDatas.GetLastIndex(); i += 12)
                     {
-                        for (int j = 1; j <= 12; j++)
+                        for (int j = 0; j < 12; j++)
                         {
-                            if (simDatas.GetLastIndex() >= i * 12 + j)
-                                values.Add(new HeatPoint(i - 1, j - 1, simDatas[i * 12 + j]));
+                            if (simDatas.GetLastIndex() >= i + j)
+                                values.Add(new HeatPoint(i / 12, j , simDatas[i + j]));
                         }
                     }
                     serieHM.Values = values;
@@ -395,20 +395,19 @@ namespace CovidPropagation
         public static void Display(this CartesianChart chart, SimulationDatas e, bool isDisplayChange)
         {
             ChartValues<double> cv;
-            int interval;
+            int interval = 48;
             Axis axisX = chart.AxisX[0];
             Axis axisY = chart.AxisY[0];
             double maxValue = chart.Series[0].Values.Count;
             ChartData datas = (ChartData)chart.Tag;
 
-            if (datas.AutoDisplay || isDisplayChange)
-            {
-                switch ((ChartsType)datas.ChartType)
-                {
-                    case ChartsType.Linear:
-                        axisX.MaxValue = maxValue;
 
-                        switch ((ChartsDisplayInterval)datas.DisplayInterval)
+            switch ((ChartsType)datas.ChartType)
+            {
+                case ChartsType.Linear:
+                    axisX.MaxValue = maxValue;
+
+                    switch ((ChartsDisplayInterval)datas.DisplayInterval)
                         {
                             default:
                             case ChartsDisplayInterval.Day:
@@ -425,24 +424,24 @@ namespace CovidPropagation
                                 break;
                         }
 
-                        if (maxValue - interval > 0 && interval != 0)
+                    if (maxValue - interval > 0 && interval != 0)
                         {
                             axisX.MinValue = maxValue - interval;
                         }
-                        else if (interval == 0)
+                    else if (interval == 0)
                         {
                             axisX.MinValue = 0;
                             axisX.MaxValue = maxValue;
                         }
-                        else
+                    else
                         {
                             axisX.MinValue = 0;
                             axisX.MaxValue = interval;
                         }
-                        break;
-                    case ChartsType.Vertical:
-                        // Affichage différent
-                        switch ((ChartsDisplayInterval)datas.DisplayInterval)
+                    break;
+                case ChartsType.Vertical:
+                    // Affichage différent
+                    switch ((ChartsDisplayInterval)datas.DisplayInterval)
                         {
                             default:
                             case ChartsDisplayInterval.Day:
@@ -465,21 +464,8 @@ namespace CovidPropagation
                                     cv.AddRange(daysAvg);
                                     serie.Values = cv;
                                 }
-                                Debug.WriteLine("_V______________");
-                                Debug.WriteLine(chart.Series[0].Values.Count + " " + maxValue);
                                 maxValue = Math.Ceiling((double)maxValue / interval) * interval;
-                                Debug.WriteLine(maxValue + " " + interval);
 
-                                if (maxValue - interval > 0)
-                                {
-                                    axisX.MinValue = maxValue - interval;
-                                    axisX.MaxValue = maxValue;
-                                }
-                                else
-                                {
-                                    axisX.MinValue = 0;
-                                    axisX.MaxValue = interval;
-                                }
                                 break;
                             case ChartsDisplayInterval.Week:
                                 interval = 7;
@@ -502,17 +488,6 @@ namespace CovidPropagation
                                     serie.Values = cv;
                                 }
                                 maxValue = Math.Ceiling((double)maxValue / interval) * interval;
-
-                                if (maxValue - interval > 0)
-                                {
-                                    axisX.MinValue = maxValue - interval;
-                                    axisX.MaxValue = maxValue;
-                                }
-                                else
-                                {
-                                    axisX.MinValue = 0;
-                                    axisX.MaxValue = interval;
-                                }
                                 break;
                             case ChartsDisplayInterval.Month:
                                 interval = 4;
@@ -535,17 +510,6 @@ namespace CovidPropagation
                                     serie.Values = cv;
                                 }
                                 maxValue = Math.Ceiling((double)maxValue / interval) * interval;
-
-                                if (maxValue - interval > 0)
-                                {
-                                    axisX.MinValue = maxValue - interval;
-                                    axisX.MaxValue = maxValue;
-                                }
-                                else
-                                {
-                                    axisX.MinValue = 0;
-                                    axisX.MaxValue = interval;
-                                }
                                 break;
                             case ChartsDisplayInterval.Total:
                                 foreach (ColumnSeries serie in chart.Series)
@@ -560,10 +524,10 @@ namespace CovidPropagation
                                 }
                                 break;
                         }
-                        break;
-                    case ChartsType.Horizontal:
-                        // Affichage différent
-                        switch ((ChartsDisplayInterval)datas.DisplayInterval)
+                    break;
+                case ChartsType.Horizontal:
+                    // Affichage différent
+                    switch ((ChartsDisplayInterval)datas.DisplayInterval)
                         {
                             default:
                             case ChartsDisplayInterval.Day:
@@ -587,17 +551,6 @@ namespace CovidPropagation
                                     serie.Values = cv;
                                 }
                                 maxValue = Math.Ceiling((double)maxValue / interval) * interval;
-
-                                if (maxValue - interval > 0)
-                                {
-                                    axisY.MinValue = maxValue - interval;
-                                    axisY.MaxValue = maxValue;
-                                }
-                                else
-                                {
-                                    axisY.MinValue = 0;
-                                    axisY.MaxValue = interval;
-                                }
                                 break;
                             case ChartsDisplayInterval.Week:
                                 interval = 7;
@@ -620,17 +573,6 @@ namespace CovidPropagation
                                     serie.Values = cv;
                                 }
                                 maxValue = Math.Ceiling((double)maxValue / interval) * interval;
-
-                                if (maxValue - interval > 0)
-                                {
-                                    axisY.MinValue = maxValue - interval;
-                                    axisY.MaxValue = maxValue;
-                                }
-                                else
-                                {
-                                    axisY.MinValue = 0;
-                                    axisY.MaxValue = interval;
-                                }
                                 break;
                             case ChartsDisplayInterval.Month:
                                 interval = 4;
@@ -654,16 +596,6 @@ namespace CovidPropagation
                                 }
                                 maxValue = Math.Ceiling((double)maxValue / interval) * interval;
 
-                                if (maxValue - interval > 0)
-                                {
-                                    axisY.MinValue = maxValue - interval;
-                                    axisY.MaxValue = maxValue;
-                                }
-                                else
-                                {
-                                    axisY.MinValue = 0;
-                                    axisY.MaxValue = interval;
-                                }
                                 break;
                             case ChartsDisplayInterval.Total:
                                 foreach (RowSeries serie in chart.Series)
@@ -678,41 +610,53 @@ namespace CovidPropagation
                                 }
                                 break;
                         }
-                        break;
-                    case ChartsType.HeatMap:
-                        ChartValues<HeatPoint> values = new ChartValues<HeatPoint>();
-                        HeatSeries serieHM = (HeatSeries)chart.Series[0];
-                        List<double> heatSeriesData = e.GetDataFromEnum((ChartsDisplayData)serieHM.Tag);
-                        interval = 7;
-                        //int qtyDatasRequired = interval * 12;
-                        //
-                        //if (heatSeriesData.Count > qtyDatasRequired)
-                        //    heatSeriesData = heatSeriesData.Skip(Math.Max(0, heatSeriesData.Count() - qtyDatasRequired)).ToList();
-                        //
-                        for (int i = 1; i < serieHM.Values.Count; i++)
+                    break;
+                case ChartsType.HeatMap:
+                    ChartValues<HeatPoint> values = new ChartValues<HeatPoint>();
+                    HeatSeries serieHM = (HeatSeries)chart.Series[0];
+                    List<double> heatSeriesData = e.GetDataFromEnum((ChartsDisplayData)serieHM.Tag);
+                    interval = 7;
+                    //int qtyDatasRequired = interval * 12;
+                    //
+                    //if (heatSeriesData.Count > qtyDatasRequired)
+                    //    heatSeriesData = heatSeriesData.Skip(Math.Max(0, heatSeriesData.Count() - qtyDatasRequired)).ToList();
+                    //
+                    if (heatSeriesData != null)
+                    {
+                        // Trouver premier jour semaine
+                        maxValue = Math.Ceiling((double)maxValue / interval) * interval;
+                        for (int i = 1; i < heatSeriesData.Count; i += 48)
                         {
-                            for (int j = 1; j <= 12; j++)
+                            for (int j = 0; j < 48; j += 4)
                             {
-                                if (serieHM.Values.Count > i * 12 + j)
-                                    values.Add(new HeatPoint(i - 1, j - 1, ((HeatPoint)serieHM.Values[i * 12 + j]).Weight));
+                                if (heatSeriesData.Count > i + j + 4 && serieHM.Values.Count < (i + j + 4)/4)
+                                {
+                                    Debug.WriteLine(i / 48+ " " + j / 4);
+                                    Debug.WriteLine(i+ " " + j);
+                                    Debug.WriteLine("_________");
+                                    double avgData = heatSeriesData[i + j] + heatSeriesData[i + j + 1] + heatSeriesData[i + j + 2] + heatSeriesData[i + j + 3];
+                                    serieHM.Values.Add(new HeatPoint(i / 48, j / 4, avgData / 4));
+                                }
                             }
                         }
+                    }
 
-                        maxValue = Math.Ceiling((double)serieHM.Values.Count / 12d / (double)interval) * interval;
-                        serieHM.Values = values;
+                    maxValue = Math.Ceiling((double)serieHM.Values.Count / 48 / (double)interval) * interval;
+                    axisY.MaxValue = 12;
+                    break;
+            }
 
-                        if (maxValue - interval > 0 && interval != 0)
-                        {
-                            axisX.MinValue = maxValue - interval;
-                            axisX.MaxValue = maxValue;
-                        }
-                        else
-                        {
-                            axisX.MinValue = 0;
-                            axisX.MaxValue = interval;
-                        }
-                        axisY.MaxValue = 12;
-                        break;
+            if (datas.AutoDisplay || isDisplayChange)
+            {
+                if (maxValue - interval > 0 && interval != 0)
+                {
+                    axisX.MinValue = maxValue - interval;
+                    axisX.MaxValue = maxValue;
+                }
+                else
+                {
+                    axisX.MinValue = 0;
+                    axisX.MaxValue = interval;
                 }
             }
         }

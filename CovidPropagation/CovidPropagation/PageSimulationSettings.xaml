@@ -38,7 +38,7 @@
             <CheckBox Foreground="{StaticResource foreGroundLight}" IsChecked="True">You</CheckBox>
             <CheckBox Foreground="{StaticResource foreGroundLight}">Down</CheckBox>
         </StackPanel>
-        <Button Style="{StaticResource button}" Grid.Column="0" Grid.Row="1" Content="Okay1" Height="50" Width="200" Grid.ColumnSpan="2"/>
+        <Button Style="{StaticResource button}" Grid.Column="0" Grid.Row="1" Content="Okay1" Height="50" Width="200" Margin="100,26,100,27"/>
         <Button Style="{StaticResource button}" Grid.Column="0" Grid.Row="2" Content="Okay1"  Height="50" Width="200"/>
     </Grid>
 </Page>

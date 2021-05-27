@@ -25,7 +25,6 @@ namespace CovidPropagation
         /// </summary>
         public TransmissionData CalculateRisk(int nbPersons, int infectivePersons, double fractionOfImmune, int nbPersonsWithMask, double inhalationMaskEfficiency, double sumFirstOrderLossRate, double volume, double quantaExhalationRateOfInfected, double probabilityOfBeingInfective, double quantaInhaledPerPerson)
         {
-            // /!\ Utiliser l'objet AirTransmission pour certains paramètres
             int nbSusceptiblePersons = ((nbPersons - infectivePersons) * (1 - (int)fractionOfImmune)); // Bof
 
             #region NotImplementedYet

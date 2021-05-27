@@ -1051,3 +1051,32 @@
   - Modification de la structure "SimulationDatas" pour y ajouter une liste contenant le nom de chaque données ainsi que le contenu des listes.
     - Permet un affichage dynamique des labels
   - Affichage des dernières données, la valeur maximum enregistrée, la valeur minimum enregistrée, ainsi que leur moyenne.
+- Affichage des données fonctionnel et dynamique.
+- Création de la page Paramètres
+  - Réflections sur les paramètres à ajouter
+    - Nombre d'individus
+    - Mesures à appliquer
+      - Pour certaines mesures, à qui/où les appliquer ?
+      - Avec quelle intensité ? %
+    - Modification des quantités / pourcentages de chances de création de chaques bâtiments
+    - Modifier chaque type de bâtiments individuellement
+      - Nombre de travailleurs si possible
+      - Taille
+      - Ventilation
+      - ...
+    - Paramètres du virus
+      - Durée d'incubation
+      - Durée du virus
+      - Taux d'hospitalisation
+      - Taux de décès
+      - Vitesse de destruction du virus
+      - Niveau de déposition sur les surfaces
+      - Activer / désactiver symptômes
+      - Modifier les symptômes du virus
+    - Bouton valeurs par défaut
+- Essai de la simulation en utilisant un graphique à courbe comportant le nombre de personne saines(Rouge), infectées(bleu), immunisées(Gris) et décédées (Jaune)
+  - ![Essai de la simulation](Medias/LogBook/EssaiSimulation.png)
+- Modification de l'ajouts de données dans les graphiques pour optimiser les performances
+  - Les données étaient entièrement réindroduite à chaque itération
+  - Le graphique heatmap est fonctionnel avec cette modification mais n'est pas encore optimisé à 100%
+  - Une dernière optimisation graphique est nécessaire pour cacher les données qui ne sont pas à l'écran.

@@ -18,88 +18,107 @@ namespace CovidPropagation
     /// </summary>
     public partial class WindowRawDatas : Window
     {
-        List<Label> labels;
+        List<Label> labelsName;
+        List<Label> labelsValue;
         public WindowRawDatas()
         {
             InitializeComponent();
-            labels = new List<Label>();
+            labelsName = new List<Label>();
+            labelsValue = new List<Label>();
         }
 
         public void CreateLabels(SimulationDatas datas)
         {
+            CreateRows((datas.CentralizedDatas.Count + 1) * 2);
+
             // Last
             int columnLast = 0;
-            int rowLast = 2;
-            CreateLabel("Denières valeurs enregistrée:", columnLast, rowLast - 1);
-            CreateRow();
-            foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
-            {
-                CreateLabel(item.Key, item.Value.Last(), columnLast, rowLast);
-                CreateRow();
-                rowLast++;
-            }
+            int rowLast = 1;
+            CreateTitleLabel("Denières valeurs enregistrée:", columnLast, rowLast - 1);
+            rowLast = CreateLabelsGroup(columnLast, rowLast, datas);
 
             // Average
-            int columnAverage = 1;
-            int rowAverage = 2;
-            CreateLabel("Moyenne des valeurs enregistrées:", columnAverage, rowAverage - 1);
-            foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
-            {
-                CreateLabel(item.Key, item.Value.Last(), columnAverage, rowAverage);
-                rowAverage++;
-            }
+            int columnAverage = 2;
+            int rowAverage = 1;
+            CreateTitleLabel("Moyenne des valeurs enregistrées:", columnAverage, rowAverage - 1);
+            CreateLabelsGroup(columnAverage, rowAverage, datas);
 
             // Max
             int columnMax = 0;
-            int rowMax = rowLast + 2;
-            CreateLabel("Valeurs maximums enregistrées:", columnMax, rowMax - 1);
-            CreateRow();
-            foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
-            {
-                CreateLabel(item.Key, item.Value.Last(), columnMax, rowMax);
-                CreateRow();
-                rowMax++;
-            }
+            int rowMax = rowLast + 1;
+            CreateTitleLabel("Valeurs maximums enregistrées:", columnMax, rowMax - 1);
+            CreateLabelsGroup(columnMax, rowMax, datas);
 
             // Min
-            int columnMin = 1;
-            int rowMin = rowLast + 2;
-            CreateLabel("Valeurs minimums enregistrées:", columnMin, rowMin - 1);
+            int columnMin = 2;
+            int rowMin = rowLast + 1;
+            CreateTitleLabel("Valeurs minimums enregistrées:", columnMin, rowMin - 1);
+            CreateLabelsGroup(columnMin, rowMin, datas);
+        }
+
+        private int CreateLabelsGroup(int column, int row, SimulationDatas datas)
+        {
             foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
             {
-                CreateLabel(item.Key, item.Value.Last(), columnMin, rowMin);
-                rowMin++;
+                CreateLabel(item.Key, item.Value.Last(), column, row);
+                row++;
             }
+            return row;
         }
 
         private void CreateLabel(string key, double value, int x, int y)
         {
-            string content = $"{key}: {value}";
-            labels.Add(CreateLabel(content, x, y));
+            Label labelName = new Label();
+            Label labelValue = new Label();
+
+            labelName.Content = $"{key}: ";
+            labelName.Foreground = Brushes.LightGray;
+            labelName.FontSize = 15;
+
+            labelValue.Content = $"{value}";
+            labelValue.Foreground = Brushes.LightGray;
+            labelValue.FontSize = 15;
+            labelValue.BorderThickness = new Thickness(0.5d,0,3,0);
+            labelValue.BorderBrush = Brushes.LightGray;
+
+            Grid.SetColumn(labelName, x);
+            Grid.SetRow(labelName, y);
+
+            Grid.SetColumn(labelValue, x + 1);
+            Grid.SetRow(labelValue, y);
+
+            grdContent.Children.Add(labelName);
+            grdContent.Children.Add(labelValue);
+
+            labelsName.Add(labelName);
+            labelsValue.Add(labelValue);
         }
 
-        private Label CreateLabel(string content, int x, int y)
+        private void CreateTitleLabel(string content, int x, int y)
         {
-            Label labelDatas = new Label();
+            Label labelTitle = new Label();
 
-            labelDatas.Content = $"{content}";
-            labelDatas.Foreground = Brushes.LightGray;
-            labelDatas.FontSize = 15;
+            labelTitle.Content = $"{content}";
+            labelTitle.Foreground = this.FindResource("normalDark") as Brush; 
+            labelTitle.FontSize = 18;
+            labelTitle.Background = this.FindResource("normalGreen") as Brush;
 
-            Grid.SetColumn(labelDatas, x);
-            Grid.SetRow(labelDatas, y);
+            Grid.SetColumn(labelTitle, x);
+            Grid.SetRow(labelTitle, y);
+            Grid.SetColumnSpan(labelTitle, 2);
 
-            grdContent.Children.Add(labelDatas);
-
-            return labelDatas;
+            grdContent.Children.Add(labelTitle);
         }
 
-        private void CreateRow()
+        private void CreateRows(int nbRows)
         {
-            RowDefinition newRow = new RowDefinition();
-            newRow.MaxHeight = 30;
-            newRow.MinHeight = 30;
-            grdContent.RowDefinitions.Add(newRow);
+            for (int i = 0; i < nbRows; i++)
+            {
+                RowDefinition newRow = new RowDefinition();
+                newRow.MaxHeight = 30;
+                newRow.MinHeight = 30;
+                grdContent.RowDefinitions.Add(newRow);
+            }
         }
 
         public void UpdateLabels(SimulationDatas datas)
@@ -109,7 +128,8 @@ namespace CovidPropagation
             int index = 0;
             foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
             {
-                labels[labelsIndex].Content = $"{item.Key}: {item.Value.Last()}";
+                labelsName[labelsIndex].Content = $"{item.Key}: ";
+                labelsValue[labelsIndex].Content = $"{item.Value.Last().ToString("F2")}";
                 labelsIndex++;
             }
 
@@ -117,7 +137,8 @@ namespace CovidPropagation
             index = 0;
             foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
             {
-                labels[labelsIndex].Content = $"{item.Key}: {item.Value.Average().ToString("F1")}";
+                labelsName[labelsIndex].Content = $"{item.Key}: ";
+                labelsValue[labelsIndex].Content = $"{item.Value.Average().ToString("F2")}";
                 labelsIndex++;
                 index++;
             }
@@ -126,7 +147,8 @@ namespace CovidPropagation
             index = 0;
             foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
             {
-                labels[labelsIndex].Content = $"{item.Key}: {item.Value.Max().ToString("F1")}";
+                labelsName[labelsIndex].Content = $"{item.Key}: ";
+                labelsValue[labelsIndex].Content = $"{item.Value.Max().ToString("F2")}";
                 labelsIndex++;
                 index++;
             }
@@ -135,7 +157,8 @@ namespace CovidPropagation
             index = 0;
             foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
             {
-                labels[labelsIndex].Content = $"{item.Key}: {item.Value.Min().ToString("F1")}";
+                labelsName[labelsIndex].Content = $"{item.Key}: ";
+                labelsValue[labelsIndex].Content = $"{item.Value.Min().ToString("F2")}";
                 labelsIndex++;
                 index++;
             }
