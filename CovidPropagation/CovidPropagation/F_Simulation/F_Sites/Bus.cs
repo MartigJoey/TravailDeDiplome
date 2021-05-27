@@ -11,8 +11,9 @@ using System.Text;
 
 namespace CovidPropagation
 {
-    class Bus : Site
+    class Bus : WorkSite
     {
+        private const int nbWorkPlaces = 1;
         private static SiteType[] busTypes = new SiteType[] { SiteType.Transport, SiteType.WorkPlace };
 
         public Bus(double length = GlobalVariables.CAR_LENGTH,
@@ -20,7 +21,7 @@ namespace CovidPropagation
                    double height = GlobalVariables.CAR_HEIGHT,
                    double ventilationWithOutside = GlobalVariables.CAR_VENTILATION_WITH_OUTSIDE,
                    double additionalControlMeasures = GlobalVariables.CAR_ADDITIONAL_CONTROL_MEASURES) :
-                 base(busTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
+                 base(busTypes, length, width, height, ventilationWithOutside, additionalControlMeasures, nbWorkPlaces)
         {
 
         }

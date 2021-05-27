@@ -51,8 +51,6 @@ namespace CovidPropagation
 
         Dictionary<SiteType, List<Site>> sitesDictionnary;
         List<Site> sites;
-        List<Site> homes;
-        List<Site> allTransports;
         Outside outside;
         List<Person> population;
         Stopwatch sp;
@@ -69,8 +67,6 @@ namespace CovidPropagation
         {
             sites = new List<Site>();
             sitesDictionnary = new Dictionary<SiteType, List<Site>>();
-            homes = new List<Site>();
-            allTransports = new List<Site>();
             outside = new Outside();
             population = new List<Person>();
             sp = new Stopwatch();
@@ -81,8 +77,6 @@ namespace CovidPropagation
         {
             sites.Clear();
             sitesDictionnary.Clear();
-            homes.Clear();
-            allTransports.Clear();
             population.Clear();
             isInitialized = true;
 
@@ -106,7 +100,7 @@ namespace CovidPropagation
             speedTest.Stop();
             Debug.WriteLine("Building" + speedTest.ElapsedMilliseconds + "  Count" + sites.Count);
             speedTest.Restart();
-            CreateTransports();
+            CreatePublicTransports();
             speedTest.Stop();
             Debug.WriteLine("Transport" + speedTest.ElapsedMilliseconds);
             speedTest.Restart();
@@ -155,10 +149,11 @@ namespace CovidPropagation
                     {
                         // Trigger les évènements qui vont mettre à jour les graphiques
                         if (OnDataUpdate != null)
-                        {
                             OnDataUpdate(chartsDatas);
+
+                        if (OnDisplay != null)
                             OnDisplay(chartsDatas, false);
-                        }
+
                         sumEllapsedTime = 0;
                     }
 
@@ -170,6 +165,7 @@ namespace CovidPropagation
 
                     sp.Stop();
 
+                    // Calule le temps à attendre pour correspondre au données du slider. (1 secondes par itération --> si l'itération se fait en 100ms alors on attend 900ms)
                     if (sp.ElapsedMilliseconds < Interval)
                     {
                         long interval = Interval;
@@ -184,6 +180,9 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Trigger l'évènement qui réaffiche les graphiques.
+        /// </summary>
         public void TriggerDisplayChanges()
         {
             OnDisplay(chartsDatas, true);
@@ -391,18 +390,20 @@ namespace CovidPropagation
         }
 
         /// <summary>
-        /// créé les transports publiques de la simulation.
+        /// Créé les transports publiques de la simulation.
         /// </summary>
-        private void CreateTransports()
+        private void CreatePublicTransports()
         {
-            double nbOfCar = (int)Math.Ceiling((36d - 100) / 100 * _nbPersons + _nbPersons); //  Modifier les % de chances d'utiliser une voiture dans la création de population
-            double nbOfBus = (int)Math.Ceiling((15d - 100) / 100 * _nbPersons + _nbPersons);
-            double nbOfBikes = (int)Math.Ceiling((10d - 100) / 100 * _nbPersons + _nbPersons); // Augmente quanta
+            double nbOfBus = (int)Math.Ceiling((0.85d - 100) / 100 * _nbPersons + _nbPersons);
+            sitesDictionnary.Add(SiteType.Transport, new List<Site>());
 
-            //for (int i = 0; i < nbOfCar; i++)
-            //{
-            //   // allTransports.Add(new School(populationInSchool / nbOfSchool));
-            //}
+            for (int i = 0; i < nbOfBus; i++)
+            {
+                Bus bus = new Bus();
+                sites.Add(bus);
+                sitesDictionnary[SiteType.WorkPlace].Add(bus);
+                sitesDictionnary[SiteType.Transport].Add(bus);
+            }
         }
 
         /// <summary>
@@ -447,7 +448,7 @@ namespace CovidPropagation
                         },
                         { SiteType.Transport, new List<Site>{ GetVehicle() } }
                     };
-                    age = 70; // Changer pour age random
+                    age = rdm.NextInclusive(60, 100);
                     nbWorkDays = 0;
                 }
                 else if (GlobalVariables.rdm.NextBoolean(minorProbability))
@@ -475,7 +476,7 @@ namespace CovidPropagation
                             } 
                         },
                     };
-                    age = 15; // Changer pour age random
+                    age = rdm.NextInclusive(5, 24);
                     nbWorkDays = 5;
                 }
                 else
@@ -499,21 +500,30 @@ namespace CovidPropagation
                             GetVehicle()
                             }
                         },
-                        { SiteType.WorkPlace, new List<Site>{ 
-                            sitesDictionnary[SiteType.WorkPlace][rdm.Next(0, sitesDictionnary[SiteType.WorkPlace].Count)] 
-                            } 
+                        { SiteType.WorkPlace, new List<Site>{
+                            FindWorkPlace()
+                            }
                         }
                     };
-                    age = 30; // Changer pour age random
+                    age = rdm.NextInclusive(18, 70);
                     nbWorkDays = 5;
                 }
 
-                homes.Add(home);
                 sites.Add(home);
                 Planning planning = new Planning(personSites, nbWorkDays);
                 population.Add(new Person(planning, hospital, age, personState));
                 nbPeople--;
             }
+        }
+
+        /// <summary>
+        /// Méthode récursive permettant de trouver un lieu de travail pour un individu.
+        /// </summary>
+        /// <returns>Lieu de travail.</returns>
+        private Site FindWorkPlace()
+        {
+            WorkSite workplace = (WorkSite)sitesDictionnary[SiteType.WorkPlace][rdm.Next(0, sitesDictionnary[SiteType.WorkPlace].Count)];
+            return workplace.IsHiring() ? (Site)workplace : FindWorkPlace();
         }
 
         private int CreateFamilly()
@@ -548,16 +558,16 @@ namespace CovidPropagation
         }
 
         /// <summary>
-        /// Récupère un véhicule qu'un individu utilisera.
+        /// Récupère le moyen de transport qu'un individu adulte utilisera.
         /// </summary>
         /// <returns></returns>
         private Site GetVehicle()
         {
             KeyValuePair<object, double>[] transportsProbability = new KeyValuePair<object, double>[] {
                 new KeyValuePair<object, double>(new Car(), PROBABILITY_OF_USING_A_CAR),
-                new KeyValuePair<object, double>(sites.Where(b => typeof(Outside) == b.GetType()).First(), PROBABILITY_OF_WALKING),
+                new KeyValuePair<object, double>(outside, PROBABILITY_OF_WALKING),
                 new KeyValuePair<object, double>(new Bike(), PROBABILITY_OF_USING_A_BIKE), 
-                //new KeyValuePair<object, double>(allBuildingSites.Where(b => typeof(Bus) == b.GetType()).OrderBy(x => rdm.Next()).First(), PROBABILITY_OF_USING_A_BUS),
+                new KeyValuePair<object, double>(sitesDictionnary[SiteType.Transport][rdm.Next(0, sitesDictionnary[SiteType.Transport].Count)], PROBABILITY_OF_USING_A_BUS),
             };
             return (Site)rdm.NextProbability(transportsProbability);
         }

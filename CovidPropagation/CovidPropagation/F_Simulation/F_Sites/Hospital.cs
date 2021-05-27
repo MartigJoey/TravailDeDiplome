@@ -12,12 +12,13 @@ using System.Text;
 
 namespace CovidPropagation
 {
-    public class Hospital : Site
+    public class Hospital : WorkSite
     {
         int nbCovidPatientMax;
         int nbExtremeCovidPatientMax;
         int nbSumCovidPatientMax;
         List<Person> covidPatient;
+        private const int nbWorkPlaces = 50;
         private static SiteType[] hospitalTypes = new SiteType[] { SiteType.Hospital, SiteType.Eat, SiteType.WorkPlace };
         
         public Hospital(double length = GlobalVariables.BUILDING_LENGTH,
@@ -25,7 +26,7 @@ namespace CovidPropagation
                            double height = GlobalVariables.BUILDING_HEIGHT,
                            double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
-                 base(hospitalTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
+                 base(hospitalTypes, length, width, height, ventilationWithOutside, additionalControlMeasures, nbWorkPlaces)
         {
             nbCovidPatientMax = 50;
             nbExtremeCovidPatientMax = 10;

@@ -3,7 +3,7 @@ Auteur      : Joey Martig
 Projet      : CovidPropagation
 Version     : 1.0
 Date        : 23.04.2021
-Description : Simulation d'une propagation de virusgit co
+Description : Simulation d'une propagation de virus.
 -->
 <Page x:Class="CovidPropagation.PageSimulation"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -16,8 +16,10 @@ Description : Simulation d'une propagation de virusgit co
     Title="PageSimulation">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50*" MinWidth="25"/>
-            <ColumnDefinition Width="50*" MinWidth="25"/>
+            <ColumnDefinition Width="25*" MinWidth="25"/>
+            <ColumnDefinition Width="25*" MinWidth="25"/>
+            <ColumnDefinition Width="25*" MinWidth="25"/>
+            <ColumnDefinition Width="25*" MinWidth="25"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="5*" MaxHeight="25" MinHeight="25"/>
@@ -44,25 +46,27 @@ Description : Simulation d'une propagation de virusgit co
                     Grid.Column="1" Grid.Row="1"
                     Content="Stop"
                     Height="auto"/>
-        
+
+        <Button Click="OpenRawDatasWindow_Click" Style="{StaticResource smallButton}"
+                    x:Name="btnOpenRawDatas" 
+                    Grid.Column="3" Grid.Row="1"
+                    Content="Données"
+                    Height="auto"
+                    IsEnabled="False"/>
+
         <ScrollViewer x:Name="slvScroller"
                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
                       ScrollViewer.VerticalScrollBarVisibility="Auto"
                       Grid.Column="0"
                       Grid.Row="3"
                       Grid.RowSpan="2"
-                      Grid.ColumnSpan="2">
+                      Grid.ColumnSpan="4">
             <Grid x:Name="grdContent" 
                   ScrollViewer.CanContentScroll="True" 
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
                   ShowGridLines="True">
-                <!--
-            <Button Click="OpenLegendWindow_Click" Style="{StaticResource smallButton}" 
-                  Grid.Column="2" Grid.Row="5"
-                  Content="Légende"/>
-            -->
-          </Grid>
+            </Grid>
         </ScrollViewer>
     </Grid>
 </Page>

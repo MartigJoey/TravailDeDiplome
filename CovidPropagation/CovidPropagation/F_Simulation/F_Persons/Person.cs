@@ -128,7 +128,6 @@ namespace CovidPropagation
             {
                 _hospitalCovid.LeaveForCovid(this);
                 _mustLeaveHospital = false;
-                Debug.WriteLine("Leaving");
             }
 
             // Si la résistance de l'individus est suffisament faible pour décèdé, qu'il ne se situe pas à l'hopital et que le virus s'est développé.

@@ -10,7 +10,7 @@
     <Compile Update="LC.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Legend.xaml.cs">
+    <Compile Update="WindowRawDatas.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="PageGraphicSettings.xaml.cs">
@@ -30,7 +30,7 @@
     <Page Update="LC.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Legend.xaml">
+    <Page Update="WindowRawDatas.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">

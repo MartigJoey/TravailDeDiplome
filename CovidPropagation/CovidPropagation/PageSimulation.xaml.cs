@@ -26,7 +26,7 @@ namespace CovidPropagation
     /// </summary>
     public partial class PageSimulation : Page
     {
-        Legend legendPage;
+        WindowRawDatas rawDatasWindow;
         MainWindow mw;
         public ChartData[,] chartDatas;
         Simulation sim;
@@ -35,7 +35,7 @@ namespace CovidPropagation
         public PageSimulation()
         {
             InitializeComponent();
-            legendPage = new Legend();
+            rawDatasWindow = new WindowRawDatas();
             mw = (MainWindow)Application.Current.MainWindow;
             charts = new Dictionary<ChartsType, object>();
             sim = new Simulation();
@@ -52,10 +52,10 @@ namespace CovidPropagation
             // Pas pour récupérer des données.
         }
 
-        private void OpenLegendWindow_Click(object sender, RoutedEventArgs e)
+        private void OpenRawDatasWindow_Click(object sender, RoutedEventArgs e)
         {
-            legendPage.Show();
-            legendPage.Focus();
+            rawDatasWindow.Show();
+            rawDatasWindow.Focus();
         }
 
         /// <summary>
@@ -76,6 +76,9 @@ namespace CovidPropagation
                 sim.Initialize(30, 0.1, 50000);
                 sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
                 sim.OnTickSP += new GetDataEventHandler(OnTimerTick);
+                rawDatasWindow.CreateLabels(sim.GetAllDatas());
+                sim.OnDataUpdate += new DataUpdateEventHandler(rawDatasWindow.UpdateLabels);
+                btnOpenRawDatas.IsEnabled = true;
                 sim.Iterate();
                 intervalSlider.Value = Convert.ToInt32(intervalSlider.Maximum - sim.Interval);
             }

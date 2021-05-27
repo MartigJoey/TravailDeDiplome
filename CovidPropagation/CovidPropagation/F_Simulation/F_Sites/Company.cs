@@ -11,15 +11,16 @@ using System.Text;
 
 namespace CovidPropagation
 {
-    public class Company : Site
+    public class Company : WorkSite
     {
+        private const int nbWorkPlaces = 150;
         private static SiteType[] companyTypes = new SiteType[] { SiteType.Eat, SiteType.WorkPlace };
         public Company(double length = GlobalVariables.BUILDING_LENGTH,
                            double width = GlobalVariables.BUILDING_WIDTH,
                            double height = GlobalVariables.BUILDING_HEIGHT,
                            double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
-                 base(companyTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
+                 base(companyTypes, length, width, height, ventilationWithOutside, additionalControlMeasures, nbWorkPlaces)
         {
 
         }

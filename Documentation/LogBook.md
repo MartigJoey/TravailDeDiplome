@@ -1035,4 +1035,19 @@
 - Modification de la heatMap pour ne fonctionner uniquement en semaines.
 - Besoins d'optimiser l'affichage des graphiques qui prennent trop de mémoire
   - Sûrement dû au fait que même si toutes les valeurs ne sont pas affichées, elles sont calculées.
-  - 
+- Penser à modifier le déplacement 
+
+# 27.05.2021 07h45 / 17h00
+- Modification de l'âge pour un random entre des valeurs prédéfinie pour chaque groupes
+- Ajout des bus
+- Besoin de limiter la quantité de travailleur dans certains lieux
+  - Nécessite un changement de la structure du code
+  - Soit limiter le nombre de personne travaillant depuis l'objet, ~~soit en modifiant la sélection du lieu de travail avec des probabilités~~
+    - Ajout d'un object WorkSite étant un enfant de Site et un parent de Restaurants, Hopital, école, companie, etc.
+    - WorkSite permet de définir si il reste de la place pour travailler dans un lieu
+    - Ajout de constante dans chaque type de lieu héritant de WorkSite contenant le nombre maximum d'employés
+    - Simulation fonctionnelle avec la nouvelle structure
+- Ajout d'une nouvelle fenêtre permettant la visualisation des données brutes de la simulation.
+  - Modification de la structure "SimulationDatas" pour y ajouter une liste contenant le nom de chaque données ainsi que le contenu des listes.
+    - Permet un affichage dynamique des labels
+  - Affichage des dernières données, la valeur maximum enregistrée, la valeur minimum enregistrée, ainsi que leur moyenne.

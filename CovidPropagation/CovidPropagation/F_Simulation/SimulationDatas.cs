@@ -8,6 +8,7 @@ namespace CovidPropagation
     {
         public void Initialize()
         {
+            CentralizedDatas = new List<KeyValuePair<string, List<double>>>();
             NumberOfPeople = new List<double>();
             NumberOfInfected = new List<double>();
             NumberOfImmune = new List<double>();
@@ -16,7 +17,17 @@ namespace CovidPropagation
             NumberOfHospitalisation = new List<double>();
             NumberOfDeath = new List<double>();
             NumberOfContamination = new List<double>();
+
+            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre de personnes", NumberOfPeople));
+            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre d'infecté", NumberOfInfected));
+            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre d'immunisé", NumberOfImmune));
+            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre de reproductions", NumberOfReproduction));
+            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre de sains", NumberOfHealthy));
+            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre d'hospitalisation", NumberOfHospitalisation));
+            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre de décès", NumberOfDeath));
+            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre de contamination", NumberOfContamination));
         }
+        public List<KeyValuePair<string, List<double>>> CentralizedDatas { get; set; }
 
         public List<double> NumberOfPeople { get; set; }
 
