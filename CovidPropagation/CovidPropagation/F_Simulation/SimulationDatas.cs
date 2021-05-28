@@ -88,6 +88,8 @@ namespace CovidPropagation
                     result = NumberOfContamination;
                     break;
             }
+            if (result == null)
+                result = new List<double>();
             return result;
         }
     }

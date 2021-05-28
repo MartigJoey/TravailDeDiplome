@@ -1080,3 +1080,32 @@
   - Les données étaient entièrement réindroduite à chaque itération
   - Le graphique heatmap est fonctionnel avec cette modification mais n'est pas encore optimisé à 100%
   - Une dernière optimisation graphique est nécessaire pour cacher les données qui ne sont pas à l'écran.
+
+# 28.05.2021 08h05 / 16h40
+- Optimisation des graphiques
+  - Colonnes
+  - Ligne
+- Optimisation réussi, cependant les données ne se mettent plus à jours lors d' changement d'interval. Seul le format change.
+  - Utilisation de la variable isDisplayChange pour pallier au problème et réinitialiser les données lorsque c'est nécessaire.
+- L'optimisation effectuée n'a que très peu augmanté les performances.
+  - Le problème se situe majoritairement sur l'affichage de nombreuse données.
+  - 
+- Refactoring du code des graphiques en lignes et à colonne pour éviter la redondance.
+  - Bug reperé
+    - Lors du déplacement ainsi que l'appuie du bouton automatique, certaines données s'ajoutent au début du graphique.
+- Modification de ChartData pour y intégrer displayWindow qui permet de définir la plage de données à afficher.
+- Modification du graphique à courbe
+  - Changement de la structure pour n'afficher que les données dans la fenêtre actuel.
+  - Lorsque trop de données sont affichées, réduit la quantité en faisant la moyenne de certaines valeur.
+  - Très peu de changement de performances notable si ce n'est aucune
+- Utilisation d'un stopWatch dans la simulation pour déterminer si c'est elle qui prend trop de temps
+  - Certaines itération de la simulation prennent jusqu'à 1 secondes
+  - Ajout de stopWatch plus précis pour définir l'élément étant le plus gourmand
+  - Le changement d'activité est très gourmand.
+- Ajout d'un thread gérant l'itération de la simulation pour limiter les freezes
+  - Problèmes d'events interThreads
+  - L'objet appartenant à un autre thread, il n'est pas possible de le modifier.
+  - ![Compréhension problème inter-thread](Medias/LogBook/EventInterThread.png)
+  - Utilisation de Dispatcher.Invoke autour du code pour palier au problème
+  - Impossible d'utiliser cette méthode dans les méthode d'extension des graphiques.
+    - Utilisation de Application.Current.Dispatcher.Invoke((Action)(() => {})); à la place

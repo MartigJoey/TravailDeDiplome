@@ -17,7 +17,7 @@ namespace CovidPropagation
 {
     public delegate void GetDataEventHandler(Simulation e); 
     public delegate void DataUpdateEventHandler(SimulationDatas e);
-    public delegate void DispalyChangeEventHandler(SimulationDatas e, bool idDisplayChange);
+    public delegate void DispalyChangeEventHandler(SimulationDatas e, bool isDisplayChange);
 
     public class Simulation : EventArgs
     {
@@ -119,16 +119,9 @@ namespace CovidPropagation
         /// aux bâtiment de calculer les chances d'attraper le virus dans ceux-ci, 
         /// à la population de calculer si elle a été infectée.
         /// </summary>
-        public async void Iterate()
+        public async void Iterate(SimulationDatas chartsDatas)
         {
-            chartsDatas = new SimulationDatas();
-            chartsDatas.Initialize();
-            chartsDatas.AddDatas(GetAllDatas());
-            if (OnDataUpdate != null)
-                OnDataUpdate(chartsDatas);
-
             int sumEllapsedTime = 0;
-
             while (true)
             {
                 if (startStop)
@@ -141,15 +134,14 @@ namespace CovidPropagation
                     sitesDictionnary[SiteType.Hospital].ForEach(h => ((Hospital)h).TreatPatients());
                     population.ForEach(p => p.ChechState());
 
-                    if (OnDataUpdate != null)
-                        chartsDatas.AddDatas(GetAllDatas());
+                    chartsDatas.AddDatas(GetAllDatas());
 
                     // Affiche au maximum une fois par seconde
                     if (sumEllapsedTime >= 1000)
                     {
                         // Trigger les évènements qui vont mettre à jour les graphiques
-                        if (OnDisplay != null)
-                            OnDisplay(chartsDatas, false);
+                        OnDisplay?.Invoke(chartsDatas, false);
+                        OnDataUpdate?.Invoke(chartsDatas);
 
                         sumEllapsedTime = 0;
                     }
@@ -182,7 +174,7 @@ namespace CovidPropagation
         /// </summary>
         public void TriggerDisplayChanges()
         {
-            OnDisplay(chartsDatas, true);
+            OnDisplay?.Invoke(chartsDatas, true);
         }
         #region GetDatas
 
@@ -203,7 +195,6 @@ namespace CovidPropagation
             datas.NumberOfContamination.Add(42);
             datas.NumberOfHealthy.Add(population.Where(p => (int)p.CurrentState == (int)PersonState.Healthy).Count());
             datas.NumberOfReproduction.Add(sites.Sum(b => b.VirusAraisingCases));
-
             return datas;
             /*return $"Nombre de personne      : {population.Count} {Environment.NewLine}" +
                    $"Average age             : {(double)population.Average(p => p.Age)} {Environment.NewLine}" +

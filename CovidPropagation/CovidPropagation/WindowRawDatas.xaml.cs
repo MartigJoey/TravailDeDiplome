@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -123,45 +124,48 @@ namespace CovidPropagation
 
         public void UpdateLabels(SimulationDatas datas)
         {
-            // Affiche les dernières données de la simulation.
-            int labelsIndex = 0;
-            int index = 0;
-            foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
+            Dispatcher.Invoke(() =>
             {
-                labelsName[labelsIndex].Content = $"{item.Key}: ";
-                labelsValue[labelsIndex].Content = $"{item.Value.Last().ToString("F2")}";
-                labelsIndex++;
-            }
+                // Affiche les dernières données de la simulation.
+                int labelsIndex = 0;
+                int index = 0;
+                foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
+                {
+                    labelsName[labelsIndex].Content = $"{item.Key}: ";
+                    labelsValue[labelsIndex].Content = $"{item.Value.Last().ToString("F2")}";
+                    labelsIndex++;
+                }
 
-            // Affiche la moyenne des données de la simulation.
-            index = 0;
-            foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
-            {
-                labelsName[labelsIndex].Content = $"{item.Key}: ";
-                labelsValue[labelsIndex].Content = $"{item.Value.Average().ToString("F2")}";
-                labelsIndex++;
-                index++;
-            }
+                // Affiche la moyenne des données de la simulation.
+                index = 0;
+                foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
+                {
+                    labelsName[labelsIndex].Content = $"{item.Key}: ";
+                    labelsValue[labelsIndex].Content = $"{item.Value.Average().ToString("F2")}";
+                    labelsIndex++;
+                    index++;
+                }
 
-            // Affiche la valeur maximum enregistrée des données de la simulation
-            index = 0;
-            foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
-            {
-                labelsName[labelsIndex].Content = $"{item.Key}: ";
-                labelsValue[labelsIndex].Content = $"{item.Value.Max().ToString("F2")}";
-                labelsIndex++;
-                index++;
-            }
+                // Affiche la valeur maximum enregistrée des données de la simulation
+                index = 0;
+                foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
+                {
+                    labelsName[labelsIndex].Content = $"{item.Key}: ";
+                    labelsValue[labelsIndex].Content = $"{item.Value.Max().ToString("F2")}";
+                    labelsIndex++;
+                    index++;
+                }
 
-            // Affiche la valeur minimum enregistrée des données de la simulation
-            index = 0;
-            foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
-            {
-                labelsName[labelsIndex].Content = $"{item.Key}: ";
-                labelsValue[labelsIndex].Content = $"{item.Value.Min().ToString("F2")}";
-                labelsIndex++;
-                index++;
-            }
+                // Affiche la valeur minimum enregistrée des données de la simulation
+                index = 0;
+                foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
+                {
+                    labelsName[labelsIndex].Content = $"{item.Key}: ";
+                    labelsValue[labelsIndex].Content = $"{item.Value.Min().ToString("F2")}";
+                    labelsIndex++;
+                    index++;
+                }
+            });
         }
     }
 }

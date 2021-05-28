@@ -7,7 +7,7 @@ namespace CovidPropagation
 {
     public struct ChartData
     {
-        public ChartData(int x, int y, int sizeX, int sizeY, int[] datas, int graphicType = 0, int valueX = 0, int valueY = 0, int displayInterval = 0, bool autoDisplay = true)
+        public ChartData(int x, int y, int sizeX, int sizeY, int[] datas, int graphicType = 0, int valueX = 0, int valueY = 0, int displayInterval = 0, bool autoDisplay = true, int displayWindow = 0)
         {
             X = x;
             Y = y;
@@ -19,6 +19,7 @@ namespace CovidPropagation
             AxisY = valueY;
             DisplayInterval = displayInterval;
             AutoDisplay = autoDisplay;
+            DisplayWindow = displayWindow;
         }
 
         public int X { get; set; }
@@ -31,6 +32,7 @@ namespace CovidPropagation
         public int DisplayInterval { get; set; }
         public int[] Datas { get; set; }
         public bool AutoDisplay { get; set; }
+        public int DisplayWindow { get; set; }
 
         public override string ToString()
         {
@@ -61,11 +63,12 @@ namespace CovidPropagation
             AxisY = 0;
             Datas = new int[0];
             AutoDisplay = true;
+            DisplayWindow = 0;
         }
 
         public ChartData CloneInNewLocation(int newX, int newY)
         {
-            return new ChartData(newX, newY, SpanX, SpanY, Datas, ChartType, AxisX, AxisY, DisplayInterval, AutoDisplay);
+            return new ChartData(newX, newY, SpanX, SpanY, Datas, ChartType, AxisX, AxisY, DisplayInterval, AutoDisplay, DisplayWindow);
         }
     }
 }

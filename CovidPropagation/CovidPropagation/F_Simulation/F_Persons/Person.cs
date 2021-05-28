@@ -121,8 +121,6 @@ namespace CovidPropagation
                 symptoms.Clear();
             }
 
-            RecalculateVirusResistance(1);
-
             // Quitte l'hôpital
             if (_mustLeaveHospital)
             {

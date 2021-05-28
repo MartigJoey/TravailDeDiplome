@@ -18,6 +18,8 @@ using System.Reflection;
 using LiveCharts.Defaults;
 using System.Linq;
 using LiveCharts.Geared;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CovidPropagation
 {
@@ -79,7 +81,12 @@ namespace CovidPropagation
                 rawDatasWindow.CreateLabels(sim.GetAllDatas());
                 sim.OnDataUpdate += new DataUpdateEventHandler(rawDatasWindow.UpdateLabels);
                 btnOpenRawDatas.IsEnabled = true;
-                sim.Iterate();
+
+                SimulationDatas chartsDatas = new SimulationDatas();
+                chartsDatas.Initialize();
+                chartsDatas.AddDatas(sim.GetAllDatas());
+
+                Task.Factory.StartNew(() => sim.Iterate(chartsDatas));
                 intervalSlider.Value = Convert.ToInt32(intervalSlider.Maximum - sim.Interval);
             }
             sim.Start();
@@ -116,29 +123,13 @@ namespace CovidPropagation
             Button btn = (Button)sender;
             Grid chartGrid = VisualTreeHelper.GetParent(btn) as Grid;
             CartesianChart chart = (CartesianChart)chartGrid.Children[4];
-            ComboBox cbx = (ComboBox)chartGrid.Children[2];
             ChartData chartData = (ChartData)chart.Tag;
-            Axis axis;
-            int interval;
 
-            if (chartData.ChartType == (int)ChartsType.HeatMap)
-                interval = GetInterval(ChartsDisplayInterval.Week, (ChartsType)chartData.ChartType);
-            else
-                interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
-
-
-            if ((ChartsType)chartData.ChartType == ChartsType.Horizontal)
-                axis = chart.AxisY[0];
-            else
-                axis = chart.AxisX[0];
-
-            axis.MinValue += interval;
-            axis.MaxValue += interval;
-
-            if (interval != 0)
-                chartData.AutoDisplay = false;
+            chartData.DisplayWindow++;
+            chartData.AutoDisplay = false;
 
             chart.Tag = chartData;
+            sim.TriggerDisplayChanges();
         }
 
         /// <summary>
@@ -150,39 +141,15 @@ namespace CovidPropagation
             Button btn = (Button)sender;
             Grid chartGrid = VisualTreeHelper.GetParent(btn) as Grid;
             CartesianChart chart = (CartesianChart)chartGrid.Children[4];
-            ComboBox cbx = (ComboBox)chartGrid.Children[2];
             ChartData chartData = (ChartData)chart.Tag;
-            Axis axis;
-            int interval;
 
-            if (chartData.ChartType == (int)ChartsType.HeatMap)
-                interval = GetInterval(ChartsDisplayInterval.Week, (ChartsType)chartData.ChartType);
-            else
-                interval = GetInterval((ChartsDisplayInterval)cbx.SelectedIndex, (ChartsType)chartData.ChartType);
+            if (chartData.DisplayWindow > 0)
+                chartData.DisplayWindow--;
 
-            if ((ChartsType)chartData.ChartType == ChartsType.Horizontal)
-                axis = chart.AxisY[0];
-            else
-                axis = chart.AxisX[0];
-
-            // Modifier la ligne en dessous pour qu'elle permette de se déplacer uniquement de jours en jours/semaines/mois et de ne pas être décalé.
-            //Math.Ceiling((double)maxValue / interval) * interval;
-
-            if (axis.MinValue - interval >= 0 && interval != 0)
-            {
-                axis.MinValue -= interval;
-                axis.MaxValue -= interval;
-            }
-            else
-            {
-                axis.MinValue = 0;
-                axis.MaxValue = interval;
-            }
-
-            if(interval != 0)
-                chartData.AutoDisplay = false;
+            chartData.AutoDisplay = false;
 
             chart.Tag = chartData;
+            sim.TriggerDisplayChanges();
         }
 
         /// <summary>
@@ -434,7 +401,6 @@ namespace CovidPropagation
         /// <param name="chartData"></param>
         private void SubscribeToChartEvents(CartesianChart chart, ChartData chartData)
         {
-            sim.OnDataUpdate += new DataUpdateEventHandler(chart.OnDataUpdate);
             sim.OnDisplay += new DispalyChangeEventHandler(chart.Display);
         }
 
@@ -562,13 +528,7 @@ namespace CovidPropagation
                     Title = curvesData[i].ToString(),
                     Foreground = Brushes.Gray,
                     Tag = curvesData[i],
-                    Values = new ChartValues<double> {
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10),
-                        rdm.Next(1, 10)
-                    }
+                    Values = new ChartValues<double> ()
                 });
             }
         }
@@ -588,9 +548,7 @@ namespace CovidPropagation
                     Title = curvesData[i].ToString(),
                     Foreground = Brushes.Gray,
                     Tag = curvesData[i],
-                    Values = new ChartValues<double> {
-                        rdm.Next(1, 10)
-                    }
+                    Values = new ChartValues<double>()
                 });
             }
         }
@@ -604,64 +562,7 @@ namespace CovidPropagation
         {
             Random rdm = GlobalVariables.rdm;
 
-            ChartValues<HeatPoint> values = new ChartValues<HeatPoint>
-            {
-                new HeatPoint(0, 0, rdm.Next(0, 10)),
-                new HeatPoint(0, 1, rdm.Next(0, 10)),
-                new HeatPoint(0, 2, rdm.Next(0, 10)),
-                new HeatPoint(0, 3, rdm.Next(0, 10)),
-                new HeatPoint(0, 4, rdm.Next(0, 10)),
-                new HeatPoint(0, 5, rdm.Next(0, 10)),
-                new HeatPoint(0, 6, rdm.Next(0, 10)),
-
-                new HeatPoint(1, 0, rdm.Next(0, 10)),
-                new HeatPoint(1, 1, rdm.Next(0, 10)),
-                new HeatPoint(1, 2, rdm.Next(0, 10)),
-                new HeatPoint(1, 3, rdm.Next(0, 10)),
-                new HeatPoint(1, 4, rdm.Next(0, 10)),
-                new HeatPoint(1, 5, rdm.Next(0, 10)),
-                new HeatPoint(1, 6, rdm.Next(0, 10)),
-
-                new HeatPoint(2, 0, rdm.Next(0, 10)),
-                new HeatPoint(2, 1, rdm.Next(0, 10)),
-                new HeatPoint(2, 2, rdm.Next(0, 10)),
-                new HeatPoint(2, 3, rdm.Next(0, 10)),
-                new HeatPoint(2, 4, rdm.Next(0, 10)),
-                new HeatPoint(2, 5, rdm.Next(0, 10)),
-                new HeatPoint(2, 6, rdm.Next(0, 10)),
-
-                new HeatPoint(3, 0, rdm.Next(0, 10)),
-                new HeatPoint(3, 1, rdm.Next(0, 10)),
-                new HeatPoint(3, 2, rdm.Next(0, 10)),
-                new HeatPoint(3, 3, rdm.Next(0, 10)),
-                new HeatPoint(3, 4, rdm.Next(0, 10)),
-                new HeatPoint(3, 5, rdm.Next(0, 10)),
-                new HeatPoint(3, 6, rdm.Next(0, 10)),
-
-                new HeatPoint(3, 0, rdm.Next(0, 10)),
-                new HeatPoint(3, 1, rdm.Next(0, 10)),
-                new HeatPoint(3, 2, rdm.Next(0, 10)),
-                new HeatPoint(3, 3, rdm.Next(0, 10)),
-                new HeatPoint(3, 4, rdm.Next(0, 10)),
-                new HeatPoint(3, 5, rdm.Next(0, 10)),
-                new HeatPoint(3, 6, rdm.Next(0, 10)),
-
-                new HeatPoint(3, 0, rdm.Next(0, 10)),
-                new HeatPoint(3, 1, rdm.Next(0, 10)),
-                new HeatPoint(3, 2, rdm.Next(0, 10)),
-                new HeatPoint(3, 3, rdm.Next(0, 10)),
-                new HeatPoint(3, 4, rdm.Next(0, 10)),
-                new HeatPoint(3, 5, rdm.Next(0, 10)),
-                new HeatPoint(3, 6, rdm.Next(0, 10)),
-
-                new HeatPoint(3, 0, rdm.Next(0, 10)),
-                new HeatPoint(3, 1, rdm.Next(0, 10)),
-                new HeatPoint(3, 2, rdm.Next(0, 10)),
-                new HeatPoint(3, 3, rdm.Next(0, 10)),
-                new HeatPoint(3, 4, rdm.Next(0, 10)),
-                new HeatPoint(3, 5, rdm.Next(0, 10)),
-                new HeatPoint(3, 6, rdm.Next(0, 10)),
-            };
+            ChartValues<HeatPoint> values = new ChartValues<HeatPoint>();
 
             HeatSeries heatSeries = new HeatSeries();
             heatSeries.Values = values;
