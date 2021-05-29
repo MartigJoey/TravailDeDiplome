@@ -119,8 +119,12 @@ namespace CovidPropagation
         /// aux bâtiment de calculer les chances d'attraper le virus dans ceux-ci, 
         /// à la population de calculer si elle a été infectée.
         /// </summary>
-        public async void Iterate(SimulationDatas chartsDatas)
+        public async void Iterate()
         {
+            chartsDatas = new SimulationDatas();
+            chartsDatas.Initialize();
+            chartsDatas.AddDatas(GetAllDatas());
+
             int sumEllapsedTime = 0;
             while (true)
             {

@@ -1109,3 +1109,9 @@
   - Utilisation de Dispatcher.Invoke autour du code pour palier au problème
   - Impossible d'utiliser cette méthode dans les méthode d'extension des graphiques.
     - Utilisation de Application.Current.Dispatcher.Invoke((Action)(() => {})); à la place
+- ~~Le thread pose problème lors de l'appuie sur les boutons permettant le changement de plage d'affichage.~~
+  - ~~Les données de la simulation sont vides.~~
+- Modification du code d'appele de la boucle itération de la simulation dans une task. Elle prenait en paramètre une structure qui devait se situer dans la simulation dès le départ.
+- Problèmes de crache dû à livechart.
+  - Il n'est pas possible de trouver l'origine du bug étant donné que je n'ai pas accès à leur code pour le môment.
+  - 

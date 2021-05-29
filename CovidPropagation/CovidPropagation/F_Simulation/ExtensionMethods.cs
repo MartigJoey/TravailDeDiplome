@@ -205,7 +205,6 @@ namespace CovidPropagation
         {
             Application.Current.Dispatcher.Invoke((Action)(() =>
             {
-                double[] maxValueAndIntervalOfColRowChart;
                 int interval = 48;
                 Axis axisX = chart.AxisX[0];
                 Axis axisY = chart.AxisY[0];
@@ -265,21 +264,34 @@ namespace CovidPropagation
 
                             serie.Values = lineSerieDatas.AsGearedValues().WithQuality(Quality.Low);
                         }
+
+                        if (maxValue - interval > 0 && interval != 0)
+                        {
+                            currentAxis.MinValue = maxValue - interval;
+                            currentAxis.MaxValue = maxValue;
+                        }
+                        else if (interval == 0)
+                        {
+                            axisX.MinValue = 0;
+                            axisX.MaxValue = maxValue;
+                        }
+                        else
+                        {
+                            currentAxis.MinValue = 0;
+                            currentAxis.MaxValue = interval;
+                        }
+
                         datas.DisplayWindow = displayWindow;
                         chart.Tag = datas;
                         break;
                     case ChartsType.Vertical:
                         // Affichage différent
-                        maxValueAndIntervalOfColRowChart = DisplayColumnRowChart(chart, e, isDisplayChange);
-                        maxValue = maxValueAndIntervalOfColRowChart[0];
-                        interval = Convert.ToInt32(maxValueAndIntervalOfColRowChart[1]);
+                        DisplayColumnRowChart(chart, e, currentAxis, isDisplayChange);
                         break;
                     case ChartsType.Horizontal:
                         // Affichage différent
                         currentAxis = axisY;
-                        maxValueAndIntervalOfColRowChart = DisplayColumnRowChart(chart, e, isDisplayChange);
-                        maxValue = maxValueAndIntervalOfColRowChart[0];
-                        interval = Convert.ToInt32(maxValueAndIntervalOfColRowChart[1]);
+                        DisplayColumnRowChart(chart, e, currentAxis, isDisplayChange);
                         break;
                     case ChartsType.HeatMap:
                         HeatSeries serieHM = (HeatSeries)chart.Series[0];
@@ -314,27 +326,10 @@ namespace CovidPropagation
                         axisY.MaxValue = 12;
                         break;
                 }
-                /*
-                if (maxValue - interval > 0 && interval != 0)
-                {
-                    currentAxis.MinValue = maxValue - interval;
-                    currentAxis.MaxValue = maxValue;
-                }
-                else if((ChartsType)datas.ChartType == ChartsType.Linear && interval == 0)
-                {
-                    axisX.MinValue = 0;
-                    axisX.MaxValue = maxValue;
-                }
-                else
-                {
-                    currentAxis.MinValue = 0;
-                    currentAxis.MaxValue = interval;
-                }*/
-
             }));
         }
 
-        private static double[] DisplayColumnRowChart(CartesianChart chart, SimulationDatas e, bool isDisplayChange)
+        private static void DisplayColumnRowChart(CartesianChart chart, SimulationDatas e, Axis axis, bool isDisplayChange)
         {
             int interval;
             ChartValues<double> cv;
@@ -345,18 +340,18 @@ namespace CovidPropagation
                 default:
                 case ChartsDisplayInterval.Day:
                     interval = 12;
-                    DisplayColumnRow(chart, e, 4, isDisplayChange);
-                    maxValue = Math.Ceiling((double)maxValue / interval) * interval;
+                    DisplayColumnRow(chart, e, 4, isDisplayChange, 48);
+                    maxValue = 12;
                     break;
                 case ChartsDisplayInterval.Week:
                     interval = 7;
-                    DisplayColumnRow(chart, e, 48, isDisplayChange);
-                    maxValue = Math.Ceiling((double)maxValue / interval) * interval;
+                    DisplayColumnRow(chart, e, 48, isDisplayChange, 336);
+                    maxValue = interval;
                     break;
                 case ChartsDisplayInterval.Month:
                     interval = 4;
-                    DisplayColumnRow(chart, e, 336, isDisplayChange);
-                    maxValue = Math.Ceiling((double)maxValue / interval) * interval;
+                    DisplayColumnRow(chart, e, 336, isDisplayChange, 1440);
+                    maxValue = interval;
                     break;
                 case ChartsDisplayInterval.Total:
                     foreach (Series serie in chart.Series)
@@ -372,43 +367,53 @@ namespace CovidPropagation
                     interval = 1;
                     break;
             }
-            return new double[] { maxValue, interval };
+
+            if (maxValue - interval > 0 && interval != 0)
+            {
+                axis.MinValue = maxValue - interval;
+                axis.MaxValue = maxValue;
+            }
+            else
+            {
+                axis.MinValue = 0;
+                axis.MaxValue = interval;
+            }
         }
 
-        private static void DisplayColumnRow(CartesianChart chart, SimulationDatas e, int modulo, bool isDisplayChange)
+        private static void DisplayColumnRow(CartesianChart chart, SimulationDatas e, int modulo, bool isDisplayChange, int interval)
         {
             ChartValues<double> cv;
+            ChartData datas = (ChartData)chart.Tag;
             foreach (Series serie in chart.Series)
             {
                 cv = new ChartValues<double>();
                 List<double> columnDatas = new List<double>();
                 List<double> columnAvg = new List<double>();
-                List<double> simDatas = e.GetDataFromEnum((ChartsDisplayData)serie.Tag);
-                if (serie.Values.Count * modulo < simDatas.Count || isDisplayChange)
-                {
-                    for (int i = serie.Values.Count * modulo; i < simDatas.Count; i++)
-                    {
-                        columnDatas.Add(simDatas[i]);
-                        if (i % modulo == 0)
-                        {
-                            columnAvg.Add(columnDatas.Average());
-                            columnDatas.Clear();
-                        }
-                    }
+                List<double> colRowSerieDatas = new List<double>(e.GetDataFromEnum((ChartsDisplayData)serie.Tag));
 
-                    if (isDisplayChange)
+                if (colRowSerieDatas.GetLastIndex() > interval && datas.AutoDisplay)
+                {
+                    colRowSerieDatas.RemoveRange(0, colRowSerieDatas.GetLastIndex() - interval);
+                }
+                else if ((interval * datas.DisplayWindow + interval) < colRowSerieDatas.GetLastIndex())
+                {
+                    int lastItemIndex = interval * datas.DisplayWindow + interval;
+                    colRowSerieDatas.RemoveRange(lastItemIndex, colRowSerieDatas.GetLastIndex() - lastItemIndex + 1);
+                    colRowSerieDatas.RemoveRange(0, interval * datas.DisplayWindow);
+                }
+
+                // parcours les données et créé des moyennes pour correspondre au nombre de ligne/colonne de l'interval.
+                //     Par exemple: 48 données pour 1 jour = 12 colonnes/lignes, 48 données pour 1 semaine = 1 colonne/ligne.
+                for (int i = 0; i < colRowSerieDatas.Count; i++)
+                {
+                    columnDatas.Add(colRowSerieDatas[i]);
+                    if (i % modulo == 0)
                     {
-                        cv.AddRange(columnAvg);
-                        serie.Values = cv.AsGearedValues();
-                    }
-                    else
-                    {
-                        for (int i = 0; i < columnAvg.Count; i++)
-                        {
-                            serie.Values.Add(columnAvg[i]);
-                        }
+                        columnAvg.Add(columnDatas.Average());
+                        columnDatas.Clear();
                     }
                 }
+                serie.Values = columnAvg.AsChartValues();
             }
         }
 

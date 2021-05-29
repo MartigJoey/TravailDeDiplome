@@ -75,7 +75,6 @@ C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\bin\De
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\bin\Debug\netcoreapp3.1\LiveCharts.Wpf.dll
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation.csprojAssemblyReference.cache
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\LC.g.cs
-C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\Legend.g.cs
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\MainWindow.g.cs
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\PageGraphicSettings.g.cs
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\PageSimulation.g.cs
@@ -85,7 +84,6 @@ C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\De
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\CovidPropagation_MarkupCompile.lref
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\App.baml
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\LC.baml
-C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\Legend.baml
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\MainWindow.baml
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\PageGraphicSettings.baml
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\PageSimulation.baml
@@ -104,3 +102,5 @@ C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\De
 C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\WindowChart.baml
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\WindowRawDatas.g.cs
 C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\WindowRawDatas.baml
+C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\WindowRawDatas.g.cs
+C:\Users\schad\Desktop\TravailDeDiplome\CovidPropagation\CovidPropagation\obj\Debug\netcoreapp3.1\WindowRawDatas.baml

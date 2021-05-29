@@ -82,11 +82,7 @@ namespace CovidPropagation
                 sim.OnDataUpdate += new DataUpdateEventHandler(rawDatasWindow.UpdateLabels);
                 btnOpenRawDatas.IsEnabled = true;
 
-                SimulationDatas chartsDatas = new SimulationDatas();
-                chartsDatas.Initialize();
-                chartsDatas.AddDatas(sim.GetAllDatas());
-
-                Task.Factory.StartNew(() => sim.Iterate(chartsDatas));
+                Task.Factory.StartNew(() => sim.Iterate());
                 intervalSlider.Value = Convert.ToInt32(intervalSlider.Maximum - sim.Interval);
             }
             sim.Start();
