@@ -1114,4 +1114,8 @@
 - Modification du code d'appele de la boucle itération de la simulation dans une task. Elle prenait en paramètre une structure qui devait se situer dans la simulation dès le départ.
 - Problèmes de crache dû à livechart.
   - Il n'est pas possible de trouver l'origine du bug étant donné que je n'ai pas accès à leur code pour le môment.
-  - 
+- Documentation
+  - Structure
+    - UI
+    - Simulation
+  - Page paramètres graphiques

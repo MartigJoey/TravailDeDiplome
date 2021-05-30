@@ -183,13 +183,16 @@ namespace CovidPropagation
         /// </summary>
         public static void OnDataUpdatePieChart(this PieChart chart, SimulationDatas e)
         {
-            ChartValues<double> cv;
-            foreach (PieSeries serie in chart.Series)
+            Application.Current.Dispatcher.Invoke((Action)(() =>
             {
-                cv = new ChartValues<double>();
-                cv.Add(e.GetDataFromEnum((ChartsDisplayData)serie.Tag).Last());
-                serie.Values = cv;
-            }
+                ChartValues<double> cv;
+                foreach (PieSeries serie in chart.Series)
+                {
+                    cv = new ChartValues<double>();
+                    cv.Add(e.GetDataFromEnum((ChartsDisplayData)serie.Tag).Last());
+                    serie.Values = cv;
+                }
+            }));
         }
 
         /// <summary>

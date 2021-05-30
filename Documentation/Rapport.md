@@ -828,7 +828,7 @@ Les graphiques aussi consommaient énormément de ressources. Dû à la grande q
 # 13. `Simulation`
 ## 13.1. Structure
 
-![Diagramme de classe](Medias/Rapport/SimulationClassDiagram.png)
+![Diagramme de classe](Medias/Rapport/StructureSimulation.png)
 
 ### 13.1.1. Intéraction entre objets
 
@@ -939,14 +939,26 @@ Réception des données
 
 # 15. `UI`
 ## 15.1. Structure
-![Diagramme de classe](Medias/Rapport/UIClassDiagram.png)
+![Diagramme de classe](Medias/Rapport/StructureUI.png)
 ## 15.2. Thème
 Pour la création de l'interface utilisateur, je voulais éviter a tout prix d'utiliser le design basique des programmes windows. J'ai fait quelque recherche et je suis tombé sur différents tutoriels montrant comment réaliser une interface en [WinForm](https://www.youtube.com/watch?v=BtOEztT1Qzk). C'est en m'inspirant de ce design que j'ai réalisé le thème du projet. C'est principalement la barre de menu se situant à gauche que j'ai voulu recréer. J'ai ensuite découvert les pages et window dans WPF qui permettent de réaliser exactement ce que je souhaitais. Une window pouvant inclure le contenu d'une page. Il suffit donc de cliquer sur un bouton du menu pour changer le contenu de la page.
 
-WPF ne permettant pas la modification d'éléments existant, j'ai du créer de A à Z de nombreux éléments tels que les checkbox, les radioboutons ainsi que les sliders. Le résultat final me semble très propre.
+WPF ne permettant pas la modification d'éléments existant, j'ai du créer de A à Z de nombreux éléments tels que les checkbox, les radioboutons ainsi que les sliders. Le résultat final étant plus agréable à visualiser que le thèmes par défaut de WPF.
 
 ![Thème de l'application](Medias/Rapport/Theme.png)
 <center><p style="font-size: 11px">Figure ##: Thème</p></center>
+
+<div style="text-align:center"><img src="Medias/Rapport/Bouton.png" /></div>
+<center><p style="font-size: 11px">Figure ##: bouton</p></center>
+
+<div style="text-align:center"><img src="Medias/Rapport/RadioBouton.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Radio bouton</p></center>
+
+<div style="text-align:center"><img src="Medias/Rapport/CheckBox.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Check box</p></center>
+
+<div style="text-align:center"><img src="Medias/Rapport/Slider.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Slider</p></center>
 
 ## 15.3. Pages
 ### 15.3.1. Simulation
@@ -955,9 +967,18 @@ WPF ne permettant pas la modification d'éléments existant, j'ai du créer de A
 <div style="text-align:center"><img src="Medias/Rapport/SimulationIcone.png" /></div>
 <center><p style="font-size: 11px">Figure ##: Icone de simulation</p></center>
 
-Cette page permet la visualisation de la simulation s'effectuant. Elle permet de gérer certains paramètres mineurs tel que le rythme, s'il faut mettre pause ou la relancer. Elle permet avant tout de lancer la simulation et d'observer les résultats à l'aide de graphiques, de l'interface graphique ainsi que de données brutes. Affichage qui est totalement personnalisable par l'utilisateur dans la fenêtre "Paramètres graphiques"
+Cette page permet la visualisation de la simulation s'effectuant. Elle permet de gérer certains paramètres mineurs tel que le rythme, s'il faut mettre pause ou s'il faut la relancer. Elle permet avant tout de lancer la simulation et d'observer les résultats à l'aide des graphiques, de l'interface graphique ainsi que de données brutes. Affichage qui est totalement personnalisable par l'utilisateur dans la fenêtre "Paramètres graphiques"
 
-<h1>Image de la page de simulation une foie terminée</h1>
+![Page simulation](Medias/Rapport/PageSimulation.png)
+<center><p style="font-size: 11px">Figure ##: Page simulation</p></center>
+
+Le slider permet de modifier la vitesse d'exécution de la simulation, les boutons de démarrage et d'arrêt permettent de mettre pause et de relancer la simulation. Le dernier boutons "Données" permet de visualiser les données brutes.
+
+![Page simulation](Medias/Rapport/DonneesBrutes.png)
+<center><p style="font-size: 11px">Figure ##: Fenêtre de données brutes</p></center>
+
+Il est possible de voir toutes les données disponibles dans différents états. Les dernières données enregistrées, la moyenne de ces données ainsi que le minimum et maximum de chaque données enregistrées.
+
 
 ### 15.3.2. Paramètres graphiques
 
@@ -968,9 +989,24 @@ La page des paramètres graphiques permet de totalement modifier l'interface de 
 
 En plus des graphiques, l'interface graphique peut être ajoutée ou retirée comme bon semble l'utilisateur. Comme pour les graphiques, sa taille peut être modifiée.
 
-Finalement les données brutes. Il est possible d'afficher directement certaines données comme le nombre d'infectés actuel ou le nombre total depuis le début.
-
 Chaque case contenant l'un des objet précédement sité peut être déplacé librement dans la grille mise à disposition. Cette même grille peut être agrandi ou rapetissi pour laisser la place à plus ou moins de cases.
+
+![Page paramètres graphiques](Medias/Rapport/PageParametreGraphiques.png)
+<center><p style="font-size: 11px">Figure ##: Page paramètres graphiques</p></center>
+
+Chaque case est constituée de différents boutons permettant de changer sa taille, la déplacer, la supprimer ou de modifier le graphique contenu. Lors du clique sur le bouton de paramétrage du graphique, une nouvelle fenêtre s'ouvre offrant différentes options à l'utilisateur.
+
+![Fenêtre paramètres graphiques](Medias/Rapport/FenetreParametresGraphiques.png)
+<center><p style="font-size: 11px">Figure ##: Fenêtre paramètres graphiques</p></center>
+
+Cette pâge offre la possibilité de parametrer le graphique et offre un aperçu de celui-ci. Il est premièrement possible de choisir le type du graphique entre 5 types différents comme imagé ci-dessous. Les valeurs de l'axe X est uniquement une valeur informative et ne permet n'influence en aucun cas les données. La quantité de données permet de décider le nombre de courbe à afficher sur un même graphique par exemple. Il est ensuite possible de décider quel informations afficher dans chaque courbes. Une fois la personnalisation terminée, il est possible de sauvegarder les informations ou d'annuler les modifications apportées.
+
+![Fenêtre paramètres graphiques](Medias/Rapport/Graphiques.png)
+<center><p style="font-size: 11px">Figure ##: Graphiques disponibles</p></center>
+
+Tous les graphiques disponibles peuvent afficher plusieurs informations à la fois à l'exception du graphique HeatMap qui lui ne se concentre que sur une unique donnée. Les graphiques à courbe, colonne et en ligne peuvent afficher certaines période de temps décidée par l'utilisateur. Il est par exemple possible de revenir plusieur jour en arrière et d'y visualiser les données, il est aussi possible de change le format d'affichage pour afficher les semaines à la place des jours, les mois ou même le total. Une option permet aussi de suivre les données, permettant de visualiser le jour actuel ainsi que les denières données ajoutées.
+
+Le graphique cylindrique permet de visualiser uniquement les dernières données de la simulation. Et finalement le graphique HeatMap génère une moyenne permettant de connaîtres les périodes dans lequel il y a le plus de contamination par exemple.
 
 ### 15.3.3. Paramètres simulation
 
