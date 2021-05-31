@@ -1119,3 +1119,35 @@
     - UI
     - Simulation
   - Page paramètres graphiques
+
+# 32.05.2021 08h00 / 17h00
+- Création du programme GUI sur Unity
+  - Recherche sur ce qu'est Universal render pipeline
+    - Pas utile dans mon cas
+  - Importation du code du POC
+    - Problème au niveau de la taille de la fenêtre Unity
+      - Prend toute la page
+      - Ne peut être modifiée
+      - Recherche de résolution de problème 
+        - Conseil --> Utiliser hwndHost à la place de unityHandle
+          - Impossible de trouver un moyen d'initialiser hwndHost ou de récupérer le hande.
+        - Ou utiliser WindowsFormsHost
+          - Impossible d'ajouter les références comme expliqué [ici](https://wpf-tutorial.com/fr/67/controles-divers/le-controle-windowsformshost-/)
+          - Ajout de la référence en suivant cette [vidéo](https://www.youtube.com/watch?v=GiaFyAKvizs)
+          - Utilisation du code XAML proposé par [Flemming Bonde Kentved et Programmer](https://stackoverflow.com/questions/44059182/embed-unity3d-app-inside-wpf-application)
+    - La fenêtre Unity se trouve au bon endroit et sa taille est modifiée en conséquence du changement de la taille de son conteur.
+  - Programme Unity fonctionnel, début de la création du GUI
+- Déplacements de la caméra à l'aide de la souris
+  - [Tutorial](https://www.youtube.com/watch?v=iuygipAigew)
+- Zoom et dézoom avec la molette de la souris
+  - Ne fonctionne pas dans l'application WPF
+  - Sera remplacé par des boutons ou supprimé par la suite
+- Instantiation de prefabs
+- Utilisation du code du Stage pour positionner les bâtiments
+  - Le positionnement ne fonctionne pas correctement et place les bâtiments en ligne
+  - Positionnement terminé, nécessite une modification de la l'échelle pour permettre à tous les objets d'être visibles.
+    - ![Algorithm de mise à l'échelle](Medias/LogBook/AlgorithmDeMiseALEchelle.png)
+    - Taille = tailleMax / nombre d'éléments
+- Documentation
+  - Structure
+  - Architecture

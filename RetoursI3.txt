@@ -1,0 +1,31 @@
+l'affichage soit décorrélé du moteur de la simulation ce qu'on avait discuté par rapport aux Threads.
+
+optimisation des performances, l'explication de dire que c'est les requêtes linq qui sont lentes et qu'en les supprimant vous avez réglé le problème n'est pas suffisante: 
+le problème c'est surtout de retrier la collection à chaque tour de boucle et le fait de ne pas avoir indexé (avec un Dictionnaire) les données avant.. il y a peut-être d'autres raisons, 
+mais à votre niveau d'études, on veut une analyse plus poussée et expliquer les choses.
+
+Quand à la complexité de votre algorithme qui est en O(n), je pense que cette page vous intéressera 
+(https://fr.wikipedia.org/wiki/Analyse_de_la_complexit%C3%A9_des_algorithmes) => le graphique de Big'O notations n'est pas terrible: 
+on ne voit pas un bien les complexités O(n^2), O(n^3), O(log(n)), O(n) qui sont les complexités de bases. Un des graphiques comme ci-dessous, 
+me paraît plus pertinent. (https://www.google.com/search?q=complexity+algorithm&safe=active&source=lnms&tbm=isch&sa=X)
+
+Votre solution au début avec le tri de la collection à chaque tour de boucle, 
+nous donnait une complexité en O(n^2) je pense (à valider, mais en tous cas exponentielle) 
+et que maintenant vous êtes en O(n).
+
+Sinon pour la doc, toujours la même remarque concernant le 8.5.2.3 et concernant l'analyse des résultats produits par votre app et la réalité/études sur le/la Covid.
+
+Pour le reste, je pense qu'il faudrait demander l'avis de qqn qui ne connaît pas autant que moi le projet ;) Là je manque peut-être des points..
+
+
+
+
+Doc:
+Accès excel 8.5.2.3
+
+Analyse app / réalité
+
+12.3 Ajouté
+
+13.3 modification graphiques + détails optimisation
+

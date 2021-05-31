@@ -83,28 +83,29 @@
     - [8.12.5. Simulation](#8125-simulation)
   - [8.13. Livrables](#813-livrables)
 - [9. `Environnement`](#9-environnement)
-- [10. `Architecture`](#10-architecture)
-  - [10.1. Arborescence](#101-arborescence)
-  - [10.2. Structure](#102-structure)
-- [11. `Analyse interface graphique`](#11-analyse-interface-graphique)
-  - [11.1. Comparaison technologies](#111-comparaison-technologies)
-    - [11.1.1. WinForm (Windows Forms)](#1111-winform-windows-forms)
-    - [11.1.2. WPF (Windows Presentation Foundation)](#1112-wpf-windows-presentation-foundation)
-    - [11.1.3. Unity](#1113-unity)
-      - [11.1.3.1. Communication](#11131-communication)
-        - [11.1.3.1.1. Unity Controller](#111311-unity-controller)
-        - [11.1.3.1.2. `PipeLines`](#111312-pipelines)
-      - [11.1.3.2. Intégration](#11132-intégration)
-  - [11.2. Choix de la solution](#112-choix-de-la-solution)
-- [12. `Problèmes rencontrés`](#12-problèmes-rencontrés)
-  - [12.1. Pipeline](#121-pipeline)
-  - [12.2. WPF UI](#122-wpf-ui)
-  - [12.3. Planning](#123-planning)
-  - [12.4. Outils WPF](#124-outils-wpf)
-    - [12.4.1. Combobox et enum](#1241-combobox-et-enum)
-    - [12.4.2. Description d'enums](#1242-description-denums)
-    - [12.4.3. Numeric Up Down](#1243-numeric-up-down)
-  - [12.5. Optimisation](#125-optimisation)
+- [10. `Analyse interface graphique`](#10-analyse-interface-graphique)
+  - [10.1. Comparaison technologies](#101-comparaison-technologies)
+    - [10.1.1. WinForm (Windows Forms)](#1011-winform-windows-forms)
+    - [10.1.2. WPF (Windows Presentation Foundation)](#1012-wpf-windows-presentation-foundation)
+    - [10.1.3. Unity](#1013-unity)
+      - [10.1.3.1. Communication](#10131-communication)
+        - [10.1.3.1.1. Unity Controller](#101311-unity-controller)
+        - [10.1.3.1.2. `PipeLines`](#101312-pipelines)
+      - [10.1.3.2. Intégration](#10132-intégration)
+  - [10.2. Choix de la solution](#102-choix-de-la-solution)
+- [11. `Problèmes rencontrés`](#11-problèmes-rencontrés)
+  - [11.1. Pipeline](#111-pipeline)
+  - [11.2. WPF UI](#112-wpf-ui)
+  - [11.3. Planning](#113-planning)
+  - [11.4. Outils WPF](#114-outils-wpf)
+    - [11.4.1. Combobox et enum](#1141-combobox-et-enum)
+    - [11.4.2. Description d'enums](#1142-description-denums)
+    - [11.4.3. Numeric Up Down](#1143-numeric-up-down)
+  - [11.5. Optimisation](#115-optimisation)
+- [12. `Architecture`](#12-architecture)
+  - [12.1. Arborescence](#121-arborescence)
+  - [12.2. Structure des technologies](#122-structure-des-technologies)
+  - [12.3. Structure générale](#123-structure-générale)
 - [13. `Simulation`](#13-simulation)
   - [13.1. Structure](#131-structure)
     - [13.1.1. Intéraction entre objets](#1311-intéraction-entre-objets)
@@ -347,7 +348,7 @@ La propagation se fait à l'aide de calcul et de différentes variables. 1000 m<
 La température est prise est compte ainsi que les mesures telles que le masque. Le masque réduit les chances de transmettre le virus. La température, elle fait varier la durée de vie du virus à l'extérieur d'un hôte.
 La complexité de ce type de calcul étant d'une difficulté largement supérieure aux compétences acquises en tant que technicien, je me base sur cette fiche Excel réalisée par des professionnels. Elle est très bien documentée et sourcée. 
 
-[Fiche Excel](https://docs.google.com/spreadsheets/d/1ZWG4LslRBUjMC00Rsi65TKmfVJyzVUf2)
+[Fiche Excel](https://drive.google.com/file/d/1hWvw8I-53Iw7GPy-B1mSyWen20VzTwWr/view?usp=sharing)
 
 #### 8.5.2.4. Population
 
@@ -563,38 +564,18 @@ L'environnement de travail est composé d'un pc technicien, 3 écrans, clavier, 
 
 Le projet WPF utilise .core 3.1 qui est la version lts.
 La version d'Unity est la 2020.3.4f1 qui est aussi la version lts.
-# 10. `Architecture`
-## 10.1. Arborescence
-```
-├── CovidPropagation
-│   ├── .vs
-│   ├── CovidPropagationGraphicInterface
-│   └── CovidPropagationGraphicInterface.sln
-├── Documentation
-│   ├── Medias
-│   │   ├── LogBook
-│   │   └── Rapport
-│   ├── LogBook.md
-│   └── Rapport.md
-└── POC
-    ├── TestUnity_WPF
-    └── testWPF_Unity.sln
-```
-## 10.2. Structure
-![Diagramme de fonctionnement](Medias/rapport/DiagrammeDeFonctionnement.png)
-<center><p style="font-size: 11px">Figure 14: Diagramme de fonctionnement</p></center>
 
-# 11. `Analyse interface graphique`
+# 10. `Analyse interface graphique`
 Cette analyse concerne l'interface graphique et le choix de la technologie à utiliser pour réaliser celle-ci.
 
-## 11.1. Comparaison technologies
+## 10.1. Comparaison technologies
 
-### 11.1.1. WinForm (Windows Forms)
+### 10.1.1. WinForm (Windows Forms)
 Lors du CFC ainsi que de l'apprentissage technicien, nous avons toujours utilisé cet interface pour réaliser l'entièreté de nos projets. Je connais donc bien cet environnement contrairement au WPF. En plus de cela, l'interface graphique réalisée dans le poc est en WinForm. Me permettant donc de simplement importer le projet déjà existant.
 
 Cependant, WinForm ainsi que l'interface graphique déjà existante apportent de gros problèmes tels que les timers. Lorsqu'il y a une charge CPU trop lourde, les timers perdent leurs rythmes et n'arrivent plus à suivre. Le résultat de cette surcharge est que plus rien ne fait de sens. Les animations n'ont plus le temps de s'effectuer rendant les individus immobiles ou presque.
 
-### 11.1.2. WPF (Windows Presentation Foundation)
+### 10.1.2. WPF (Windows Presentation Foundation)
 
 WPF est plus récent que WinForms et a donc certains avantages non négligeables en comparaison. Il est beaucoup plus complet en termes d'esthétique et donc d'UI que WinForms. En plus de cela, il est possible de créer des objets en 2D ou 3D. Ces objets contrairement à WinForms sont gérés par le GPU plutôt qu'être entièrement basé sur le CPU. Cette différence à elle seule fait pencher la balance pour WPF.
 
@@ -607,16 +588,16 @@ Le possible problème de timer bien que probablement réduit du au fait que la c
 
 Il faut aussi noter que je n'ai aucune expérience en WPF et vais donc devoir m'y habituer durant un certain temps avant d'être efficace à 100%.
 
-### 11.1.3. Unity
+### 10.1.3. Unity
 Unity est un moteur de jeu en 2D et 3D. Il est possible de l'intégrer directement à une application WPF. Ça me semble être le meilleur choix si l'on prend en compte les problèmes de timer des deux autres technologies. Unity possède de façon native des méthodes qui sont appelées à chaque frame permettant le bon déroulement de la simulation.
 
 En plus de cela, j'ai beaucoup d'expérience avec ce logiciel, ayant réalisé mon TPI avec celui-ci. Je peux donc affirmer qu'il est beaucoup plus simple de réaliser l'interface graphique avec Unity.
 
 Cependant un autre problème est présent. La liaison des données. Il m'est impossible, sans le tester, de savoir si ce modèle de fonctionnement est compatible avec mon projet. Je sais qu'il est possible de transférer des informations de WPF à Unity cependant, je ne sais pas si la fréquence d'envoi est suffisante ou même si la quantité de données envoyées que je souhaite atteindre est possible.
 
-#### 11.1.3.1. Communication
+#### 10.1.3.1. Communication
 Pour communiquer entre WPF et Unity, j'ai essayé plusieurs méthodes fonctionnant différemment et surtout de complexité différente.
-##### 11.1.3.1.1. Unity Controller
+##### 10.1.3.1.1. Unity Controller
 Mon premier essai fut avec Unity Controller qui permet de créer un serveur qui communique entre une application C# et Unity.
 
 Pour l'installer il faut d'ajouter le paquet nuget "Unity Controller" au projet ainsi qu'un using "UnityController". Son implémentation est la plus simple des solutions testées sachant qu'elle ne prend que quelques lignes au total.
@@ -643,7 +624,7 @@ UnityCommands.UpdateText("GameObjectText", "Texte");
 
 Cette implémentation de la communication est extrêmement simple à mettre en place cependant, les possibilités sont très limitées. Les seules actions possibles sont le fait de changer le texte d'un GameObject, sa couleur, son image, etc. Il est impossible d'envoyer un message de code à code puis de l'interpréter. Cette façon de faire ne peut donc pas servir à la réalisation de mon projet qui demande un traitement des données.
 
-##### 11.1.3.1.2. `PipeLines`
+##### 10.1.3.1.2. `PipeLines`
 Contrairement à UnityController, les pipelines laissent plus de liberté, mais leur complexité est bien supérieure. J'ai rencontré divers problèmes en implémentant cette fonctionnalité.
 
 Dans mon cas, la communication se fait à sens unique, WPF donnant les informations à l'interface graphique se trouvant sur Unity. Il faut donc commencer par créer un serveur du côté WPF.
@@ -740,7 +721,7 @@ public async Task<string> ReadStringAsync()
 }
 ```
 
-#### 11.1.3.2. Intégration 
+#### 10.1.3.2. Intégration 
 
 L'intégration permet d'avoir un rectangle au sein de la page WPF qui sera constitué d'une application .exe. Dans ce cas, il s'agit d'Unity. Ça ne permet pas de commander le contenu de la fenêtre, mais uniquement sa taille, position et quand démarrer le .exe.
 
@@ -761,14 +742,14 @@ process.StartInfo.Arguments = "-parentHWND " + unityHandle.ToInt32() + " " +
 process.Start();
 ```
 
-## 11.2. Choix de la solution
+## 10.2. Choix de la solution
 Mon attention se porte premièrement sur Unity qui me semble être la solution avec le meilleur rendue et permet de contourner certains problèmes présents dans les deux autres options. Le premier test que j'ai effectué ne permet pas de transmettre des données complexes, uniquement des strings ou images, mais pas de liste c# ou autres éléments que je pourrais utiliser. </br>
 Le second test que j'ai effectué avec les pipelines permet de transférer une grande quantité de données (Int32) en string. Il est donc possible de transférer des objets en json d'un projet à l'autre.</br>
 C'est cette deuxième option que j'ai donc choisie pour réaliser l'interface graphique. Permettant donc d'utiliser Unity qui est beaucoup plus simple à utiliser pour la réalisation de ce genre de fonctionnalité.
 
 
-# 12. `Problèmes rencontrés`
-## 12.1. Pipeline
+# 11. `Problèmes rencontrés`
+## 11.1. Pipeline
 Durant l'implémentation des pipelines, j'ai rencontré divers problèmes, le premier étant que la structure originale des pipelines utilise une communication synchrone. Lors de l'attente de données, le programme Unity s'arrêtait complètement jusqu'à la réception de la donnée attendue. Une fois reçue, une exécutait une frame puis attendait à nouveau des données. Le rproblèmes était similaire dans le code WPF qui, après avoir envoyé des données, attendait qu'Unity les ait réceptionnées pour continuer.
 
  Pour pallier à ce problème, j'ai opté pour l'implémentation de l'asynchrone dans la réception et dans l'envoi des données. Concernant l'envoie, j'ai rencontré un léger problème qui m'empêchait d'accéder à une méthode en asynchrone, car j'envoyais le contenu d'un textbox appartenant donc au thread principal. Ce problème a été réglé avec l'utilisation de Dispatcher.Invoke. Ce problème de thread m'a malgré tout pris un certain temps à régler du au fait que WPF, Unity et WinForms utilisent tous une façon d'invoque différente rendant les recherches plus compliquées.
@@ -799,31 +780,85 @@ ChangingText.GetComponent<Text>().text = result;
 ReadPipeData();
 ```
 
-## 12.2. WPF UI
+## 11.2. WPF UI
 N'ayant encore jamais travaillé avec WPF, la structure du projet m'a déconcerté au départ, mais j'ai rapidement pu prendre la main. Cependant, pour réaliser une apparence spéciale, j'ai dû modifier certains outils mis à disposition par WPF. Les boutons étant très similaires à WinForms ne m'ont pas posé de problèmes. 
 
 Ce n'est qu'après avoir eu envie de modifier l'affichage d'un slider et après des recherches, que je me suis rendu compte qu'il était impossible de modifier le slider existant pour satisfaire aux paramètres que j'avais choisis. Pour le modifier, il m'a fallu créer un template du slider qui revient à récupérer le code XAML du slider et le modifier à la main. Il m'a fallu un certain temps pour comprendre chaque composant ainsi que leurs paramètres. Même si ça permet de modifier dans le moindre détail l'outil, j'ai été étonné qu'il n'existe par de paramètres facilement modifiables comme le background des boutons par exemple. 
 
 Après avoir eu du mal à modifier le slider, j'ai pu modifier les autres outils (RadioBoutons, Checkbox) avec aisance.
 
-## 12.3. Planning
+## 11.3. Planning
 Une fois les plannings mis en place, la structure de ceux-ci rend le tout très efficace à executer. Mais encore faut-il créer les plannings. En prenant en compte qu'ils doivent être logiquent, respecter certaines règles et être liés les uns les autres. Cette liaison permet par exemple le voyage de plusieurs personnes dans un même véhicule, ou le fait de se retrouver chez un ami. C'est donc cette création qui m'a demandé beaucoup de temps et énormément de réflexion sur son fonctionnement. Comment les créer ? Que doit être aléatoir et que doit être prédéfini ? Comment structurer le tout ? </br>
 Beaucoup de questions qui sont revenues lors de la création des plannings. 
 
-## 12.4. Outils WPF 
-### 12.4.1. Combobox et enum
+## 11.4. Outils WPF 
+### 11.4.1. Combobox et enum
 Pour simplifier l'affichage et le lier d'avantage au code, j'ai voulu lié les données d'un combobox à un enum. Je m'attendais à quelque chose de très simple ayant entendu beacoup de bien du databinding de WPF. J'ai vite compris que ce n'était pas directement pris en charge et qu'il fallait ajouter un certain nombre de ligne pour permettre cette liaison. Il m'a fallut ajouter un ObjectDataProvider en xaml qui permet d'ensuite lier les items du combobox à l'enum. Il était beaucoup plus simple de faire une assignation depuis le code.
 
-### 12.4.2. Description d'enums
+### 11.4.2. Description d'enums
 J'ai ensuite voulu rendre l'affichage plus claire et donc modifier les valeurs du combobox pour qu'elles correspondent aux description de chaque item du enum. Il faut cependant une fois de plus ajouter un certains nombre de ligne pour que cela soit possible. Il est impossible d'y accéder directement et simplement. Il est nécessaire de récupérer les attributs du enum via une méthode qui n'est pas fournit par microsoft. Il faut donc la faire soit même.
 
-### 12.4.3. Numeric Up Down
+### 11.4.3. Numeric Up Down
 Pour permettre à l'utilisateur de choisir le nombre de courbe d'un graphique, je souhaitais utiliser un numérique up down qui semblait être l'outil le plus logique pour cette tâche. Cependant, il n'existe pas de numericUpDown en WPF. Il faut soit le créer manuellement soit utiliser une librairie. Ne voulant pas installer une nouvelle librairie simplement pour cela, j'ai utilisé un textbox et ai restraint les charactères possibles d'écrire pour finalement le remplacer par un combobox qui est plus simple d'utilisation et qui ne nécessite aucun traitement.
 
-## 12.5. Optimisation
+## 11.5. Optimisation
 Durant la création de la simulation, j'ai beaucoup utilisé de requête linq qui me permettaient de filtrer certaines listes. Comme par exemple, tous les bâtiments se trouvaient dans la même liste. Pour assigné des bâtiments de certains type aux individus, il était nécessaire de filtrer cette liste de bâtiment. Ce filtre prend énormément de temps et de ressource ce qui a grandement ralenti le programme. Il m'a fallu l'aide de M. Mathieu et l'utilisation d'un profiler pour détecter la source du problème et la modifier par la suite. Modification qui a permit de grandement augmenter les performances de l'application. 
 
 Les graphiques aussi consommaient énormément de ressources. Dû à la grande quantité de données affichées.
+
+# 12. `Architecture`
+## 12.1. Arborescence
+```
+├── CovidPropagation
+│   ├── .vs
+│   ├── CovidPropagationGraphicInterface
+│   └── CovidPropagationGraphicInterface.sln
+├── CovidPropagationGUI
+│   ├── .vs
+│   ├── Assets
+│   ├── Library
+│   ├── Logs
+│   ├── obj
+│   ├── Packages
+│   ├── ProjectSettings
+│   ├── UserSettings
+│   ├── .vsconfig
+│   ├── Assembly-CSharp.csproj
+│   └── CovidPropagationGUI.sln
+├── Documentation
+│   ├── Medias
+│   │   ├── LogBook
+│   │   ├── Poster
+│   │   └── Rapport
+│   ├── LogBook.md
+│   └── Rapport.md
+└── POC
+    ├── TestUnity_WPF
+    └── testWPF_Unity.sln
+```
+## 12.2. Structure des technologies
+![Diagramme de fonctionnement](Medias/rapport/DiagrammeDeFonctionnement.png)
+<center><p style="font-size: 11px">Figure 14: Diagramme de fonctionnement</p></center>
+
+L'affichage visualisée par l'utilisateur est générée à l'aide de visual studio 2019 ainsi que WPF qui permet un affichage responsive. 
+
+Unity sert à générer et gérer l'interface graphique où l'on peut visualiser les déplacements ainsi que les contaminations des individus. 
+
+Les données du virus sont stockées dans un fichier XML qui sont récupérées lors de la création de la simulation.
+
+## 12.3. Structure générale
+![Diagramme de la structure](Medias/rapport/StructureGenerale.png)
+<center><p style="font-size: 11px">Figure 15: Structure générale de la simulation</p></center>
+
+Le projet est séparé en différents composants parfois entièrement indépendantes. Il y a trois majeures composants: la simulation qui créé les individus selon les paramètres qui lui sont fournis et qui propage le virus, l'ui qui permet à l'utilisateur d'intéragir avec le projet simplement ainsi que d'avoir un retour visuel et finalement le GUI qui permet la visualisation du contenu de la simulation à travers une représentation visuelle de son contenu.
+
+L'UI permet donc de gérer l'affichage des graphiques ainsi que du GUI. La simulation elle, est totalement indépendante des autres éléments. Une fois lancée, elle s'exécute sur un thread indépendant ce qui lui permet de se concentrer à 100% sur sa tâche sans avoir à partager des ressources avec d'autres composants. Cela permet aussi d'éviter des blocages de l'application dû à une tâche prenant trop de temps dans la simulation résultant en un freeze du programme.
+
+L'UI est toujours en attente d'informations provenant de la simulation, jamais l'inverse. Lorsque la simulation génère de nouvelles données, elle envoie celles-ci à l'UI qui affichera les données dans les graphiques et le GUI.
+
+Le GUI fonctionne aussi sur un thread indépendant de l'application. Des données lui sont envoyées contenant tous les déplacement effectués durant l'itération de la simulation. Dès la réception des données, il s'occupe de déplacer les individus ainsi que de changer l'apparances de ceux ayant changé d'états.
+
+Avec cette structure, la simulation peut tourner librement sans jamais à se soucier du reste du programme ou de bloquer celui-ci. Le GUI peut aussi se consacrer entièrement à sa tâche et tourner indépendamment. L'UI reste toujours fluide sans être bloquée ou ralentie par la simulation ou le GUI.
 
 # 13. `Simulation`
 ## 13.1. Structure
@@ -831,6 +866,13 @@ Les graphiques aussi consommaient énormément de ressources. Dû à la grande q
 ![Diagramme de classe](Medias/Rapport/StructureSimulation.png)
 
 ### 13.1.1. Intéraction entre objets
+La simulation s'occupe de faire avancer la population dans le temps et déclenche les évènements de déplacements ainsi que de calculs de probabilités. Elle créé la population, les lieux et initialise le virus. Puis s'occupe de faire itérer la simulation ainsi que d'avertir l'UI lorsque des données sont disponibles à afficher.
+
+Les lieux s'occupent de calculer les probabilités de propagations du virus. Tout individu en son sein reçois ses probabilités grâce au lieu. Les mesures sont appliquées au lieux puis lorsqu'un individu entre dans un lieu ayant des mesures, il les appliques. Toutes les données des lieux sont récupérables par la simulation.
+
+Les individus sont dirigés par le plannings qu'ils possèdent. Les lieux récupèrent certaines données des individus pour calculer les probabilités. Les quantas exhalés par exemples. Certaines de ses valeurs peuvent être accentuée par les symptômes possédé par un individus ainsi que les maladies. Si un individu doit porter le masque, celui-ci appartient à l'individu et possède ses propres caractéristiques. Le planning possédant des jours, qui eux-même possèdent des périodes permettent de stocker les lieux qui sont ensuite récupérés par l'individus pour se déplacer.
+
+Le virus possèdes des symptômes qui sont parfois récupérés par les individus infectés. Les moyens de transmissions sont récupérés par les lieux qui s'en servent pour calculer les probabilités, ainsi que les paramètres du virus qui influes ces probabilités.
 
 
 ## 13.2. Fonctionnement
@@ -903,18 +945,22 @@ Les paramètres des individus entrent ensuite en compte en ajoutant le nombre d'
 
 Ce fichier en plus de citer ses sources et d'être réalisés par des spécialistes, m'a donc permit de transposer ces calculs dans la simulation et d'y intégrer certaines mesures facilement. Il m'a permit de gagner énormément de temps ainsi qu'en précision. À la place de prendre du temps à comprendre et convertir différents calculs provenant de différents sources, j'ai pu me concentrer sur leur pécision et la structure dans le code.
 
-<i>Le fichier excel est disponible en annexe sous format .xlsx ou .pdf .</i>
+<i>Le fichier excel est disponible en annexe sous format .xlsx, .pdf ou en ligne sur google drive [ici](https://drive.google.com/file/d/1hWvw8I-53Iw7GPy-B1mSyWen20VzTwWr/view?usp=sharing).</i>
 
 ### 13.2.4. Résultats
 <h2>résultats obtenus par votre application et les comparer avec la situation que nous avons vécu et par rapport aux chiffres du fichier Excel.</h2>
 
 ## 13.3. Performances
-L'optimisation est nécessaire pour que ce type de programme soit utilisable. Avant de commencer l'optimisation, la création d'une simulation contenant 100'000 individus pouvait prendre jusqu'à 5 min et 1'000'000 plus de 10 minutes et même parfois un plantage de l'application. Cette durée de création se raproche beaucoup de la courbe quadratic ou même cubic (Figure ##).
+L'optimisation est nécessaire pour que ce type de programme soit utilisable. Avant de commencer l'optimisation, la création d'une simulation contenant 100'000 individus pouvait prendre jusqu'à 5 min et 1'000'000 plus de 10 minutes et même parfois un plantage de l'application. Cette durée de création se raproche beaucoup d'un algoritme de complexité O(N^2) (Figure ##).
 
-Après avoir modifié quelques lignes, le programme peut créer la simulation beaucoup plus vite et de façon linéair (Figure ##). Ce qui signifie qu'au lieu de prendre de plus en plus de temps à créer plus d'individus, la durée est proportionnelle à la quanité d'individus. L'utilisation de requête linq ralentit énormément le programme et leur supression a permit cette amélioration fulgurante.
+Après avoir modifié quelques lignes, le programme peut créer la simulation beaucoup plus vite et se reproche d'un algorithm de complexité O(N) (Figure ##). Ce qui signifie qu'au lieu de prendre de plus en plus de temps à créer plus d'individus, la durée est proportionnelle à la quanité d'individus. L'utilisation de requête linq ralentit énormément le programme et leur supression a permit cette amélioration fulgurante.
 
-![Big'o notation](Medias/Rapport/Big_O_Notation.png)
+<div style="text-align:center"><img src="Medias/Rapport/Big_O_Notation.webp" /></div>
 <center><p style="font-size: 11px">Figure ##: Big'o notations</p></center>
+
+La requête linq en question permettait de sélectionner un lieu aléatoir comme lieu de travail pour un individu. Pour ce faire, la requête triait la liste contenant tous les sites de la simulation pour ne récupérer que les lieux de travails. Une fois ce trie effectué, la liste était mélangée et le premier élément était sélectionné. De ce fait, pour une simulation de 100'000 individus, la liste était triée 100'000 fois et mélangée 100'000 fois.
+
+L'utilisation d'un dictionnaire à la place d'une simple liste à permit de trier les lieux dès leur création permettant de retirer cette étape de la procédure s'effectuant pour chaque individus. À la place de mélanger les listes pour récupérer le premier élément, une valeur aléatoire est sélectionnée entre 0 et le nombre maximal d'élément dans la liste. De ce fait, les éléments demandant beaucoup de ressources CPU ont été éliminé en restructurant le code de manière plus intélligente en effectuant un trie une fois à la place de le faire autant de fois qu'il n'y a d'individus.
 
 L'application étant très gourmante en ram, les performances de celle-ci jouent un rôle très important dans la vitesse de création de la simulation. Pour générer 1 millions d'individus, la durée de création est nettement plus faible avec un ram plus performante.
 
