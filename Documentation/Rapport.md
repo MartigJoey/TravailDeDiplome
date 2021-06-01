@@ -950,6 +950,26 @@ Ce fichier en plus de citer ses sources et d'être réalisés par des spécialis
 ### 13.2.4. Résultats
 <h2>résultats obtenus par votre application et les comparer avec la situation que nous avons vécu et par rapport aux chiffres du fichier Excel.</h2>
 
+<div style="text-align:center"><img src="Medias/Rapport/EssaiSimulation.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Nombre de cas de covid dans la simulation</p></center>
+
+<div style="text-align:center"><img src="Medias/Rapport/GeneveCases.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Nombre de cas de covid en Suisse</p></center>
+<div style="text-align:center"><img src="Medias/Rapport/GeneveDeath.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Nombre de décès dû au covid en Suisse</p></center>
+
+
+<div style="text-align:center"><img src="Medias/Rapport/UsaCases.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Nombre de cas de covid aux USA</p></center>
+<div style="text-align:center"><img src="Medias/Rapport/UsaDeath.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Nombre de décès dû au covid aux USA</p></center>
+
+
+<div style="text-align:center"><img src="Medias/Rapport/IndiaCases.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Nombre de cas de covid en Inde</p></center>
+<div style="text-align:center"><img src="Medias/Rapport/IndiaDeath.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Nombre de décès dû au covid en Inde</p></center>
+
 ## 13.3. Performances
 L'optimisation est nécessaire pour que ce type de programme soit utilisable. Avant de commencer l'optimisation, la création d'une simulation contenant 100'000 individus pouvait prendre jusqu'à 5 min et 1'000'000 plus de 10 minutes et même parfois un plantage de l'application. Cette durée de création se raproche beaucoup d'un algoritme de complexité O(N^2) (Figure ##).
 
