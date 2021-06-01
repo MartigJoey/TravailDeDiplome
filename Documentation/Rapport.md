@@ -1061,7 +1061,22 @@ Le graphique cylindrique permet de visualiser uniquement les dernières données
 
 Cette page permet de modifier les paramètres de la simulation au démarrage de celle-ci. Les paramètres les plus basiques sont le nombre d'individus ainsi que la quantité de personne infecté au départ. Il est ensuite possible de paramétré les mesures afin de définir si elles doivent entrer en compte et quand. Il est possible de définir à partir de combien d'infectés certaines mesures sont activée ou désactivée ou par exemple après un certain temps. Ces paramètres ne sont pas modifiable durant la simulation et donc uniquement avant celle-ci.
 
-légende - Informations
+<div style="text-align:center"><img src="Medias/Rapport/GeneralParameters.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Paramètres généraux de la simulation</p></center>
+
+Les paramètres généraux permettent de gérer certains paramètres basiques de la simulation tel que le nombre d'individu à créer. Il est aussi possible de définir le pourcentage de la population qui sera infecté au démarrage de la simulation. Puis de définir quelles mesures sont actives. L'activation des mesures peut se faire dès le démarrage en laissant les textbox vides. En renplissant les textbox, cela peremet de définir un nombre d'infecté minimum pour activer ou désactiver automatiquement la mesure durant la simulation.
+
+<div style="text-align:center"><img src="Medias/Rapport/MeasuresParameters.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Paramètres des mesures</p></center>
+
+Paramétrer les mesures permet de visualiser d'éventuelles différences dans la propagation du virus. La quarantaine peut être appliquée aux individus en fonction de leurs états. La vaccination elle peut être modifiée en fonction de son efficacité ainsi que sa durée. L'efficacité est permet de réduire les chances d'attraper le virus et la durée permet de définir la durée de cet effet.
+Le port du masque est la mesures la plus personnalisable. Chaque individu porte un type de masque qui lui est propre. Ces paramètres permettent de définir qui doit porter son masque dans quelles endroits. 
+
+
+<div style="text-align:center"><img src="Medias/Rapport/VirusParameters.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Paramètres du virus</p></center>
+
+Les paramètres du virus ne sont pas tous accessibles, mais les principaux et les plus intéressants le sont à comencer par les durées de vie, d'incubation et d'imunité. Le taux d'hospitalisation et de décès peuvent être modifié jusqu'à un maximum de 100%. Finalement, les symptômes permettant l'augmentation de la propagation du virus peuvent être modifié ou désactivé. La toux par exemple, peut avoir son taux de quantas modifié jusqu'à un maximum de 800 qui correspond à une personne parlant fort et faisant un séance de sport intensive. Et les moyens de transmissions ne peuvent qu'être activé ou désactivé en raisont de leur nature complexe et contenant très peut de données eux-mêmes.
 
 # 16. `Planning`
 ## 16.1. Prévisionnel

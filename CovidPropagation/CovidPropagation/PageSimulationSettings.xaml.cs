@@ -46,6 +46,18 @@ namespace CovidPropagation
             DataObject.AddPastingHandler(tbxVirusMinDuration, this.OnCancelCommand);
             DataObject.AddPastingHandler(tbxVirusMinImmunityDuration, this.OnCancelCommand);
             DataObject.AddPastingHandler(tbxVirusMinIncubationDuration, this.OnCancelCommand);
+
+            tbxMaskNbPeopleToStart.IsEnabled = false;
+            tbxMaskNbPeopleToStop.IsEnabled = false;
+            tbxDistanciationNbPeopleToStart.IsEnabled = false;
+            tbxDistanciationNbPeopleToStop.IsEnabled = false;
+            pnlCbxQuarantine.IsEnabled = false;
+            tbxQuarantineNbPeopleToStart.IsEnabled = false;
+            tbxQuarantineNbPeopleToStop.IsEnabled = false;
+            tbxVaccinationDuration.IsEnabled = false;
+            tbxVaccinationEfficiency.IsEnabled = false;
+            tbxVaccinationNbPeopleToStart.IsEnabled = false;
+            tbxVaccinationNbPeopleToStop.IsEnabled = false;
         }
 
         /// <summary>
@@ -105,6 +117,36 @@ namespace CovidPropagation
         private void OnCancelCommand(object sender, DataObjectEventArgs e)
         {
             e.CancelCommand();
+        }
+
+        private void Measure_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckBox chx = sender as CheckBox;
+
+            switch (chx.Tag)
+            {
+                default:
+                case "Mask":
+                    tbxMaskNbPeopleToStart.IsEnabled = !tbxMaskNbPeopleToStart.IsEnabled;
+                    tbxMaskNbPeopleToStop.IsEnabled = !tbxMaskNbPeopleToStop.IsEnabled;
+                    // Does something not implemeted yet
+                    break;
+                case "Distancing":
+                    tbxDistanciationNbPeopleToStart.IsEnabled = !tbxDistanciationNbPeopleToStart.IsEnabled;
+                    tbxDistanciationNbPeopleToStop.IsEnabled = !tbxDistanciationNbPeopleToStop.IsEnabled;
+                    break;
+                case "Quarantine":
+                    pnlCbxQuarantine.IsEnabled = !pnlCbxQuarantine.IsEnabled;
+                    tbxQuarantineNbPeopleToStart.IsEnabled = !tbxQuarantineNbPeopleToStart.IsEnabled;
+                    tbxQuarantineNbPeopleToStop.IsEnabled = !tbxQuarantineNbPeopleToStop.IsEnabled;
+                    break;
+                case "Vaccination":
+                    tbxVaccinationDuration.IsEnabled = !tbxVaccinationDuration.IsEnabled;
+                    tbxVaccinationEfficiency.IsEnabled = !tbxVaccinationEfficiency.IsEnabled;
+                    tbxVaccinationNbPeopleToStart.IsEnabled = !tbxVaccinationNbPeopleToStart.IsEnabled;
+                    tbxVaccinationNbPeopleToStop.IsEnabled = !tbxVaccinationNbPeopleToStop.IsEnabled;
+                    break;
+            }
         }
     }
 }

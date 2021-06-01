@@ -1120,7 +1120,7 @@
     - Simulation
   - Page paramètres graphiques
 
-# 32.05.2021 08h00 / 19h00
+# 31.05.2021 08h00 / 19h00
 - Création du programme GUI sur Unity
   - Recherche sur ce qu'est Universal render pipeline
     - Pas utile dans mon cas
