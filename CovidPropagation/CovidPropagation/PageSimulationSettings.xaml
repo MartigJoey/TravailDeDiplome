@@ -7,38 +7,350 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PageSimulationSettings">
+    <ScrollViewer x:Name="scvScrollBar" 
+                      ScrollViewer.VerticalScrollBarVisibility="Visible">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="49*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="49*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="95" MaxHeight="95"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="25" MaxHeight="25"/>
+                    <RowDefinition MinHeight="95" MaxHeight="95"/>
+                    <RowDefinition MinHeight="25" MaxHeight="25"/>
+                    <RowDefinition MinHeight="40" MaxHeight="40"/>
+                    <RowDefinition MinHeight="25" MaxHeight="25"/>
+                    <RowDefinition MinHeight="40" MaxHeight="40"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="25" MaxHeight="25"/>
+                    <RowDefinition MinHeight="40" MaxHeight="40"/>
+                    <RowDefinition MinHeight="25" MaxHeight="25"/>
+                    <RowDefinition MinHeight="40" MaxHeight="40"/>
+                    <RowDefinition MinHeight="40" MaxHeight="40"/>
+                </Grid.RowDefinitions>
+                <Slider Template="{StaticResource HorizontalSlider}" 
+                    x:Name="mySlider" 
+                    Value="6" 
+                    Grid.Column="2" 
+                    Grid.Row="1" 
+                    Minimum="0" 
+                    Maximum="100" 
+                    Margin="50,0,50,90" 
+                    IsSelectionRangeEnabled="True">
+                </Slider>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50*" />
-            <ColumnDefinition Width="25*" />
-            <ColumnDefinition Width="25*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="23*"/>
-            <RowDefinition Height="23*"/>
-            <RowDefinition Height="23*"/>
-            <RowDefinition Height="23*"/>
-            <RowDefinition Height="8*"/>
-        </Grid.RowDefinitions>
-        <Slider Template="{StaticResource HorizontalSlider}" x:Name="mySlider" Grid.Column="0" Value="6" Grid.Row="1" Minimum="0" Maximum="100" Margin="50,0,50,90" 
-                IsSelectionRangeEnabled="True">
-        </Slider>
+                <!-- Général -->
+                <Label Grid.Row="0" Grid.Column="0" Style="{StaticResource labelTitle}">Général :</Label>
 
-        <StackPanel Margin="10" Grid.Column="1">
-            <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Never gonna</Label>
-            <RadioButton Foreground="{StaticResource foreGroundLight}">Give</RadioButton>
-            <RadioButton IsEnabled="False" Foreground="{StaticResource foreGroundLight}">You</RadioButton>
-            <RadioButton Foreground="{StaticResource foreGroundLight}" IsChecked="True">Up</RadioButton>
-        </StackPanel>
+                <Label Grid.Column="0"
+                   Grid.Row="1"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,234,0">Nombre de personnes :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxNbPeople" 
+                     Grid.Column="0"
+                     Grid.Row="1"
+                     Tag="5"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="160,0,0,0"/>
 
-        <StackPanel Margin="10" Grid.Column="1" Grid.Row="1">
-            <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Never gonna</Label>
-            <CheckBox IsEnabled="False"  Foreground="{StaticResource foreGroundLight}">Let</CheckBox>
-            <CheckBox Foreground="{StaticResource foreGroundLight}" IsChecked="True">You</CheckBox>
-            <CheckBox Foreground="{StaticResource foreGroundLight}">Down</CheckBox>
-        </StackPanel>
-        <Button Style="{StaticResource button}" Grid.Column="0" Grid.Row="1" Content="Okay1" Height="50" Width="200" Margin="100,26,100,27"/>
-        <Button Style="{StaticResource button}" Grid.Column="0" Grid.Row="2" Content="Okay1"  Height="50" Width="200"/>
-    </Grid>
+                <Label Grid.Column="0"
+                   Grid.Row="2"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,220,0">Probabilité d'infectés (%) : </Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxProbabilityOfInfected" 
+                     Grid.Column="0"
+                     Grid.Row="2"
+                     Tag="1"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="170,0,0,0"/>
+
+                <StackPanel Margin="10,0,0,0" Grid.Column="0" Grid.Row="3">
+                    <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Activer mesures :</Label>
+                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Masques</CheckBox>
+                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Distanciation</CheckBox>
+                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Quarantaine</CheckBox>
+                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Vaccination</CheckBox>
+                </StackPanel>
+
+                <!-- Mesures -->
+                <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource labelTitle}">Mesures :</Label>
+                <!-- Quarantaine -->
+                <Label Grid.Column="0"
+                   Grid.Row="5"
+                   Style="{StaticResource labelText}">Quarantaine :</Label>
+
+                <StackPanel Margin="10,0,0,0" Grid.Column="0" Grid.Row="6">
+                    <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Personnes affectées :</Label>
+                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Sain</CheckBox>
+                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Infectés</CheckBox>
+                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Infectieux</CheckBox>
+                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Immunisés</CheckBox>
+                </StackPanel>
+
+                <!-- Distanciation -->
+                <Label Grid.Column="0"
+                   Grid.Row="7"
+                   Style="{StaticResource labelText}">Distanciation :</Label>
+
+                <StackPanel Margin="10,0,0,0" Grid.Column="0" Grid.Row="8">
+                    <RadioButton Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activée</RadioButton>
+                    <RadioButton Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivée</RadioButton>
+                </StackPanel>
+
+                <!-- Vaccination -->
+                <Label Grid.Column="0"
+                   Grid.Row="9"
+                   Style="{StaticResource labelText}">Vaccination :</Label>
+
+                <StackPanel Margin="10,0,0,0" Grid.Column="0" Grid.Row="10">
+                    <RadioButton Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activée</RadioButton>
+                    <RadioButton Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivée</RadioButton>
+                </StackPanel>
+
+                <Label Grid.Column="0"
+                   Grid.Row="11"
+                   Style="{StaticResource labelText}"
+                   Margin="10,0,239,0">Durée(mois) :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxVaccinationDuration" 
+                     Grid.Column="0"
+                     Grid.Row="11"
+                     Tag="4"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="160,1,0,1"/>
+
+                <Label Grid.Column="0"
+                   Grid.Row="12"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,239,0">Éfficacité (%) :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxVaccinationEfficiency" 
+                     Grid.Column="0"
+                     Grid.Row="12"
+                     Tag="1"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="160,1,0,1"/>
+
+                <!-- Masque -->
+                <Label Grid.Column="0"
+                   Grid.Row="13"
+                   Style="{StaticResource labelText}">Masques :</Label>
+
+                <StackPanel Margin="10,0,0,0" Grid.Column="0" Grid.Row="14">
+                    <RadioButton Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activés</RadioButton>
+                    <RadioButton Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivés</RadioButton>
+                </StackPanel>
+
+                <Label Grid.Column="0"
+                   Grid.Row="15"
+                   Style="{StaticResource labelText}" Margin="10,0,0,0">Bâtiment :</Label>
+                
+                <Label Grid.Column="0"
+                   Grid.Row="16"
+                   Style="{StaticResource labelText}" Margin="15,0,0,0">Clients :</Label>
+                <StackPanel Margin="85,0,0,0" Grid.Column="0" Grid.Row="16">
+                    <RadioButton Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activé</RadioButton>
+                    <RadioButton Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivé</RadioButton>
+                </StackPanel>
+
+                <Label Grid.Column="0"
+                   Grid.Row="17"
+                   Style="{StaticResource labelText}" Margin="15,0,0,0">Personnels :</Label>
+                <StackPanel Margin="85,0,0,0" Grid.Column="0" Grid.Row="17">
+                    <RadioButton Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activés</RadioButton>
+                    <RadioButton Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivés</RadioButton>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="35" MaxHeight="35"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="35" MaxHeight="35"/>
+                    <RowDefinition MinHeight="40" MaxHeight="40"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                </Grid.RowDefinitions>
+                <!-- Virus -->
+                <Label Grid.Row="0" Grid.Column="1" Style="{StaticResource labelTitle}">Virus :</Label>
+                <Label Grid.Column="1"
+                   Grid.Row="1"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,230,0">Durée minimum (Jours) :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxVirusMinDuration" 
+                     Grid.Column="1"
+                     Grid.Row="1"
+                     Tag="3"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="170,1,0,1"/>
+
+                <Label Grid.Column="1"
+                   Grid.Row="2"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,230,0">Durée maximum (Jours) :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxVirusMaxDuration" 
+                     Grid.Column="1"
+                     Grid.Row="2"
+                     Tag="3"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="170,1,0,1"/>
+
+
+                <Label Grid.Column="1"
+                   Grid.Row="3"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,150,0">Durée d'incubation minimum (Jours) :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxVirusMinIncubationDuration" 
+                     Grid.Column="1"
+                     Grid.Row="3"
+                     Tag="3"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="240,1,0,1"/>
+
+                <Label Grid.Column="1"
+                   Grid.Row="4"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,150,0">Durée d'incubation maximum (Jours) :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxVirusMaxIncubationDuration" 
+                     Grid.Column="1"
+                     Grid.Row="4"
+                     Tag="3"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="240,1,0,1"/>
+
+                <Label Grid.Column="1"
+                   Grid.Row="5"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,150,0">Durée d'immunité minimum (mois) :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxVirusMinImmunityDuration" 
+                     Grid.Column="1"
+                     Grid.Row="5"
+                     Tag="4"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="240,1,0,1"/>
+
+                <Label Grid.Column="1"
+                   Grid.Row="6"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,150,0">Durée d'immunité maximum (mois) :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxVirusMaxImmunityDuration" 
+                     Grid.Column="1"
+                     Grid.Row="6"
+                     Tag="4"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="240,1,0,1"/>
+
+                <Label Grid.Column="1"
+                   Grid.Row="7"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,210,0">Taux d'hospitalisation (%) :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxVirusHospitalisationRate" 
+                     Grid.Column="1"
+                     Grid.Row="7"
+                     Tag="1"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="190,1,0,1"/>
+
+                <Label Grid.Column="1"
+                   Grid.Row="8"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,239,0">Taux de décès (%) :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxVirusDeathRate" 
+                     Grid.Column="1"
+                     Grid.Row="8"
+                     Tag="1"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="150,1,0,1"/>
+
+                <Label Grid.Column="0"
+                   Grid.Row="9"
+                   Style="{StaticResource labelText}">Symptômes :</Label>
+                <Label Grid.Column="0"
+                   Grid.Row="10"
+                   Style="{StaticResource labelText}" Margin="10,0,0,0">Toux :</Label>
+
+                <StackPanel Margin="10,0,0,0" Grid.Column="1" Grid.Row="11">
+                    <RadioButton Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activée</RadioButton>
+                    <RadioButton Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivée</RadioButton>
+                </StackPanel>
+
+                <Label Grid.Column="1"
+                   Grid.Row="12"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,239,0">Quanta minimum :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxCoughMinQuanta" 
+                     Grid.Column="1"
+                     Grid.Row="12"
+                     Tag="7"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="150,1,0,1"/>
+
+                <Label Grid.Column="1"
+                   Grid.Row="13"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,239,0">Quanta maximum :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxCoughMaxQuanta" 
+                     Grid.Column="1"
+                     Grid.Row="13"
+                     Tag="7"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="150,1,0,1"/>
+
+                <Label Grid.Column="0"
+                   Grid.Row="14"
+                   Style="{StaticResource labelText}">Transmission :</Label>
+
+                <StackPanel Margin="10,0,0,0" Grid.Column="1" Grid.Row="15">
+                    <RadioButton Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Activée</RadioButton>
+                    <RadioButton Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Désactivée</RadioButton>
+                </StackPanel>
+
+                <Button Style="{StaticResource smallButton}" 
+                    Grid.Column="1" 
+                    Grid.Row="25" 
+                    Content="Annuler" Margin="199,0,0,0" />
+                <Button Style="{StaticResource smallButton}" 
+                    Grid.Column="1" 
+                    Grid.Row="25"
+                    Content="Sauvegarder" Margin="0,0,195,0"/>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
 </Page>

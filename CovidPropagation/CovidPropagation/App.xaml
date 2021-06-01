@@ -33,7 +33,28 @@
             <Color x:Key="lightGrayKeyFrame">#2b2b2b</Color>
             <Color x:Key="normalGrayKeyFrame">#9b9b9b</Color>
 
-            <!-- Green button style-->
+            <!-- textbox style-->
+            <Style x:Key="textbox"  TargetType="{x:Type TextBox}">
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Background" Value="{StaticResource lightDark}" />
+                <Setter Property="Foreground" Value="{StaticResource foreGroundLight}" />
+            </Style>
+
+            <!-- labelTitle style-->
+            <Style x:Key="labelTitle"  TargetType="{x:Type Label}">
+                <Setter Property="Foreground" Value="{StaticResource foreGroundLight}" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="FontFamily" Value="Helvetica" />
+            </Style>
+
+            <!-- label style-->
+            <Style x:Key="labelText"  TargetType="{x:Type Label}">
+                <Setter Property="Foreground" Value="{StaticResource foreGroundLight}" />
+                <Setter Property="FontSize" Value="13" />
+                <Setter Property="FontFamily" Value="Helvetica" />
+            </Style>
+
+            <!-- button style-->
             <Style x:Key="button"  TargetType="{x:Type Button}">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Background" Value="{StaticResource normalGreen}" />
@@ -57,7 +78,7 @@
                 </Style.Triggers>
             </Style>
 
-            <!-- Green small button style-->
+            <!-- small button style-->
             <Style x:Key="smallButton"  TargetType="{x:Type Button}">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Background" Value="{StaticResource normalGreen}" />

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CovidPropagation"
         mc:Ignorable="d"
-        Title="Covid propagation" Height="488" Width="864"
+        Title="Covid propagation" Height="555" Width="987"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -30,14 +30,15 @@
             <RowDefinition Height="24*" MaxHeight="150" MinHeight="50"/>
             <RowDefinition Height="24*" MaxHeight="150" MinHeight="50"/>
             <RowDefinition Height="24*" />
+            <RowDefinition Height="3*" MaxHeight="13" MinHeight="13"/>
         </Grid.RowDefinitions>
-        
+
         <!-- TitleBar -->
         <TextBlock IsEnabled="True" Text=" Covid propagation" Name="windowName"/>
         <ContentPresenter Grid.ColumnSpan="3" Content="{Binding ElementName=windowName,Path=Text}" ContentTemplate="{StaticResource TitleBar}"/>
-        
+
         <!-- Menu buttons -->
-        <TextBlock Background="{StaticResource normalGreen}" Grid.Row="1" Grid.RowSpan="4"/>
+        <TextBlock Background="{StaticResource normalGreen}" Grid.Row="1" Grid.RowSpan="5"/>
         <Button x:Name="btnSimulation" Click="SimulationPage_Click" Style="{StaticResource button}" Content="{StaticResource play}" Grid.Column="0"  Grid.Row="1"/>
         <Button x:Name="btnGraphicSettings" Click="GraphicSettingsPage_Click" Style="{StaticResource button}" Content="{StaticResource tuneV}" Grid.Column="0" Grid.Row="2"/>
         <Button x:Name="btnSettings" Click="SettingsPage_Click" Style="{StaticResource button}" Content="{StaticResource settings}" Grid.Column="0" Grid.Row="3"/>

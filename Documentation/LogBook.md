@@ -1167,3 +1167,26 @@
 - Affichage réussi !
 - Ajout de la possibilité de réinitialiser la simulation.
   - Débloque l'accès aux paramètres graphiques.
+  - Réinitialise l'affichage
+- Paramètres de la simulation
+  - Création d'un textBox bloquant tout caractère n'étant pas numériques
+  - Création de la structure des paramètres
+    - Général
+      - Mesures actives
+      - Nb Personnes
+      - Probabilité d'infectés
+    - Mesures
+      - Quarantaine
+      - Masque
+      - Distanciation
+      - Vaccination
+    - Virus
+      - Durée
+      - Durée incubation
+      - Durée immunité
+      - Hospitalisation
+      - Décès
+      - Symptôme
+      - Transmission
+    - ~~Bâtiments~~
+- 
