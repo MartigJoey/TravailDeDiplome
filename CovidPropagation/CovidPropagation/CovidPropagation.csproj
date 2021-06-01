@@ -17,6 +17,7 @@
     <None Remove="Images\cursor-move.png" />
     <None Remove="Images\play.png" />
     <None Remove="Images\tune-vertical.png" />
+    <None Remove="Images\UnityLogo.png" />
     <None Remove="Images\window-maximize.png" />
     <None Remove="Images\window-minimize.png" />
   </ItemGroup>
@@ -37,6 +38,7 @@
     <Resource Include="Images\cursor-move.png" />
     <Resource Include="Images\play.png" />
     <Resource Include="Images\tune-vertical.png" />
+    <Resource Include="Images\UnityLogo.png" />
     <Resource Include="Images\window-maximize.png" />
     <Resource Include="Images\window-minimize.png" />
   </ItemGroup>

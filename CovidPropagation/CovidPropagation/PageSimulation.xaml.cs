@@ -37,14 +37,19 @@ namespace CovidPropagation
         MainWindow mw;
         public ChartData[,] chartDatas;
         Simulation sim;
-        Dictionary<ChartsType, object> charts;
-        
+        Dictionary<UIType, object> charts;
+        Grid grdStruct;
+
+        System.Windows.Forms.Integration.WindowsFormsHost wfhUnityHost;
+        System.Windows.Forms.Panel panelUnity;
+
+
         public PageSimulation()
         {
             InitializeComponent();
             rawDatasWindow = new WindowRawDatas();
             mw = (MainWindow)Application.Current.MainWindow;
-            charts = new Dictionary<ChartsType, object>();
+            charts = new Dictionary<UIType, object>();
             sim = new Simulation();
             Virus.Init();
         }
@@ -89,16 +94,48 @@ namespace CovidPropagation
 
                 Task.Factory.StartNew(() => sim.Iterate());
                 intervalSlider.Value = Convert.ToInt32(intervalSlider.Maximum - sim.Interval);
+
+                mw.btnGraphicSettings.IsEnabled = false;
             }
             sim.Start();
+            if (panelUnity != null)
+            {
+                LoadUnityExe();
+                ConnectToUnity();
+            }
         }
 
         /// <summary>
         /// Met en pause la simulation
         /// </summary>
-        private void Stop_Click(object sender, RoutedEventArgs e)
+        private void Break_Click(object sender, RoutedEventArgs e)
         {
             sim.Stop();
+        }
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            sim.Stop();
+            sim = new Simulation();
+            if (chartDatas == null)
+                chartDatas = new ChartData[0,0];
+
+            for (int x = 0; x < chartDatas.GetLength(0); x++)
+            {
+                for (int y = 0; y < chartDatas.GetLength(1); y++)
+                {
+                    chartDatas[x, y].DisplayWindow = 0;
+                }
+            }
+            
+            grdContent.Children.Clear();
+
+            if (panelUnity != null)
+                CloseUnity();
+
+            SetGrid(grdStruct, chartDatas);
+
+            mw.btnGraphicSettings.IsEnabled = true;
         }
 
         /// <summary>
@@ -109,10 +146,11 @@ namespace CovidPropagation
         public void SetGrid(Grid grd, ChartData[,] chartDatas)
         {
             this.chartDatas = chartDatas;
+            grdStruct = grd;
             grdContent = grd;
             slvScroller.Content = grdContent;
             charts.Clear();
-            DisplayCharts();
+            DisplayUI();
         }
 
         /// <summary>
@@ -160,7 +198,7 @@ namespace CovidPropagation
         /// <param name="enumInterval">Interval du graphique.</param>
         /// <param name="type">Type de graphique.</param>
         /// <returns>Interval actuel pour ce graphique.</returns>
-        private int GetInterval(ChartsDisplayInterval enumInterval, ChartsType type)
+        private int GetInterval(ChartsDisplayInterval enumInterval, UIType type)
         {
             int interval;
             switch (enumInterval)
@@ -168,17 +206,17 @@ namespace CovidPropagation
                 default:
                 case ChartsDisplayInterval.Day:
                     interval = 48;
-                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical)
+                    if (type == UIType.Horizontal || type == UIType.Vertical)
                         interval = 12;
                     break;
                 case ChartsDisplayInterval.Week:
                     interval = 336;
-                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical || type == ChartsType.HeatMap)
+                    if (type == UIType.Horizontal || type == UIType.Vertical || type == UIType.HeatMap)
                         interval = 7;
                     break;
                 case ChartsDisplayInterval.Month:
                     interval = 1440; 
-                    if (type == ChartsType.Horizontal || type == ChartsType.Vertical)
+                    if (type == UIType.Horizontal || type == UIType.Vertical)
                         interval = 4;
                     break;
                 case ChartsDisplayInterval.Total:
@@ -259,51 +297,68 @@ namespace CovidPropagation
         /// Affiche le bon type de graphique au bon endroit dans la grille.
         /// Change le contenu du graphique en fonction de son type.
         /// </summary>
-        private void DisplayCharts()
+        private void DisplayUI()
         {
             foreach (ChartData chartData in chartDatas)
             {
                 if (chartData.SpanX > 0)
                 {
-                    object chart;
+                    object uiElement;
                     // Créé les graphiques, leur ajoute leur contenu et s'abonne à un évènement qui mettra à jour les données.
-                    switch (chartData.ChartType)
+                    switch (chartData.UIType)
                     {
                         default:
-                        case (int)ChartsType.Linear:
-                            chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
-                            ((CartesianChart)chart).Tag = chartData;
-                            AddCurvesToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
-                            SubscribeToChartEvents((CartesianChart)chart, chartData);
+                        case (int)UIType.Linear:
+                            uiElement = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
+                            ((CartesianChart)uiElement).Tag = chartData;
+                            AddCurvesToCartesianChart((CartesianChart)uiElement, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
+                            SubscribeToChartEvents((CartesianChart)uiElement, chartData);
                             break;
-                        case (int)ChartsType.Vertical:
-                            chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
-                            ((CartesianChart)chart).Tag = chartData;
-                            AddColumnsToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
-                            SubscribeToChartEvents((CartesianChart)chart, chartData);
+                        case (int)UIType.Vertical:
+                            uiElement = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
+                            ((CartesianChart)uiElement).Tag = chartData;
+                            AddColumnsToCartesianChart((CartesianChart)uiElement, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
+                            SubscribeToChartEvents((CartesianChart)uiElement, chartData);
                             break;
-                        case (int)ChartsType.Horizontal:
-                            chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
-                            ((CartesianChart)chart).Tag = chartData;
-                            AddRowsToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
-                            SubscribeToChartEvents((CartesianChart)chart, chartData);
-                            ((CartesianChart)chart).AxisX[0].MaxValue = double.NaN;
+                        case (int)UIType.Horizontal:
+                            uiElement = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
+                            ((CartesianChart)uiElement).Tag = chartData;
+                            AddRowsToCartesianChart((CartesianChart)uiElement, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
+                            SubscribeToChartEvents((CartesianChart)uiElement, chartData);
+                            ((CartesianChart)uiElement).AxisX[0].MaxValue = double.NaN;
                             break;
-                        case (int)ChartsType.PieChart:
-                            chart = CreatePieChart();
-                            AddSectionToPieChart((PieChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
-                            sim.OnDataUpdate += new DataUpdateEventHandler(((PieChart)chart).OnDataUpdatePieChart);
+                        case (int)UIType.PieChart:
+                            uiElement = CreatePieChart();
+                            AddSectionToPieChart((PieChart)uiElement, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
+                            sim.OnDataUpdate += new DataUpdateEventHandler(((PieChart)uiElement).OnDataUpdatePieChart);
                             break;
-                        case (int)ChartsType.HeatMap:
-                            chart = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
-                            ((CartesianChart)chart).Tag = chartData;
-                            AddHeatMapToCartesianChart((CartesianChart)chart, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
-                            SubscribeToChartEvents((CartesianChart)chart, chartData);
-                            ((CartesianChart)chart).AxisX[0].MaxValue = double.NaN;
+                        case (int)UIType.HeatMap:
+                            uiElement = CreateCartesianChart((ChartsAxisData)chartData.AxisX, (ChartsAxisData)chartData.AxisY);
+                            ((CartesianChart)uiElement).Tag = chartData;
+                            AddHeatMapToCartesianChart((CartesianChart)uiElement, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
+                            SubscribeToChartEvents((CartesianChart)uiElement, chartData);
+                            ((CartesianChart)uiElement).AxisX[0].MaxValue = double.NaN;
+                            break;
+                        case (int)UIType.GUI:
+                            uiElement = null;
+                            wfhUnityHost = new System.Windows.Forms.Integration.WindowsFormsHost();
+                            panelUnity = new System.Windows.Forms.Panel();
+                            panelUnity.Resize += panel1_Resize;
+
+                            wfhUnityHost.VerticalAlignment = VerticalAlignment.Stretch;
+                            wfhUnityHost.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+                            Grid.SetColumn(wfhUnityHost, chartData.X);
+                            Grid.SetRow(wfhUnityHost, chartData.Y);
+                            Grid.SetColumnSpan(wfhUnityHost, chartData.SpanX);
+                            Grid.SetRowSpan(wfhUnityHost, chartData.SpanY);
+
+                            wfhUnityHost.Child = panelUnity;
+                            grdContent.Children.Add((UIElement)wfhUnityHost);
                             break;
                     }
 
-                    if (chartData.ChartType != (int)ChartsType.PieChart)
+                    if (chartData.UIType != (int)UIType.PieChart && chartData.UIType != (int)UIType.GUI)
                     {
                         Grid chartGrid = new Grid();
                         ColumnDefinition firstColumn = new ColumnDefinition();
@@ -358,23 +413,23 @@ namespace CovidPropagation
                         Grid.SetColumn(btnAuto, 3);
                         Grid.SetRow(btnAuto, 0);
 
-                        Grid.SetColumn((UIElement)chart, 1);
-                        Grid.SetRow((UIElement)chart, 1);
-                        Grid.SetColumnSpan((UIElement)chart, 5);
-                        Grid.SetRowSpan((UIElement)chart, 1);
+                        Grid.SetColumn((UIElement)uiElement, 1);
+                        Grid.SetRow((UIElement)uiElement, 1);
+                        Grid.SetColumnSpan((UIElement)uiElement, 5);
+                        Grid.SetRowSpan((UIElement)uiElement, 1);
 
                         chartGrid.Children.Add(btnLeft);
                         chartGrid.Children.Add(btnRight);
                         chartGrid.Children.Add(cbxTimeIncrement);
                         chartGrid.Children.Add(btnAuto);
-                        chartGrid.Children.Add((UIElement)chart);
+                        chartGrid.Children.Add((UIElement)uiElement);
 
                         Grid.SetColumn(chartGrid, chartData.X);
                         Grid.SetRow(chartGrid, chartData.Y);
                         Grid.SetColumnSpan(chartGrid, chartData.SpanX);
                         Grid.SetRowSpan(chartGrid, chartData.SpanY);
 
-                        if ((ChartsType)chartData.ChartType == ChartsType.HeatMap)
+                        if ((UIType)chartData.UIType == UIType.HeatMap)
                         {
                             cbxTimeIncrement.SelectedIndex = 1;
                             cbxTimeIncrement.IsEnabled = false;
@@ -382,14 +437,14 @@ namespace CovidPropagation
 
                         grdContent.Children.Add(chartGrid);
                     }
-                    else
+                    else if(chartData.UIType == (int)UIType.PieChart)
                     {
-                        Grid.SetColumn((UIElement)chart, chartData.X);
-                        Grid.SetRow((UIElement)chart, chartData.Y);
-                        Grid.SetColumnSpan((UIElement)chart, chartData.SpanX);
-                        Grid.SetRowSpan((UIElement)chart, chartData.SpanY);
+                        Grid.SetColumn((UIElement)uiElement, chartData.X);
+                        Grid.SetRow((UIElement)uiElement, chartData.Y);
+                        Grid.SetColumnSpan((UIElement)uiElement, chartData.SpanX);
+                        Grid.SetRowSpan((UIElement)uiElement, chartData.SpanY);
 
-                        grdContent.Children.Add((UIElement)chart);
+                        grdContent.Children.Add((UIElement)uiElement);
                     }
                 }
             }
@@ -620,24 +675,13 @@ namespace CovidPropagation
         private readonly IntPtr WA_INACTIVE = new IntPtr(0);
         StreamString ss;
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        public void LoadUnityExe()
         {
-            LoadUnityExe();
-            ConnectToUnity();
-        }
-
-        private void LoadUnityExe()
-        {
-            HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
-            //IntPtr hwndHost = FindWindow("PageSimulation", null);
-            //HwndHost source = (HwndHost)HwndSource.FromVisual(floatingFrame);
-            IntPtr unityHandle = panel1.Handle;
-
-            IntPtr windowHandle = new WindowInteropHelper(mw).Handle;
+            IntPtr unityHandle = panelUnity.Handle;
 
             //Start embedded Unity Application
             process = new Process();
-            process.StartInfo.FileName = @"C:\Users\schad\OneDrive\Bureau\TravailDeDiplome\GUIBuild\CovidPropagationGUI.exe";
+            process.StartInfo.FileName = @".\GUIBuild\CovidPropagationGUI.exe";
             process.StartInfo.Arguments = "-parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
             process.StartInfo.UseShellExecute = true;
             process.StartInfo.CreateNoWindow = true;
@@ -667,19 +711,23 @@ namespace CovidPropagation
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            CloseUnity();
+        }
+
+        private void CloseUnity()
+        {
             if (ss != null)
             {
                 ss.CloseLink();
             }
 
             process.CloseMainWindow();
-            
+
             while (!process.HasExited)
                 process.Kill();
         }
 
-        private static int numThreads = 1;
-        private void ConnectToUnity()
+        public void ConnectToUnity()
         {
             Thread server;
 
@@ -710,6 +758,7 @@ namespace CovidPropagation
 
         private void ServerThread(object data)
         {
+            int numThreads = 1;
             NamedPipeServerStream pipeServer = new NamedPipeServerStream("testpipe", PipeDirection.Out, numThreads);
             //int threadId = Thread.CurrentThread.ManagedThreadId;
 
@@ -751,7 +800,7 @@ namespace CovidPropagation
 
         private void panel1_Resize(object sender, EventArgs e)
         {
-            MoveWindow(unityHWND, 0, 0, panel1.Width, panel1.Height, true);
+            MoveWindow(unityHWND, 0, 0, panelUnity.Width, panelUnity.Height, true);
         }
     }
     public class StreamString

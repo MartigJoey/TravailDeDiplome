@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CovidPropagation
 {
-    public enum ChartsType
+    public enum UIType
     {
         [Description("Linéaire")]
         Linear,
@@ -16,7 +16,9 @@ namespace CovidPropagation
         [Description("Secteur")]
         PieChart,
         [Description("Carte thermique")]
-        HeatMap
+        HeatMap,
+        [Description("GUI")]
+        GUI
     }
 
     public enum ChartsAxisData

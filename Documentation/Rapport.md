@@ -496,7 +496,7 @@ Affiche une page avec les paramètres suivant :
   - Collègues
   - ...
   - Transmissions accrues
-  - Rencontres inclussent dans le planning journalier des individus
+  - Rencontres inclusent dans le planning journalier des individus
 - Hôpitaux
   - Il y a plusieurs hôpitaux avec les options :
     - Copier
@@ -955,7 +955,7 @@ L'optimisation est nécessaire pour que ce type de programme soit utilisable. Av
 
 Après avoir modifié quelques lignes, le programme peut créer la simulation beaucoup plus vite et se reproche d'un algorithm de complexité O(N) (Figure ##). Ce qui signifie qu'au lieu de prendre de plus en plus de temps à créer plus d'individus, la durée est proportionnelle à la quanité d'individus. L'utilisation de requête linq ralentit énormément le programme et leur supression a permit cette amélioration fulgurante.
 
-<div style="text-align:center"><img src="Medias/Rapport/Big_O_Notation.webp" /></div>
+<div style="text-align:center"><img src="Medias/Rapport/Big_O_Notation.png" /></div>
 <center><p style="font-size: 11px">Figure ##: Big'o notations</p></center>
 
 La requête linq en question permettait de sélectionner un lieu aléatoir comme lieu de travail pour un individu. Pour ce faire, la requête triait la liste contenant tous les sites de la simulation pour ne récupérer que les lieux de travails. Une fois ce trie effectué, la liste était mélangée et le premier élément était sélectionné. De ce fait, pour une simulation de 100'000 individus, la liste était triée 100'000 fois et mélangée 100'000 fois.

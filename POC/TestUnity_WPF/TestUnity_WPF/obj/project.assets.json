@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\schad\\OneDrive\\Bureau\\TravailDeDiplome\\POC\\TestUnity_WPF\\TestUnity_WPF\\TestUnity_WPF.csproj",
+      "projectUniqueName": "C:\\Users\\schad\\Desktop\\TravailDeDiplome\\POC\\TestUnity_WPF\\TestUnity_WPF\\TestUnity_WPF.csproj",
       "projectName": "TestUnity_WPF",
-      "projectPath": "C:\\Users\\schad\\OneDrive\\Bureau\\TravailDeDiplome\\POC\\TestUnity_WPF\\TestUnity_WPF\\TestUnity_WPF.csproj",
+      "projectPath": "C:\\Users\\schad\\Desktop\\TravailDeDiplome\\POC\\TestUnity_WPF\\TestUnity_WPF\\TestUnity_WPF.csproj",
       "packagesPath": "C:\\Users\\schad\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\schad\\OneDrive\\Bureau\\TravailDeDiplome\\POC\\TestUnity_WPF\\TestUnity_WPF\\obj\\",
+      "outputPath": "C:\\Users\\schad\\Desktop\\TravailDeDiplome\\POC\\TestUnity_WPF\\TestUnity_WPF\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\schad\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -63,7 +63,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }

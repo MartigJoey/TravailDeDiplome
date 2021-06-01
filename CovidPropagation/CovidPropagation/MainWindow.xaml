@@ -38,9 +38,9 @@
         
         <!-- Menu buttons -->
         <TextBlock Background="{StaticResource normalGreen}" Grid.Row="1" Grid.RowSpan="4"/>
-        <Button Click="SimulationPage_Click" Style="{StaticResource button}" Content="{StaticResource play}" Grid.Column="0"  Grid.Row="1"/>
-        <Button Click="GraphicSettingsPage_Click" Style="{StaticResource button}" Content="{StaticResource tuneV}" Grid.Column="0" Grid.Row="2"/>
-        <Button Click="SettingsPage_Click" Style="{StaticResource button}" Content="{StaticResource settings}" Grid.Column="0" Grid.Row="3"/>
+        <Button x:Name="btnSimulation" Click="SimulationPage_Click" Style="{StaticResource button}" Content="{StaticResource play}" Grid.Column="0"  Grid.Row="1"/>
+        <Button x:Name="btnGraphicSettings" Click="GraphicSettingsPage_Click" Style="{StaticResource button}" Content="{StaticResource tuneV}" Grid.Column="0" Grid.Row="2"/>
+        <Button x:Name="btnSettings" Click="SettingsPage_Click" Style="{StaticResource button}" Content="{StaticResource settings}" Grid.Column="0" Grid.Row="3"/>
         <!-- Page Content -->
 
         <Frame  Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="4" x:Name="MainContent" VerticalAlignment="Stretch" 

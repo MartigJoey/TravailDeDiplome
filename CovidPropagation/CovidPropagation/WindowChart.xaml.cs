@@ -71,13 +71,13 @@ namespace CovidPropagation
                                     in Enum.GetValues(typeof(ChartsAxisData))
                                     select GetEnumDescription(n);
 
-            cbxGraphType.ItemsSource = from ChartsType n
-                                       in Enum.GetValues(typeof(ChartsType))
+            cbxGraphType.ItemsSource = from UIType n
+                                       in Enum.GetValues(typeof(UIType))
                                        select GetEnumDescription(n);
 
             cbxValueX.SelectedIndex = this.graphicDatas.AxisX;
             cbxValueY.SelectedIndex = this.graphicDatas.AxisY;
-            cbxGraphType.SelectedIndex = this.graphicDatas.ChartType;
+            cbxGraphType.SelectedIndex = this.graphicDatas.UIType;
 
 
             currentCurvesIndex = this.graphicDatas.Datas.Length - 1;
@@ -146,21 +146,21 @@ namespace CovidPropagation
                 cbxValueY.IsEnabled = true;
                 cbxQuantityOfCurves.IsEnabled = true;
             }
-            switch ((ChartsType)cbxGraphType.SelectedIndex)
+            switch ((UIType)cbxGraphType.SelectedIndex)
             {
-                case ChartsType.Linear:
+                case UIType.Linear:
                     chart = CreateCartesianGraph();
                     SetData(DisplayCurvesOnGraph);
                     break;
-                case ChartsType.Vertical:
+                case UIType.Vertical:
                     chart = CreateCartesianGraph(); 
                     SetData(DisplayColumnsOnGraph);
                     break;
-                case ChartsType.Horizontal:
+                case UIType.Horizontal:
                     chart = CreateCartesianGraph();
                     SetData(DisplayRowsOnGraph);
                     break;
-                case ChartsType.PieChart:
+                case UIType.PieChart:
                     chart = CreatePieGraph();
                     SetData(DisplayPieSectionOnGraph);
                     if (cbxValueX != null)
@@ -170,7 +170,7 @@ namespace CovidPropagation
                         cbxQuantityOfCurves.SelectedIndex = 1;
                     }
                     break;
-                case ChartsType.HeatMap:
+                case UIType.HeatMap:
                     chart = CreateCartesianGraph();
                     SetData(DisplayHeatMapOnGraph);
                     if (cbxValueX != null)
@@ -196,21 +196,21 @@ namespace CovidPropagation
         {
             currentCurvesIndex = cbxQuantityOfCurves.Items.IndexOf(cbxQuantityOfCurves.SelectedItem);
             
-            switch ((ChartsType)cbxGraphType.SelectedIndex)
+            switch ((UIType)cbxGraphType.SelectedIndex)
             {
-                case ChartsType.Linear:
+                case UIType.Linear:
                     SetData(DisplayCurvesOnGraph);
                     break;
-                case ChartsType.Vertical:
+                case UIType.Vertical:
                     SetData(DisplayColumnsOnGraph);
                     break;
-                case ChartsType.Horizontal:
+                case UIType.Horizontal:
                     SetData(DisplayRowsOnGraph);
                     break;
-                case ChartsType.PieChart:
+                case UIType.PieChart:
                     SetData(DisplayPieSectionOnGraph);
                     break;
-                case ChartsType.HeatMap:
+                case UIType.HeatMap:
                     SetData(DisplayHeatMapOnGraph);
                     break;
                 default:
@@ -499,9 +499,9 @@ namespace CovidPropagation
         private void CbxDatas_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox cbxData = (ComboBox)sender;
-            switch ((ChartsType)cbxGraphType.SelectedIndex)
+            switch ((UIType)cbxGraphType.SelectedIndex)
             {
-                case ChartsType.Linear:
+                case UIType.Linear:
                     CartesianChart linearChart = (CartesianChart)chart;
                     linearChart.Series[Convert.ToInt32(cbxData.Tag)] = new LineSeries
                     {
@@ -509,7 +509,7 @@ namespace CovidPropagation
                         Values = linearChart.Series[Convert.ToInt32(cbxData.Tag)].Values
                     };
                     break;
-                case ChartsType.Vertical:
+                case UIType.Vertical:
                     CartesianChart verticalChart = (CartesianChart)chart;
                     verticalChart.Series[Convert.ToInt32(cbxData.Tag)] = new ColumnSeries
                     {
@@ -517,7 +517,7 @@ namespace CovidPropagation
                         Values = verticalChart.Series[Convert.ToInt32(cbxData.Tag)].Values
                     };
                     break;
-                case ChartsType.Horizontal:
+                case UIType.Horizontal:
                     CartesianChart horizontalChart = (CartesianChart)chart;
                     horizontalChart.Series[Convert.ToInt32(cbxData.Tag)] = new RowSeries
                     {
@@ -525,7 +525,7 @@ namespace CovidPropagation
                         Values = horizontalChart.Series[Convert.ToInt32(cbxData.Tag)].Values
                     };
                     break;
-                case ChartsType.PieChart:
+                case UIType.PieChart:
                     PieChart pieChart = (PieChart)chart;
                     pieChart.Series[Convert.ToInt32(cbxData.Tag)] = new PieSeries
                     {
@@ -533,7 +533,7 @@ namespace CovidPropagation
                         Values = pieChart.Series[Convert.ToInt32(cbxData.Tag)].Values
                     };
                     break;
-                case ChartsType.HeatMap:
+                case UIType.HeatMap:
                     chart = CreateCartesianGraph();
                     SetData(DisplayHeatMapOnGraph);
                     break;

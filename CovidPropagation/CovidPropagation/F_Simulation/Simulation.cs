@@ -85,6 +85,8 @@ namespace CovidPropagation
             _nbPersons = nbPersons;
             startStop = true;
 
+            TimeManager.Init();
+
             // Récupérer depuis les paramètres
             double minorProbability = DEFAULT_PROBABILITY_OF_BEING_MINOR;
             double retirementProbability = DEFAULT_PROBABILITY_OF_BEING_RETIRED;

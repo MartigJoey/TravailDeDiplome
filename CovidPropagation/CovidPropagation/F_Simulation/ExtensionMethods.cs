@@ -216,9 +216,9 @@ namespace CovidPropagation
                 ChartData datas = (ChartData)chart.Tag;
                 int displayWindow = datas.DisplayWindow;
 
-                switch ((ChartsType)datas.ChartType)
+                switch ((UIType)datas.UIType)
                 {
-                    case ChartsType.Linear:
+                    case UIType.Linear:
                         axisX.MaxValue = maxValue;
                         switch ((ChartsDisplayInterval)datas.DisplayInterval)
                         {
@@ -287,16 +287,16 @@ namespace CovidPropagation
                         datas.DisplayWindow = displayWindow;
                         chart.Tag = datas;
                         break;
-                    case ChartsType.Vertical:
+                    case UIType.Vertical:
                         // Affichage différent
                         DisplayColumnRowChart(chart, e, currentAxis, isDisplayChange);
                         break;
-                    case ChartsType.Horizontal:
+                    case UIType.Horizontal:
                         // Affichage différent
                         currentAxis = axisY;
                         DisplayColumnRowChart(chart, e, currentAxis, isDisplayChange);
                         break;
-                    case ChartsType.HeatMap:
+                    case UIType.HeatMap:
                         HeatSeries serieHM = (HeatSeries)chart.Series[0];
                         List<double> heatSeriesData = new List<double>(e.GetDataFromEnum((ChartsDisplayData)serieHM.Tag));
                         interval = 7;

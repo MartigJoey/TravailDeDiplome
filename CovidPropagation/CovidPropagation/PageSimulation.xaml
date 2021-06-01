@@ -14,7 +14,6 @@ Description : Simulation d'une propagation de virus.
     xmlns:local="clr-namespace:CovidPropagation"
     mc:Ignorable="d" 
     d:DesignHeight="1000" d:DesignWidth="800"
-    Loaded="Window_Loaded"
     Title="PageSimulation">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -41,12 +40,18 @@ Description : Simulation d'une propagation de virus.
         <Button Click="Start_Click" Style="{StaticResource smallButton}" 
                     x:Name="btnStart" 
                     Grid.Column="0" Grid.Row="1"
-                    Content="Start"/>
+                    Content="Démarrer"/>
 
-        <Button Click="Stop_Click" Style="{StaticResource smallButton}"
-                    x:Name="btnStop" 
+        <Button Click="Break_Click" Style="{StaticResource smallButton}"
+                    x:Name="btnBreak" 
                     Grid.Column="1" Grid.Row="1"
-                    Content="Stop"
+                    Content="Pause"
+                    Height="auto"/>
+
+        <Button Click="Reset_Click" Style="{StaticResource smallButton}"
+                    x:Name="btnReset" 
+                    Grid.Column="2" Grid.Row="1"
+                    Content="Réinitialiser"
                     Height="auto"/>
 
         <Button Click="OpenRawDatasWindow_Click" Style="{StaticResource smallButton}"
@@ -74,13 +79,6 @@ Description : Simulation d'une propagation de virus.
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
                   ShowGridLines="True">
-                <Grid.RowDefinitions>
-                    <RowDefinition ></RowDefinition>
-                    <RowDefinition ></RowDefinition>
-                </Grid.RowDefinitions>
-                <WindowsFormsHost Grid.Row="0">
-                    <wf:Panel x:Name="panel1" Resize="panel1_Resize" />
-                </WindowsFormsHost>
             </Grid>
         </ScrollViewer>
     </Grid>

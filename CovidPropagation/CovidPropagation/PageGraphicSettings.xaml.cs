@@ -86,6 +86,17 @@ namespace CovidPropagation
 
         private void AddChart_Click(object sender, RoutedEventArgs e)
         {
+            CreateCase(true);
+        }
+
+        private void AddGUI_Click(object sender, RoutedEventArgs e)
+        {
+            CreateCase(false);
+            btnAddGUI.IsEnabled = false;
+        }
+
+        private void CreateCase(bool isChart)
+        {
             int[] emptyIndex = GetFirstEmptyCell();
             int x = emptyIndex[0];
             int y = emptyIndex[1];
@@ -102,7 +113,21 @@ namespace CovidPropagation
                 Button btnHeightPlus = CreateChartButton("GraphButtonStyle", "./Images/arrow-down.png");
                 Button btnHeightMinus = CreateChartButton("GraphButtonStyle", "./Images/arrow-up.png");
 
-                Button btnChartSettings = CreateChartButton("GraphButtonStyle", "./Images/cog.png");
+                Button btnChartSettings = null;
+                Image imgUnityGUI = null;
+
+                if (isChart)
+                {
+                    btnChartSettings = CreateChartButton("GraphButtonStyle", "./Images/cog.png");
+                    cell.Tag = "Chart";
+                }
+                else
+                {
+                    imgUnityGUI = new Image();
+                    imgUnityGUI.Source = new BitmapImage(new Uri("./Images/UnityLogo.png", UriKind.Relative));
+                    imgUnityGUI.Height = 75;
+                    cell.Tag = "GUI";
+                }
 
                 RowDefinition firstRow = new RowDefinition();
                 firstRow.MinHeight = 30;
@@ -123,7 +148,8 @@ namespace CovidPropagation
                 btnHeightPlus.Click += ChartHeightUp_Click;
                 btnHeightMinus.Click += ChartHeightDown_Click;
 
-                btnChartSettings.Click += OpenChartSettings_Click;
+                if (isChart && btnChartSettings != null)
+                    btnChartSettings.Click += OpenChartSettings_Click;
 
                 Grid.SetColumn(btnWidthPlus, 0);
                 Grid.SetRow(btnWidthPlus, 0);
@@ -132,8 +158,8 @@ namespace CovidPropagation
                 Grid.SetRow(btnWidthMinus, 0);
 
                 Grid.SetColumn(btnHeightPlus, 2);
-                Grid.SetRow(btnHeightPlus, 0); 
-                
+                Grid.SetRow(btnHeightPlus, 0);
+
                 Grid.SetColumn(btnHeightMinus, 3);
                 Grid.SetRow(btnHeightMinus, 0);
 
@@ -143,10 +169,20 @@ namespace CovidPropagation
                 Grid.SetColumn(btnRemove, 5);
                 Grid.SetRow(btnRemove, 0);
 
-                Grid.SetColumn(btnChartSettings, 0);
-                Grid.SetColumnSpan(btnChartSettings, 6);
-                Grid.SetRow(btnChartSettings, 1);
-                Grid.SetRowSpan(btnChartSettings, 4);
+                if (isChart)
+                { 
+                    Grid.SetColumn(btnChartSettings, 0);
+                    Grid.SetColumnSpan(btnChartSettings, 6);
+                    Grid.SetRow(btnChartSettings, 1);
+                    Grid.SetRowSpan(btnChartSettings, 4);
+                }
+                else
+                {
+                    Grid.SetColumn(imgUnityGUI, 0);
+                    Grid.SetColumnSpan(imgUnityGUI, 6);
+                    Grid.SetRow(imgUnityGUI, 1);
+                    Grid.SetRowSpan(imgUnityGUI, 4);
+                }
 
                 cell.Children.Add(btnMove);
                 cell.Children.Add(btnRemove);
@@ -154,7 +190,11 @@ namespace CovidPropagation
                 cell.Children.Add(btnWidthMinus);
                 cell.Children.Add(btnHeightPlus);
                 cell.Children.Add(btnHeightMinus);
-                cell.Children.Add(btnChartSettings);
+
+                if (isChart)
+                    cell.Children.Add(btnChartSettings);
+                else
+                    cell.Children.Add(imgUnityGUI);
 
                 cell.Background = Brushes.White;
 
@@ -162,7 +202,12 @@ namespace CovidPropagation
                 Grid.SetRow(cell, y);
 
                 gridHasContent[x, y] = true;
-                ChartData grpData = new ChartData(x, y, 1, 1, new int[] { 0 }, DEFAULT_CHART_TYPE, DEFAULT_AXIS_X_VALUE, DEFAULT_AXIS_Y_VALUE);
+                ChartData grpData;
+                if (isChart)
+                    grpData = new ChartData(x, y, 1, 1, new int[] { 0 }, DEFAULT_CHART_TYPE, DEFAULT_AXIS_X_VALUE, DEFAULT_AXIS_Y_VALUE);
+                else
+                    grpData = new ChartData(x, y, 1, 1, new int[] { 0 }, (int)UIType.GUI);
+
                 chartsDatas[x, y] = grpData;
                 dynamicGrid.Children.Add(cell);
             }
@@ -207,6 +252,9 @@ namespace CovidPropagation
             SetCellsContent(x, y, x + columnSpan, y + rowSpan, false);
             chartsDatas[x, y].SetAsNull();
             dynamicGrid.Children.Remove(cell);
+
+            if ((string)cell.Tag == "GUI")
+                btnAddGUI.IsEnabled = true;
         }
 
         private void ChartDragOn_MouseDown(object sender, MouseButtonEventArgs e)
@@ -366,11 +414,6 @@ namespace CovidPropagation
                 result.RowDefinitions.Add(newGridRow);
             }
             return result;
-        }
-
-        private void AddGUI_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void SetCellsContent(int xStart, int yStart, int xStop, int yStop, bool hasContent)

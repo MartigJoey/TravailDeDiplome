@@ -14,7 +14,7 @@ namespace CovidPropagation
             SpanX = sizeX;
             SpanY = sizeY;
             Datas = datas;
-            ChartType = graphicType;
+            UIType = graphicType;
             AxisX = valueX;
             AxisY = valueY;
             DisplayInterval = displayInterval;
@@ -26,7 +26,7 @@ namespace CovidPropagation
         public int Y { get; set; }
         public int SpanX { get; set; }
         public int SpanY { get; set; }
-        public int ChartType { get; set; }
+        public int UIType { get; set; }
         public int AxisX { get; set; }
         public int AxisY { get; set; }
         public int DisplayInterval { get; set; }
@@ -40,7 +40,7 @@ namespace CovidPropagation
                    $"Y: {Y}{Environment.NewLine}" +
                    $"SizeX: {SpanX}{Environment.NewLine}" +
                    $"SizeY: {SpanY}{Environment.NewLine}" +
-                   $"GraphicType: {ChartType}{Environment.NewLine}" +
+                   $"GraphicType: {UIType}{Environment.NewLine}" +
                    $"ValueX: {AxisX}{Environment.NewLine}" +
                    $"ValueY: {AxisY}{Environment.NewLine}" +
                    $"UpdateInterval: {DisplayInterval}{Environment.NewLine}" +
@@ -58,7 +58,7 @@ namespace CovidPropagation
             Y = 0;
             SpanX = 0;
             SpanY = 0;
-            ChartType = 0;
+            UIType = 0;
             AxisX = 0;
             AxisY = 0;
             Datas = new int[0];
@@ -68,7 +68,7 @@ namespace CovidPropagation
 
         public ChartData CloneInNewLocation(int newX, int newY)
         {
-            return new ChartData(newX, newY, SpanX, SpanY, Datas, ChartType, AxisX, AxisY, DisplayInterval, AutoDisplay, DisplayWindow);
+            return new ChartData(newX, newY, SpanX, SpanY, Datas, UIType, AxisX, AxisY, DisplayInterval, AutoDisplay, DisplayWindow);
         }
     }
 }

@@ -1120,7 +1120,7 @@
     - Simulation
   - Page paramètres graphiques
 
-# 32.05.2021 08h00 / 17h00
+# 32.05.2021 08h00 / 19h00
 - Création du programme GUI sur Unity
   - Recherche sur ce qu'est Universal render pipeline
     - Pas utile dans mon cas
@@ -1151,3 +1151,19 @@
 - Documentation
   - Structure
   - Architecture
+
+# 01.06.2021 08h05 / 17h00
+- Modification de l'emplacement du build d'Unity
+- Ajout de la possiblité de choisir d'ajouter le GUI et de modifier
+  - Sa taille
+  - Sa position
+- Impossible d'ajouter plus d'un GUI
+- Discussion avec M. Mathieu
+  - Big O'notation
+    - Graphiques
+  - Documentation
+- Le GUI n'apparaît plus lorsqu'il est chargé lors de l'affichage de l'UI générer dans la page paramètres graphiques. Il n'apparaît que lors d'un chargement au démarrage.
+- Il est nécessaire de créer le WindowsFormsHost ainsi que le panelunity dans le code-behind pour permettre son affichage dynamique.
+- Affichage réussi !
+- Ajout de la possibilité de réinitialiser la simulation.
+  - Débloque l'accès aux paramètres graphiques.
