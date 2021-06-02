@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "vKhtE1DDcxF6lFu2UR9WwlblTI7JOS6ragwMUBTt1UoeETuKclARF4AeywpMsfyYDeZUA8x0nzAzai4i+JiJ4A==",
+  "dgSpecHash": "paWuBp+P+E8lcKkEg0vt1hH47WGr0V09TXSI1RYI4nSuEY7NpzjyKWD4q3yfJEYA+lzLeScceWjRRQaGr6o9/g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\schad\\OneDrive\\Bureau\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\CovidPropagation.csproj",
+  "projectFilePath": "C:\\Users\\schad\\Desktop\\TravailDeDiplome\\CovidPropagation\\CovidPropagation\\CovidPropagation.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\schad\\.nuget\\packages\\livecharts\\0.9.7\\livecharts.0.9.7.nupkg.sha512",
     "C:\\Users\\schad\\.nuget\\packages\\livecharts.geared\\1.2.9\\livecharts.geared.1.2.9.nupkg.sha512",

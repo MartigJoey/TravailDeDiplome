@@ -1212,3 +1212,9 @@
   - Ajout d'un évènement trigger au moment de l'initialisation de la simulation
   - Utilisation de l'évènement trigger à chaque itération pour l'envoie de données.
   - Intégration des données des classes de testes à la simulation
+- Documentation
+  - Début comparaison avec réalité
+  - GUI
+    - Structure
+    - Liaison entre les objets
+    - Début fonctionnement
