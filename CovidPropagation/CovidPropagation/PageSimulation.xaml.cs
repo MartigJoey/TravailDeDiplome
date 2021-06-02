@@ -54,16 +54,6 @@ namespace CovidPropagation
             Virus.Init();
         }
 
-        /// <summary>
-        /// Lorsque la simulation fait une itération, récupère les données de celle-ci
-        /// </summary>
-        static void OnTimerTick(Simulation e)
-        {
-            //Debug.WriteLine(e.GetData());
-            // Sera utilisé pour envoyer des informations au GUI
-            // Pas pour récupérer des données.
-        }
-
         private void OpenRawDatasWindow_Click(object sender, RoutedEventArgs e)
         {
             rawDatasWindow.Show();
@@ -85,9 +75,15 @@ namespace CovidPropagation
         {
             if (!sim.IsInitialized)
             {
-                sim.Initialize(30, 0.1, 50000);
+                sim.Initialize(30, 0.1, 100);
                 sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
-                sim.OnTickSP += new GetDataEventHandler(OnTimerTick);
+
+                if(panelUnity != null)
+                {
+                    sim.OnGUIUpdate += new GUIDataEventHandler(OnGUIUpdate);
+                    sim.OnGUIinitialize += new InitializeGUIEventHandler(OnGUIInitialize);
+                }
+
                 rawDatasWindow.CreateLabels(sim.GetAllDatas());
                 sim.OnDataUpdate += new DataUpdateEventHandler(rawDatasWindow.UpdateLabels);
                 btnOpenRawDatas.IsEnabled = true;
@@ -759,7 +755,7 @@ namespace CovidPropagation
         private void ServerThread(object data)
         {
             int numThreads = 1;
-            NamedPipeServerStream pipeServer = new NamedPipeServerStream("testpipe", PipeDirection.Out, numThreads);
+            NamedPipeServerStream pipeServer = new NamedPipeServerStream("dataPipe", PipeDirection.Out, numThreads);
             //int threadId = Thread.CurrentThread.ManagedThreadId;
 
             pipeServer.WaitForConnection();
@@ -779,13 +775,40 @@ namespace CovidPropagation
             }
             //pipeServer.Close();
         }
-        private async void TestUnity_Click(object sender, RoutedEventArgs e)
+
+        private async void OnGUIInitialize(DataPopulation populationDatas, DataSites siteDatas)
         {
             if (ss != null)
             {
                 Debug.WriteLine("In");
-                WeatherForecastWithPOCOs testJson = new WeatherForecastWithPOCOs();
-                string objectToSend = JsonSerializer.Serialize(testJson);
+                string objectToSend = "Initialize ";
+
+                objectToSend += JsonSerializer.Serialize(populationDatas);
+                objectToSend += " " + JsonSerializer.Serialize(siteDatas);
+                Debug.WriteLine(objectToSend);
+                await Task.Run(() =>
+                {
+                    // Invoke uniquement utile en cas d'utilisation du tbxValue.Text
+                    Dispatcher.Invoke((Action)(() =>
+                    {
+                        ss.WriteString(objectToSend); // tbxValue.Text
+                    }));
+                });
+            }
+        }
+
+        /// <summary>
+        /// Lorsque la simulation fait une itération, récupère les données de celle-ci
+        /// </summary>
+        private async void OnGUIUpdate(int[] personsNewSite, int[] personsNewState)
+        {
+            if (ss != null)
+            {
+                Debug.WriteLine("In");
+                DataIteration jsonIteration = new DataIteration(personsNewSite, personsNewState);
+                string objectToSend = "Iterate ";
+
+                objectToSend += JsonSerializer.Serialize(jsonIteration);
                 Debug.WriteLine(objectToSend);
                 await Task.Run(() =>
                 {
@@ -839,31 +862,4 @@ namespace CovidPropagation
 
         }
     }
-
-    #region UnityTestClasses
-
-    public class WeatherForecastWithPOCOs
-    {
-        public DateTimeOffset Date { get; set; }
-        public int TemperatureCelsius { get; set; }
-        public string Summary { get; set; }
-        public string SummaryField;
-        public IList<DateTimeOffset> DatesAvailable { get; set; }
-        public Dictionary<string, HighLowTemps> TemperatureRanges { get; set; }
-        public string[] SummaryWords { get; set; }
-
-        public WeatherForecastWithPOCOs()
-        {
-            SummaryWords = new string[] { "1", "3", "3" };
-            TemperatureRanges = new Dictionary<string, HighLowTemps>();
-            TemperatureRanges.Add("range1", new HighLowTemps());
-        }
-    }
-    public class HighLowTemps
-    {
-        public int High { get; set; }
-        public int Low { get; set; }
-    }
-
-    #endregion
 }

@@ -15,7 +15,8 @@ using System.Threading.Tasks;
 
 namespace CovidPropagation
 {
-    public delegate void GetDataEventHandler(Simulation e); 
+    public delegate void GUIDataEventHandler(int[] personsNewSite, int[] personsNewState); 
+    public delegate void InitializeGUIEventHandler(DataPopulation populationDatas, DataSites siteDatas);
     public delegate void DataUpdateEventHandler(SimulationDatas e);
     public delegate void DispalyChangeEventHandler(SimulationDatas e, bool isDisplayChange);
 
@@ -42,7 +43,8 @@ namespace CovidPropagation
 
         public event DataUpdateEventHandler OnDataUpdate;
         public event DispalyChangeEventHandler OnDisplay;
-        public event GetDataEventHandler OnTickSP;
+        public event GUIDataEventHandler OnGUIUpdate;
+        public event InitializeGUIEventHandler OnGUIinitialize;
 
         private Random rdm = new Random();
         private int _averageAge;
@@ -112,6 +114,16 @@ namespace CovidPropagation
             speedTest.Stop();
             Debug.WriteLine("Population " + speedTest.ElapsedMilliseconds + "  Count " + population.Count);
             //buildingSites.ForEach(b => b.SetMaskMeasure(true, true));
+
+            OnGUIinitialize(new DataPopulation(
+                                population.Count, 
+                                population.Where(p => p.CurrentState == PersonState.Infected).Select(p => p.Id).ToArray()
+                                ), 
+                            new DataSites(
+                                sites.Select(s => s.ConvertTypeToInt()).ToArray(), 
+                                sites.Select(s => s.Id).ToArray()
+                                )
+                            );
         }
 
         /// <summary>
@@ -126,6 +138,8 @@ namespace CovidPropagation
             chartsDatas = new SimulationDatas();
             chartsDatas.Initialize();
             chartsDatas.AddDatas(GetAllDatas());
+            int[] personsNewSite = new int[population.Count];
+            int[] personsNewState = new int[population.Count];
 
             int sumEllapsedTime = 0;
             while (true)
@@ -140,6 +154,18 @@ namespace CovidPropagation
                     sitesDictionnary[SiteType.Hospital].ForEach(h => ((Hospital)h).TreatPatients());
                     population.ForEach(p => p.ChechState());
 
+
+                    // Trigger l'évènement OnTick qui va mettre à jour le GUI et met à jour ses données.
+                    if (OnGUIUpdate != null)
+                    {
+                        for (int i = 0; i < population.Count; i++)
+                        {
+                            personsNewSite[i] = population[i].GetNextActivitySite().Id;
+                            personsNewState[i] = (int)population[i].CurrentState;
+                        }
+                        OnGUIUpdate(personsNewSite, personsNewState);
+                    }
+
                     chartsDatas.AddDatas(GetAllDatas());
 
                     // Affiche au maximum une fois par seconde
@@ -152,11 +178,6 @@ namespace CovidPropagation
                         sumEllapsedTime = 0;
                     }
 
-                    // Trigger l'évènement OnTick qui va mettre à jour le GUI
-                    if (OnTickSP != null)
-                    {
-                        OnTickSP(this);
-                    }
 
                     sp.Stop();
 

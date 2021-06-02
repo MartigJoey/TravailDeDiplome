@@ -108,5 +108,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba9711773e8afb045b8a46a6af3ad89d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tr: {fileID: 0}
-  renderer: {fileID: 0}
+  tr: {fileID: 6892842423251812483}
+  renderer: {fileID: 6892842423251812509}

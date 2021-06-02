@@ -19,6 +19,8 @@ namespace CovidPropagation
     public class Site
     {
         private const double DURATION_OF_HOUR = 60;
+        private static int ids = 0;
+        private int id;
 
         List<Person> persons;
         bool hasEnvironnementChanged;
@@ -89,6 +91,7 @@ namespace CovidPropagation
         public double ProbabilityOfInfection { get => probabilityOfInfection; set => probabilityOfInfection = value; }
         public double AverageQuantaExhalationRate { get => averageQuantaExhalationRate; set => averageQuantaExhalationRate = value; }
         public bool HasEnvironnementChanged { get => hasEnvironnementChanged; set => hasEnvironnementChanged = value; }
+        public int Id { get => id; set => id = value; }
 
         #endregion
 
@@ -112,6 +115,8 @@ namespace CovidPropagation
             persons = new List<Person>();
             HasEnvironnementChanged = true;
             AverageQuantaExhalationRate = GlobalVariables.AVERAGE_QUANTA_EXHALATION;
+            ids++;
+            id = ids;
         }
 
         /// <summary>
@@ -218,6 +223,30 @@ namespace CovidPropagation
         {
             additionalControlMeasures = isDistanciationSet.ConvertToInt();
             SumFirstOrderLossRate = ventilationWithOutside + decayRateOfVirus + depositionOnSurfaceRate + additionalControlMeasures;
+        }
+
+        public int ConvertTypeToInt()
+        {
+            Type thisType = this.Type[this.Type.Count() - 1].GetType();
+            int result = 0;
+            if (thisType == typeof(Home))
+                result = 0;
+            else if (thisType == typeof(Hospital))
+                result = 1;
+            else if (thisType == typeof(Restaurant))
+                result = 2;
+            else if (thisType == typeof(School))
+                result = 3;
+            else if (thisType == typeof(Store))
+                result = 4;
+            else if (thisType == typeof(Supermarket))
+                result = 5;
+            else if (thisType == typeof(Company))
+                result = 6;
+            else if (thisType == typeof(Bus))
+                result = 7;
+
+            return result;
         }
 
         #region Calculs

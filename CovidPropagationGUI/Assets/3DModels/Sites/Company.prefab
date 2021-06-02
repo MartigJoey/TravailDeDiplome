@@ -67,6 +67,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Building (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6892842423251812483, guid: e968e3a9e1606a542b7887c1c192b0c0, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.3333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 6892842423251812483, guid: e968e3a9e1606a542b7887c1c192b0c0, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3.3333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 6892842423251812483, guid: e968e3a9e1606a542b7887c1c192b0c0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.333333
+      objectReference: {fileID: 0}
+    - target: {fileID: 6892842423251812483, guid: e968e3a9e1606a542b7887c1c192b0c0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6892842423251812483, guid: e968e3a9e1606a542b7887c1c192b0c0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -5
+      objectReference: {fileID: 0}
     - target: {fileID: 6892842423251812509, guid: e968e3a9e1606a542b7887c1c192b0c0, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

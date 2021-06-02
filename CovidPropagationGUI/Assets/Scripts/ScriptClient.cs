@@ -16,18 +16,25 @@ public class ScriptClient : MonoBehaviour
     public NamedPipeClientStream pipeClient;
     public StreamString ss;
     Thread readThread;
+    public Text dataReceived;
+    public Text dataReceived1;
+    public Text dataReceived2;
+    public Text dataReceived3;
+
+    private ManagerScript mngScript;
     //public List<int> testTransfer;
 
     // Use this for initialization
     void Start()
     {
         Debug.Log("Pipe Opening Process Started");
-        pipeClient = new NamedPipeClientStream(".", "testpipe", PipeDirection.In, PipeOptions.Asynchronous);
+        pipeClient = new NamedPipeClientStream(".", "dataPipe", PipeDirection.In, PipeOptions.Asynchronous);
 
         Debug.Log("Connecting to server...\n");
 
         ConnectToServer();
 
+        mngScript = GetComponent<ManagerScript>();
         //string result = ss.ReadString();
         //ChangingText.GetComponent<Text>().text = result;
         //Debug.Log(result);
@@ -57,9 +64,53 @@ public class ScriptClient : MonoBehaviour
         string result = await ss.ReadStringAsync();
         Debug.Log(result);
         //ChangingText.GetComponent<Text>().text = result;
-        Debug.Log(result);
+        string resultDataType = result.Split(' ')[0];
+        string resultPopulation = result.Split(' ')[1];
+        string resultSites = result.Split(' ')[2];
+
+
+        switch (resultDataType)
+        {
+            default:
+            case "Initialize":
+                DataPopulation populationDatas = JsonUtility.FromJson<DataPopulation>(resultPopulation);
+                DataSites sitesDatas = JsonUtility.FromJson<DataSites>(resultSites); 
+                
+                dataReceived.text = result.Split(' ')[0];
+                dataReceived3.text = populationDatas.NbPersons + " " + populationDatas.IndexOfInfected.Count;
+                dataReceived1.text = result.Split(' ')[1];
+                dataReceived2.text = sitesDatas.SitesType.Count + " " + sitesDatas.SitesId.Count;
+                
+                mngScript.CreateSites(sitesDatas.SitesType, sitesDatas.SitesId);
+                mngScript.CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
+                break;
+            case "Iterate":
+                //DataPopulation populationDatas = JsonUtility.FromJson<DataPopulation>(resultPopulation);
+                break;
+        }
         ReadPipeData();
     }
+}
+
+[Serializable]
+public class DataPopulation
+{
+    public int NbPersons;
+    public List<int> IndexOfInfected;
+}
+
+[Serializable]
+public class DataSites
+{
+    public List<int> SitesType;
+    public List<int> SitesId;
+}
+
+[Serializable]
+public class DataIteration
+{
+    public List<int> personsNewSite;
+    public List<int> personsNewState;
 }
 
 public class StreamString

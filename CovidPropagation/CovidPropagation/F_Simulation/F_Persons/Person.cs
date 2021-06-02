@@ -32,6 +32,9 @@ namespace CovidPropagation
         private const int MIN_IMMUNITY_DURATION = 3 * 30; // En jours
         private const int MAX_IMMUNITY_DURATION = 8 * 30; // En jours
 
+        private static int ids = 0;
+        private int id;
+
         private Planning _planning;
         private Site _currentSite;
         private PersonState _state;
@@ -62,6 +65,7 @@ namespace CovidPropagation
         public int Age { get => _age; set => _age = value; }
         internal List<Ilness> Ilnesses { get => ilnesses; set => ilnesses = value; }
         public bool MustLeaveHospital { set => _mustLeaveHospital = value; }
+        public int Id { get => id; set => id = value; }
 
         public Person(Planning planning, Hospital hospital, int age = GlobalVariables.DEFAULT_PERSON_AGE, PersonState state = PersonState.Healthy)
         {
@@ -100,6 +104,9 @@ namespace CovidPropagation
                 if ((int)_state > 2)
                     VirusIncubationOver();
             }
+
+            ids++;
+            Id = ids;
         }
 
         /// <summary>
@@ -343,6 +350,11 @@ namespace CovidPropagation
             Ilnesses.ForEach(i => i.DecrementTimeBeforeDesapearance(decrement));
             Ilnesses.RemoveAll(i => i.Desapear());
             virusResistance = baseVirusResistance - Ilnesses.Sum(i => i.Attack);
+        }
+
+        public Site GetNextActivitySite()
+        {
+            return _planning.GetNextActivity();
         }
     }
 }

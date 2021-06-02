@@ -61,12 +61,6 @@ Description : Simulation d'une propagation de virus.
                     Height="auto"
                     IsEnabled="False"/>
 
-        <Button Click="TestUnity_Click" Style="{StaticResource smallButton}"
-                    x:Name="btnTestUnity" 
-                    Grid.Column="3" Grid.Row="2"
-                    Content="Test Unity"
-                    Height="auto"/>
-
         <ScrollViewer x:Name="slvScroller"
                       ScrollViewer.HorizontalScrollBarVisibility="Auto"
                       ScrollViewer.VerticalScrollBarVisibility="Auto"

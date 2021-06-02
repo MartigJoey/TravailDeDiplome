@@ -1152,7 +1152,7 @@
   - Structure
   - Architecture
 
-# 01.06.2021 08h05 / 17h00
+# 01.06.2021 08h05 / 19h00
 - Modification de l'emplacement du build d'Unity
 - Ajout de la possiblité de choisir d'ajouter le GUI et de modifier
   - Sa taille
@@ -1189,4 +1189,26 @@
       - Symptôme
       - Transmission
     - ~~Bâtiments~~
-- 
+
+# 02.06.2021 08h05 / 17h00
+- Modification du zoom dans le GUI
+  - Utilisation de boutons à la place de la molette
+- Déplacement d'un individu en direction d'une cible
+- Déplacement d'individus en direction de lieux aléatoires
+- Déplacement des individus dans les lieux
+- Détection de l'entrée dans un lieu
+- Changement du matériel des individus en fonction de leur états.
+- Changement du nom du pipeLine de "testPipe" à "dataPipe"
+- Test d'envoi de données
+  - Création de classes de transfer temporaire
+  - Analyse de la structure de l'envoie
+    - {"NbPersons":100,"IndexOfInfected":[0,6,8,15,42,69,80,90,99]} 
+    - {"SitesType":[1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6],"SitesId":[1,5,20,70,220,670,2,10,40,140,440,1340,3,15,60,210,660,2010]}
+  - Réception des données réussie.
+  - Création de la population à l'aide des données
+  - Création des bâtiments à l'aide des données
+  - Modification du positionnement des bâtiments
+  - Centrage de la caméra par rapport aux bâtiments
+  - Ajout d'un évènement trigger au moment de l'initialisation de la simulation
+  - Utilisation de l'évènement trigger à chaque itération pour l'envoie de données.
+  - Intégration des données des classes de testes à la simulation

@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class ManagerScript : MonoBehaviour
 {
+    public GameObject Camera;
+
     public GameObject hospital;
     public GameObject school;
     public GameObject store;
@@ -13,71 +15,139 @@ public class ManagerScript : MonoBehaviour
     public GameObject home;
     public GameObject company;
 
+    public GameObject person;
+
     private List<GameObject> _topRow;
     private List<GameObject> _leftColumn;
     private List<GameObject> _rightColumn;
     private List<GameObject> _bottomRow;
 
     private List<GameObject> _sites;
-    private Vector3 _centerZoneTopLeft;
-    private Vector3 _centerZoneBottomRight;
-    private Vector3 _perimeterZoneTopLeft;
-    private Vector3 _perimeterZoneBottomRight;
+
+    private List<GameObject> _persons;
 
     private GameObject _sitesParent;
+    private GameObject _personsParent;
+
     // Start is called before the first frame update
     void Start()
     {
-        _sites = new List<GameObject>();
         _topRow = new List<GameObject>();
         _leftColumn = new List<GameObject>();
         _rightColumn = new List<GameObject>();
         _bottomRow = new List<GameObject>();
 
+        _sites = new List<GameObject>();
+        _persons = new List<GameObject>();
+
         _sitesParent = GameObject.Find("Sites");
-        // x y z 
-        // x z   /y
-        int nbHospital = 2;
-        int nbSchool = 5;
-        int nbStore = 10;
-        int nbSupermarket = 1;
-        int nbRestaurant = 5;
-        int nbHome = 50;
-        int nbCompany = 5;
+        _personsParent = GameObject.Find("Persons");
 
-        _topRow.AddRange(CreateSite(home, nbHome));
-
-        _rightColumn.AddRange(CreateSite(hospital, nbHospital));
-        _rightColumn.AddRange(CreateSite(school, nbSchool));
-
-        _leftColumn.AddRange(CreateSite(store, nbStore));
-        _leftColumn.AddRange(CreateSite(supermarket, nbSupermarket));
-        _leftColumn.AddRange(CreateSite(restaurant, nbRestaurant));
-
-        _bottomRow.AddRange(CreateSite(company, nbCompany));
-
-        PositioningBuildings();
-    }
-
-    private List<GameObject> CreateSite(GameObject site, int nbSites)
-    {
-        List<GameObject> lineOrRowSites = new List<GameObject>();
-        for (int i = 0; i < nbSites; i++)
-        {
-            GameObject s = Instantiate(site, new Vector3(), Quaternion.identity);
-            s.transform.parent = _sitesParent.transform;
-            _sites.Add(s);
-            lineOrRowSites.Add(s);
-        }
-
-        return lineOrRowSites;
+        //DataPopulation populationDatas = JsonUtility.FromJson<DataPopulation>(@"{ ""NbPersons"":100,""IndexOfInfected"":[0,6,8,15,42,69,80,90,99]}");
+        //DataSites sitesDatas = JsonUtility.FromJson<DataSites>(@"{ ""SitesType"":[0,1,2,3,4,5,6,0,1,2,3,4,5,6,0,1,2,3,4,5,6],""SitesId"":[0,1,5,20,70,220,670,4,2,10,40,140,440,1340,8,3,15,60,210,660,2010]}");
+        //
+        //GetComponent<ScriptClient>().dataReceived3.text = populationDatas.NbPersons + " " + populationDatas.IndexOfInfected.Count;
+        //GetComponent<ScriptClient>().dataReceived2.text = sitesDatas.SitesType.Count + " " + sitesDatas.SitesId.Count;
+        //
+        //CreateSites(sitesDatas.SitesType, sitesDatas.SitesId);
+        //CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
     }
 
     // Update is called once per frame
     void Update()
     {
         //List<int> test = GameObject.Find("GUIManager").GetComponent<ScriptClient>().testTransfer;
+        if (Input.GetMouseButton(1))
+        {
+            _persons.ForEach(p => {
+                p.GetComponent<MovementScript>().SetTarget(_sites[Random.Range(0, _sites.Count - 1)].transform);
+                // SetState si besoin
+            });
+        }
+    }
 
+    public void CreatePopulation(int nbPeople, List<int> indexOfInfected)
+    {
+        for (int i = 0; i < nbPeople; i++)
+        {
+            GameObject p = Instantiate(person, _sites[Random.Range(0, _sites.Count - 1)].transform.position, Quaternion.identity);
+            p.transform.parent = _personsParent.transform;
+            if (indexOfInfected.Contains(i))
+                p.GetComponent<MovementScript>().SetState(3);
+
+            _persons.Add(p);
+        }
+    }
+
+    public void CreateSites(List<int> sitesType, List<int> SitesId)
+    {
+        for (int i = 0; i < sitesType.Count; i++)
+        {
+            GameObject site = ConvertIntToType(sitesType[i]);
+            if (site.Equals(home))
+            {
+                _topRow.Add(CreateSite(site, SitesId[i]));
+            }
+            else if (site.Equals(hospital) || site.Equals(school))
+            {
+                _rightColumn.Add(CreateSite(site, SitesId[i]));
+            }
+            else if (site.Equals(store) || site.Equals(supermarket) || site.Equals(restaurant))
+            {
+                _leftColumn.Add(CreateSite(site, SitesId[i]));
+            }
+            else if (site.Equals(company))
+            {
+                _bottomRow.Add(CreateSite(site, SitesId[i]));
+            }
+        }
+
+        PositioningBuildings();
+    }
+
+    private GameObject ConvertIntToType(int siteTypeInt)
+    {
+        GameObject result;
+        switch (siteTypeInt)
+        {
+            default:
+            case 0:
+                result = home;
+                break;
+            case 1:
+                result = hospital;
+                break;
+            case 2:
+                result = restaurant;
+                break;
+            case 3:
+                result = school;
+                break;
+            case 4:
+                result = store;
+                break;
+            case 5:
+                result = supermarket;
+                break;
+            case 6:
+                result = company;
+                break;
+            case 7:
+                result = null;
+                break;
+        }
+
+        return result;
+    }
+
+    private GameObject CreateSite(GameObject site, int id)
+    {
+        GameObject s = Instantiate(site, new Vector3(), Quaternion.identity);
+        s.transform.parent = _sitesParent.transform;
+        s.transform.name = id.ToString();
+        _sites.Add(s);
+
+        return s;
     }
 
     private void PositioningBuildings()
@@ -94,13 +164,30 @@ public class ManagerScript : MonoBehaviour
         ReScale(_bottomRow);
 
         GameObject topRowLastElement = PositioningBuilding(_topRow, topRowPosition, space, true, null);
+
+        leftColPosition.x -= _leftColumn[0].transform.localScale.x/2;
+        leftColPosition.z -= _topRow[0].transform.localScale.z/2;
+
         GameObject leftColumnLastElement = PositioningBuilding(_leftColumn, leftColPosition, space, false, topRowLastElement);
+
+        rightColPosition.x += _rightColumn[0].transform.localScale.x / 2;
+        rightColPosition.z -= _topRow[_topRow.Count-1].transform.localScale.z / 2;
+
         GameObject rightColumnLastElement = PositioningBuilding(_rightColumn, rightColPosition, space, false, topRowLastElement);
 
-        // if leftRowZ + size.z < rightRowZ + size.z
-        // PositioningBuilding(_bottomRow, bottomRowPosition, space, true, rightColumnLastElement);
-        //else
+        bottomRowPosition.z = _leftColumn[_leftColumn.Count - 1].transform.position.z - _bottomRow[0].transform.localScale.z/2 - _leftColumn[_leftColumn.Count - 1].transform.localScale.z/2;
+
         PositioningBuilding(_bottomRow, bottomRowPosition, space, true, leftColumnLastElement);
+
+        float topRowPositionZ = _topRow[0].transform.position.z;
+        float bottomRowPositionZ = _bottomRow[0].transform.position.z;
+        float leftColumnPositionX = _leftColumn[0].transform.position.x;
+        float RightColumnPositionX = _rightColumn[0].transform.position.x;
+
+        float camPositionX = leftColumnPositionX + (Mathf.Abs(leftColumnPositionX) + Mathf.Abs(RightColumnPositionX)) / 2;
+        float camPositionZ = bottomRowPositionZ + (Mathf.Abs(topRowPositionZ) + Mathf.Abs(bottomRowPositionZ)) / 2;
+
+        Camera.GetComponent<CameraScript>().SetCenter(new Vector3(camPositionX, 0, camPositionZ));
     }
 
     private GameObject PositioningBuilding(List<GameObject> buildings, Vector3 position, float space, bool isRow, GameObject lastElement)
@@ -133,7 +220,6 @@ public class ManagerScript : MonoBehaviour
                                            b.transform.localScale.y,
                                            maxSize / buildings.Count);
 
-            Debug.Log(newScale);
             b.transform.localScale = newScale;
         });
     }
