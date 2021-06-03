@@ -111,7 +111,7 @@ namespace CovidPropagation {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/CovidPropagation;component/pagesimulation.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/CovidPropagation;V1.0.0.0;component/pagesimulation.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\PageSimulation.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
