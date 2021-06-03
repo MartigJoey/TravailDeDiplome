@@ -1,7 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿/*
+ * Nom du projet : CovidPropagation
+ * Auteur        : Joey Martig
+ * Date          : 11.06.2021
+ * Version       : 1.0
+ * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
+ */
+using System;
 
 namespace CovidPropagation
 {
@@ -25,20 +29,7 @@ namespace CovidPropagation
         /// </summary>
         public TransmissionData CalculateRisk(int nbPersons, int infectivePersons, double fractionOfImmune, int nbPersonsWithMask, double inhalationMaskEfficiency, double sumFirstOrderLossRate, double volume, double quantaExhalationRateOfInfected, double probabilityOfBeingInfective, double quantaInhaledPerPerson)
         {
-            int nbSusceptiblePersons = ((nbPersons - infectivePersons) * (1 - (int)fractionOfImmune)); // Bof
-
-            #region NotImplementedYet
-            //Density
-            //double densityAreaPersons = air / nbPersons;
-            //double densityPersonsArea = nbPersons / air;
-            //double densityVolumePersons = volume / nbPersons;
-
-            // Breathing
-            //double co2EmissionsPerPerson = 0.0091d;
-            //double co2Emissions = co2EmissionsPerPerson * nbPersons * (1 / pressure) * (273.15d + temperature) / 273.15d;
-
-            //ventilationPerPersonRate = volume * (ventilationWithOutside + additionalControlMeasures) * 1000 / 3600 / nbPersons;
-            #endregion
+            int nbSusceptiblePersons = ((nbPersons - infectivePersons) * (1 - (int)fractionOfImmune));
 
             // Infection probability
             _probabilityOfOneInfection = 1 - Math.Exp(-quantaInhaledPerPerson);

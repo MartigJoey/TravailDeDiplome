@@ -1155,6 +1155,7 @@ MonoBehaviour:
   restaurant: {fileID: 6310347552755821105, guid: 2ca7336992307294b8ccbe010d40513b, type: 3}
   home: {fileID: 895313041553648022, guid: ab3ab96a2d96d074488ef79efe604615, type: 3}
   company: {fileID: 7317591799613874554, guid: cb8b68138ffa8cb49ab48da97dd9a284, type: 3}
+  bus: {fileID: 4239460700095259479, guid: b4a8b8ac0f7588d4d8b0f860977b7ff5, type: 3}
   person: {fileID: 1248306181938973742, guid: 85eff30052253924e988668e625c4e76, type: 3}
 --- !u!114 &1608831427
 MonoBehaviour:
@@ -1286,8 +1287,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 100.01538, y: -43.5}
-  m_SizeDelta: {x: 464.0308, y: 30}
+  m_AnchoredPosition: {x: 334.8869, y: -190.89313}
+  m_SizeDelta: {x: 970.7339, y: 524.8964}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2111974560
 MonoBehaviour:

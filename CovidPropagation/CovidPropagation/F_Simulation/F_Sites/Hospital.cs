@@ -5,10 +5,7 @@
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 
 namespace CovidPropagation
 {

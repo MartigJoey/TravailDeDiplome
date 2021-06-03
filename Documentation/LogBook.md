@@ -1190,7 +1190,7 @@
       - Transmission
     - ~~Bâtiments~~
 
-# 02.06.2021 08h05 / 17h00
+# 02.06.2021 08h05 / 18h00
 - Modification du zoom dans le GUI
   - Utilisation de boutons à la place de la molette
 - Déplacement d'un individu en direction d'une cible
@@ -1212,3 +1212,45 @@
   - Ajout d'un évènement trigger au moment de l'initialisation de la simulation
   - Utilisation de l'évènement trigger à chaque itération pour l'envoie de données.
   - Intégration des données des classes de testes à la simulation
+- Documentation
+  - Début comparaison avec réalité
+  - GUI
+    - Structure
+    - Liaison entre les objets
+    - Début fonctionnement
+
+# 03.06.2021 08h05 / 18h00
+- Envoie des données d'itérations à Unity
+  - ~~Echec~~
+  - Transfère de données opérationnel mais affichage manquant
+    - L'objet streamstring est null ce qui empêche l'envoie de la première série de données.
+    - Un changement de la strucutre de l'envoie de donnés servant à la création cause le bug
+    - Le trigger permettant l'initialisation du GUI est lancé trop tôt, il faut attendre le GUI avant de démarrer.
+    - Changement effetué pour pallier au problème -->
+      - Utilisation d'une méthode pour démarrer l'itération
+      - Appelle de la méthode dans l'itération si il n'y a pas de GUI
+      - S'il y a un GUI, l'appelle de l'itération se fait après celui du GUI
+- L'affichage apparaît mais les lieux sont tous concentrés sur un point
+  - Il s'agit d'un type inexistant pour le moment dans le GUI qui a causé ce problème
+  - Type ajouté et reglé du côté du GUI mais un autre objet cause le même bug
+  - Ajout d'une condition
+- Affichage fonctionnel
+- Après 10 itérations, la lecture du pipeline s'arrête
+  - Le problème est reglé après l'utilisation d'une task pour appeler les méthodes de déplacements des individus
+- Unity n'est pas capable de gérer 10'000 individus sans rammer / ne pas charger
+- Suppression des rigibody et des collider et simplification des individu.
+  - Génération instantanée de 10'000 individus mais lenteur et lag pour 100'000
+- Essai depuis WPF
+  - ~~Un bug survient. Aucun bâtiment n'apparaît. Problème similaire au bug rencontré précédement~~
+- Plusieurs problèmes majeures avec le GUI
+  - La lisibilité
+    - Il est au final très difficile de voir où se passent les propagation en parti dû à la grande quantité d'individus
+  - La vitesse d'exécution
+    - Il y a une latence entre la simulation et le GUI. Le GUI ne peut garder le même rythme que la simulation et c'est visible.
+  - Les performances
+    - À partir de 5'000 individus, le GUI ne charge plus les bâtiments. Il s'agit d'un bug dû à la vitesse de création des lieux qui n'as pas le temps de tout créer avant de recevoir d'autres données.
+    - ~~Le thread est tellement ralenti que les calculs de temps ne sont plus cohérent, impactant les graphiques.~~
+  - Transfert de données
+    - les données de la création sont coupées. Il ne s'agit pas de la longueur maximal qui est atteinte mais d'une coupur de données sûrement dû à un prochain appelle trop rapide.
+- Refactorisation des noms de variables
+- Ajout de commentaires

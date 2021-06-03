@@ -1,9 +1,19 @@
-﻿using System;
+﻿/*
+ * Nom du projet : CovidPropagation
+ * Auteur        : Joey Martig
+ * Date          : 11.06.2021
+ * Version       : 1.0
+ * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
+ */
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CovidPropagation
 {
+    /// <summary>
+    /// Classe utilisée dans le transfère de données de la transmission du virus.
+    /// </summary>
     public class TransmissionData
     {
         double probabilityOfOneInfection;

@@ -3,13 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Diagnostics;
 using LiveCharts.Wpf;
 using LiveCharts;
@@ -21,7 +15,6 @@ using LiveCharts.Geared;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
-using System.Windows.Interop;
 using System.IO.Pipes;
 using System.IO;
 using System.Text.Json;
@@ -75,30 +68,38 @@ namespace CovidPropagation
         {
             if (!sim.IsInitialized)
             {
-                sim.Initialize(30, 0.1, 100);
+                sim.Initialize(0.001, 100000);
                 sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
 
                 if(panelUnity != null)
                 {
                     sim.OnGUIUpdate += new GUIDataEventHandler(OnGUIUpdate);
-                    sim.OnGUIinitialize += new InitializeGUIEventHandler(OnGUIInitialize);
+                    sim.OnGUIInitialize += new InitializeGUIEventHandler(OnGUIInitialize);
                 }
 
                 rawDatasWindow.CreateLabels(sim.GetAllDatas());
                 sim.OnDataUpdate += new DataUpdateEventHandler(rawDatasWindow.UpdateLabels);
-                btnOpenRawDatas.IsEnabled = true;
 
-                Task.Factory.StartNew(() => sim.Iterate());
+                if (panelUnity == null)
+                {
+                    StartSimulationIteration();
+                }
+                else
+                {
+                    LoadUnityExe();
+                    ConnectToUnity(); // Connexion à unity puis démarrage de l'itération.
+                }
+
                 intervalSlider.Value = Convert.ToInt32(intervalSlider.Maximum - sim.Interval);
-
                 mw.btnGraphicSettings.IsEnabled = false;
+                btnOpenRawDatas.IsEnabled = true;
             }
             sim.Start();
-            if (panelUnity != null)
-            {
-                LoadUnityExe();
-                ConnectToUnity();
-            }
+        }
+
+        private void StartSimulationIteration()
+        {
+            Task.Factory.StartNew(() => sim.Iterate());
         }
 
         /// <summary>
@@ -663,14 +664,18 @@ namespace CovidPropagation
         [DllImport("user32.dll")]
         static extern int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
-        private Process process;
-        private IntPtr unityHWND = IntPtr.Zero;
+        private Process process; // Process contenant le programme Unity
+        private IntPtr unityHWND = IntPtr.Zero; // Handler d'unity
 
         private const int WM_ACTIVATE = 0x0006;
         private readonly IntPtr WA_ACTIVE = new IntPtr(1);
         private readonly IntPtr WA_INACTIVE = new IntPtr(0);
         StreamString ss;
 
+        /// <summary>
+        /// Lance le programme unity situé dans les fichier de ce programme.
+        /// Lui donne un handle qui s'occupera de le positionner et le controler.
+        /// </summary>
         public void LoadUnityExe()
         {
             IntPtr unityHandle = panelUnity.Handle;
@@ -681,7 +686,6 @@ namespace CovidPropagation
             process.StartInfo.Arguments = "-parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
             process.StartInfo.UseShellExecute = true;
             process.StartInfo.CreateNoWindow = true;
-            //process.StartInfo.WindowStyle = ProcessWindowStyle.Maximized;
             process.Start();
 
             if (process.WaitForInputIdle())
@@ -695,21 +699,18 @@ namespace CovidPropagation
             unityHWND = hwnd;
             return 0;
         }
-        private void ActivateUnityWindow()
-        {
-            SendMessage(unityHWND, WM_ACTIVATE, WA_ACTIVE, IntPtr.Zero);
-        }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            MoveWindow(unityHWND, 0, 0, (int)this.ActualWidth / 3 * 2, (int)this.ActualHeight, true);
-        }
-
+        /// <summary>
+        /// Lorsque la page est fermée, ferme le programme unity ainsi que le pipeline.
+        /// </summary>
         private void Window_Closed(object sender, EventArgs e)
         {
             CloseUnity();
         }
 
+        /// <summary>
+        /// Stop la connexion entre WPF et unity et éteint les processus d'unity.
+        /// </summary>
         private void CloseUnity()
         {
             if (ss != null)
@@ -723,143 +724,81 @@ namespace CovidPropagation
                 process.Kill();
         }
 
+        /// <summary>
+        /// Se connecte à unity via un pipeline.
+        /// </summary>
         public void ConnectToUnity()
         {
             Thread server;
 
-            Debug.WriteLine("Waiting for client connect...\n");
             server = new Thread(ServerThread);
             server.Start();
-            #region ouais
-            //int i;
-            //Thread.Sleep(250);
-            //while (i > 0)
-            //{
-            //    for (int j = 0; j < numThreads; j++)
-            //    {
-            //        if (servers[j] != null)
-            //        {
-            //            if (servers[j].Join(250))
-            //            {
-            //                Debug.WriteLine("Server thread[{0}] finished.", servers[j].ManagedThreadId);
-            //                servers[j] = null;
-            //                i--;    // decrement the thread watch count
-            //            }
-            //        }
-            //    }
-            //}
-            //Debug.WriteLine("\nServer threads exhausted, exiting.");
-            #endregion
         }
 
+        /// <summary>
+        /// Initialise le pipeline et attend que la connexion soit établis pour lancer la simulation.
+        /// </summary>
         private void ServerThread(object data)
         {
             int numThreads = 1;
-            NamedPipeServerStream pipeServer = new NamedPipeServerStream("dataPipe", PipeDirection.Out, numThreads);
-            //int threadId = Thread.CurrentThread.ManagedThreadId;
+            NamedPipeServerStream pipeServer = new NamedPipeServerStream("SimulationToUnity", PipeDirection.Out, numThreads);
 
             pipeServer.WaitForConnection();
-
-            //Debug.WriteLine("Client connected on thread[{0}].", threadId);
-            Debug.WriteLine("Client connected.");
-            try
-            {
-                Debug.WriteLine("Creating streamString...");
-                ss = new StreamString(pipeServer);
-
-                Debug.WriteLine("You can now write.");
-            }
-            catch (IOException e)
-            {
-                Debug.WriteLine("ERROR: {0}", e.Message);
-            }
-            //pipeServer.Close();
+            ss = new StreamString(pipeServer);
+            StartSimulationIteration();
         }
 
+        /// <summary>
+        /// Convertit les objets en json et les envoies au GUI pour créer l'interface graphique en fonction des données de la simulation.
+        /// </summary>
+        /// <param name="populationDatas">Données de la population à envoyer.</param>
+        /// <param name="siteDatas">Données des sites à envoyer.</param>
         private async void OnGUIInitialize(DataPopulation populationDatas, DataSites siteDatas)
         {
             if (ss != null)
             {
-                Debug.WriteLine("In");
                 string objectToSend = "Initialize ";
-
                 objectToSend += JsonSerializer.Serialize(populationDatas);
                 objectToSend += " " + JsonSerializer.Serialize(siteDatas);
-                Debug.WriteLine(objectToSend);
+
                 await Task.Run(() =>
                 {
                     // Invoke uniquement utile en cas d'utilisation du tbxValue.Text
                     Dispatcher.Invoke((Action)(() =>
                     {
-                        ss.WriteString(objectToSend); // tbxValue.Text
+                        ss.WriteString(objectToSend);
                     }));
                 });
             }
         }
 
         /// <summary>
-        /// Lorsque la simulation fait une itération, récupère les données de celle-ci
+        /// Lorsque la simulation fait une itération, récupère les données de celle-ci et les envoies au GUI au format JSON.
         /// </summary>
         private async void OnGUIUpdate(int[] personsNewSite, int[] personsNewState)
         {
             if (ss != null)
             {
-                Debug.WriteLine("In");
                 DataIteration jsonIteration = new DataIteration(personsNewSite, personsNewState);
                 string objectToSend = "Iterate ";
-
                 objectToSend += JsonSerializer.Serialize(jsonIteration);
-                Debug.WriteLine(objectToSend);
                 await Task.Run(() =>
                 {
                     // Invoke uniquement utile en cas d'utilisation du tbxValue.Text
                     Dispatcher.Invoke((Action)(() =>
                     {
-                        ss.WriteString(objectToSend); // tbxValue.Text
+                        ss.WriteString(objectToSend);
                     }));
                 });
             }
         }
 
+        /// <summary>
+        /// Resize la fenêtre unity lorsque le panel le contenant change de taille.
+        /// </summary>
         private void panel1_Resize(object sender, EventArgs e)
         {
             MoveWindow(unityHWND, 0, 0, panelUnity.Width, panelUnity.Height, true);
-        }
-    }
-    public class StreamString
-    {
-        private BinaryWriter stream;
-        private UnicodeEncoding streamEncoding;
-
-        public StreamString(Stream stream)
-        {
-            this.stream = new BinaryWriter(stream);
-            streamEncoding = new UnicodeEncoding();
-        }
-
-        public async void WriteString(string outString)
-        {
-            await Task.Run(() => {
-                byte[] outBuffer = streamEncoding.GetBytes(outString);
-                int len = outBuffer.Length;
-
-                List<byte> dataToSend = new List<byte>();
-                dataToSend.Add((byte)(len >> 8));
-                dataToSend.Add((byte)(len >> 0));
-                dataToSend.AddRange(outBuffer.ToList());
-                stream.Write(dataToSend.ToArray(), 0, dataToSend.Count);
-                stream.Flush();
-            });
-
-        }
-
-        public void CloseLink()
-        {
-            if (stream != null)
-            {
-                stream.Close();
-            }
-
         }
     }
 }

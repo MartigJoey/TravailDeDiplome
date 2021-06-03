@@ -117,6 +117,7 @@
   - [13.3. Performances](#133-performances)
 - [14. `GUI`](#14-gui)
   - [14.1. Structure](#141-structure)
+    - [14.1.1. Interactions entre les objets](#1411-interactions-entre-les-objets)
   - [14.2. Fonctionnement](#142-fonctionnement)
 - [15. `UI`](#15-ui)
   - [15.1. Structure](#151-structure)
@@ -928,7 +929,7 @@ Ces paramètres sont différents suivant les individus et le mesures prisent. Si
 Différentes mesures sont disponibles pour limiter au maximum la transmission du virus. Le port du masque étant la première de celle-ci et ayant déjà été décrit plus haut. La distanciation étant diffile à appliquer sur un modèle tel que je l'ai fait. Les individus ne pouvant par réellement se distancer des autres car ils ne possèdent pas de positions hormis le fait d'être dans un bâtiment. J'ai donc ajouté aux mesures additionnels une valeur qui est proportionnelle à l'efficacité de la distanciation. Il est aussi possible de mettre en quarantaine les personnes infectées. Celle-ci sont confinée dans leur habitat et ne sortes qu'arpès la durée maximal du virus qui est de 14 jours.
 
 
-<h2>Ajouter images - Lien vers méthodes dans les commentaires du projet</h2>
+<h2>Lien vers méthodes dans les commentaires du projet</h2>
 
 ### 13.2.3. Source propagation
 La source de mes calculs de transmission du virus par aérosol ont été réalisé par des experts dans le domaines : 
@@ -948,7 +949,20 @@ Ce fichier en plus de citer ses sources et d'être réalisés par des spécialis
 <i>Le fichier excel est disponible en annexe sous format .xlsx, .pdf ou en ligne sur google drive [ici](https://drive.google.com/file/d/1hWvw8I-53Iw7GPy-B1mSyWen20VzTwWr/view?usp=sharing).</i>
 
 ### 13.2.4. Résultats
-<h2>résultats obtenus par votre application et les comparer avec la situation que nous avons vécu et par rapport aux chiffres du fichier Excel.</h2>
+
+Les résultat de la simulation n'entre pas entièrement en accord avec les chiffres de la réalité. La différence réside majoriairement sur la longévité du virus qui, une fois qu'il a atteint son pic dans la simulation, ne fait que chuté. Dans la réalité, certaines mesures permettent de ralentir son expension et de le contenir par la suite. Au relachement de ces mesures, on peut observer que le virus reprend du terrain.
+
+Il existe cepedant d'autres paramètres expliquant ces différences.
+
+En premier lieu, le programme réside sur la création d'une ville contenant des individus qui se déplacent uniquement dans cet environnement. Les données disponibles sont à l'échelle de pays contenant donc plusieurs villes, village, etc.
+
+En second lieu, l'environnement du programme est totalement isolé, un cas similaire se produirait sûrement si la moitié de la population était infectée dans un pays ayant ses frontières totalement fermées. Je n'ai malheureusement pas pu trouver de telle données correspondant à tous les paramètres.
+
+La figure (Figure ##) est une simulation sans qu'aucune mesure soit prise avec une population de 50'000 personnes. Le nombre de cas (En bleu) au départ étant de 5'000. Ce qui correspond à 10% d'infecté dès le départ. 10% est ~10 fois supérieur au plus grand pic de cas au USA qui est l'un des pays ayant été le plus touché. Ce qui signifie qu'il faut commencer avec moins de cas et surtout intégrer les mesures pour pouvoir comparer plus précisément les données.
+
+Le taux de décès (en jaune sur le graphique) est légèrement inférieur dans le cas de la simulation. Le pourcentage de décès est de 0.5% dans la simulation contre 1.5% aux USA. Cette différence s'explique en partit par le fonctionnement des décès dans la simulation qui se base sur de réel données mais qui n'a pas de base mathématique aussi poussée que la transmission. Il faut aussi prendre en compte que la simulation ne prend en compte que les décès qui sont totalement liés au virus contrairement aux données officiels qui sont parfois faussé par des décès de personnes infectée mais pas décédées dû au virus.
+
+<h2>Refaire sim avec mesure et recomparer, aussi à plus grande échelle</h2>
 
 <div style="text-align:center"><img src="Medias/Rapport/EssaiSimulation.png" /></div>
 <center><p style="font-size: 11px">Figure ##: Nombre de cas de covid dans la simulation</p></center>
@@ -994,14 +1008,19 @@ J'ai effectué différents tests en créant des simulations de tailles variantes
 On peut donc observer une nettre différence entre les deux tests. Les performances de la ram sont donc très importantes pour obtenir le maximum du programme. Cependant, pour des utilisateur lambdas, l'utilisation de ram dépassant les 2133Mhz est très rare.
 # 14. `GUI`
 ## 14.1. Structure
-Diagramme de classe final -
-Interactions entre objets - 
-Réception des données
+![Diagramme de classe](Medias/Rapport/StructureGUI.png)
+
+### 14.1.1. Interactions entre les objets
+
+Avant même d'afficher quoi que ce soit, des informations concernant la population ainsi que les lieux doivent être fournient. Une fois ces informations ressus depuis la simulation, les lieux sont générés, mis à la bonne échelle puis positionnés. La population ainsi que les lieux possèdent des ids qui permettent de garder une trace et une certaine connection entre la simulation et le GUI. Ces ids permettent aussi aux individus de savoir quel est leur prochaine destination en recevant l'id de lieux. Les types, status, et tailles sont purements visuelles.
 
 ## 14.2. Fonctionnement
-Création -
-Évolution (Itérations) -
-Réception des données
+
+Pour créer l'interface, un premier envoie de donnés doit être reçu. Ces premières données, contiennent les nombre d'individus, les ids des individus infectés dès le départ, la quantité de chaque type de lieux ainsi que leur id.
+
+Une fois que tout est en place, d'autres données peuvent arriver. Ces données comprennent uniquement des informations concernant la population. Dont, une mise à jour du statut de chaque individu permettant de changer la couleur de ceux-ci en temps réel et un id du prochain lieu dans lequel les individus doivent se déplacer.
+
+
 
 # 15. `UI`
 ## 15.1. Structure
@@ -1045,7 +1064,6 @@ Le slider permet de modifier la vitesse d'exécution de la simulation, les bouto
 
 Il est possible de voir toutes les données disponibles dans différents états. Les dernières données enregistrées, la moyenne de ces données ainsi que le minimum et maximum de chaque données enregistrées.
 
-
 ### 15.3.2. Paramètres graphiques
 
 <div style="text-align:center"><img src="Medias/Rapport/ParametresGraphiquesIcone.png" /></div>
@@ -1074,6 +1092,8 @@ Tous les graphiques disponibles peuvent afficher plusieurs informations à la fo
 
 Le graphique cylindrique permet de visualiser uniquement les dernières données de la simulation. Et finalement le graphique HeatMap génère une moyenne permettant de connaîtres les périodes dans lequel il y a le plus de contamination par exemple.
 
+Ils sont tous mis à jour à l'aide d'évènement qui sont déclanché par la simulation lorsqu'elle dispose de nouveaux éléments à afficher.
+
 ### 15.3.3. Paramètres simulation
 
 <div style="text-align:center"><img src="Medias/Rapport/ParametresSimulationIcone.png" /></div>
@@ -1097,6 +1117,7 @@ Le port du masque est la mesures la plus personnalisable. Chaque individu porte 
 <center><p style="font-size: 11px">Figure ##: Paramètres du virus</p></center>
 
 Les paramètres du virus ne sont pas tous accessibles, mais les principaux et les plus intéressants le sont à comencer par les durées de vie, d'incubation et d'imunité. Le taux d'hospitalisation et de décès peuvent être modifié jusqu'à un maximum de 100%. Finalement, les symptômes permettant l'augmentation de la propagation du virus peuvent être modifié ou désactivé. La toux par exemple, peut avoir son taux de quantas modifié jusqu'à un maximum de 800 qui correspond à une personne parlant fort et faisant un séance de sport intensive. Et les moyens de transmissions ne peuvent qu'être activé ou désactivé en raisont de leur nature complexe et contenant très peut de données eux-mêmes.
+
 
 # 16. `Planning`
 ## 16.1. Prévisionnel

@@ -1,15 +1,13 @@
 ﻿/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
- * Date          : 29.04.2021
+ * Date          : 11.06.2021
  * Version       : 1.0
- * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
+ * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
  */
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using System.Diagnostics;
 
 namespace CovidPropagation
 {
@@ -115,6 +113,7 @@ namespace CovidPropagation
             persons = new List<Person>();
             HasEnvironnementChanged = true;
             AverageQuantaExhalationRate = GlobalVariables.AVERAGE_QUANTA_EXHALATION;
+
             ids++;
             id = ids;
         }
@@ -225,9 +224,13 @@ namespace CovidPropagation
             SumFirstOrderLossRate = ventilationWithOutside + decayRateOfVirus + depositionOnSurfaceRate + additionalControlMeasures;
         }
 
+        /// <summary>
+        /// Permet de convertir le type de bâtiment en int pour simplifier sont transfère vers le GUI.
+        /// </summary>
+        /// <returns>Type de cet objet convertis en int.</returns>
         public int ConvertTypeToInt()
         {
-            Type thisType = this.Type[this.Type.Count() - 1].GetType();
+            Type thisType = this.GetType();
             int result = 0;
             if (thisType == typeof(Home))
                 result = 0;

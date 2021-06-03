@@ -11,6 +11,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Building (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1663919241363041796, guid: 411f8f2816151eb47b091b84810a0a50, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.1415
+      objectReference: {fileID: 0}
+    - target: {fileID: 1663919241363041796, guid: 411f8f2816151eb47b091b84810a0a50, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.3398
+      objectReference: {fileID: 0}
+    - target: {fileID: 1663919241363041796, guid: 411f8f2816151eb47b091b84810a0a50, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.62116665
+      objectReference: {fileID: 0}
+    - target: {fileID: 1663919241363041796, guid: 411f8f2816151eb47b091b84810a0a50, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.2374
+      objectReference: {fileID: 0}
+    - target: {fileID: 1663919241363041796, guid: 411f8f2816151eb47b091b84810a0a50, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.3301
+      objectReference: {fileID: 0}
+    - target: {fileID: 1663919241363041796, guid: 411f8f2816151eb47b091b84810a0a50, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -3.6439
+      objectReference: {fileID: 0}
     - target: {fileID: 1663919241363041816, guid: 411f8f2816151eb47b091b84810a0a50, type: 3}
       propertyPath: m_Name
       value: Bike

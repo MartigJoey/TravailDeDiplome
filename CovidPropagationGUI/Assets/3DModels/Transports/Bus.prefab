@@ -19,6 +19,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bus
       objectReference: {fileID: 0}
+    - target: {fileID: 1244961794310843967, guid: 868cf1d25587cc24fa6fc565eeca1c87, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.46215314
+      objectReference: {fileID: 0}
+    - target: {fileID: 1244961794310843967, guid: 868cf1d25587cc24fa6fc565eeca1c87, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.4789821
+      objectReference: {fileID: 0}
+    - target: {fileID: 1244961794310843967, guid: 868cf1d25587cc24fa6fc565eeca1c87, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.1298313
+      objectReference: {fileID: 0}
+    - target: {fileID: 1244961794310843967, guid: 868cf1d25587cc24fa6fc565eeca1c87, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.3977
+      objectReference: {fileID: 0}
+    - target: {fileID: 1244961794310843967, guid: 868cf1d25587cc24fa6fc565eeca1c87, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.2605
+      objectReference: {fileID: 0}
+    - target: {fileID: 1244961794310843967, guid: 868cf1d25587cc24fa6fc565eeca1c87, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.3154
+      objectReference: {fileID: 0}
     - target: {fileID: 6145188352630340576, guid: 868cf1d25587cc24fa6fc565eeca1c87, type: 3}
       propertyPath: m_RootOrder
       value: 0

@@ -1,13 +1,12 @@
 ﻿/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
- * Date          : 06.05.2021
+ * Date          : 11.06.2021
  * Version       : 1.0
- * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
+ * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
  */
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace CovidPropagation
@@ -47,6 +46,10 @@ namespace CovidPropagation
             return _timeFrames[TimeManager.CurrentTimeFrame].Activity;
         }
 
+        /// <summary>
+        /// Récupère la raison pour laquel l'individu est dans le lieu actuel.
+        /// </summary>
+        /// <returns>Raison de se situer sur le lieu actuel.</returns>
         public SitePersonStatus GetCurrentPersonTypeInActivity()
         {
             return _timeFrames[TimeManager.CurrentTimeFrame].PersonStatus;
@@ -108,14 +111,14 @@ namespace CovidPropagation
                 SitePersonStatus.Other
                 );
 
+            // Récupère le lieu de travail et la raison d'y aller
             KeyValuePair<Site, SitePersonStatus> workSite = new KeyValuePair<Site, SitePersonStatus>(
                 personSites[SiteType.WorkPlace][rdm.Next(0, personSites[SiteType.WorkPlace].Count)],
                 SitePersonStatus.Worker
                 );
 
-            KeyValuePair<Site, SitePersonStatus> noonSite;
-
             // Manger sur le lieu de travail ou ailleurs
+            KeyValuePair<Site, SitePersonStatus> noonSite;
             if (rdm.NextBoolean())
                 noonSite = new KeyValuePair<Site, SitePersonStatus>(
                 personSites[SiteType.Eat][rdm.Next(0, personSites[SiteType.Eat].Count)],
@@ -124,24 +127,29 @@ namespace CovidPropagation
             else
                 noonSite = workSite;
 
+            // Récupère le lieux de l'après midi si l'individu quitte le travail plus tôt
             SiteType afterNoonSiteType = (SiteType)rdm.Next(0, (int)SiteType.Eat);
             KeyValuePair<Site, SitePersonStatus> afterNoonFreeTimeSite = new KeyValuePair<Site, SitePersonStatus>(
                 personSites[afterNoonSiteType][rdm.Next(0, personSites[afterNoonSiteType].Count)],
                 SitePersonStatus.Worker
                 );
 
+            // Récupère le lieux du soir si l'individu quitte le travail plus tôt
             KeyValuePair<Site, SitePersonStatus> eveningActivitySite = new KeyValuePair<Site, SitePersonStatus>(
                 personSites[SiteType.Eat][rdm.Next(0, personSites[SiteType.Eat].Count)],
                 SitePersonStatus.Client
                 );
 
+
+            // Récupère le moyen de transport et la raison de se situer dedans
             KeyValuePair<Site, SitePersonStatus> transportSite = new KeyValuePair<Site, SitePersonStatus>(
                 personSites[SiteType.Transport][rdm.Next(0, personSites[SiteType.Transport].Count)],
                 SitePersonStatus.Other
                 );
 
             timeFrames = new List<TimeFrame>(totalTimeFrame);
-            // Changer les siteType pour définir le type
+
+            // Une fois que tous les lieux sont choisis, les périodes de la journée sont créés.
             CreateMorning(timeFrames, hometSite, morningTimeFrame, workSite, morningWorkTimeFrame, transportSite);
             CreateNoon(timeFrames, noonSite, noonTimeFrame, transportSite);
             CreateAfterNoon(timeFrames, workSite, afterNoonWorkTimeFrame, afterNoonFreeTimeSite, afterNoonFreeTimeTimeFrame, transportSite);
@@ -155,7 +163,7 @@ namespace CovidPropagation
         /// Créé un jour de congé pour une personne avec les lieux qui lui sont attribués
         /// </summary>
         /// <param name="personSites">Lieux avec lequel le planning sera créé</param>
-        /// <returns></returns>
+        /// <returns>Tableaux contenant les timesFrames créés.</returns>
         private TimeFrame[] CreateFreeDay(Dictionary<SiteType, List<Site>> personSites)
         {
             int totalTimeFrame = GlobalVariables.NUMBER_OF_TIMEFRAME;

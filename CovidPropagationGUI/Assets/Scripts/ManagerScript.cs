@@ -14,6 +14,7 @@ public class ManagerScript : MonoBehaviour
     public GameObject restaurant;
     public GameObject home;
     public GameObject company;
+    public GameObject bus;
 
     public GameObject person;
 
@@ -43,8 +44,8 @@ public class ManagerScript : MonoBehaviour
         _sitesParent = GameObject.Find("Sites");
         _personsParent = GameObject.Find("Persons");
 
-        //DataPopulation populationDatas = JsonUtility.FromJson<DataPopulation>(@"{ ""NbPersons"":100,""IndexOfInfected"":[0,6,8,15,42,69,80,90,99]}");
-        //DataSites sitesDatas = JsonUtility.FromJson<DataSites>(@"{ ""SitesType"":[0,1,2,3,4,5,6,0,1,2,3,4,5,6,0,1,2,3,4,5,6],""SitesId"":[0,1,5,20,70,220,670,4,2,10,40,140,440,1340,8,3,15,60,210,660,2010]}");
+        //DataPopulation populationDatas = JsonUtility.FromJson<DataPopulation>(@"{ ""NbPersons"":100,""IndexOfInfected"":[]}");
+        //DataSites sitesDatas = JsonUtility.FromJson<DataSites>(@"{ ""SitesType"":[0,2,4,6,4,6,6,4,1,3,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],""SitesId"":[0,1,5,20,70,220,670,4,2,10,40,140,440,1340,8,3,15,60,210,660,2010,1,3,4,5,6,7,8,9,10,11,12,13,16,19,22,25,28,31,34,35,36,39,42,45,48,51,54,57,60,63,64,65,68,71,74,77,80,83,84,87,90,93,96,99,102,105,108,111,114,117,120,123,126,129,132,135,138,141,144,147,150,153,156,159,162,165,168,171,174,177,180,181,182,185,188,189,192,195,198,201,204,207,210,213,216,219,222,225,228,231,234,237,240,241,242,245,248,251,254,257,258,259,262,265,268,271,274,277,278,279,280]}");
         //
         //GetComponent<ScriptClient>().dataReceived3.text = populationDatas.NbPersons + " " + populationDatas.IndexOfInfected.Count;
         //GetComponent<ScriptClient>().dataReceived2.text = sitesDatas.SitesType.Count + " " + sitesDatas.SitesId.Count;
@@ -59,10 +60,38 @@ public class ManagerScript : MonoBehaviour
         //List<int> test = GameObject.Find("GUIManager").GetComponent<ScriptClient>().testTransfer;
         if (Input.GetMouseButton(1))
         {
-            _persons.ForEach(p => {
-                p.GetComponent<MovementScript>().SetTarget(_sites[Random.Range(0, _sites.Count - 1)].transform);
-                // SetState si besoin
-            });
+            //DataIteration iterationDatas = JsonUtility.FromJson<DataIteration>(@"{ ""PersonsNewSite"":[0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5, 
+            //                                                                                           0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+            //                                                                                           0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+            //                                                                                           0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+            //                                                                                           0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5],
+            //                                                                       ""PersonsNewState"":[0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
+            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
+            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
+            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
+            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3]}");
+            //for (int i = 0; i < _persons.Count; i++)
+            //{
+            //    GameObject newTarget = _sites.FirstOrDefault(s => s.name == iterationDatas.PersonsNewSite[i].ToString());
+            //    if (newTarget != null)
+            //    {
+            //        _persons[i].GetComponent<MovementScript>().SetTarget(newTarget.transform);
+            //    }
+            //    _persons[i].GetComponent<MovementScript>().SetState(iterationDatas.PersonsNewState[i]);
+            //}
+        }
+    }
+
+    public void SetIterationDatas(DataIteration iterationDatas)
+    {
+        for (int i = 0; i < _persons.Count; i++)
+        {
+            GameObject newTarget = _sites.FirstOrDefault(s => s.name == iterationDatas.PersonsNewSite[i].ToString());
+            if (newTarget != null)
+            {
+                _persons[i].GetComponent<MovementScript>().SetTarget(newTarget.transform);
+            }
+            _persons[i].GetComponent<MovementScript>().SetState(iterationDatas.PersonsNewState[i]);
         }
     }
 
@@ -133,7 +162,7 @@ public class ManagerScript : MonoBehaviour
                 result = company;
                 break;
             case 7:
-                result = null;
+                result = bus;
                 break;
         }
 
@@ -165,17 +194,17 @@ public class ManagerScript : MonoBehaviour
 
         GameObject topRowLastElement = PositioningBuilding(_topRow, topRowPosition, space, true, null);
 
-        leftColPosition.x -= _leftColumn[0].transform.localScale.x/2;
-        leftColPosition.z -= _topRow[0].transform.localScale.z/2;
+        leftColPosition.x -= _leftColumn[0].transform.localScale.x / 2;
+        leftColPosition.z -= _topRow[0].transform.localScale.z / 2;
 
         GameObject leftColumnLastElement = PositioningBuilding(_leftColumn, leftColPosition, space, false, topRowLastElement);
 
         rightColPosition.x += _rightColumn[0].transform.localScale.x / 2;
-        rightColPosition.z -= _topRow[_topRow.Count-1].transform.localScale.z / 2;
+        rightColPosition.z -= _topRow[_topRow.Count - 1].transform.localScale.z / 2;
 
         GameObject rightColumnLastElement = PositioningBuilding(_rightColumn, rightColPosition, space, false, topRowLastElement);
 
-        bottomRowPosition.z = _leftColumn[_leftColumn.Count - 1].transform.position.z - _bottomRow[0].transform.localScale.z/2 - _leftColumn[_leftColumn.Count - 1].transform.localScale.z/2;
+        bottomRowPosition.z = _leftColumn[_leftColumn.Count - 1].transform.position.z - _bottomRow[0].transform.localScale.z / 2 - _leftColumn[_leftColumn.Count - 1].transform.localScale.z / 2;
 
         PositioningBuilding(_bottomRow, bottomRowPosition, space, true, leftColumnLastElement);
 
@@ -216,7 +245,7 @@ public class ManagerScript : MonoBehaviour
     {
         float maxSize = 10;
         buildings.ForEach(b => {
-            Vector3 newScale = new Vector3(maxSize / buildings.Count, 
+            Vector3 newScale = new Vector3(maxSize / buildings.Count,
                                            b.transform.localScale.y,
                                            maxSize / buildings.Count);
 

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MovementScript : MonoBehaviour
 {
+    private const float SPEED = 1f;
+
     private Transform target;
     private MeshRenderer meshRenderer;
 
@@ -14,7 +16,7 @@ public class MovementScript : MonoBehaviour
     public Material infectiousMaterial;
 
     private Vector3 targetPosition;
-    private float speed = 0.01f;
+    private float speed = SPEED;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,15 +26,9 @@ public class MovementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (target != null)
+        if (target != null && targetPosition != transform.position)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed);
-
-            if (targetPosition == transform.position)
-            {
-                speed = 0.001f;
-                MoveInSite();
-            }
         }
     }
 
@@ -56,7 +52,6 @@ public class MovementScript : MonoBehaviour
         }
 
         meshRenderer ??= GetComponent<MeshRenderer>();
-        Debug.Log(activeMaterial.name);
         meshRenderer.material = activeMaterial;
     }
 
@@ -67,14 +62,14 @@ public class MovementScript : MonoBehaviour
     public void SetTarget(Transform target)
     {
         this.target = target;
-        targetPosition = target.position;
-        speed = 0.01f;
+        targetPosition = FindPlaceInSite(target);
+        speed = SPEED;
     }
 
     /// <summary>
     /// Choisis un point aléatoire dans le lieu actuelle et le choisis comme nouvelle cible.
     /// </summary>
-    public void MoveInSite()
+    public Vector3 FindPlaceInSite(Transform target)
     {
         Vector3 newTarget;
 
@@ -88,14 +83,6 @@ public class MovementScript : MonoBehaviour
 
         newTarget = new Vector3(newX, 0, newZ);
 
-        targetPosition = newTarget;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (target != null && other.transform.name == target.name)
-        {
-            MoveInSite();
-        }
+        return newTarget;
     }
 }

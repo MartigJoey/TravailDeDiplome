@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+ * Nom du projet : CovidPropagation
+ * Auteur        : Joey Martig
+ * Date          : 11.06.2021
+ * Version       : 1.0
+ * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
+ */
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -45,6 +52,10 @@ namespace CovidPropagation
 
         public List<double> NumberOfContamination { get; set; }
 
+        /// <summary>
+        /// Ajoute des données à la structure.
+        /// </summary>
+        /// <param name="newDatas">Données à ajouter à la structure provenant d'une autre structure.</param>
         public void AddDatas(SimulationDatas newDatas)
         {
             NumberOfPeople.AddRange(newDatas.NumberOfPeople);
@@ -57,6 +68,11 @@ namespace CovidPropagation
             NumberOfContamination.AddRange(newDatas.NumberOfContamination);
         }
 
+        /// <summary>
+        /// Récupère la liste correspondant a la valeur du enum.
+        /// </summary>
+        /// <param name="enumData">Valeurs à récupérer.</param>
+        /// <returns>Valeurs correspondants aux valeurs à récupérer.</returns>
         public List<double> GetDataFromEnum(ChartsDisplayData enumData)
         {
             List<double> result;

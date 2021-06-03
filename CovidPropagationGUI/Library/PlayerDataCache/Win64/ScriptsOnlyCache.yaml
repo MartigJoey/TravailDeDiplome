@@ -40,10 +40,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
-    - Class: 54
-      Script: {instanceID: 0}
-    - Class: 65
-      Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
     - Class: 89
@@ -53,34 +49,32 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1486}
+      Script: {instanceID: 1482}
     - Class: 114
-      Script: {instanceID: 1948}
+      Script: {instanceID: 1488}
     - Class: 114
-      Script: {instanceID: 2212}
+      Script: {instanceID: 1950}
     - Class: 114
-      Script: {instanceID: 2476}
+      Script: {instanceID: 2214}
     - Class: 114
-      Script: {instanceID: 2604}
+      Script: {instanceID: 2478}
     - Class: 114
-      Script: {instanceID: 2638}
+      Script: {instanceID: 2606}
     - Class: 114
-      Script: {instanceID: 2818}
+      Script: {instanceID: 2640}
     - Class: 114
-      Script: {instanceID: 3042}
+      Script: {instanceID: 2820}
     - Class: 114
-      Script: {instanceID: 3360}
+      Script: {instanceID: 3044}
     - Class: 114
-      Script: {instanceID: 3496}
+      Script: {instanceID: 3362}
     - Class: 114
-      Script: {instanceID: 3554}
+      Script: {instanceID: 3498}
     - Class: 114
-      Script: {instanceID: 15734}
+      Script: {instanceID: 3556}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
-      Script: {instanceID: 0}
-    - Class: 135
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
@@ -101,6 +95,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: AnimationPlayableAsset
+  - hash:
+      serializedVersion: 2
+      Hash: 7113d5e7c21753b8b8a5a7f5a3423795
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MovementScript
   - hash:
       serializedVersion: 2
       Hash: a6e561615949734e9f12f9b61661f43e
@@ -349,7 +349,7 @@ ScriptsOnlyBuild:
     className: ScrollRect
   - hash:
       serializedVersion: 2
-      Hash: 367218d5796dac4ce81d448d77763c9b
+      Hash: 7d295e86d4710149dda60d7f0750a6a9
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ManagerScript
@@ -551,12 +551,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TextContainer
-  - hash:
-      serializedVersion: 2
-      Hash: 7113d5e7c21753b8b8a5a7f5a3423795
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: MovementScript
   platform: 19
   scenePathNames:
   - Assets/Scenes/GUI.unity

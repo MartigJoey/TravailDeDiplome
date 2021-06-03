@@ -1,14 +1,11 @@
 ﻿/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
- * Date          : 27.04.2021
+ * Date          : 11.06.2021
  * Version       : 1.0
- * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
+ * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
  */
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 
 namespace CovidPropagation
 {
@@ -27,7 +24,6 @@ namespace CovidPropagation
         }
 
         /// <summary>
-        /// TEMPORAIRE. Recherche d'une équation permettant de résoudre ce problème mathématiquement.
         /// Calcul à quel point la maladie baisse les défenses d'une personne en fonction de son âge.
         /// </summary>
         /// <param name="age"></param>

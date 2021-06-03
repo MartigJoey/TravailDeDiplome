@@ -1,16 +1,14 @@
 ﻿/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
- * Date          : 06.05.2021
+ * Date          : 11.06.2021
  * Version       : 1.0
- * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
+ * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
  */
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace CovidPropagation
@@ -44,48 +42,45 @@ namespace CovidPropagation
         public event DataUpdateEventHandler OnDataUpdate;
         public event DispalyChangeEventHandler OnDisplay;
         public event GUIDataEventHandler OnGUIUpdate;
-        public event InitializeGUIEventHandler OnGUIinitialize;
+        public event InitializeGUIEventHandler OnGUIInitialize;
 
         private Random rdm = new Random();
-        private int _averageAge;
         private double _probabilityOfBeingInfected;
         private int _nbPersons;
 
-        Dictionary<SiteType, List<Site>> sitesDictionnary;
-        List<Site> sites;
-        Outside outside;
-        List<Person> population;
-        Stopwatch sp;
-        bool startStop;
-        bool isInitialized;
-        int interval;
+        private Dictionary<SiteType, List<Site>> _sitesDictionnary;
+        private List<Site> _sites;
+        private Outside _outside;
+        private List<Person> _population;
+        private Stopwatch _sp;
+        private bool _startStop;
+        private bool _isInitialized;
+        private int _interval;
 
         SimulationDatas chartsDatas;
 
-        public int Interval { get => interval; set => interval = value; }
-        public bool IsInitialized { get => isInitialized; }
+        public int Interval { get => _interval; set => _interval = value; }
+        public bool IsInitialized { get => _isInitialized; }
 
         public Simulation()
         {
-            sites = new List<Site>();
-            sitesDictionnary = new Dictionary<SiteType, List<Site>>();
-            outside = new Outside();
-            population = new List<Person>();
-            sp = new Stopwatch();
-            isInitialized = false;
+            _sites = new List<Site>();
+            _sitesDictionnary = new Dictionary<SiteType, List<Site>>();
+            _outside = new Outside();
+            _population = new List<Person>();
+            _sp = new Stopwatch();
+            _isInitialized = false;
         }
 
-        public void Initialize(int avgAge, double probabilityOfBeingInfected, int nbPersons)
+        public void Initialize(double probabilityOfBeingInfected, int nbPersons)
         {
-            sites.Clear();
-            sitesDictionnary.Clear();
-            population.Clear();
-            isInitialized = true;
-
-            _averageAge = avgAge;
+            _sites.Clear();
+            _sitesDictionnary.Clear();
+            _population.Clear();
+            _isInitialized = true;
             _probabilityOfBeingInfected = probabilityOfBeingInfected;
             _nbPersons = nbPersons;
-            startStop = true;
+            _startStop = true;
 
             TimeManager.Init();
 
@@ -102,7 +97,7 @@ namespace CovidPropagation
             speedTest.Start();
             CreateBuildings();
             speedTest.Stop();
-            Debug.WriteLine("Building" + speedTest.ElapsedMilliseconds + "  Count" + sites.Count);
+            Debug.WriteLine("Building" + speedTest.ElapsedMilliseconds + "  Count" + _sites.Count);
             speedTest.Restart();
             CreatePublicTransports();
             speedTest.Stop();
@@ -112,18 +107,8 @@ namespace CovidPropagation
             CreatePopulation(_nbPersons, retirementProbability, minorProbability);
 
             speedTest.Stop();
-            Debug.WriteLine("Population " + speedTest.ElapsedMilliseconds + "  Count " + population.Count);
+            Debug.WriteLine("Population " + speedTest.ElapsedMilliseconds + "  Count " + _population.Count);
             //buildingSites.ForEach(b => b.SetMaskMeasure(true, true));
-
-            OnGUIinitialize(new DataPopulation(
-                                population.Count, 
-                                population.Where(p => p.CurrentState == PersonState.Infected).Select(p => p.Id).ToArray()
-                                ), 
-                            new DataSites(
-                                sites.Select(s => s.ConvertTypeToInt()).ToArray(), 
-                                sites.Select(s => s.Id).ToArray()
-                                )
-                            );
         }
 
         /// <summary>
@@ -138,30 +123,42 @@ namespace CovidPropagation
             chartsDatas = new SimulationDatas();
             chartsDatas.Initialize();
             chartsDatas.AddDatas(GetAllDatas());
-            int[] personsNewSite = new int[population.Count];
-            int[] personsNewState = new int[population.Count];
+            int[] personsNewSite = new int[_population.Count];
+            int[] personsNewState = new int[_population.Count];
+
+            // Initialise les données du GUI
+            OnGUIInitialize?.Invoke(new DataPopulation(
+                    _population.Count,
+                    _population.Where(p => p.CurrentState == PersonState.Infected).Select(p => p.Id).ToArray()
+                    ),
+                new DataSites(
+                    _sites.Select(s => s.ConvertTypeToInt()).ToArray(),
+                    _sites.Select(s => s.Id).ToArray()
+                    )
+                );
 
             int sumEllapsedTime = 0;
+            // Boucle d'itération de la simulation
             while (true)
             {
-                if (startStop)
+                // Défini si la simulation est en pause ou non
+                if (_startStop)
                 {
-                    sp.Start();
+                    _sp.Start();
                     TimeManager.NextTimeFrame();
 
-                    population.ForEach(p => p.ChangeActivity());
-                    sites.ForEach(p => p.CalculateprobabilityOfInfection());
-                    sitesDictionnary[SiteType.Hospital].ForEach(h => ((Hospital)h).TreatPatients());
-                    population.ForEach(p => p.ChechState());
-
+                    _population.ForEach(p => p.ChangeActivity());
+                    _sites.ForEach(p => p.CalculateprobabilityOfInfection());
+                    _sitesDictionnary[SiteType.Hospital].ForEach(h => ((Hospital)h).TreatPatients());
+                    _population.ForEach(p => p.ChechState());
 
                     // Trigger l'évènement OnTick qui va mettre à jour le GUI et met à jour ses données.
                     if (OnGUIUpdate != null)
                     {
-                        for (int i = 0; i < population.Count; i++)
+                        for (int i = 0; i < _population.Count; i++)
                         {
-                            personsNewSite[i] = population[i].GetNextActivitySite().Id;
-                            personsNewState[i] = (int)population[i].CurrentState;
+                            personsNewSite[i] = _population[i].GetNextActivitySite().Id;
+                            personsNewState[i] = (int)_population[i].CurrentState;
                         }
                         OnGUIUpdate(personsNewSite, personsNewState);
                     }
@@ -179,20 +176,22 @@ namespace CovidPropagation
                     }
 
 
-                    sp.Stop();
-
+                    _sp.Stop();
                     // Calule le temps à attendre pour correspondre au données du slider. (1 secondes par itération --> si l'itération se fait en 100ms alors on attend 900ms)
-                    if (sp.ElapsedMilliseconds < Interval)
+                    if (_sp.ElapsedMilliseconds < Interval)
                     {
                         long interval = Interval;
-                        int delay = (int)(Interval - sp.ElapsedMilliseconds);
+                        int delay = (int)(Interval - _sp.ElapsedMilliseconds);
                         await Task.Delay(delay);
                         sumEllapsedTime += delay;
                     }
-                    sumEllapsedTime += (int)sp.ElapsedMilliseconds;
-                    sp.Reset();
+                    sumEllapsedTime += (int)_sp.ElapsedMilliseconds;
+                    _sp.Reset();
                 }
-                await Task.Delay(100);
+                else
+                {
+                    await Task.Delay(100); // Ajoute un délai pour réduire la consommation CPU
+                }
             }
         }
 
@@ -214,14 +213,14 @@ namespace CovidPropagation
             SimulationDatas datas = new SimulationDatas();
             datas.Initialize();
             // MODIFIER LES REQUETES POUR DES VALEURS FIXES
-            datas.NumberOfPeople.Add(population.Count);
-            datas.NumberOfInfected.Add(population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count());
-            datas.NumberOfImmune.Add(population.Where(p => (int)p.CurrentState == (int)PersonState.Immune).Count());
-            datas.NumberOfHospitalisation.Add(sitesDictionnary[SiteType.Hospital].Sum(b => ((Hospital)b).CountPatients()));
-            datas.NumberOfDeath.Add(population.Where(p => p.CurrentState == PersonState.Dead).Count());
+            datas.NumberOfPeople.Add(_population.Count);
+            datas.NumberOfInfected.Add(_population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count());
+            datas.NumberOfImmune.Add(_population.Where(p => (int)p.CurrentState == (int)PersonState.Immune).Count());
+            datas.NumberOfHospitalisation.Add(_sitesDictionnary[SiteType.Hospital].Sum(b => ((Hospital)b).CountPatients()));
+            datas.NumberOfDeath.Add(_population.Where(p => p.CurrentState == PersonState.Dead).Count());
             datas.NumberOfContamination.Add(42);
-            datas.NumberOfHealthy.Add(population.Where(p => (int)p.CurrentState == (int)PersonState.Healthy).Count());
-            datas.NumberOfReproduction.Add(sites.Sum(b => b.VirusAraisingCases));
+            datas.NumberOfHealthy.Add(_population.Where(p => (int)p.CurrentState == (int)PersonState.Healthy).Count());
+            datas.NumberOfReproduction.Add(_sites.Sum(b => b.VirusAraisingCases));
             return datas;
             /*return $"Nombre de personne      : {population.Count} {Environment.NewLine}" +
                    $"Average age             : {(double)population.Average(p => p.Age)} {Environment.NewLine}" +
@@ -287,7 +286,7 @@ namespace CovidPropagation
         /// </summary>
         public void Start()
         {
-            startStop = true;
+            _startStop = true;
         }
 
         /// <summary>
@@ -295,7 +294,7 @@ namespace CovidPropagation
         /// </summary>
         public void Stop()
         {
-            startStop = false;
+            _startStop = false;
         }
 
         /// <summary>
@@ -316,14 +315,14 @@ namespace CovidPropagation
                     new KeyValuePair<object, double>(typeof(Hospital), PROBABILITY_OF_BEING_A_HOSPITAL),
                     new KeyValuePair<object, double>(typeof(Supermarket), PROBABILITY_OF_BEING_A_SUPERMARKET),
             };
-            sites.Add(outside);
+            _sites.Add(_outside);
 
             #region list
-            sitesDictionnary.Add(SiteType.Hospital, new List<Site>());
-            sitesDictionnary.Add(SiteType.Store, new List<Site>());
-            sitesDictionnary.Add(SiteType.WorkPlace, new List<Site>());
-            sitesDictionnary.Add(SiteType.Eat, new List<Site>());
-            sitesDictionnary.Add(SiteType.School, new List<Site>());
+            _sitesDictionnary.Add(SiteType.Hospital, new List<Site>());
+            _sitesDictionnary.Add(SiteType.Store, new List<Site>());
+            _sitesDictionnary.Add(SiteType.WorkPlace, new List<Site>());
+            _sitesDictionnary.Add(SiteType.Eat, new List<Site>());
+            _sitesDictionnary.Add(SiteType.School, new List<Site>());
             //buildingSitesDictionnaryArray.Add(typeof(Company), new Site[nbBuildings]);
 
             while (nbBuildings > 0)
@@ -334,71 +333,71 @@ namespace CovidPropagation
                 if (result == typeof(Company))
                 {
                     site = new Company();
-                    sitesDictionnary[SiteType.WorkPlace].Add(site);
+                    _sitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
                 else if (result == typeof(Store))
                 {
                     site = new Store();
-                    sitesDictionnary[SiteType.Store].Add(site);
-                    sitesDictionnary[SiteType.WorkPlace].Add(site);
+                    _sitesDictionnary[SiteType.Store].Add(site);
+                    _sitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
                 else if (result == typeof(Restaurant))
                 {
                     site = new Restaurant();
-                    sitesDictionnary[SiteType.Eat].Add(site);
-                    sitesDictionnary[SiteType.WorkPlace].Add(site);
+                    _sitesDictionnary[SiteType.Eat].Add(site);
+                    _sitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
                 else if (result == typeof(School))
                 {
                     site = new School();
-                    sitesDictionnary[SiteType.School].Add(site);
-                    sitesDictionnary[SiteType.WorkPlace].Add(site);
+                    _sitesDictionnary[SiteType.School].Add(site);
+                    _sitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
                 else if (result == typeof(Hospital))
                 {
                     site = new Hospital();
-                    sitesDictionnary[SiteType.Hospital].Add(site);
-                    sitesDictionnary[SiteType.WorkPlace].Add(site);
+                    _sitesDictionnary[SiteType.Hospital].Add(site);
+                    _sitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
                 else
                 {
                     site = new Supermarket();
-                    sitesDictionnary[SiteType.Store].Add(site);
-                    sitesDictionnary[SiteType.WorkPlace].Add(site);
+                    _sitesDictionnary[SiteType.Store].Add(site);
+                    _sitesDictionnary[SiteType.WorkPlace].Add(site);
                 }
-                sites.Add(site);
+                _sites.Add(site);
                 nbBuildings--;
             }
             #endregion
 
             #region missingBuildings
             Site missingSite;
-            if (sitesDictionnary[SiteType.Hospital].Count == 0)
+            if (_sitesDictionnary[SiteType.Hospital].Count == 0)
             {
                 missingSite = new Hospital();
-                sites.Add(missingSite);
-                sitesDictionnary[SiteType.Hospital].Add(missingSite);
+                _sites.Add(missingSite);
+                _sitesDictionnary[SiteType.Hospital].Add(missingSite);
             }
 
-            if (sitesDictionnary[SiteType.Store].Count == 0)
+            if (_sitesDictionnary[SiteType.Store].Count == 0)
             {
                 missingSite = new Store();
-                sites.Add(missingSite);
-                sitesDictionnary[SiteType.Store].Add(missingSite);
+                _sites.Add(missingSite);
+                _sitesDictionnary[SiteType.Store].Add(missingSite);
             }
                 
-            if (sitesDictionnary[SiteType.Eat].Count == 0)
+            if (_sitesDictionnary[SiteType.Eat].Count == 0)
             {
                 missingSite = new Restaurant();
-                sites.Add(missingSite);
-                sitesDictionnary[SiteType.Eat].Add(missingSite);
+                _sites.Add(missingSite);
+                _sitesDictionnary[SiteType.Eat].Add(missingSite);
             }
                 
-            if (sitesDictionnary[SiteType.School].Count == 0)
+            if (_sitesDictionnary[SiteType.School].Count == 0)
             {
                 missingSite = new School();
-                sites.Add(missingSite);
-                sitesDictionnary[SiteType.School].Add(missingSite);
+                _sites.Add(missingSite);
+                _sitesDictionnary[SiteType.School].Add(missingSite);
             }
 
             #endregion
@@ -410,14 +409,14 @@ namespace CovidPropagation
         private void CreatePublicTransports()
         {
             double nbOfBus = (int)Math.Ceiling((0.85d - 100) / 100 * _nbPersons + _nbPersons);
-            sitesDictionnary.Add(SiteType.Transport, new List<Site>());
+            _sitesDictionnary.Add(SiteType.Transport, new List<Site>());
 
             for (int i = 0; i < nbOfBus; i++)
             {
                 Bus bus = new Bus();
-                sites.Add(bus);
-                sitesDictionnary[SiteType.WorkPlace].Add(bus);
-                sitesDictionnary[SiteType.Transport].Add(bus);
+                _sites.Add(bus);
+                _sitesDictionnary[SiteType.WorkPlace].Add(bus);
+                _sitesDictionnary[SiteType.Transport].Add(bus);
             }
         }
 
@@ -435,7 +434,7 @@ namespace CovidPropagation
                 int age;
                 int nbWorkDays;
                 Home home = new Home();
-                Hospital hospital = (Hospital)sitesDictionnary[SiteType.Hospital][rdm.Next(0, sitesDictionnary[SiteType.Hospital].Count)];
+                Hospital hospital = (Hospital)_sitesDictionnary[SiteType.Hospital][rdm.Next(0, _sitesDictionnary[SiteType.Hospital].Count)];
                 Dictionary<SiteType, List<Site>> personSites = new Dictionary<SiteType, List<Site>>();
                 PersonState personState;
 
@@ -450,15 +449,15 @@ namespace CovidPropagation
                     personSites = new Dictionary<SiteType, List<Site>>() {
                         { SiteType.Home, new List<Site>{home} },
                         { SiteType.Store, new List<Site>{
-                            sitesDictionnary[SiteType.Store][rdm.Next(0, sitesDictionnary[SiteType.Store].Count)],
-                            sitesDictionnary[SiteType.Store][rdm.Next(0, sitesDictionnary[SiteType.Store].Count)],
-                            sitesDictionnary[SiteType.Store][rdm.Next(0, sitesDictionnary[SiteType.Store].Count)]
+                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
+                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
+                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)]
                             }
                         },
                         { SiteType.Eat, new List<Site>{
-                            sitesDictionnary[SiteType.Eat][rdm.Next(0, sitesDictionnary[SiteType.Eat].Count)],
-                            sitesDictionnary[SiteType.Eat][rdm.Next(0, sitesDictionnary[SiteType.Eat].Count)],
-                            sitesDictionnary[SiteType.Eat][rdm.Next(0, sitesDictionnary[SiteType.Eat].Count)]
+                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
+                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
+                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)]
                             }
                         },
                         { SiteType.Transport, new List<Site>{ GetVehicle() } }
@@ -471,23 +470,23 @@ namespace CovidPropagation
                     personSites = new Dictionary<SiteType, List<Site>>() {
                         { SiteType.Home, new List<Site>{home} },
                         { SiteType.Store, new List<Site>{
-                            sitesDictionnary[SiteType.Store][rdm.Next(0, sitesDictionnary[SiteType.Store].Count)],
-                            sitesDictionnary[SiteType.Store][rdm.Next(0, sitesDictionnary[SiteType.Store].Count)],
-                            sitesDictionnary[SiteType.Store][rdm.Next(0, sitesDictionnary[SiteType.Store].Count)]
+                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
+                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
+                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)]
                             }
                         },
                         { SiteType.Eat, new List<Site>{
-                            sitesDictionnary[SiteType.Eat][rdm.Next(0, sitesDictionnary[SiteType.Eat].Count)],
-                            sitesDictionnary[SiteType.Eat][rdm.Next(0, sitesDictionnary[SiteType.Eat].Count)],
-                            sitesDictionnary[SiteType.Eat][rdm.Next(0, sitesDictionnary[SiteType.Eat].Count)]
+                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
+                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
+                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)]
                             }
                         },
                         { SiteType.Transport, new List<Site>{ 
-                            outside 
+                            _outside 
                             } 
                         },
                         { SiteType.WorkPlace, new List<Site>{ 
-                            sitesDictionnary[SiteType.School][rdm.Next(0, sitesDictionnary[SiteType.School].Count)] 
+                            _sitesDictionnary[SiteType.School][rdm.Next(0, _sitesDictionnary[SiteType.School].Count)] 
                             } 
                         },
                     };
@@ -499,19 +498,19 @@ namespace CovidPropagation
                     personSites = new Dictionary<SiteType, List<Site>>() {
                         { SiteType.Home, new List<Site>{home} },
                         { SiteType.Store, new List<Site>{
-                            sitesDictionnary[SiteType.Store][rdm.Next(0, sitesDictionnary[SiteType.Store].Count)],
-                            sitesDictionnary[SiteType.Store][rdm.Next(0, sitesDictionnary[SiteType.Store].Count)],
-                            sitesDictionnary[SiteType.Store][rdm.Next(0, sitesDictionnary[SiteType.Store].Count)]
+                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
+                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
+                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)]
                             }
                         },
                         { SiteType.Eat, new List<Site>{
-                            sitesDictionnary[SiteType.Eat][rdm.Next(0, sitesDictionnary[SiteType.Eat].Count)],
-                            sitesDictionnary[SiteType.Eat][rdm.Next(0, sitesDictionnary[SiteType.Eat].Count)],
-                            sitesDictionnary[SiteType.Eat][rdm.Next(0, sitesDictionnary[SiteType.Eat].Count)]
+                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
+                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
+                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)]
                             }
                         },
                         { SiteType.Transport, new List<Site>{
-                            outside,
+                            _outside,
                             GetVehicle()
                             }
                         },
@@ -524,9 +523,9 @@ namespace CovidPropagation
                     nbWorkDays = 5;
                 }
 
-                sites.Add(home);
+                _sites.Add(home);
                 Planning planning = new Planning(personSites, nbWorkDays);
-                population.Add(new Person(planning, hospital, age, personState));
+                _population.Add(new Person(planning, hospital, age, personState));
                 nbPeople--;
             }
         }
@@ -537,7 +536,7 @@ namespace CovidPropagation
         /// <returns>Lieu de travail.</returns>
         private Site FindWorkPlace()
         {
-            WorkSite workplace = (WorkSite)sitesDictionnary[SiteType.WorkPlace][rdm.Next(0, sitesDictionnary[SiteType.WorkPlace].Count)];
+            WorkSite workplace = (WorkSite)_sitesDictionnary[SiteType.WorkPlace][rdm.Next(0, _sitesDictionnary[SiteType.WorkPlace].Count)];
             return workplace.IsHiring() ? (Site)workplace : FindWorkPlace();
         }
 
@@ -580,9 +579,9 @@ namespace CovidPropagation
         {
             KeyValuePair<object, double>[] transportsProbability = new KeyValuePair<object, double>[] {
                 new KeyValuePair<object, double>(new Car(), PROBABILITY_OF_USING_A_CAR),
-                new KeyValuePair<object, double>(outside, PROBABILITY_OF_WALKING),
+                new KeyValuePair<object, double>(_outside, PROBABILITY_OF_WALKING),
                 new KeyValuePair<object, double>(new Bike(), PROBABILITY_OF_USING_A_BIKE), 
-                new KeyValuePair<object, double>(sitesDictionnary[SiteType.Transport][rdm.Next(0, sitesDictionnary[SiteType.Transport].Count)], PROBABILITY_OF_USING_A_BUS),
+                new KeyValuePair<object, double>(_sitesDictionnary[SiteType.Transport][rdm.Next(0, _sitesDictionnary[SiteType.Transport].Count)], PROBABILITY_OF_USING_A_BUS),
             };
             return (Site)rdm.NextProbability(transportsProbability);
         }

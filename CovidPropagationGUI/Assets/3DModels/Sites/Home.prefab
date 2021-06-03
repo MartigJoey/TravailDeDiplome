@@ -83,5 +83,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Building (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7317591799613874555, guid: cb8b68138ffa8cb49ab48da97dd9a284, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: cb8b68138ffa8cb49ab48da97dd9a284, type: 3}
