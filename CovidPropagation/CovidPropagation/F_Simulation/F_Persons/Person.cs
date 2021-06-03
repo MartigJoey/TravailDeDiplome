@@ -12,6 +12,7 @@ using System.Collections.Generic;
 namespace CovidPropagation
 {
     /// <summary>
+    /// ID Documentation : Person_Class
     /// Individus se déplacant dans différents lieu en fonction de son planning.
     /// Peut être infecté et modifier les chances d'être infecté dans un lieu.
     /// </summary>
@@ -109,6 +110,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Change_Activity
         /// Change d'activité et recalcul les chances d'attraper le virus.
         /// Change d'état si besoin.
         /// Décrémente la durée d'incubation du virus si infecté.
@@ -119,14 +121,6 @@ namespace CovidPropagation
         /// </summary>
         public void ChangeActivity()
         {
-            // Si l'individus décède, il est réintialisé
-            if (_state == PersonState.Dead)
-            {
-                ilnesses.Clear();
-                _state = PersonState.Healthy;
-                symptoms.Clear();
-            }
-
             // Quitte l'hôpital
             if (_mustLeaveHospital)
             {
@@ -140,6 +134,7 @@ namespace CovidPropagation
                 DecrementUntilDeath(2);
             }
 
+            // ID Documentation : Person_Hospital
             // Si la résistance de l'individus est suffisament faible pour être hôspitaliser, et que le virus s'est développé.
             if (virusResistance < MIN_RESISTANCE_BEFORE_HOSPITALISATION && (int)_state > (int)PersonState.Infected)
             {
@@ -211,6 +206,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Check_State
         /// Vérifie l'état de contamination de la personne.
         /// </summary>
         public void ChechState()
@@ -229,6 +225,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Virus_Incubation
         /// Initialize la durée de vie du virus ainsi que sa durée d'incubation.
         /// </summary>
         /// <param name="state">Nouvel état de l'individu.</param>
@@ -279,6 +276,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Incubation_Acitvity_Decrement
         /// Décrémente la durée d'incubation du virus si infecté.
         /// Décrémente la durée de vie du virus si infecté et que la durée d'incubation est terminée.
         /// Et change l'état en fonction du résultat.
@@ -309,6 +307,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Symptoms_After_Incubation
         /// Lorsque l'incubation du virus est terminée, change l'état en asymptomatique ou en infectieux.
         /// </summary>
         private void VirusIncubationOver()
@@ -325,6 +324,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Contract_Ilness
         /// Calcul si l'individus attrape une maladie et decrémente la durée de celles déjà existantes.
         /// Retire les maladies dont la durée est terminée.
         /// </summary>

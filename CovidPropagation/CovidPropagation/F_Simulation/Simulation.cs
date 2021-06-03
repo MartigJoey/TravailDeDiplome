@@ -18,6 +18,9 @@ namespace CovidPropagation
     public delegate void DataUpdateEventHandler(SimulationDatas e);
     public delegate void DispalyChangeEventHandler(SimulationDatas e, bool isDisplayChange);
 
+    /// <summary>
+    /// ID Documentation : Simulation_Class
+    /// </summary>
     public class Simulation : EventArgs
     {
         private const double PROBABILITY_OF_BEING_A_COMPANY = 0.7909d;
@@ -72,6 +75,12 @@ namespace CovidPropagation
             _isInitialized = false;
         }
 
+        /// <summary>
+        /// ID documentation: Initialize_Simulation
+        /// Initialise la simulation, créé les bâtiments, créé les individus, Réinitialise le TimeManager et set les trigger des mesures.
+        /// </summary>
+        /// <param name="probabilityOfBeingInfected">Probabilités qu'un individu a d'être infecté lors de sa création</param>
+        /// <param name="nbPersons">Nombre d'individus total dans la simulation</param>
         public void Initialize(double probabilityOfBeingInfected, int nbPersons)
         {
             _sites.Clear();
@@ -87,11 +96,6 @@ namespace CovidPropagation
             // Récupérer depuis les paramètres
             double minorProbability = DEFAULT_PROBABILITY_OF_BEING_MINOR;
             double retirementProbability = DEFAULT_PROBABILITY_OF_BEING_RETIRED;
-            double workingProbability = 1 - minorProbability - retirementProbability;
-
-            int nbMinor = (int)Math.Round(minorProbability * _nbPersons);
-            int nbRetirement = (int)Math.Round(retirementProbability * _nbPersons);
-            int nbWorking = (int)Math.Round(workingProbability * _nbPersons);
 
             Stopwatch speedTest = new Stopwatch();
             speedTest.Start();
@@ -112,6 +116,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Simulation_Iteration
         /// Itère la simulation. 
         /// Créé un "timer" à l'aide des stopwatch pour une meilleur précision.
         /// Ordonne à la population de changer d'activité,
@@ -151,6 +156,7 @@ namespace CovidPropagation
                     _sites.ForEach(p => p.CalculateprobabilityOfInfection());
                     _sitesDictionnary[SiteType.Hospital].ForEach(h => ((Hospital)h).TreatPatients());
                     _population.ForEach(p => p.ChechState());
+                    _population.RemoveAll(p => p.CurrentState == PersonState.Dead);
 
                     // Trigger l'évènement OnTick qui va mettre à jour le GUI et met à jour ses données.
                     if (OnGUIUpdate != null)
@@ -298,6 +304,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID documentation: Create_Buildings
         /// Créé les bâtiments de la simulation en fonction du nombre de personnes.
         /// Peut importe le nombre de personnes, il existe un bâtiment de chaque.
         /// Les bâtiments sont créé proportionnelement à la taille de la population et à leur type.
@@ -443,6 +450,7 @@ namespace CovidPropagation
                 else
                     personState = PersonState.Healthy;
 
+                // ID Documentation: Sites_Attribution, Create_Person
                 // Sélectionne les lieux dans lesquels l'individu va se déplacer en fonction des probabilité qu'il a d'être soit retraité soit mineur soit en âge de travailler.
                 if (GlobalVariables.rdm.NextBoolean(retirementProbability))
                 {

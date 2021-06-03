@@ -41,6 +41,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Enter_Hospital
         /// Fait entrer un individu pour cause de covid dans le bâtiment s'il y a de la place
         /// </summary>
         /// <param name="patient">Patient qui essai d'entrer.</param>

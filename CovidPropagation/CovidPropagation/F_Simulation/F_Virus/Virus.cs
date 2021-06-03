@@ -12,6 +12,10 @@ using System.Linq;
 
 namespace CovidPropagation
 {
+    /// <summary>
+    /// ID Documentation : Virus_Class
+    /// Class contenant les données du virus qui est utilisé pour simuler le/la covid.
+    /// </summary>
     public static class Virus
     {
         private static List<Symptom> commonSymptoms;

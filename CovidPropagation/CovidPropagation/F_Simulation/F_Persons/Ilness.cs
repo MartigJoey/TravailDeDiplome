@@ -24,11 +24,12 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Ilness_Impact
         /// Calcul à quel point la maladie baisse les défenses d'une personne en fonction de son âge.
         /// </summary>
-        /// <param name="age"></param>
-        /// <param name="rdm"></param>
-        /// <returns></returns>
+        /// <param name="age">Age de l'individu.</param>
+        /// <param name="rdm">Chances que la maladie soit grave.</param>
+        /// <returns>"Puissance" de la maladie.</returns>
         private int CalculateAttack(int age, Random rdm)
         {
             // Entre 5 et 20

@@ -12,6 +12,7 @@ using System.Linq;
 namespace CovidPropagation
 {
     /// <summary>
+    /// ID Documentation : Site_Class
     /// Lieu dans lequel des personnes entrent et sortent et propageant le virus.
     /// </summary>
     public class Site
@@ -128,6 +129,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Calculate_Probability
         /// Calcul le taux de probabilité d'infection d'une personne dans ce lieu.
         /// </summary>
         public void CalculateprobabilityOfInfection()
