@@ -26,9 +26,7 @@ namespace CovidPropagation
         private static int _incubationDurationMin;
         private static int _incubationDurationMax;
         private static int _durationMin; // En jours      
-        private static int _durationMax; // En jours                 
-        private static double _hospitalRate;
-        private static double _deathRate;
+        private static int _durationMax; // En jours  
 
         private static int _immunityDurationMin; // En jours
         private static int _immunityDurationMax; // En jours
@@ -43,8 +41,6 @@ namespace CovidPropagation
         public static int DurationMin { get => _durationMin; }
         public static int DurationMax { get => _durationMax; }
         public static int Duration { get => GlobalVariables.rdm.NextInclusive(_durationMin, _durationMax); }
-        public static double HospitalRate { get => _hospitalRate; }
-        public static double DeathRate { get => _deathRate; }
         public static double DecayRateOfVirus { get => _decayRateOfVirus; }
         public static double DepositionOnSurfaceRate { get => _depositionOnSurfaceRate; }
         public static int ImmunityDurationMin { get => _immunityDurationMin; set => _immunityDurationMin = value; }
@@ -70,8 +66,6 @@ namespace CovidPropagation
             _incubationDurationMax = VirusParameters.IncubationDurationMax;
             _durationMin = VirusParameters.DurationMin;
             _durationMax = VirusParameters.DurationMax;
-            _hospitalRate = VirusParameters.HospitalRate;
-            _deathRate = VirusParameters.DeathRate;
             _decayRateOfVirus = VirusParameters.DecayRateOfVirus;
             _depositionOnSurfaceRate = VirusParameters.DepositionOnSurfaceRate;
             _immunityDurationMin = VirusParameters.ImmunityDurationMin;

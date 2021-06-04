@@ -28,12 +28,9 @@
                     <RowDefinition MinHeight="25" MaxHeight="25"/>
                     <RowDefinition MinHeight="40" MaxHeight="40"/>
                     <RowDefinition MinHeight="30" MaxHeight="30"/>
-                    <RowDefinition MinHeight="40" MaxHeight="40"/>
-                    <RowDefinition MinHeight="40" MaxHeight="40"/>
-                    <RowDefinition MinHeight="40" MaxHeight="40"/>
-                    <RowDefinition MinHeight="25" MaxHeight="25"/>
-                    <RowDefinition MinHeight="40" MaxHeight="40"/>
-                    <RowDefinition MinHeight="40" MaxHeight="40"/>
+                    <RowDefinition MinHeight="45" MaxHeight="45"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
+                    <RowDefinition MinHeight="30" MaxHeight="30"/>
                 </Grid.RowDefinitions>
                 
                 <!-- Général -->
@@ -238,7 +235,7 @@
                 <Label Grid.Column="0"
                    Grid.Row="8"
                    Style="{StaticResource labelText}"
-                   Margin="10,0,239,0">Durée(mois) :</Label>
+                   Margin="10,0,239,0">Durée(jours) :</Label>
                 <TextBox Style="{StaticResource textbox}" 
                      x:Name="tbxVaccinationDuration" 
                      Grid.Column="0"
@@ -271,19 +268,26 @@
                 <Label Grid.Column="0"
                    Grid.Row="11"
                    Style="{StaticResource labelText}" Margin="15,0,0,0">Clients :</Label>
-                <StackPanel Margin="85,0,0,0" Grid.Column="0" Grid.Row="11">
-                    <RadioButton x:Name="chxClientMaskIsOn" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activé</RadioButton>
-                    <RadioButton x:Name="chxClientMaskIsOff" Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivé</RadioButton>
+                <StackPanel x:Name="splClientMask" Margin="85,0,0,0" Grid.Column="0" Grid.Row="11">
+                    <RadioButton x:Name="rdbClientMaskIsOn" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activer</RadioButton>
+                    <RadioButton x:Name="rdbClientMaskIsOff" Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactiver</RadioButton>
                 </StackPanel>
 
                     <!-- Personnel -->
                 <Label Grid.Column="0"
                    Grid.Row="12"
                    Style="{StaticResource labelText}" Margin="15,0,0,0">Personnels :</Label>
-                <StackPanel Margin="85,0,0,0" Grid.Column="0" Grid.Row="12">
-                    <RadioButton x:Name="chxPersonnelMaskIsOn" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activés</RadioButton>
-                    <RadioButton x:Name="chxPersonnelMaskIsOff" Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivés</RadioButton>
+                <StackPanel x:Name="splPersonnelMask" Margin="85,0,0,0" Grid.Column="0" Grid.Row="12">
+                    <RadioButton x:Name="rdbPersonnelMaskIsOn" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activer</RadioButton>
+                    <RadioButton x:Name="rdbPersonnelMaskIsOff" Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactiver</RadioButton>
                 </StackPanel>
+
+                <Button Style="{StaticResource smallButton}" 
+                    Grid.Column="0" 
+                    Grid.Row="13"
+                    Content="Défaut" 
+                    Margin="195,0,0,0"
+                    Click="Default_Click"/>
             </Grid>
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
@@ -304,11 +308,6 @@
                     <RowDefinition MinHeight="30" MaxHeight="30"/>
                     <RowDefinition MinHeight="35" MaxHeight="35"/>
                     <RowDefinition MinHeight="40" MaxHeight="40"/>
-                    <RowDefinition MinHeight="30" MaxHeight="30"/>
-                    <RowDefinition MinHeight="30" MaxHeight="30"/>
-                    <RowDefinition MinHeight="30" MaxHeight="30"/>
-                    <RowDefinition MinHeight="30" MaxHeight="30"/>
-                    <RowDefinition MinHeight="30" MaxHeight="30"/>
                     <RowDefinition MinHeight="30" MaxHeight="30"/>
                     <RowDefinition MinHeight="30" MaxHeight="30"/>
                 </Grid.RowDefinitions>
@@ -366,7 +365,7 @@
                 <Label Grid.Column="1"
                    Grid.Row="5"
                    Style="{StaticResource labelText}" 
-                   Margin="10,0,150,0">Durée d'immunité minimum (mois) :</Label>
+                   Margin="10,0,150,0">Durée d'immunité minimum (jours) :</Label>
                 <TextBox Style="{StaticResource textbox}" 
                      x:Name="tbxVirusMinImmunityDuration" 
                      Grid.Column="1"
@@ -378,7 +377,7 @@
                 <Label Grid.Column="1"
                    Grid.Row="6"
                    Style="{StaticResource labelText}" 
-                   Margin="10,0,150,0">Durée d'immunité maximum (mois) :</Label>
+                   Margin="10,0,150,0">Durée d'immunité maximum (jours) :</Label>
                 <TextBox Style="{StaticResource textbox}" 
                      x:Name="tbxVirusMaxImmunityDuration" 
                      Grid.Column="1"
@@ -390,81 +389,69 @@
                 <Label Grid.Column="1"
                    Grid.Row="7"
                    Style="{StaticResource labelText}" 
-                   Margin="10,0,210,0">Taux d'hospitalisation (%) :</Label>
+                   Margin="10,0,210,0">Éfficacité de l'immunité (%) :</Label>
                 <TextBox Style="{StaticResource textbox}" 
-                     x:Name="tbxVirusHospitalisationRate" 
+                     x:Name="tbxVirusImmunityEfficiency" 
                      Grid.Column="1"
                      Grid.Row="7"
                      Tag="1"
                      PreviewTextInput="TextBox_PreviewTextInput" 
                      TextChanged="TextBox_TextChanged" Margin="190,1,0,1"/>
 
-                <Label Grid.Column="1"
-                   Grid.Row="8"
-                   Style="{StaticResource labelText}" 
-                   Margin="10,0,239,0">Taux de décès (%) :</Label>
-                <TextBox Style="{StaticResource textbox}" 
-                     x:Name="tbxVirusDeathRate" 
-                     Grid.Column="1"
-                     Grid.Row="8"
-                     Tag="1"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="150,1,0,1"/>
-
                 <Label Grid.Column="0"
-                   Grid.Row="9"
+                   Grid.Row="8"
                    Style="{StaticResource labelText}">Symptômes :</Label>
                 <Label Grid.Column="0"
-                   Grid.Row="10"
+                   Grid.Row="9"
                    Style="{StaticResource labelText}" Margin="10,0,0,0">Toux :</Label>
 
-                <StackPanel Margin="10,0,0,0" Grid.Column="1" Grid.Row="11">
-                    <RadioButton x:Name="rdbCoughSymptomEnabled" Margin="10,0,0,0" IsChecked="True"  Foreground="{StaticResource foreGroundLight}">Activée</RadioButton>
-                    <RadioButton x:Name="rdbCoughSymptomDisabled" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Désactivée</RadioButton>
+                <StackPanel Margin="10,0,0,0" Grid.Column="1" Grid.Row="10">
+                    <RadioButton x:Name="rdbCoughSymptomEnabled" Margin="10,0,0,0" IsChecked="True"  Foreground="{StaticResource foreGroundLight}">Activer</RadioButton>
+                    <RadioButton x:Name="rdbCoughSymptomDisabled" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Désactiver</RadioButton>
                 </StackPanel>
 
                 <Label Grid.Column="1"
-                   Grid.Row="12"
+                   Grid.Row="11"
                    Style="{StaticResource labelText}" 
                    Margin="10,0,239,0">Quanta minimum :</Label>
                 <TextBox Style="{StaticResource textbox}" 
                      x:Name="tbxCoughMinQuanta" 
+                     Grid.Column="1"
+                     Grid.Row="11"
+                     Tag="7"
+                     PreviewTextInput="TextBox_PreviewTextInput" 
+                     TextChanged="TextBox_TextChanged" Margin="150,1,0,1"/>
+
+                <Label Grid.Column="1"
+                   Grid.Row="12"
+                   Style="{StaticResource labelText}" 
+                   Margin="10,0,239,0">Quanta maximum :</Label>
+                <TextBox Style="{StaticResource textbox}" 
+                     x:Name="tbxCoughMaxQuanta" 
                      Grid.Column="1"
                      Grid.Row="12"
                      Tag="7"
                      PreviewTextInput="TextBox_PreviewTextInput" 
                      TextChanged="TextBox_TextChanged" Margin="150,1,0,1"/>
 
-                <Label Grid.Column="1"
-                   Grid.Row="13"
-                   Style="{StaticResource labelText}" 
-                   Margin="10,0,239,0">Quanta maximum :</Label>
-                <TextBox Style="{StaticResource textbox}" 
-                     x:Name="tbxCoughMaxQuanta" 
-                     Grid.Column="1"
-                     Grid.Row="13"
-                     Tag="7"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="150,1,0,1"/>
-
                 <Label Grid.Column="0"
-                   Grid.Row="14"
+                   Grid.Row="13"
                    Style="{StaticResource labelText}">Transmission aérosol :</Label>
 
-                <StackPanel Margin="10,0,0,0" Grid.Column="1" Grid.Row="15">
-                    <RadioButton x:Name="rdbAerosolTransmissionIsEnabled" Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Activée</RadioButton>
-                    <RadioButton x:Name="rdbAerosolTransmissionIsDisabled" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Désactivée</RadioButton>
+                <StackPanel Margin="10,0,0,0" Grid.Column="1" Grid.Row="14">
+                    <RadioButton x:Name="rdbAerosolTransmissionIsEnabled" Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Activer</RadioButton>
+                    <RadioButton x:Name="rdbAerosolTransmissionIsDisabled" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Désactiver</RadioButton>
                 </StackPanel>
 
                 <Button Style="{StaticResource smallButton}" 
                     Grid.Column="1" 
-                    Grid.Row="25" 
+                    Grid.Row="17" 
                     Content="Annuler" 
                     Margin="199,0,0,0" 
                     Click="Cancel_Click"/>
                 <Button Style="{StaticResource smallButton}" 
                     Grid.Column="1" 
-                    Grid.Row="25"
+                    Grid.Row="17"
                     Content="Sauvegarder" 
                     Margin="0,0,195,0"
                     Click="Save_Click"/>

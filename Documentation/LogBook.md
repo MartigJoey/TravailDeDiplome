@@ -1281,4 +1281,17 @@
   - 8 millions => 400'000 doses par mois = 5%
     - 5% / 30 = 0.00166666666 par jour
 - Modification des maladies pour arriver à un taux ~1-2% de décès
-- 
+- Modification de l'affichage des paramètres
+  - Désactivation des checkbox aux bon moments
+  - Désactivation des radiobouton aux bon moments
+- Unity
+  - Recherche de méthode d'affichage de grand nombre d'entités
+    - Aucun résultat convaincant
+    - La plupart obsolètes ou payant
+  - Transfère du code sur Unity 2D
+  - Réduction au maximum des reflets et effets de lumière
+  - accélération des entités
+  - Recréation des positionnement des bâtiments
+    - Suppression de la création de centaines/miliers de bâtiments
+    - Utilisation de position vectorielle 2D à la place
+    - Utilisation des sprites comme background

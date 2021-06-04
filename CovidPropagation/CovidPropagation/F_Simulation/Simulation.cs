@@ -183,7 +183,6 @@ namespace CovidPropagation
                     _sitesDictionnary[SiteType.Hospital].ForEach(h => ((Hospital)h).TreatPatients());
                     _population.ForEach(p => p.ChechState());
                     _population.RemoveAll(p => p.CurrentState == PersonState.Dead);
-                    Debug.WriteLine(_population.Average(p => p.Ilnesses.Count) +" " +_population.Min(p => p.VirusResistanceDebug));
 
                     // Trigger l'évènement OnTick qui va mettre à jour le GUI et met à jour ses données.
                     if (OnGUIUpdate != null)

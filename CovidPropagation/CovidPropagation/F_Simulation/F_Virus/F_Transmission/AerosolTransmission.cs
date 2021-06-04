@@ -15,8 +15,6 @@ namespace CovidPropagation
         private double _probabilityOfInfection;
         
         private double _nOfInfectivePersons;
-        private double _probabilityOfHospitalisation;
-        private double _probabilityOfDeath;
         private double _virusAraisingCases;
 
         public AerosolTransmission()
@@ -39,15 +37,11 @@ namespace CovidPropagation
             _nOfInfectivePersons = _nOfInfectivePersons.SetValueIfNaN();
             _virusAraisingCases = (nbSusceptiblePersons - _nOfInfectivePersons) * _probabilityOfInfection;
             _virusAraisingCases = _virusAraisingCases.SetValueIfNaN();
-            _probabilityOfHospitalisation = _probabilityOfInfection * Virus.HospitalRate;
-            _probabilityOfDeath = _probabilityOfInfection * Virus.DeathRate;
 
             return new TransmissionData(
                 _probabilityOfOneInfection,
                 _probabilityOfInfection,
                 _nOfInfectivePersons,
-                _probabilityOfHospitalisation,
-                _probabilityOfDeath,
                 _virusAraisingCases
             );
         }

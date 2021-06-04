@@ -7,8 +7,6 @@
   <DurationMin>10</DurationMin>
   <DurationMax>20</DurationMax>
   <DurationMedian>14</DurationMedian>
-  <HospitalRate>20</HospitalRate>
-  <DeathRate>4</DeathRate>
   <DecayRateOfVirus>0.62</DecayRateOfVirus>
   <DepositionOnSurfaceRate>0.3</DepositionOnSurfaceRate>
   <ImmunityDurationMin>90</ImmunityDurationMin>

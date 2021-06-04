@@ -40,7 +40,7 @@ namespace CovidPropagation
         {
             InitializeComponent();
             SetUIParameters();
-            SetDefaultData();
+            SetParametersData();
         }
 
         private void SetUIParameters()
@@ -52,8 +52,7 @@ namespace CovidPropagation
             DataObject.AddPastingHandler(tbxProbabilityOfInfected, this.OnCancelCommand);
             DataObject.AddPastingHandler(tbxVaccinationDuration, this.OnCancelCommand);
             DataObject.AddPastingHandler(tbxVaccinationEfficiency, this.OnCancelCommand);
-            DataObject.AddPastingHandler(tbxVirusDeathRate, this.OnCancelCommand);
-            DataObject.AddPastingHandler(tbxVirusHospitalisationRate, this.OnCancelCommand);
+            DataObject.AddPastingHandler(tbxVirusImmunityEfficiency, this.OnCancelCommand);
             DataObject.AddPastingHandler(tbxVirusMaxDuration, this.OnCancelCommand);
             DataObject.AddPastingHandler(tbxVirusMaxImmunityDuration, this.OnCancelCommand);
             DataObject.AddPastingHandler(tbxVirusMaxIncubationDuration, this.OnCancelCommand);
@@ -61,20 +60,48 @@ namespace CovidPropagation
             DataObject.AddPastingHandler(tbxVirusMinImmunityDuration, this.OnCancelCommand);
             DataObject.AddPastingHandler(tbxVirusMinIncubationDuration, this.OnCancelCommand);
 
-            tbxMaskNbPeopleToStart.IsEnabled = false;
-            tbxMaskNbPeopleToStop.IsEnabled = false;
-            tbxDistanciationNbPeopleToStart.IsEnabled = false;
-            tbxDistanciationNbPeopleToStop.IsEnabled = false;
-            pnlCbxQuarantine.IsEnabled = false;
-            tbxQuarantineNbPeopleToStart.IsEnabled = false;
-            tbxQuarantineNbPeopleToStop.IsEnabled = false;
-            tbxVaccinationDuration.IsEnabled = false;
-            tbxVaccinationEfficiency.IsEnabled = false;
-            tbxVaccinationNbPeopleToStart.IsEnabled = false;
-            tbxVaccinationNbPeopleToStop.IsEnabled = false;
+            // Distanciation
+            chxDistanciation.IsChecked = SimulationGeneralParameters.IsDistanciationMeasuresEnabled;
+            tbxDistanciationNbPeopleToStart.IsEnabled = SimulationGeneralParameters.IsDistanciationMeasuresEnabled;
+            tbxDistanciationNbPeopleToStop.IsEnabled = SimulationGeneralParameters.IsDistanciationMeasuresEnabled;
+
+            // Masques
+            chxMask.IsChecked = SimulationGeneralParameters.IsMaskMeasuresEnabled;
+            tbxMaskNbPeopleToStart.IsEnabled = SimulationGeneralParameters.IsMaskMeasuresEnabled;
+            tbxMaskNbPeopleToStop.IsEnabled = SimulationGeneralParameters.IsMaskMeasuresEnabled;
+            if (!SimulationGeneralParameters.IsMaskMeasuresEnabled)
+            {
+                splClientMask.IsEnabled = false;
+                splPersonnelMask.IsEnabled = false;
+
+                rdbClientMaskIsOn.IsChecked = MaskParameters.IsClientMaskOn;
+                rdbClientMaskIsOff.IsChecked = !MaskParameters.IsClientMaskOn;
+                rdbPersonnelMaskIsOn.IsChecked = MaskParameters.IsPersonnelMaskOn;
+                rdbPersonnelMaskIsOff.IsChecked = !MaskParameters.IsPersonnelMaskOn;
+            }
+
+            // Quarantaine
+            chxQuarantaine.IsChecked = SimulationGeneralParameters.IsQuarantineMeasuresEnabled;
+            tbxQuarantineNbPeopleToStart.IsEnabled = SimulationGeneralParameters.IsQuarantineMeasuresEnabled;
+            tbxQuarantineNbPeopleToStop.IsEnabled = SimulationGeneralParameters.IsQuarantineMeasuresEnabled;
+            pnlCbxQuarantine.IsEnabled = SimulationGeneralParameters.IsQuarantineMeasuresEnabled;
+            if (!SimulationGeneralParameters.IsQuarantineMeasuresEnabled)
+            {
+                chxQuarantineHealthy.IsChecked = false;
+                chxQuarantineImmune.IsChecked = false;
+                chxQuarantineInfected.IsChecked = false;
+                chxQuarantineInfectious.IsChecked = false;
+            }
+
+            // Vaccination
+            chxVaccination.IsChecked = SimulationGeneralParameters.IsVaccinationMeasuresEnabled;
+            tbxVaccinationDuration.IsEnabled = SimulationGeneralParameters.IsVaccinationMeasuresEnabled;
+            tbxVaccinationEfficiency.IsEnabled = SimulationGeneralParameters.IsVaccinationMeasuresEnabled;
+            tbxVaccinationNbPeopleToStart.IsEnabled = SimulationGeneralParameters.IsVaccinationMeasuresEnabled;
+            tbxVaccinationNbPeopleToStop.IsEnabled = SimulationGeneralParameters.IsVaccinationMeasuresEnabled;
         }
 
-        private void SetDefaultData()
+        private void SetParametersData()
         {
             // Général
             tbxNbPeople.Text = SimulationGeneralParameters.NbPeople.ToString();
@@ -95,7 +122,7 @@ namespace CovidPropagation
 
             // Vaccin
             tbxVaccinationDuration.Text = VaccinationParameters.Duration.ToString();
-            tbxVaccinationEfficiency.Text = VaccinationParameters.Efficacity.ToString();
+            tbxVaccinationEfficiency.Text = VaccinationParameters.Efficiency.ToString();
 
             // Virus
             tbxVirusMinDuration.Text = VirusParameters.DurationMin.ToString();
@@ -107,8 +134,7 @@ namespace CovidPropagation
             tbxVirusMinImmunityDuration.Text = VirusParameters.ImmunityDurationMin.ToString();
             tbxVirusMaxImmunityDuration.Text = VirusParameters.ImmunityDurationMax.ToString();
 
-            tbxVirusHospitalisationRate.Text = VirusParameters.HospitalRate.ToString();
-            tbxVirusDeathRate.Text = VirusParameters.DeathRate.ToString();
+            tbxVirusImmunityEfficiency.Text = (VirusParameters.ImmunityEfficiency * 100).ToString(); // Transformation de probabilités en pourcentage
 
             // Quanta
             tbxCoughMinQuanta.Text = VirusParameters.CoughMinQuanta.ToString();
@@ -120,7 +146,7 @@ namespace CovidPropagation
         /// </summary>
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            Regex regex = new Regex("[^0-9]+");
+            Regex regex = new Regex("[^0-9].+");
             e.Handled = regex.IsMatch(e.Text);
         }
 
@@ -182,23 +208,32 @@ namespace CovidPropagation
             {
                 default:
                 case "Mask":
-                    tbxMaskNbPeopleToStart.IsEnabled = !tbxMaskNbPeopleToStart.IsEnabled;
-                    tbxMaskNbPeopleToStop.IsEnabled = !tbxMaskNbPeopleToStop.IsEnabled;
+                    tbxMaskNbPeopleToStart.IsEnabled = (chx.IsChecked == true);
+                    tbxMaskNbPeopleToStop.IsEnabled = (chx.IsChecked == true);
+                    splClientMask.IsEnabled = (chx.IsChecked == true);
+                    splPersonnelMask.IsEnabled = (chx.IsChecked == true);
                     break;
                 case "Distancing":
-                    tbxDistanciationNbPeopleToStart.IsEnabled = !tbxDistanciationNbPeopleToStart.IsEnabled;
-                    tbxDistanciationNbPeopleToStop.IsEnabled = !tbxDistanciationNbPeopleToStop.IsEnabled;
+                    tbxDistanciationNbPeopleToStart.IsEnabled = (chx.IsChecked == true);
+                    tbxDistanciationNbPeopleToStop.IsEnabled = (chx.IsChecked == true);
                     break;
                 case "Quarantine":
-                    pnlCbxQuarantine.IsEnabled = !pnlCbxQuarantine.IsEnabled;
-                    tbxQuarantineNbPeopleToStart.IsEnabled = !tbxQuarantineNbPeopleToStart.IsEnabled;
-                    tbxQuarantineNbPeopleToStop.IsEnabled = !tbxQuarantineNbPeopleToStop.IsEnabled;
+                    pnlCbxQuarantine.IsEnabled = (chx.IsChecked == true);
+                    tbxQuarantineNbPeopleToStart.IsEnabled = (chx.IsChecked == true);
+                    tbxQuarantineNbPeopleToStop.IsEnabled = (chx.IsChecked == true);
+                    if ((chx.IsChecked == false))
+                    {
+                        chxQuarantineHealthy.IsChecked = false;
+                        chxQuarantineImmune.IsChecked = false;
+                        chxQuarantineInfected.IsChecked = false;
+                        chxQuarantineInfectious.IsChecked = false;
+                    }
                     break;
                 case "Vaccination":
-                    tbxVaccinationDuration.IsEnabled = !tbxVaccinationDuration.IsEnabled;
-                    tbxVaccinationEfficiency.IsEnabled = !tbxVaccinationEfficiency.IsEnabled;
-                    tbxVaccinationNbPeopleToStart.IsEnabled = !tbxVaccinationNbPeopleToStart.IsEnabled;
-                    tbxVaccinationNbPeopleToStop.IsEnabled = !tbxVaccinationNbPeopleToStop.IsEnabled;
+                    tbxVaccinationDuration.IsEnabled = (chx.IsChecked == true);
+                    tbxVaccinationEfficiency.IsEnabled = (chx.IsChecked == true);
+                    tbxVaccinationNbPeopleToStart.IsEnabled = (chx.IsChecked == true);
+                    tbxVaccinationNbPeopleToStop.IsEnabled = (chx.IsChecked == true);
                     break;
             }
         }
@@ -234,11 +269,8 @@ namespace CovidPropagation
             if (tbxVirusMaxImmunityDuration.Text.Length > 0)
                 VirusParameters.ImmunityDurationMax = Convert.ToInt32(tbxVirusMaxImmunityDuration.Text);
 
-            if (tbxVirusHospitalisationRate.Text.Length > 0)
-                VirusParameters.HospitalRate = Convert.ToDouble(tbxVirusHospitalisationRate.Text);
-
-            if (tbxVirusDeathRate.Text.Length > 0)
-                VirusParameters.DeathRate = Convert.ToDouble(tbxVirusDeathRate.Text);
+            if (tbxVirusImmunityEfficiency.Text.Length > 0)
+                VirusParameters.ImmunityEfficiency = Convert.ToDouble(tbxVirusImmunityEfficiency.Text) / 100; // Transformation de pourcentage en probabilités
 
             // Symptoms
             if (tbxCoughMinQuanta.Text.Length > 0)
@@ -316,10 +348,10 @@ namespace CovidPropagation
             MaskParameters.Init();
             
             // Nombre d'individu, et pourcentage d'infectés dès le départ.
-            if (chxClientMaskIsOn.IsChecked == true)
+            if (rdbClientMaskIsOn.IsChecked == true)
                 MaskParameters.IsClientMaskOn = true;
 
-            if (chxClientMaskIsOn.IsChecked == true)
+            if (rdbPersonnelMaskIsOn.IsChecked == true)
                 MaskParameters.IsPersonnelMaskOn = true;
         }
 
@@ -362,37 +394,25 @@ namespace CovidPropagation
 
             // Efficacité du vaccin
             if (tbxVaccinationEfficiency.Text.Length > 0)
-                VaccinationParameters.Efficacity = Convert.ToInt32(tbxVaccinationEfficiency.Text);
+                VaccinationParameters.Efficiency = Convert.ToInt32(tbxVaccinationEfficiency.Text);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            SetUIParameters();
+            SetParametersData();
+        }
+
+        private void Default_Click(object sender, RoutedEventArgs e)
         {
             VirusParameters.Init();
             SimulationGeneralParameters.Init();
             MaskParameters.Init();
             VaccinationParameters.Init();
             QuarantineParameters.Init();
+
+            SetUIParameters();
+            SetParametersData();
         }
     }
-    /*
-    public class RangeValidationRule : ValidationRule
-    {
-        public int MinValue { get; set; }
-        public int MaxValue { get; set; }
-
-        public override ValidationResult Validate(
-          object value, System.Globalization.CultureInfo cultureInfo)
-        {
-            int intValue;
-
-            string text = String.Format("Must be between {0} and {1}", MinValue, MaxValue);
-            if (!Int32.TryParse(value.ToString(), out intValue))
-                return new ValidationResult(false, "Not an integer");
-            if (intValue < MinValue)
-                return new ValidationResult(false, "To small. " + text);
-            if (intValue > MaxValue)
-                return new ValidationResult(false, "To large. " + text);
-            return ValidationResult.ValidResult;
-        }
-    }*/
 }

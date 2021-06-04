@@ -249,7 +249,9 @@ namespace CovidPropagation
 
         /// <summary>
         /// ID Documentation : Check_State
-        /// Vérifie l'état de contamination de la personne.
+        /// Vérifie l'état de contamination de la personne et le change si elle est infectée.
+        /// Décémente la durée du virus ainsi que des maladies.
+        /// Attrape possiblement des maladies.
         /// </summary>
         public void ChechState()
         {
@@ -319,7 +321,7 @@ namespace CovidPropagation
         {
             _state = PersonState.Immune;
             _immunityDuration = VaccinationParameters.Duration * GlobalVariables.NUMBER_OF_TIMEFRAME;
-            _immunityProtection = VaccinationParameters.Efficacity / 100; // Transformation pourcentage à probabilités
+            _immunityProtection = VaccinationParameters.Efficiency / 100; // Transformation pourcentage à probabilités
         }
 
         /// <summary>

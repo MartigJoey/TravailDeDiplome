@@ -77,22 +77,22 @@ public class ScriptClient : MonoBehaviour
         {
             default:
             case "Initialize":
-                resultPopulation = result.Split(' ')[1];
-                resultSites = result.Split(' ')[2];
-
-
-                populationDatas = JsonUtility.FromJson<DataPopulation>(resultPopulation);
-
-                dataReceived1.text = result.Length.ToString() + " Plz ?";
-                sitesDatas = JsonUtility.FromJson<DataSites>(resultSites);
-
-                mngScript.CreateSites(sitesDatas.SitesType, sitesDatas.SitesId);
-                mngScript.CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
+                //resultPopulation = result.Split(' ')[1];
+                //resultSites = result.Split(' ')[2];
+                //
+                //
+                //populationDatas = JsonUtility.FromJson<DataPopulation>(resultPopulation);
+                //
+                //dataReceived1.text = result.Length.ToString() + " Plz ?";
+                //sitesDatas = JsonUtility.FromJson<DataSites>(resultSites);
+                //
+                //mngScript.CreateSites(sitesDatas.SitesType, sitesDatas.SitesId);
+                //mngScript.CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
                 break;
             case "Iterate":
-                resultIteration = result.Split(' ')[1];
-                iterationDatas = JsonUtility.FromJson<DataIteration>(resultIteration);
-                Task.Factory.StartNew(() => mngScript.SetIterationDatas(iterationDatas));
+                //resultIteration = result.Split(' ')[1];
+                //iterationDatas = JsonUtility.FromJson<DataIteration>(resultIteration);
+                //Task.Factory.StartNew(() => mngScript.SetIterationDatas(iterationDatas));
                 break;
         }
 
@@ -112,6 +112,13 @@ public class DataPopulation
 public class DataSites
 {
     public List<int> SitesType;
+    public int nbHouseType;
+    public int nbCompanyType;
+    public int nbHospitalType;
+    public int nbRestaurantType;
+    public int nbSchoolType;
+    public int nbStoreType;
+    public int nbSupermarketType;
     public List<int> SitesId;
 }
 

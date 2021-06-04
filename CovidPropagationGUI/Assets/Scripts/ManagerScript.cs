@@ -44,14 +44,15 @@ public class ManagerScript : MonoBehaviour
         _sitesParent = GameObject.Find("Sites");
         _personsParent = GameObject.Find("Persons");
 
-        //DataPopulation populationDatas = JsonUtility.FromJson<DataPopulation>(@"{ ""NbPersons"":100,""IndexOfInfected"":[]}");
+        DataPopulation populationDatas = JsonUtility.FromJson<DataPopulation>(@"{ ""NbPersons"":100000,""IndexOfInfected"":[]}");
         //DataSites sitesDatas = JsonUtility.FromJson<DataSites>(@"{ ""SitesType"":[0,2,4,6,4,6,6,4,1,3,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],""SitesId"":[0,1,5,20,70,220,670,4,2,10,40,140,440,1340,8,3,15,60,210,660,2010,1,3,4,5,6,7,8,9,10,11,12,13,16,19,22,25,28,31,34,35,36,39,42,45,48,51,54,57,60,63,64,65,68,71,74,77,80,83,84,87,90,93,96,99,102,105,108,111,114,117,120,123,126,129,132,135,138,141,144,147,150,153,156,159,162,165,168,171,174,177,180,181,182,185,188,189,192,195,198,201,204,207,210,213,216,219,222,225,228,231,234,237,240,241,242,245,248,251,254,257,258,259,262,265,268,271,274,277,278,279,280]}");
-        //
-        //GetComponent<ScriptClient>().dataReceived3.text = populationDatas.NbPersons + " " + populationDatas.IndexOfInfected.Count;
-        //GetComponent<ScriptClient>().dataReceived2.text = sitesDatas.SitesType.Count + " " + sitesDatas.SitesId.Count;
-        //
-        //CreateSites(sitesDatas.SitesType, sitesDatas.SitesId);
-        //CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
+        DataSites sitesDatas = JsonUtility.FromJson<DataSites>(@"{ ""nbHouseType"":10,""nbCompanyType"":10,""nbHospitalType"":10,""nbRestaurantType"":10,""nbSchoolType"":10,""nbStoreType"":10,""nbSupermarketType"":10}");
+
+        GetComponent<ScriptClient>().dataReceived3.text = populationDatas.NbPersons + " " + populationDatas.IndexOfInfected.Count;
+        GetComponent<ScriptClient>().dataReceived2.text = sitesDatas.SitesType.Count + " " + sitesDatas.SitesId.Count;
+        
+        CreateSites(sitesDatas);
+        CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
     }
 
     // Update is called once per frame
@@ -60,25 +61,25 @@ public class ManagerScript : MonoBehaviour
         //List<int> test = GameObject.Find("GUIManager").GetComponent<ScriptClient>().testTransfer;
         if (Input.GetMouseButton(1))
         {
-            //DataIteration iterationDatas = JsonUtility.FromJson<DataIteration>(@"{ ""PersonsNewSite"":[0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5, 
-            //                                                                                           0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
-            //                                                                                           0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
-            //                                                                                           0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
-            //                                                                                           0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5],
-            //                                                                       ""PersonsNewState"":[0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
-            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
-            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
-            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
-            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3]}");
-            //for (int i = 0; i < _persons.Count; i++)
-            //{
-            //    GameObject newTarget = _sites.FirstOrDefault(s => s.name == iterationDatas.PersonsNewSite[i].ToString());
-            //    if (newTarget != null)
-            //    {
-            //        _persons[i].GetComponent<MovementScript>().SetTarget(newTarget.transform);
-            //    }
-            //    _persons[i].GetComponent<MovementScript>().SetState(iterationDatas.PersonsNewState[i]);
-            //}
+            DataIteration iterationDatas = JsonUtility.FromJson<DataIteration>(@"{ ""PersonsNewSite"":[0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5, 
+                                                                                                       0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+                                                                                                       0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+                                                                                                       0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+                                                                                                       0,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5],
+                                                                                   ""PersonsNewState"":[0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
+                                                                                                        0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
+                                                                                                        0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
+                                                                                                        0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
+                                                                                                        0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3]}");
+            for (int i = 0; i < _persons.Count; i++)
+            {
+                GameObject newTarget = _sites.FirstOrDefault(s => s.name == iterationDatas.PersonsNewSite[i].ToString());
+                if (newTarget != null)
+                {
+                    _persons[i].GetComponent<MovementScript>().SetTarget(newTarget.transform);
+                }
+                _persons[i].GetComponent<MovementScript>().SetState(iterationDatas.PersonsNewState[i]);
+            }
         }
     }
 
@@ -108,27 +109,60 @@ public class ManagerScript : MonoBehaviour
         }
     }
 
-    public void CreateSites(List<int> sitesType, List<int> SitesId)
+    public void CreateSites(DataSites sites)
     {
-        for (int i = 0; i < sitesType.Count; i++)
+        int id = 0;
+        //House T
+        for (int i = 0; i < sites.nbHouseType; i++)
         {
-            GameObject site = ConvertIntToType(sitesType[i]);
-            if (site.Equals(home))
-            {
-                _topRow.Add(CreateSite(site, SitesId[i]));
-            }
-            else if (site.Equals(hospital) || site.Equals(school))
-            {
-                _rightColumn.Add(CreateSite(site, SitesId[i]));
-            }
-            else if (site.Equals(store) || site.Equals(supermarket) || site.Equals(restaurant))
-            {
-                _leftColumn.Add(CreateSite(site, SitesId[i]));
-            }
-            else if (site.Equals(company))
-            {
-                _bottomRow.Add(CreateSite(site, SitesId[i]));
-            }
+            GameObject site = home;
+            _topRow.Add(CreateSite(site, id));
+            id++;
+        }
+
+        // Hospital R
+        for (int i = 0; i < sites.nbHospitalType; i++)
+        {
+            GameObject site = hospital;
+            _rightColumn.Add(CreateSite(site, id));
+            id++;
+        }
+        // School R
+        for (int i = 0; i < sites.nbSchoolType; i++)
+        {
+            GameObject site = school;
+            _rightColumn.Add(CreateSite(site, id));
+            id++;
+        }
+
+        // Store L
+        for (int i = 0; i < sites.nbStoreType; i++)
+        {
+            GameObject site = store;
+            _leftColumn.Add(CreateSite(site, id));
+            id++;
+        }
+        // Restaurant L
+        for (int i = 0; i < sites.nbRestaurantType; i++)
+        {
+            GameObject site = restaurant;
+            _leftColumn.Add(CreateSite(site, id));
+            id++;
+        }
+        // Supermarket L
+        for (int i = 0; i < sites.nbSupermarketType; i++)
+        {
+            GameObject site = supermarket;
+            _leftColumn.Add(CreateSite(site, id));
+            id++;
+        }
+
+        // Company B
+        for (int i = 0; i < sites.nbCompanyType; i++)
+        {
+            GameObject site = company;
+            _bottomRow.Add(CreateSite(site, id));
+            id++;
         }
 
         PositioningBuildings();

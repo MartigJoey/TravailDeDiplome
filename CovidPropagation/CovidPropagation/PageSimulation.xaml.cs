@@ -36,7 +36,7 @@ namespace CovidPropagation
         System.Windows.Forms.Integration.WindowsFormsHost wfhUnityHost;
         System.Windows.Forms.Panel panelUnity;
 
-
+        
         public PageSimulation()
         {
             InitializeComponent();
@@ -46,6 +46,7 @@ namespace CovidPropagation
             sim = new Simulation();
             VirusParameters.Init();
             SimulationGeneralParameters.Init();
+            VaccinationParameters.Init();
         }
 
         private void OpenRawDatasWindow_Click(object sender, RoutedEventArgs e)

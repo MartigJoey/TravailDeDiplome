@@ -24,8 +24,6 @@ namespace CovidPropagation
             IncubationDurationMax = Convert.ToInt32(xmlDatas.GetElementsByTagName("IncubationDurationMax")[0].InnerText);
             DurationMin = Convert.ToInt32(xmlDatas.GetElementsByTagName("DurationMin")[0].InnerText);
             DurationMax = Convert.ToInt32(xmlDatas.GetElementsByTagName("DurationMax")[0].InnerText);
-            HospitalRate = Convert.ToDouble(xmlDatas.GetElementsByTagName("HospitalRate")[0].InnerText);
-            DeathRate = Convert.ToDouble(xmlDatas.GetElementsByTagName("DeathRate")[0].InnerText);
             DecayRateOfVirus = Convert.ToDouble(xmlDatas.GetElementsByTagName("DecayRateOfVirus")[0].InnerText);
             DepositionOnSurfaceRate = Convert.ToDouble(xmlDatas.GetElementsByTagName("DepositionOnSurfaceRate")[0].InnerText);
             ImmunityDurationMin = Convert.ToInt32(xmlDatas.GetElementsByTagName("ImmunityDurationMin")[0].InnerText);
@@ -41,8 +39,6 @@ namespace CovidPropagation
         public static int IncubationDurationMax { get; set; }
         public static int DurationMin { get; set; }
         public static int DurationMax { get; set; }
-        public static double HospitalRate { get; set; }
-        public static double DeathRate { get; set; }
         public static double DecayRateOfVirus { get; set; }
         public static double DepositionOnSurfaceRate { get; set; }
         public static int ImmunityDurationMin { get; set; }
