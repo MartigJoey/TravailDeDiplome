@@ -19,16 +19,17 @@ namespace CovidPropagation
         public int Attack { get => attack; set => attack = value; }
         public Ilness(int age, Random rdm)
         {
-            timeBeforeDesapearing = rdm.Next(7, 30) * 48; // entre 7 jours et 30 (Temporaire)
+            timeBeforeDesapearing = rdm.Next(1, 7) * 48; // entre 7 jours et 30 (Temporaire)
             Attack = CalculateAttack(age, rdm); // Entre 5 et 20, en fonction de l'âge
         }
 
         /// <summary>
+        /// ID Documentation : Ilness_Impact
         /// Calcul à quel point la maladie baisse les défenses d'une personne en fonction de son âge.
         /// </summary>
-        /// <param name="age"></param>
-        /// <param name="rdm"></param>
-        /// <returns></returns>
+        /// <param name="age">Age de l'individu.</param>
+        /// <param name="rdm">Chances que la maladie soit grave.</param>
+        /// <returns>"Puissance" de la maladie.</returns>
         private int CalculateAttack(int age, Random rdm)
         {
             // Entre 5 et 20
@@ -36,45 +37,27 @@ namespace CovidPropagation
             int result;
             if (age < 20)
             {
-                if (rdm.Next(0, 100) < 80)
-                    result = rdm.Next(5, 10 + 1);
-                else
-                    result = rdm.Next(5, 20 + 1);
+                result = rdm.Next(5, 5 + 1);
             }
             else if (age < 30)
             {
-                if (rdm.Next(0, 100) < 70)
-                    result = rdm.Next(5, 10 + 1);
-                else
-                    result = rdm.Next(5, 20 + 1);
+                result = rdm.Next(5, 8 + 1);
             }
             else if (age < 40)
             {
-                if (rdm.Next(0, 100) < 60)
-                    result = rdm.Next(5, 10 + 1);
-                else
-                    result = rdm.Next(5, 20 + 1);
+                result = rdm.Next(5, 12 + 1);
             }
             else if (age < 60)
             {
-                if (rdm.Next(0, 100) < 50)
-                    result = rdm.Next(5, 10 + 1);
-                else
-                    result = rdm.Next(5, 20 + 1);
+                result = rdm.Next(5, 15 + 1);
             }
             else if(age < 70)
             {
-                if (rdm.Next(0, 100) < 40)
-                    result = rdm.Next(5, 10 + 1);
-                else
-                    result = rdm.Next(5, 20 + 1);
+                result = rdm.Next(5, 18 + 1);
             }
             else
             {
-                if (rdm.Next(0, 100) < 30)
-                    result = rdm.Next(5, 10 + 1);
-                else
-                    result = rdm.Next(5, 20 + 1);
+                result = rdm.Next(5, 20 + 1);
             }
             return result;
         }

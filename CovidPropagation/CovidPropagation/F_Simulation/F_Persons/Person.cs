@@ -8,10 +8,12 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace CovidPropagation
 {
     /// <summary>
+    /// ID Documentation : Person_Class
     /// Individus se déplacant dans différents lieu en fonction de son planning.
     /// Peut être infecté et modifier les chances d'être infecté dans un lieu.
     /// </summary>
@@ -22,14 +24,11 @@ namespace CovidPropagation
         private const double PROBABILITY_OF_WEARING_N95_MASK = 0.01;
         private const double PROBABILITY_OF_WEARING_SURGICA_MASKL = 0.7;
 
-        private const int MIN_RESISTANCE_BEFORE_HOSPITALISATION = 50;
-        private const int MIN_RESISTANCE_BAFORE_DEATH = 10;
+        private const int MIN_RESISTANCE_BEFORE_HOSPITALISATION = 30;
+        private const int MIN_RESISTANCE_BEFORE_DEATH = 10;
 
         private const int MIN_TIME_TO_DIE = 5;  // En jours
         private const int MAX_TIME_TO_DIE = 13; // En jours
-
-        private const int MIN_IMMUNITY_DURATION = 3 * 30; // En jours
-        private const int MAX_IMMUNITY_DURATION = 8 * 30; // En jours
 
         private static int ids = 0;
         private int id;
@@ -37,32 +36,39 @@ namespace CovidPropagation
         private Planning _planning;
         private Site _currentSite;
         private PersonState _state;
-        private List<Ilness> ilnesses;
-        private List<Symptom> symptoms;
-        private double virusResistance;
-        private double baseVirusResistance;
+        private List<Ilness> _ilnesses;
+        private List<Symptom> _symptoms;
+        private double _virusResistance;
+        private double _baseVirusResistance;
         private int _age;
-        private int virusDuration;
-        private int virusIncubationDuration;
-        private int immunityDuration;
+        private int _virusDuration;
+        private int _virusIncubationDuration;
+        private int _immunityDuration;
+        private double _immunityProtection;
         private Random _rdm;
-        private double quantaExhalationRate;
+        private double _quantaExhalationRate;
         private bool _hasMask;
         private Mask _mask;
         private bool _isQuarantined;
+        private bool _healthyQuarantined;
+        private bool _infectedQuarantined;
+        private bool _infectiousQuarantined;
+        private bool _immuneQuarantined;
         private int _quarantineDuration;
         private Home _quarantineLocation;
         private Hospital _hospitalCovid;
         private bool _mustLeaveHospital;
         private int _timeBeforeDeath;
 
+
+        public double VirusResistanceDebug { get => _virusResistance; }
         public PersonState CurrentState { get => _state; set => _state = value; }
-        public double QuantaExhalationRate { get => quantaExhalationRate; }
+        public double QuantaExhalationRate { get => _quantaExhalationRate; }
         public bool HasMask { get => _hasMask; }
         public double ExhalationMaskEfficiency { get => _mask.ExhalationMaskEfficiency; }
         public double InhalationMaskEfficiency { get => _mask.InhalationMaskEfficiency; }
         public int Age { get => _age; set => _age = value; }
-        internal List<Ilness> Ilnesses { get => ilnesses; set => ilnesses = value; }
+        internal List<Ilness> Ilnesses { get => _ilnesses; set => _ilnesses = value; }
         public bool MustLeaveHospital { set => _mustLeaveHospital = value; }
         public int Id { get => id; set => id = value; }
 
@@ -75,7 +81,12 @@ namespace CovidPropagation
             _hospitalCovid = hospital;
             MustLeaveHospital = false;
             Ilnesses = new List<Ilness>();
-            symptoms = new List<Symptom>();
+            _symptoms = new List<Symptom>();
+            _isQuarantined = false;
+            _healthyQuarantined = false;
+            _infectedQuarantined = false;
+            _infectiousQuarantined = false;
+            _immuneQuarantined = false;
 
             KeyValuePair<Object, double>[] probabilityOfMaskType = {
                 new KeyValuePair<Object, double>(TypeOfMask.Cloth, PROBABILITY_OF_WEARING_CLOTH_MASK),
@@ -89,14 +100,14 @@ namespace CovidPropagation
 
             // Initialise la résistance de base de la personne
             if (_rdm.Next(0, 100) < GlobalVariables.PERCENTAGE_OF_ASYMPTOMATIC)
-                baseVirusResistance = _rdm.Next(GlobalVariables.ASYMPTOMATIC_MIN_RESISTANCE, GlobalVariables.ASYMPTOMATIC_MAX_RESISTANCE);
+                _baseVirusResistance = _rdm.Next(GlobalVariables.ASYMPTOMATIC_MIN_RESISTANCE, GlobalVariables.ASYMPTOMATIC_MAX_RESISTANCE);
             else
-                baseVirusResistance = _rdm.Next(GlobalVariables.SYMPTOMATIC_MIN_RESISTANCE, GlobalVariables.SYMPTOMATIC_MAX_RESISTANCE);
+                _baseVirusResistance = _rdm.Next(GlobalVariables.SYMPTOMATIC_MIN_RESISTANCE, GlobalVariables.SYMPTOMATIC_MAX_RESISTANCE);
 
-            virusResistance = baseVirusResistance;
+            _virusResistance = _baseVirusResistance;
             _currentSite = _planning.GetActivity();
             _quarantineLocation = (Home)_currentSite; // Possible uniquement car tous les individus se trouve chez eux au démarrage.
-            quantaExhalationRate = _currentSite.AverageQuantaExhalationRate;
+            _quantaExhalationRate = _currentSite.AverageQuantaExhalationRate;
             if ((int)_state >= 2)
             {
                 SetInfectionDurations(_state);
@@ -109,6 +120,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Change_Activity
         /// Change d'activité et recalcul les chances d'attraper le virus.
         /// Change d'état si besoin.
         /// Décrémente la durée d'incubation du virus si infecté.
@@ -119,14 +131,6 @@ namespace CovidPropagation
         /// </summary>
         public void ChangeActivity()
         {
-            // Si l'individus décède, il est réintialisé
-            if (_state == PersonState.Dead)
-            {
-                ilnesses.Clear();
-                _state = PersonState.Healthy;
-                symptoms.Clear();
-            }
-
             // Quitte l'hôpital
             if (_mustLeaveHospital)
             {
@@ -134,14 +138,41 @@ namespace CovidPropagation
                 _mustLeaveHospital = false;
             }
 
+            // Vérifie s'il est en quarantaine
+            switch (_state)
+            {
+                default:
+                case PersonState.Dead:
+                    _isQuarantined = false;
+                    break;
+                case PersonState.Asymptomatic:
+                case PersonState.Healthy:
+                    if (_healthyQuarantined)
+                        _isQuarantined = true;
+                    break;
+                case PersonState.Immune:
+                    if (_immuneQuarantined)
+                        _isQuarantined = true;
+                    break;
+                case PersonState.Infected:
+                    if (_infectedQuarantined)
+                        _isQuarantined = true;
+                    break;
+                case PersonState.Infectious:
+                    if (_infectiousQuarantined)
+                        _isQuarantined = true;
+                    break;
+            }
+
             // Si la résistance de l'individus est suffisament faible pour décèdé, qu'il ne se situe pas à l'hopital et que le virus s'est développé.
-            if (virusResistance <= MIN_RESISTANCE_BAFORE_DEATH && _currentSite != _hospitalCovid && (int)_state > (int)PersonState.Infected)
+            if (_virusResistance <= MIN_RESISTANCE_BEFORE_DEATH && _currentSite != _hospitalCovid && (int)_state > (int)PersonState.Infected)
             {
                 DecrementUntilDeath(2);
             }
 
+            // ID Documentation : Person_Hospital
             // Si la résistance de l'individus est suffisament faible pour être hôspitaliser, et que le virus s'est développé.
-            if (virusResistance < MIN_RESISTANCE_BEFORE_HOSPITALISATION && (int)_state > (int)PersonState.Infected)
+            if (_virusResistance < MIN_RESISTANCE_BEFORE_HOSPITALISATION && (int)_state > (int)PersonState.Infected)
             {
                 // S'il ne se situe pas déjà à l'hôpital
                 if (_currentSite != _hospitalCovid)
@@ -150,18 +181,24 @@ namespace CovidPropagation
                     // Sinon, se confine.
                     if (_hospitalCovid.EnterForCovid(this))
                     {
+                        _currentSite.Leave(this);
                         _currentSite = _hospitalCovid;
                         _timeBeforeDeath = Convert.ToInt32((_rdm.Next(MIN_TIME_TO_DIE, MAX_TIME_TO_DIE) + _rdm.NextDouble()) * GlobalVariables.NUMBER_OF_TIMEFRAME);
                     }
                     else
                     {
+                        _currentSite.Leave(this);
                         _currentSite = _quarantineLocation;
+                        _quarantineLocation.Enter(this, SitePersonStatus.Other);
                     }
                 }
             }else if (_isQuarantined)
             {
                 // Ajouter trajet
+                _currentSite.Leave(this);
                 _currentSite = _quarantineLocation;
+                _quarantineLocation.Enter(this, SitePersonStatus.Other);
+
                 if (_quarantineDuration <= 0)
                     _isQuarantined = false;
 
@@ -177,10 +214,10 @@ namespace CovidPropagation
                     _currentSite.Enter(this, _planning.PersonTypeInActivity());
 
                     // Calul les quantas exhalé en fonction des symptômes ainsi que du lieux.
-                    quantaExhalationRate = _currentSite.AverageQuantaExhalationRate;
-                    if (symptoms.OfType<CoughSymptom>().Any())
+                    _quantaExhalationRate = _currentSite.AverageQuantaExhalationRate;
+                    if (_symptoms.OfType<CoughSymptom>().Any())
                     {
-                        quantaExhalationRate += symptoms.OfType<CoughSymptom>().First().QuantaAddedByCoughing();
+                        _quantaExhalationRate += _symptoms.OfType<CoughSymptom>().First().QuantaAddedByCoughing();
                     }
                 }
             }
@@ -191,7 +228,7 @@ namespace CovidPropagation
         /// </summary>
         public void GetHospitalTreatment()
         {
-            if (virusResistance <= MIN_RESISTANCE_BAFORE_DEATH)
+            if (_virusResistance <= MIN_RESISTANCE_BEFORE_DEATH)
             {
                 DecrementUntilDeath(1);
             }
@@ -211,13 +248,19 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Check_State
         /// Vérifie l'état de contamination de la personne.
         /// </summary>
         public void ChechState()
         {
             double contaminationProbability = _currentSite.GetProbabilityOfInfection();
-            
+
             if (_state == PersonState.Healthy && contaminationProbability >= _rdm.NextDouble())
+            {
+                _currentSite.HasEnvironnementChanged = true;
+                SetInfectionDurations(PersonState.Infected);
+            }
+            else if(_state == PersonState.Immune && contaminationProbability - _immunityProtection * (contaminationProbability / 100) >= _rdm.NextDouble()) // Réduit les probabilité d'infection en fonction de la protection immunitaire.
             {
                 _currentSite.HasEnvironnementChanged = true;
                 SetInfectionDurations(PersonState.Infected);
@@ -229,14 +272,15 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Virus_Incubation
         /// Initialize la durée de vie du virus ainsi que sa durée d'incubation.
         /// </summary>
         /// <param name="state">Nouvel état de l'individu.</param>
         private void SetInfectionDurations(PersonState state)
         {
             _state = state;
-            virusDuration = Virus.Duration * GlobalVariables.NUMBER_OF_TIMEFRAME;
-            virusIncubationDuration = Convert.ToInt32(Virus.IncubationDuration * GlobalVariables.NUMBER_OF_TIMEFRAME);
+            _virusDuration = Virus.Duration * GlobalVariables.NUMBER_OF_TIMEFRAME;
+            _virusIncubationDuration = Convert.ToInt32(Virus.IncubationDuration * GlobalVariables.NUMBER_OF_TIMEFRAME);
         }
 
         /// <summary>
@@ -258,10 +302,24 @@ namespace CovidPropagation
         /// <summary>
         /// Initialise la quarantaine ainsi que sa durée.
         /// </summary>
-        public void SetQuarantine()
+        public void SetQuarantine(bool healthyQuarantined, bool infectedQuarantined, bool infectiousQuarantined, bool immuneQuarantined)
         {
-            _isQuarantined = true;
+            _healthyQuarantined = healthyQuarantined;
+            _infectedQuarantined = infectedQuarantined;
+            _infectiousQuarantined = infectiousQuarantined;
+            _immuneQuarantined = immuneQuarantined;
+
             _quarantineDuration = Virus.Duration * GlobalVariables.NUMBER_OF_TIMEFRAME;
+        }
+
+        /// <summary>
+        /// Vaccine l'individu qui devient immunisé pendant la durée du vaccin.
+        /// </summary>
+        public void GetVaccinated()
+        {
+            _state = PersonState.Immune;
+            _immunityDuration = VaccinationParameters.Duration * GlobalVariables.NUMBER_OF_TIMEFRAME;
+            _immunityProtection = VaccinationParameters.Efficacity / 100; // Transformation pourcentage à probabilités
         }
 
         /// <summary>
@@ -271,14 +329,15 @@ namespace CovidPropagation
         {
             if (_state == PersonState.Immune)
             {
-                if (immunityDuration > 0)
-                    immunityDuration--;
+                if (_immunityDuration > 0)
+                    _immunityDuration--;
                 else
                     _state = PersonState.Healthy;
             }
         }
 
         /// <summary>
+        /// ID Documentation : Incubation_Acitvity_Decrement
         /// Décrémente la durée d'incubation du virus si infecté.
         /// Décrémente la durée de vie du virus si infecté et que la durée d'incubation est terminée.
         /// Et change l'état en fonction du résultat.
@@ -289,8 +348,8 @@ namespace CovidPropagation
             if (_state == PersonState.Infected)
             {
                 // Diminu la durée d'incubation du virus ou change l'état de l'individu et ajoute les symptômes.
-                if (virusIncubationDuration > 0)
-                    virusIncubationDuration--;
+                if (_virusIncubationDuration > 0)
+                    _virusIncubationDuration--;
                 else
                 {
                     VirusIncubationOver();
@@ -298,33 +357,37 @@ namespace CovidPropagation
             }else if ((int)_state > (int)PersonState.Infected) // S'il est contagieux.
             {
                 // Diminu la durée du virus ou change l'état de l'individu pour qu'il soit immunisé
-                if (virusDuration > 0)
-                    virusDuration--;
+                if (_virusDuration > 0)
+                    _virusDuration--;
                 else
                 {
                     _state = PersonState.Immune;
-                    immunityDuration = _rdm.Next(MIN_IMMUNITY_DURATION, MAX_IMMUNITY_DURATION) * GlobalVariables.NUMBER_OF_TIMEFRAME;
+                    Debug.WriteLine("ImmuneAfterCovid");
+                    _immunityDuration = _rdm.Next(Virus.ImmunityDurationMin, Virus.ImmunityDurationMax) * GlobalVariables.NUMBER_OF_TIMEFRAME;
+                    _immunityProtection = Virus.ImmunityEfficiency;
                 }
             }
         }
 
         /// <summary>
+        /// ID Documentation : Symptoms_After_Incubation
         /// Lorsque l'incubation du virus est terminée, change l'état en asymptomatique ou en infectieux.
         /// </summary>
         private void VirusIncubationOver()
         {
-            if (virusResistance > GlobalVariables.ASYMPTOMATIC_MIN_RESISTANCE)
+            if (_virusResistance > GlobalVariables.ASYMPTOMATIC_MIN_RESISTANCE)
             {
                 _state = PersonState.Asymptomatic;
             }
             else
             {
                 _state = PersonState.Infectious;
-                symptoms.AddRange(Virus.GetCommonSymptoms());
+                _symptoms.AddRange(Virus.GetCommonSymptoms());
             }
         }
 
         /// <summary>
+        /// ID Documentation : Contract_Ilness
         /// Calcul si l'individus attrape une maladie et decrémente la durée de celles déjà existantes.
         /// Retire les maladies dont la durée est terminée.
         /// </summary>
@@ -348,7 +411,7 @@ namespace CovidPropagation
         {
             Ilnesses.ForEach(i => i.DecrementTimeBeforeDesapearance(decrement));
             Ilnesses.RemoveAll(i => i.Desapear());
-            virusResistance = baseVirusResistance - Ilnesses.Sum(i => i.Attack);
+            _virusResistance = _baseVirusResistance - Ilnesses.Sum(i => i.Attack);
         }
 
         /// <summary>

@@ -102,6 +102,7 @@
     - [11.4.2. Description d'enums](#1142-description-denums)
     - [11.4.3. Numeric Up Down](#1143-numeric-up-down)
   - [11.5. Optimisation](#115-optimisation)
+  - [11.6. GUI et Untiy](#116-gui-et-untiy)
 - [12. `Architecture`](#12-architecture)
   - [12.1. Arborescence](#121-arborescence)
   - [12.2. Structure des technologies](#122-structure-des-technologies)
@@ -119,13 +120,16 @@
   - [14.1. Structure](#141-structure)
     - [14.1.1. Interactions entre les objets](#1411-interactions-entre-les-objets)
   - [14.2. Fonctionnement](#142-fonctionnement)
+    - [Transfère de données](#transfère-de-données)
+    - [Fonctionnement](#fonctionnement)
 - [15. `UI`](#15-ui)
   - [15.1. Structure](#151-structure)
   - [15.2. Thème](#152-thème)
   - [15.3. Pages](#153-pages)
     - [15.3.1. Simulation](#1531-simulation)
     - [15.3.2. Paramètres graphiques](#1532-paramètres-graphiques)
-    - [15.3.3. Paramètres simulation](#1533-paramètres-simulation)
+  - [15.3.3 Graphiques](#1533-graphiques)
+    - [15.3.4. Paramètres simulation](#1534-paramètres-simulation)
 - [16. `Planning`](#16-planning)
   - [16.1. Prévisionnel](#161-prévisionnel)
   - [16.2. Effectif](#162-effectif)
@@ -805,7 +809,12 @@ Pour permettre à l'utilisateur de choisir le nombre de courbe d'un graphique, j
 ## 11.5. Optimisation
 Durant la création de la simulation, j'ai beaucoup utilisé de requête linq qui me permettaient de filtrer certaines listes. Comme par exemple, tous les bâtiments se trouvaient dans la même liste. Pour assigné des bâtiments de certains type aux individus, il était nécessaire de filtrer cette liste de bâtiment. Ce filtre prend énormément de temps et de ressource ce qui a grandement ralenti le programme. Il m'a fallu l'aide de M. Mathieu et l'utilisation d'un profiler pour détecter la source du problème et la modifier par la suite. Modification qui a permit de grandement augmenter les performances de l'application. 
 
-Les graphiques aussi consommaient énormément de ressources. Dû à la grande quantité de données affichées.
+Les graphiques aussi consommaient énormément de ressources. Dû à la grande quantité de données affichées. Des modifications leur ont été apportées pour éviter de tout afficher d'un coup. Les données sont toujours stockées mais sont seuls la section qui a besoin d'être affichée, est affichée.
+
+## 11.6. GUI et Untiy
+Malgré avoir réalisé un POC concernant unity, de gros problèmes ont été rencontrés durant sa création. Ces problèmes m'ont empêché de pouvoir terminer le GUI du programme qui ne fonctionne malheureusement par pour des simulations dont le nombre d'individus dépasse ~2'500.
+
+Le transfère de données
 
 # 12. `Architecture`
 ## 12.1. Arborescence
@@ -867,37 +876,36 @@ Avec cette structure, la simulation peut tourner librement sans jamais à se sou
 ![Diagramme de classe](Medias/Rapport/StructureSimulation.png)
 
 ### 13.1.1. Intéraction entre objets
-La simulation s'occupe de faire avancer la population dans le temps et déclenche les évènements de déplacements ainsi que de calculs de probabilités. Elle créé la population, les lieux et initialise le virus. Puis s'occupe de faire itérer la simulation ainsi que d'avertir l'UI lorsque des données sont disponibles à afficher.
+La simulation s'occupe de faire avancer la population dans le temps et déclenche les évènements de déplacements ainsi que de calculs de probabilités. Elle créé la population, les lieux et initialise le virus. Puis s'occupe de faire itérer la simulation ainsi que d'avertir l'UI lorsque des données sont disponibles à afficher`(Simulation_Class)`.
 
-Les lieux s'occupent de calculer les probabilités de propagations du virus. Tout individu en son sein reçois ses probabilités grâce au lieu. Les mesures sont appliquées au lieux puis lorsqu'un individu entre dans un lieu ayant des mesures, il les appliques. Toutes les données des lieux sont récupérables par la simulation.
+Les lieux s'occupent de calculer les probabilités de propagations du virus. Tout individu en son sein reçois ses probabilités grâce au lieu. Les mesures sont appliquées au lieux puis lorsqu'un individu entre dans un lieu ayant des mesures, il les appliques. Toutes les données des lieux sont récupérables par la simulation`(Site_Class)`.
 
-Les individus sont dirigés par le plannings qu'ils possèdent. Les lieux récupèrent certaines données des individus pour calculer les probabilités. Les quantas exhalés par exemples. Certaines de ses valeurs peuvent être accentuée par les symptômes possédé par un individus ainsi que les maladies. Si un individu doit porter le masque, celui-ci appartient à l'individu et possède ses propres caractéristiques. Le planning possédant des jours, qui eux-même possèdent des périodes permettent de stocker les lieux qui sont ensuite récupérés par l'individus pour se déplacer.
+Les individus sont dirigés par le plannings qu'ils possèdent. Les lieux récupèrent certaines données des individus pour calculer les probabilités. Les quantas exhalés par exemples. Certaines de ses valeurs peuvent être accentuée par les symptômes possédé par un individus ainsi que les maladies. Si un individu doit porter le masque, celui-ci appartient à l'individu et possède ses propres caractéristiques. Le planning possédant des jours, qui eux-même possèdent des périodes permettent de stocker les lieux qui sont ensuite récupérés par l'individus pour se déplacer`(Person_Class - Planning_Class - Day_Class - Acitvity_Class)`.
 
-Le virus possèdes des symptômes qui sont parfois récupérés par les individus infectés. Les moyens de transmissions sont récupérés par les lieux qui s'en servent pour calculer les probabilités, ainsi que les paramètres du virus qui influes ces probabilités.
-
+Le virus possèdes des symptômes qui sont parfois récupérés par les individus infectés. Les moyens de transmissions sont récupérés par les lieux qui s'en servent pour calculer les probabilités, ainsi que les paramètres du virus qui influes ces probabilités`(Virus_Class)`.
 
 ## 13.2. Fonctionnement
 ### 13.2.1. Général
-Dans ce projet, les objets sont très connectés les uns des autres. La simulation par exemple détient l'entièreté de tous les objets dans des listes, à l'exception des plannings. Elle s'occupe donc de créer les bâtiments, la population, les moyen de transports. Beaucoup de paramètres entres en compte dans la création. Certains de ces paramètres sont fixes et tirés de données inspirés de la réalité. D'autres, même si ayant des valeurs similaires par défaut, sont modifiables par l'utilisateur afin de personnaliser la simulation et observer différents cas de figures.</br>
-Lors de la création des bâtiments, un calcul est effectué pour déterminer le nombre de bâtiments à créer en fonction du nombre d'individus. Il doit y avoir au moins un bâtiment de chaque type pour que la simulation fonctionne correctement. </br>
+Dans ce projet, les objets sont très connectés les uns des autres. La simulation par exemple détient l'entièreté de tous les objets dans des listes, à l'exception des plannings. Elle s'occupe donc de créer les bâtiments, la population, les moyen de transports. Beaucoup de paramètres entres en compte dans la création. Certains de ces paramètres sont fixes et tirés de données inspirés de la réalité. D'autres, même si ayant des valeurs similaires par défaut, sont modifiables par l'utilisateur afin de personnaliser la simulation et observer différents cas de figures`(Initialize_Simulation)`.</br>
+Lors de la création des bâtiments, un calcul est effectué pour déterminer le nombre de bâtiments à créer en fonction du nombre d'individus.`(Create_Buildings)` Il doit y avoir au moins un bâtiment de chaque type pour que la simulation fonctionne correctement. </br>
 Les données utilisées pour définir le nombre de bâtiments de chaque type ont été inspirées par des données officielles de Genève.</br>
 
 Il existe différents types de transports dont les transports publiques qui sont commun à la simulation et qui, comme dans des lieux, augmentent les chances d'attraper le virus dû au contact avec des inconnus, en plus du fait que l'espace est restraint.
 Les voitures elles sont unique à l'individus permettant de limiter au maximum la transmission.
 La marche elle est similaire à la voiture car les risques sont très faible mais reste dans un environnement externe peuplé signifiant que le risque n'est pas 0.</br>
 
-Pour créer les individus, la tâche est plus complexe. Il est nécessaire de lui créer un planning. Pour ce faire, des lieux lui sont donnés. Une fois en possession de ces lieux et après avoir défini l'âge de la personne, âge qui définit si l'individus est retraité, en emplois, ou à l'école, un planning est créé. </br> 
-Ce planning est composé des jours de la semaine ainsi que de 48 périodes de 30 min représentant des activités. Chaque activité contient un lieu dans lequel l'individu ira. Les plannings sont créés dynamiquement en fonction des lieux qui lui sont donnés, permettant de créer un adulte qui va aller travailler, ou un enfant qui va aller à l'école par exemple.</br>
+Pour créer les individus, la tâche est plus complexe. Il est nécessaire de lui créer un planning`(Planing_Creation)`. Pour ce faire, des lieux lui sont donnés`(Sites_Attribution)`. Une fois en possession de ces lieux et après avoir défini l'âge de la personne, âge qui définit si l'individus est retraité, en emplois, ou à l'école, un planning est créé`(Create_Person)`. </br> 
+Ce planning est composé des jours de la semaine qui sont eu-même composés de 48 périodes de 30 min représentant des activités. Chaque activité contient un lieu dans lequel l'individu ira`(Acitvity_Class)`. Les plannings sont créés dynamiquement en fonction des lieux qui lui sont donnés`(Day_Creation)`, permettant de créer un adulte qui va aller travailler, ou un enfant qui va aller à l'école par exemple `(WorkDay_Creation)`.</br>
 Une fois que le planning est créé, un individu sera alors créé et utilisera ce planning unique pour ce déplacer plus tard dans la simulation.
 </br></br>
-Une fois créés, ils sont stockés et utilisés lors de chaque changement de périodes. À chaque changement, chaque individu va passer à l'activité suivante dans son planning, donc soit changer de lieu, soit rester dans le même.</br>
-C'est ensuite au lieu de vérifier s’il y a eu un changement d'état demandant de recalculer les chances d'infections dans celui-ci. Cela signifie que si 5 personnes se situent dans un lieu, et qu'aucune autre n'entre, ne sort, ou me change d'état, le calcul des chances d'infection ne s'effectuera pas et le dernier résultat sera utilisé. Cela permet de limiter un maximum les calculs inutiles et améliorer la fluidité.</br>
-Une fois les calculs effectués, chaque personne dans chaque lieu va effectuer un test qui permet de définir si elle a été contaminée ou non. Si c'est le cas, celle-ci va commencer par un temps d'incubation du virus puis une fois celui-ci terminé, deviendra contagieuse et pourra souffrir de symptômes. Ces symptômes peuvent eux aussi augmenter les chances de propager le virus.</br>
+Une fois créés, ils sont stockés et utilisés lors de chaque changement de périodes. À chaque changement, chaque individu va passer à l'activité suivante dans son planning, donc soit changer de lieu, soit rester dans le même`(Simulation_Iteration - Change_Activity)`.</br>
+C'est ensuite au lieu de vérifier s’il y a eu un changement d'état demandant de recalculer les chances d'infections dans celui-ci`(Calculate_Probability)`. Cela signifie que si 5 personnes se situent dans un lieu, et qu'aucune autre n'entre, ne sort, ou me change d'état, le calcul des chances d'infection ne s'effectuera pas et le dernier résultat sera utilisé. Cela permet de limiter un maximum les calculs inutiles et améliorer la fluidité.</br>
+Une fois les calculs effectués, chaque personne dans chaque lieu va effectuer un test qui permet de définir si elle a été contaminée ou non`(Check_State)`. Si c'est le cas, celle-ci va commencer par un temps d'incubation du virus puis une fois celui-ci terminé , deviendra contagieuse et pourra souffrir de symptômes`(Virus_Incubation - Incubation_Acitvity_Decrement - Symptoms_After_Incubation)`. Ces symptômes peuvent eux aussi augmenter les chances de propager le virus.</br>
 
-Les individus sont susceptible d'attraper des maladies qui n'impactent pas réellement le corps mais qui diminiuent drastiquement la résistance au virus. Ces maladies sont plus courrantes chez les individus dont l'âge est avancé. Plus l'âge est grand plus leurs nombre ainsi que leur impacte sur le système est élevé. Si la résistance est trop faible, l'individu risque de devoir aller à l'hôpital, là où il recevra des soins. Les places à l'hôpital sont limitées bloquant l'accès si le nombre de cas est trop élevé. Si la résistance au virus atteint un état critique, l'individu décèdera même lorsqu'il est prit en charge par un hôpital.
+Les individus sont susceptible d'attraper des maladies qui n'impactent pas réellement le corps mais qui diminiuent drastiquement la résistance au virus`(Contract_Ilness)`. Ces maladies sont plus courrantes chez les individus dont l'âge est avancé. Plus l'âge est grand plus leurs nombre ainsi que leur impacte sur le système est élevé`(Ilness_Impact)`. Si la résistance est trop faible, l'individu risque de devoir aller à l'hôpital, là où il recevra des soins`(Person_Hospital)`. Les places à l'hôpital sont limitées bloquant l'accès si le nombre de cas est trop élevé`(Enter_Hospital)`. Si la résistance au virus atteint un état critique, l'individu décèdera même lorsqu'il est prit en charge par un hôpital.
 
 ### 13.2.2. Propagation
-La propagation est effectuée à l'intérieur d'un bâtiment. Lorsque plusieurs individus se situent dans un bâtiment et qu'au moins l'un d'eux est infecté, le calcul des chances d'infection entre en jeu. Le lieu calcul donc les chances qu'un autre individu soit infecté et chaque individu vérifie individuellement s'il a été infecté ou non. Ce calcul s'effectue pour chaque période. Si aucun changement n'est effectué entre deux périodes (changement d'état - entrée - sortie) alors le résultat précédent est utilisé pour les probabilités d'infections. Ce système permet de limiter les calculs inutiles.
+La propagation est effectuée à l'intérieur d'un bâtiment. Lorsque plusieurs individus se situent dans un bâtiment et qu'au moins l'un d'eux est infecté, le calcul des chances d'infection entre en jeu. Le lieu calcul donc les chances qu'un autre individu soit infecté et chaque individu vérifie individuellement s'il a été infecté ou non. Ce calcul s'effectue pour chaque période. Si aucun changement n'est effectué entre deux périodes (changement d'état - entrée - sortie) alors le résultat précédent est utilisé pour les probabilités d'infections. Ce système permet de limiter les calculs inutiles(Site).
 
 Pour aller plus en détails, chaque bâtiment possèdes des paramètres attribués qui peuvent faire varier le résultat du calcul de probabilité d'infections. Les paramètres utilisé sont les suivants :
 - Taille
@@ -911,7 +919,7 @@ Les variations en tailles modifie les résultats de manière évidentes. Si 100 
 
 La ventilation représente l'échange d'air avec lextérieur. Ce paramètres modifie beaucoup les chances de transmissions par aérosols ainsi que la déposition sur les surfaces. Les mesures additionnel se greffent à la ventilation, il s'agit par exemple de filtres d'air réduisant les particules de covid se trouvant dans la pièce.
 
-Les bâtiments ont aussi besoin de connâitres les individus qui se trouve à l'intérieur. Ils doivent savoir :
+Les bâtiments ont aussi besoin de connaîtres les individus qui se trouve à l'intérieur. Ils doivent savoir :
 - Le total de personnes
 - Le total d'infectés (contagieux)
 - Le pourcentage d'immunisé
@@ -958,14 +966,27 @@ En premier lieu, le programme réside sur la création d'une ville contenant des
 
 En second lieu, l'environnement du programme est totalement isolé, un cas similaire se produirait sûrement si la moitié de la population était infectée dans un pays ayant ses frontières totalement fermées. Je n'ai malheureusement pas pu trouver de telle données correspondant à tous les paramètres.
 
-La figure (Figure ##) est une simulation sans qu'aucune mesure soit prise avec une population de 50'000 personnes. Le nombre de cas (En bleu) au départ étant de 5'000. Ce qui correspond à 10% d'infecté dès le départ. 10% est ~10 fois supérieur au plus grand pic de cas au USA qui est l'un des pays ayant été le plus touché. Ce qui signifie qu'il faut commencer avec moins de cas et surtout intégrer les mesures pour pouvoir comparer plus précisément les données.
+La figure (Figure ##) est une simulation sans qu'aucune mesure soit prise avec une population de 100'000 personnes. Le nombre de cas (En bleu) au départ étant de 1'000. Ce qui correspond à 1% d'infecté dès le départ. 1% est est similaire au plus grand pic de cas au USA qui est l'un des pays ayant été le plus touché. Je penses qu'il est donc très difficile de comparer ce programmes avec des pays entier et qu'il faut réduire la comparaison en comparant des villes.
 
-Le taux de décès (en jaune sur le graphique) est légèrement inférieur dans le cas de la simulation. Le pourcentage de décès est de 0.5% dans la simulation contre 1.5% aux USA. Cette différence s'explique en partit par le fonctionnement des décès dans la simulation qui se base sur de réel données mais qui n'a pas de base mathématique aussi poussée que la transmission. Il faut aussi prendre en compte que la simulation ne prend en compte que les décès qui sont totalement liés au virus contrairement aux données officiels qui sont parfois faussé par des décès de personnes infectée mais pas décédées dû au virus.
+Le taux de décès (en jaune sur le graphique) est très similaire à la réalité ~2%. Il faut malgrer tout prendre en compte que les décès ne sont pas calculés de la même manière que la propagation qui se base sur des calculs réalisés par des professionnels dans le domaines et qui sont extrêmement précis. Il faut aussi prendre en compte que la simulation ne prend en compte que les décès qui sont totalement liés au virus contrairement aux données officiels qui sont parfois faussé par des décès de personnes infectée mais pas décédées dû au virus.
 
-<h2>Refaire sim avec mesure et recomparer, aussi à plus grande échelle</h2>
+L'une des raison pour que le covid survive est le fait qu'il se propage sur la durée dû aux mesures qui sont appliquées. Si dans certaines zone isolées, aucune mesures n'était appliquées et que le virus était ignoré, les résultats se raprocherait probablement plus de ma simulation que des cas d'autres pays. Même si c'est très difficile à affirmer étant donné que de nombreuses variables ne sont pas prisent en compte ici. Par exemple dans la réalité, le virus pourrait bloquer certains marchés dû à la quantité astronomique de cas augmentant drastiquement les décès. Il existe une infinité de paramètres similaires qui pourrait influencer les résultat. 
+Maintenant, si nous imaginons que cette zone est dans le même cas que la simulation, cela signifie que pendant plusieurs mois le virus ne sera plus un problème. Cependant, dès lors que l'immunité collective s'estompt et qu'un nouveau cas apparaît le cycle recommencerait.
+
 
 <div style="text-align:center"><img src="Medias/Rapport/EssaiSimulation.png" /></div>
 <center><p style="font-size: 11px">Figure ##: Nombre de cas de covid dans la simulation</p></center>
+
+Lors de ce second test, j'y ai ajouté plusieurs mesures à commencer par la quarantaine qui était déclanchée à partir de 50'000 cas. Le second étant le port du masque appliqué à tout le monde. Et finalement la vaccination.
+
+On peut constater une très nette différence entre le premier teste celui-ci.<br> Pour commencer, on observe une grande diminution de la vitesse de propagation du virus (~divisé par deux). Cette différence est liée au port du masque qui ne permet pas l'arrêt complet de la propagation mais qui permet tout de même de grandement la limiter. <br>
+Ensuite, on peut voir que l'augmentation de cas s'arrête très rapidement peu après de 50'000 cas. Il s'agit de la quarantaine qui vas donc mettre en quarantaine tout individu contagieux sans prendre en compte les personnes asymptomatiques qui passent sous le radar. Cela explique pourquoi le virus met un certain temps avant de réellement commencer à chuter. Les personnes asymptomatiques continuant à propager le virus pendant un certains. Cependant ce n'est pas suffisant pour maintenir le nombre d'infectés qui commence à chuter un peu plus d'une semaine plus tard.<br>
+La courbe d'immunisé augmente au dela du nombre d'infecté du à la vaccination qui a commencé à partir d'environ 5'000 cas. Celle-ci a continué tout du long de la contamination et continue après jusqu'à que le nombre de cas retombe en dessous de 5'000 et à partir de la, elle s'arrête.
+
+<h2>Refaire sim avec mesure et recomparer, aussi à plus grande échelle</h2>
+
+<div style="text-align:center"><img src="Medias/Rapport/EssaiSimulationAvecMesures.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Nombre de cas de covid dans la simulation avec mesures</p></center>
 
 <div style="text-align:center"><img src="Medias/Rapport/GeneveCases.png" /></div>
 <center><p style="font-size: 11px">Figure ##: Nombre de cas de covid en Suisse</p></center>
@@ -994,7 +1015,7 @@ Après avoir modifié quelques lignes, le programme peut créer la simulation be
 
 La requête linq en question permettait de sélectionner un lieu aléatoir comme lieu de travail pour un individu. Pour ce faire, la requête triait la liste contenant tous les sites de la simulation pour ne récupérer que les lieux de travails. Une fois ce trie effectué, la liste était mélangée et le premier élément était sélectionné. De ce fait, pour une simulation de 100'000 individus, la liste était triée 100'000 fois et mélangée 100'000 fois.
 
-L'utilisation d'un dictionnaire à la place d'une simple liste à permit de trier les lieux dès leur création permettant de retirer cette étape de la procédure s'effectuant pour chaque individus. À la place de mélanger les listes pour récupérer le premier élément, une valeur aléatoire est sélectionnée entre 0 et le nombre maximal d'élément dans la liste. De ce fait, les éléments demandant beaucoup de ressources CPU ont été éliminé en restructurant le code de manière plus intélligente en effectuant un trie une fois à la place de le faire autant de fois qu'il n'y a d'individus.
+L'utilisation d'un dictionnaire à la place d'une simple liste à permit de trier les lieux dès leur création permettant de retirer cette étape de la procédure s'effectuant pour chaque individus. À la place de mélanger les listes pour récupérer le premier élément, une valeur aléatoire est sélectionnée entre 0 et le nombre maximal d'élément dans la liste. De ce fait, les éléments demandant beaucoup de ressources CPU ont été éliminé en restructurant le code de manière plus intélligente en effectuant un trie une fois à la place de le faire autant de fois qu'il n'y a d'individus`(Simulation_Iteration - Create_Buildings)`.
 
 L'application étant très gourmante en ram, les performances de celle-ci jouent un rôle très important dans la vitesse de création de la simulation. Pour générer 1 millions d'individus, la durée de création est nettement plus faible avec un ram plus performante.
 
@@ -1015,12 +1036,21 @@ On peut donc observer une nettre différence entre les deux tests. Les performan
 Avant même d'afficher quoi que ce soit, des informations concernant la population ainsi que les lieux doivent être fournient. Une fois ces informations ressus depuis la simulation, les lieux sont générés, mis à la bonne échelle puis positionnés. La population ainsi que les lieux possèdent des ids qui permettent de garder une trace et une certaine connection entre la simulation et le GUI. Ces ids permettent aussi aux individus de savoir quel est leur prochaine destination en recevant l'id de lieux. Les types, status, et tailles sont purements visuelles.
 
 ## 14.2. Fonctionnement
-
+### Transfère de données
 Pour créer l'interface, un premier envoie de donnés doit être reçu. Ces premières données, contiennent les nombre d'individus, les ids des individus infectés dès le départ, la quantité de chaque type de lieux ainsi que leur id.
 
 Une fois que tout est en place, d'autres données peuvent arriver. Ces données comprennent uniquement des informations concernant la population. Dont, une mise à jour du statut de chaque individu permettant de changer la couleur de ceux-ci en temps réel et un id du prochain lieu dans lequel les individus doivent se déplacer.
 
+Pour obtenir un format compact et rapidement convertible de C# à JSON, j'ai obté pour la création d'objets servant de conteneurs. Ces objets convertissent les données que la simulation lui fournit et en int pour limiter le nombre de caractères au maximum. Prenons l'exemple des indvidius, leur index étant déjà en int, il n'est pas nécessaire de le modifier et les données sont reprisent tel quel. Cependant, son état est un enum, il faut donc convertir l'état en int pour l'insérer dans la liste.
 
+Une fois transmis, un procédés similaire est effectué. Certains paramètres int comme les status sont modifiés pour correspondre aux valeurs utilisées par le GUI.
+
+### Fonctionnement
+Le fonctionnement du GUI moins complexe que la simulation, partiellement pour s'assurer que les performances ne soient pas trop impactées. Les bâtiments reçu sont convertit en objet unity puis leur taille est changé pour que 1000 maisons entre sur une ligne par exemple.
+
+Une fois leur échelle modifiée, leur position est modifiée. Les maison sont placées en ligne au dessus, les hôpitaux et écoles sont placées en colonne sur la droite, les restaurants, supermarchés et magasins sont placés en colonne à gauche et finalement, les entreprises sont placées en ligne en bas. Ils sont positionnés de sorte à faire un carré permettant la visualisation des déplacements au centre.
+
+Les individus eux, une fois créés, sont placés dans leur maison. Lorsque des données d'itération sont reçues, elles sont distribuées au individus, se servant de leur ids pour les reconnaitres et fournissant un id représentant le bâtiment vers lequel ils doivent se déplacer. Une fois ces informations reçues, l'individus se trouve un emplacement aléatoire dans le lieu et s'y déplace. Une fois dans le lieu, il attend la prochaine instruction.
 
 # 15. `UI`
 ## 15.1. Structure
@@ -1088,13 +1118,20 @@ Cette pâge offre la possibilité de parametrer le graphique et offre un aperçu
 ![Fenêtre paramètres graphiques](Medias/Rapport/Graphiques.png)
 <center><p style="font-size: 11px">Figure ##: Graphiques disponibles</p></center>
 
+## 15.3.3 Graphiques
+Les graphiques généré utilisent LiveCharts
+
 Tous les graphiques disponibles peuvent afficher plusieurs informations à la fois à l'exception du graphique HeatMap qui lui ne se concentre que sur une unique donnée. Les graphiques à courbe, colonne et en ligne peuvent afficher certaines période de temps décidée par l'utilisateur. Il est par exemple possible de revenir plusieur jour en arrière et d'y visualiser les données, il est aussi possible de change le format d'affichage pour afficher les semaines à la place des jours, les mois ou même le total. Une option permet aussi de suivre les données, permettant de visualiser le jour actuel ainsi que les denières données ajoutées.
 
 Le graphique cylindrique permet de visualiser uniquement les dernières données de la simulation. Et finalement le graphique HeatMap génère une moyenne permettant de connaîtres les périodes dans lequel il y a le plus de contamination par exemple.
 
 Ils sont tous mis à jour à l'aide d'évènement qui sont déclanché par la simulation lorsqu'elle dispose de nouveaux éléments à afficher.
 
-### 15.3.3. Paramètres simulation
+Pour afficher la période décidée par l'utilisateur, le graphique va récupérer les données fournies par la simulation et va tronquer les données qui ne seront pas affichées. Lorsqu'il n'a que les données à afficher, il va alors générer des points pour les graphiques à courbes et les afficher`(Curve_Chart)`. Après cela, la taille de l'axe X sera modifié pour permettre de visualiser l'interval de temps définit`(Curve_Chart_AxeX)`.
+
+Les graphiques à colonnes et en lignes fonctionnent différements car ils n'afficheent pas des points mais des ligne/colonnes. Si trop de ces éléments sont affichés sur une zone restrainte, livecharts n'arrive plus à les faire apparaître correctement. De ce fait, des moyennes entre plusieurs périodes / jours / semaines sont effectués pour garder un affichage fonctionnel tout en utilisant à meilleur essiant ce type de graphique `(ColumnRow_Chart)`. 
+
+### 15.3.4. Paramètres simulation
 
 <div style="text-align:center"><img src="Medias/Rapport/ParametresSimulationIcone.png" /></div>
 <center><p style="font-size: 11px">Figure ##: Icone de paramètres de la simulation</p></center>
@@ -1117,7 +1154,6 @@ Le port du masque est la mesures la plus personnalisable. Chaque individu porte 
 <center><p style="font-size: 11px">Figure ##: Paramètres du virus</p></center>
 
 Les paramètres du virus ne sont pas tous accessibles, mais les principaux et les plus intéressants le sont à comencer par les durées de vie, d'incubation et d'imunité. Le taux d'hospitalisation et de décès peuvent être modifié jusqu'à un maximum de 100%. Finalement, les symptômes permettant l'augmentation de la propagation du virus peuvent être modifié ou désactivé. La toux par exemple, peut avoir son taux de quantas modifié jusqu'à un maximum de 800 qui correspond à une personne parlant fort et faisant un séance de sport intensive. Et les moyens de transmissions ne peuvent qu'être activé ou désactivé en raisont de leur nature complexe et contenant très peut de données eux-mêmes.
-
 
 # 16. `Planning`
 ## 16.1. Prévisionnel
@@ -1198,6 +1234,12 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 03.05.2021
   - Utilisé dans la création des individus
     - [ge.ch - OCSTAT - Statistiques concernant les ménages](https://www.ge.ch/statistique/tel/publications/2014/analyses/communications/an-cs-2014-48.pdf)
+
+04.06.2021
+  - Utilisé dans la vitesse de vaccination des individus
+    - [covid19.admin.ch - OFSP - Statistiques de vitesse de vaccination](https://www.covid19.admin.ch/fr/epidemiologic/vacc-doses?vaccRel=abs)
+  - Explication de pourquoi la simulation n'est pas aussi similaire à la réalité.
+    - [Wikipedia - Théorie des six degrés de séparations](https://fr.wikipedia.org/wiki/Six_degr%C3%A9s_de_s%C3%A9paration)
 
 # 21. `Annexes`
 - Projet C#

@@ -1254,3 +1254,31 @@
     - les données de la création sont coupées. Il ne s'agit pas de la longueur maximal qui est atteinte mais d'une coupur de données sûrement dû à un prochain appelle trop rapide.
 - Refactorisation des noms de variables
 - Ajout de commentaires
+
+# 04.06.2021 07h45 / 17h00
+- Mise en place des paramètres de la simulation
+  - Paramètres du virus
+  - Création d'une classe static contenant les paramètres
+    - Virus
+    - Simulation
+    - Mesures
+  - Modification de la structure de la simulation pour implémenter les mesures
+- Masques partiellement operationnels
+- Distanciation operationnels
+- Quarantaine partiellement operationnels
+- Vaccination pas operationnels
+- Les mesures s'activent mais ne fonctionnent pas.
+- Le site "extérieur" était trop petit, confinant un grand nombre d'individus dedans.
+  - Après modifications, les contaminations sont très limités, trop limitées.
+  - Modification de paramètres faussés. Croissance  dès qu'une large concentration d'individus est détectées.
+  - Les masques sont utiles et ralentissent la propagation du virus.
+  - Le reste pas vraiment
+  - Quarantaine fonctionnelle
+- Même en quarantaine, la propagation continue, elle s'arrête uniquement si les individus sains son en quarantaine.
+- La quarantaine ne sortait pas les individus du lieu actuel, leur faisant contaminer plus de monde.
+- En 1 mois ~400'000 doses administrées
+  - [Source](https://www.covid19.admin.ch/fr/epidemiologic/vacc-doses?vaccRel=abs)
+  - 8 millions => 400'000 doses par mois = 5%
+    - 5% / 30 = 0.00166666666 par jour
+- Modification des maladies pour arriver à un taux ~1-2% de décès
+- 

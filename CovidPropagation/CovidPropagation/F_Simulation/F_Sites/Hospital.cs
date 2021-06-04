@@ -11,6 +11,10 @@ namespace CovidPropagation
 {
     public class Hospital : WorkSite
     {
+        private const int LENGTH = 100;
+        private const int WIDTH = 50;
+        private const int HEIGHT = 10;
+
         int nbCovidPatientMax;
         int nbExtremeCovidPatientMax;
         int nbSumCovidPatientMax;
@@ -18,9 +22,9 @@ namespace CovidPropagation
         private const int nbWorkPlaces = 50;
         private static SiteType[] hospitalTypes = new SiteType[] { SiteType.Hospital, SiteType.Eat, SiteType.WorkPlace };
         
-        public Hospital(double length = GlobalVariables.BUILDING_LENGTH,
-                           double width = GlobalVariables.BUILDING_WIDTH,
-                           double height = GlobalVariables.BUILDING_HEIGHT,
+        public Hospital(double length = LENGTH,
+                           double width = WIDTH,
+                           double height = HEIGHT,
                            double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
                  base(hospitalTypes, length, width, height, ventilationWithOutside, additionalControlMeasures, nbWorkPlaces)
@@ -41,6 +45,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Enter_Hospital
         /// Fait entrer un individu pour cause de covid dans le bâtiment s'il y a de la place
         /// </summary>
         /// <param name="patient">Patient qui essai d'entrer.</param>

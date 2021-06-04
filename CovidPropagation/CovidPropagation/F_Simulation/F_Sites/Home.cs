@@ -10,10 +10,13 @@ namespace CovidPropagation
 {
     public class Home : Site
     {
+        private const int LENGTH = 10;
+        private const int WIDTH = 10;
+        private const int HEIGHT = 2;
         private static SiteType[] homeTypes = new SiteType[] { SiteType.Home, SiteType.Eat };
-        public Home(double length = GlobalVariables.BUILDING_LENGTH,
-                           double width = GlobalVariables.BUILDING_WIDTH,
-                           double height = GlobalVariables.BUILDING_HEIGHT,
+        public Home(double length = LENGTH,
+                           double width = WIDTH,
+                           double height = HEIGHT,
                            double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
                  base(homeTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)

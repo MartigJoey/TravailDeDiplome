@@ -10,11 +10,14 @@ namespace CovidPropagation
 {
     class Store : WorkSite
     {
+        private const int LENGTH = 10;
+        private const int WIDTH = 10;
+        private const int HEIGHT = 3;
         private const int nbWorkPlaces = 5;
         private static SiteType[] storeTypes = new SiteType[] { SiteType.WorkPlace };
-        public Store(double length = GlobalVariables.BUILDING_LENGTH,
-                           double width = GlobalVariables.BUILDING_WIDTH,
-                           double height = GlobalVariables.BUILDING_HEIGHT,
+        public Store(double length = LENGTH,
+                           double width = WIDTH,
+                           double height = HEIGHT,
                            double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
                  base(storeTypes, length, width, height, ventilationWithOutside, additionalControlMeasures, nbWorkPlaces)

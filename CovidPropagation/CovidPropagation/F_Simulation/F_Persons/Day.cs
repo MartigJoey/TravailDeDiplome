@@ -12,6 +12,7 @@ using System.Linq;
 namespace CovidPropagation
 {
     /// <summary>
+    /// ID Documentation : Day_Class
     /// Jour composé de plusieurs périodes.
     /// </summary>
     public class Day
@@ -19,6 +20,9 @@ namespace CovidPropagation
         private TimeFrame[] _timeFrames;
         public TimeFrame[] TimeFrames { get => _timeFrames; }
 
+        /// <summary>
+        /// ID Documentation : Day_Creation
+        /// </summary>
         public Day(Dictionary<SiteType, List<Site>> personSites, bool isWorkDay)
         {
             if (isWorkDay)
@@ -56,6 +60,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : WorkDay_Creation
         /// Créé un jour de travail pour une personne avec les lieux qui lui sont fournies.
         /// </summary>
         /// <param name="personSites">Lieux avec lequel le planning sera créé</param>

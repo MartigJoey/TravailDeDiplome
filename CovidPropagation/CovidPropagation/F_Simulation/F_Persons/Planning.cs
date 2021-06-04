@@ -11,6 +11,7 @@ using System.Collections.Generic;
 namespace CovidPropagation
 {
     /// <summary>
+    /// ID Documentation : Planning_Class
     /// Gère le planning des individus. Composé de Jours, qui sont composés de périodes, qui sont composé d'activités.
     /// </summary>
     public class Planning
@@ -24,6 +25,9 @@ namespace CovidPropagation
         private Day[] _days = new Day[GlobalVariables.NUMBER_OF_DAY];
         public Day[] Days { get => _days; }
 
+        /// <summary>
+        /// ID Documentation : Planing_Creation
+        /// </summary>
         public Planning(Dictionary<SiteType, List<Site>> personSites, int nbWorkDays)
         {
             bool[] workDays = new bool[GlobalVariables.NUMBER_OF_DAY];

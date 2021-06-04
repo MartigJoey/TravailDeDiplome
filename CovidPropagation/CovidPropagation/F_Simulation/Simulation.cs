@@ -18,6 +18,9 @@ namespace CovidPropagation
     public delegate void DataUpdateEventHandler(SimulationDatas e);
     public delegate void DispalyChangeEventHandler(SimulationDatas e, bool isDisplayChange);
 
+    /// <summary>
+    /// ID Documentation : Simulation_Class
+    /// </summary>
     public class Simulation : EventArgs
     {
         private const double PROBABILITY_OF_BEING_A_COMPANY = 0.7909d;
@@ -29,6 +32,8 @@ namespace CovidPropagation
 
         private const double DEFAULT_PROBABILITY_OF_BEING_MINOR = 0.22d;
         private const double DEFAULT_PROBABILITY_OF_BEING_RETIRED = 0.14d;
+
+        private const double PROBABILITY_OF_BEING_VACCINATED_PER_TIMEFRAME = 0.00004472222d;
 
         private const double PROBABILITY_OF_USING_A_CAR = 0.36d;
         private const double PROBABILITY_OF_USING_A_BIKE = 0.37d;
@@ -72,26 +77,28 @@ namespace CovidPropagation
             _isInitialized = false;
         }
 
-        public void Initialize(double probabilityOfBeingInfected, int nbPersons)
+        /// <summary>
+        /// ID documentation: Initialize_Simulation
+        /// Initialise la simulation, créé les bâtiments, créé les individus, Réinitialise le TimeManager et set les trigger des mesures.
+        /// </summary>
+        /// <param name="probabilityOfBeingInfected">Probabilités qu'un individu a d'être infecté lors de sa création</param>
+        /// <param name="nbPersons">Nombre d'individus total dans la simulation</param>
+        public void Initialize()
         {
             _sites.Clear();
             _sitesDictionnary.Clear();
             _population.Clear();
             _isInitialized = true;
-            _probabilityOfBeingInfected = probabilityOfBeingInfected;
-            _nbPersons = nbPersons;
+            _probabilityOfBeingInfected = SimulationGeneralParameters.ProbabilityOfInfected;
+            _nbPersons = SimulationGeneralParameters.NbPeople;
             _startStop = true;
 
             TimeManager.Init();
+            Virus.Init();
 
             // Récupérer depuis les paramètres
             double minorProbability = DEFAULT_PROBABILITY_OF_BEING_MINOR;
             double retirementProbability = DEFAULT_PROBABILITY_OF_BEING_RETIRED;
-            double workingProbability = 1 - minorProbability - retirementProbability;
-
-            int nbMinor = (int)Math.Round(minorProbability * _nbPersons);
-            int nbRetirement = (int)Math.Round(retirementProbability * _nbPersons);
-            int nbWorking = (int)Math.Round(workingProbability * _nbPersons);
 
             Stopwatch speedTest = new Stopwatch();
             speedTest.Start();
@@ -112,6 +119,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Simulation_Iteration
         /// Itère la simulation. 
         /// Créé un "timer" à l'aide des stopwatch pour une meilleur précision.
         /// Ordonne à la population de changer d'activité,
@@ -125,6 +133,12 @@ namespace CovidPropagation
             chartsDatas.AddDatas(GetAllDatas());
             int[] personsNewSite = new int[_population.Count];
             int[] personsNewState = new int[_population.Count];
+
+            // Informe si une mesure est active ou non
+            bool isMaskMeasureOn = false;
+            bool isDistanciationMeasureOn = false;
+            bool isQuarantineMeasureOn = false;
+            bool isVaccinationMeasureOn = false;
 
             // Initialise les données du GUI
             OnGUIInitialize?.Invoke(new DataPopulation(
@@ -145,12 +159,31 @@ namespace CovidPropagation
                 if (_startStop)
                 {
                     _sp.Start();
+                    int nbInfected = _population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count();
+                    if (SimulationGeneralParameters.IsMaskMeasuresEnabled)
+                        isMaskMeasureOn = SetMaskMeasure(nbInfected, isMaskMeasureOn);
+
+                    if (SimulationGeneralParameters.IsDistanciationMeasuresEnabled)
+                        isDistanciationMeasureOn = SetDistanciationMeasure(nbInfected, isDistanciationMeasureOn);
+
+                    if (SimulationGeneralParameters.IsQuarantineMeasuresEnabled)
+                        isQuarantineMeasureOn = SetQuarantineMeasure(nbInfected, isQuarantineMeasureOn);
+
+                    if (SimulationGeneralParameters.IsVaccinationMeasuresEnabled)
+                        isVaccinationMeasureOn = SetVaccinationMeasure(nbInfected, isVaccinationMeasureOn);
+
                     TimeManager.NextTimeFrame();
 
-                    _population.ForEach(p => p.ChangeActivity());
+                    _population.ForEach(p => { 
+                        p.ChangeActivity();
+                        if (isVaccinationMeasureOn && rdm.NextDouble() <= PROBABILITY_OF_BEING_VACCINATED_PER_TIMEFRAME && (int)p.CurrentState < (int)PersonState.Infected)
+                            p.GetVaccinated();
+                    });
                     _sites.ForEach(p => p.CalculateprobabilityOfInfection());
                     _sitesDictionnary[SiteType.Hospital].ForEach(h => ((Hospital)h).TreatPatients());
                     _population.ForEach(p => p.ChechState());
+                    _population.RemoveAll(p => p.CurrentState == PersonState.Dead);
+                    Debug.WriteLine(_population.Average(p => p.Ilnesses.Count) +" " +_population.Min(p => p.VirusResistanceDebug));
 
                     // Trigger l'évènement OnTick qui va mettre à jour le GUI et met à jour ses données.
                     if (OnGUIUpdate != null)
@@ -175,7 +208,6 @@ namespace CovidPropagation
                         sumEllapsedTime = 0;
                     }
 
-
                     _sp.Stop();
                     // Calule le temps à attendre pour correspondre au données du slider. (1 secondes par itération --> si l'itération se fait en 100ms alors on attend 900ms)
                     if (_sp.ElapsedMilliseconds < Interval)
@@ -193,6 +225,74 @@ namespace CovidPropagation
                     await Task.Delay(100); // Ajoute un délai pour réduire la consommation CPU
                 }
             }
+        }
+
+        private bool SetMaskMeasure(int nbInfected, bool isOn)
+        {
+            if (isOn == false && nbInfected > SimulationGeneralParameters.NbInfecetdForMaskActivation)
+            {
+                // Set masque dans bâtiments par types
+                _sites.ForEach(s => s.SetMaskMeasure(true, true));
+                isOn = true;
+            }
+            if (isOn == true && nbInfected < SimulationGeneralParameters.NbInfecetdForMaskDeactivation)
+            {
+                _sites.ForEach(b => b.SetMaskMeasure(false, false));
+                isOn = false;
+            }
+            return isOn;
+        }
+
+        private bool SetDistanciationMeasure(int nbInfected, bool isOn)
+        {
+            if (isOn == false && nbInfected > SimulationGeneralParameters.NbInfecetdForDistanciationActivation)
+            {
+                _sites.ForEach(s => s.SetDistanciations(true));
+                isOn = true;
+            }
+            if (isOn == true && nbInfected < SimulationGeneralParameters.NbInfecetdForDistanciationDeactivation)
+            {
+                _sites.ForEach(s => s.SetDistanciations(false));
+                isOn = false;
+            }
+            return isOn;
+        }
+
+        private bool SetQuarantineMeasure(int nbInfected, bool isOn)
+        {
+            if (isOn == false && nbInfected > SimulationGeneralParameters.NbInfecetdForQuarantineActivation)
+            {
+                foreach (var person in _population)
+                {
+                        person.SetQuarantine(QuarantineParameters.IshealthyQuarantined, 
+                                             QuarantineParameters.IsInfectedQuarantined, 
+                                             QuarantineParameters.IsInfectiousQuarantined, 
+                                             QuarantineParameters.IsImmuneQuarantined);
+                }
+                isOn = true;
+            }
+            if (isOn == true && nbInfected < SimulationGeneralParameters.NbInfecetdForQuarantineDeactivation)
+            {
+                foreach (var person in _population)
+                {
+                    person.SetQuarantine(false, false, false, false);
+                }
+                isOn = false;
+            }
+            return isOn;
+        }
+
+        private bool SetVaccinationMeasure(int nbInfected, bool isOn)
+        {
+            if (isOn == false && nbInfected > SimulationGeneralParameters.NbInfecetdForVaccinationActivation)
+            {
+                isOn = true;
+            }
+            if (isOn == true && nbInfected < SimulationGeneralParameters.NbInfecetdForVaccinationDeactivation)
+            {
+                isOn = false;
+            }
+            return isOn;
         }
 
         /// <summary>
@@ -217,7 +317,7 @@ namespace CovidPropagation
             datas.NumberOfInfected.Add(_population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count());
             datas.NumberOfImmune.Add(_population.Where(p => (int)p.CurrentState == (int)PersonState.Immune).Count());
             datas.NumberOfHospitalisation.Add(_sitesDictionnary[SiteType.Hospital].Sum(b => ((Hospital)b).CountPatients()));
-            datas.NumberOfDeath.Add(_population.Where(p => p.CurrentState == PersonState.Dead).Count());
+            datas.NumberOfDeath.Add(SimulationGeneralParameters.NbPeople - _population.Count);
             datas.NumberOfContamination.Add(42);
             datas.NumberOfHealthy.Add(_population.Where(p => (int)p.CurrentState == (int)PersonState.Healthy).Count());
             datas.NumberOfReproduction.Add(_sites.Sum(b => b.VirusAraisingCases));
@@ -298,6 +398,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID documentation: Create_Buildings
         /// Créé les bâtiments de la simulation en fonction du nombre de personnes.
         /// Peut importe le nombre de personnes, il existe un bâtiment de chaque.
         /// Les bâtiments sont créé proportionnelement à la taille de la population et à leur type.
@@ -443,6 +544,7 @@ namespace CovidPropagation
                 else
                     personState = PersonState.Healthy;
 
+                // ID Documentation: Sites_Attribution, Create_Person
                 // Sélectionne les lieux dans lesquels l'individu va se déplacer en fonction des probabilité qu'il a d'être soit retraité soit mineur soit en âge de travailler.
                 if (GlobalVariables.rdm.NextBoolean(retirementProbability))
                 {

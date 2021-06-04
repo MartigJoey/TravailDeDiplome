@@ -1,9 +1,9 @@
 ﻿/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
- * Date          : 06.05.2021
+ * Date          : 11.06.2021
  * Version       : 1.0
- * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
+ * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
  */
 using LiveCharts;
 using LiveCharts.Defaults;
@@ -12,11 +12,7 @@ using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Windows;
 
 namespace CovidPropagation
@@ -237,6 +233,7 @@ namespace CovidPropagation
                                 break;
                         }
 
+                        // ID Documentation : Curve_Chart
                         foreach (LineSeries serie in chart.Series)
                         {
                             List<double> lineSerieDatas = new List<double>(e.GetDataFromEnum((ChartsDisplayData)serie.Tag));
@@ -268,6 +265,7 @@ namespace CovidPropagation
                             serie.Values = lineSerieDatas.AsGearedValues().WithQuality(Quality.Low);
                         }
 
+                        // ID Documentation : Curve_Chart_AxeX
                         if (maxValue - interval > 0 && interval != 0)
                         {
                             currentAxis.MinValue = maxValue - interval;
@@ -383,6 +381,14 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// ID Documentation : ColumnRow_Chart
+        /// </summary>
+        /// <param name="chart">Graphique à modifier.</param>
+        /// <param name="e">Valeurs de la simulation.</param>
+        /// <param name="modulo">Nombre par lequel les données seront regroupée. (Ex: Modulo = 4 pour 12 données alors il y aura 3 colonne/ligne d'ajoutées.)</param>
+        /// <param name="isDisplayChange">Si l'affichage change et qu'il est nécessaire de recharger les données du graphiques.</param>
+        /// <param name="interval">Interval à afficher.</param>
         private static void DisplayColumnRow(CartesianChart chart, SimulationDatas e, int modulo, bool isDisplayChange, int interval)
         {
             ChartValues<double> cv;

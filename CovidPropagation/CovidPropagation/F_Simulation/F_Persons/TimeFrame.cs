@@ -9,6 +9,7 @@
 namespace CovidPropagation
 {
     /// <summary>
+    /// ID Documentation : Acitvity_Class
     /// Période composé d'une activité.
     /// </summary>
     public class TimeFrame

@@ -44,7 +44,8 @@ namespace CovidPropagation
             mw = (MainWindow)Application.Current.MainWindow;
             charts = new Dictionary<UIType, object>();
             sim = new Simulation();
-            Virus.Init();
+            VirusParameters.Init();
+            SimulationGeneralParameters.Init();
         }
 
         private void OpenRawDatasWindow_Click(object sender, RoutedEventArgs e)
@@ -68,7 +69,7 @@ namespace CovidPropagation
         {
             if (!sim.IsInitialized)
             {
-                sim.Initialize(0.001, 100000);
+                sim.Initialize();
                 sim.Interval = GlobalVariables.DEFAULT_INTERVAL;
 
                 if(panelUnity != null)

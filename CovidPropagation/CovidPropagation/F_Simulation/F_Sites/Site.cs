@@ -7,11 +7,13 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace CovidPropagation
 {
     /// <summary>
+    /// ID Documentation : Site_Class
     /// Lieu dans lequel des personnes entrent et sortent et propageant le virus.
     /// </summary>
     public class Site
@@ -66,8 +68,6 @@ namespace CovidPropagation
         protected double probabilityOfOneInfection;
         protected double nbOfInfectivePersons;
         protected double virusAraisingCases;
-
-
 
         public SiteType[] Type { get => types; }
         public int NbPersons { get => nbPersons; set => nbPersons = value; }
@@ -128,6 +128,7 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// ID Documentation : Calculate_Probability
         /// Calcul le taux de probabilité d'infection d'une personne dans ce lieu.
         /// </summary>
         public void CalculateprobabilityOfInfection()
@@ -187,8 +188,6 @@ namespace CovidPropagation
                 personEntering.PutMaskOn();
             else if(sitePersonStatus == SitePersonStatus.Worker && workersMustWearMasks)
                 personEntering.PutMaskOn();
-
-
         }
 
         /// <summary>
@@ -320,7 +319,7 @@ namespace CovidPropagation
         /// <returns>Probabilité qu'une personne soit infectieuse.</returns>
         private double GetprobabilityOfBeingInfective()
         {
-            double probabilityOfBeingInfective = 0.0011;//(double)persons.Where(p => (int)p.CurrentState > 2).Count() / (double)nbPersons; // A modifier pour entrer en accord avec la simulation
+            double probabilityOfBeingInfective = (double)persons.Where(p => (int)p.CurrentState >= (int)PersonState.Infectious).Count() / (double)nbPersons; // A modifier pour entrer en accord avec la simulation
             return probabilityOfBeingInfective.SetValueIfNaN();
         }
 
@@ -330,9 +329,8 @@ namespace CovidPropagation
         /// <returns>Moyenne des quantas exhalés</returns>
         private double GetQuantaExhalationRateofInfected()
         {
-            double quantaExhalationRateOfInfected = persons.Where(p => (int)p.CurrentState > (int)PersonState.Infectious)
-                                                            .Sum(p => p.QuantaExhalationRate * (1 - p.ExhalationMaskEfficiency * p.HasMask.ConvertToInt())) 
-                                                            / NbInfectivePersons; 
+            double quantaExhalationRateOfInfected = persons.Where(p => (int)p.CurrentState >= (int)PersonState.Infectious)
+                                                            .Sum(p => p.QuantaExhalationRate * (1 - p.ExhalationMaskEfficiency * p.HasMask.ConvertToInt())) / NbInfectivePersons;
 
             return quantaExhalationRateOfInfected.SetValueIfNaN();
         }

@@ -50,7 +50,17 @@
                      Grid.Row="1"
                      Tag="5"
                      PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="160,0,0,0"/>
+                     TextChanged="TextBox_TextChanged" Margin="160,0,0,0">
+                    <!--
+                    <TextBox.Text>
+                        <Binding Path="BoundProperty1" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                 <local:RangeValidationRule MinValue="5" MaxValue="5"></local:RangeValidationRule>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                     -->
+                </TextBox>
 
                 <!-- Probabilités d'infectés -->
                 <Label Grid.Column="0"
@@ -83,10 +93,10 @@
                     <!-- Checkbox mesures -->
                     <StackPanel Margin="10,0,0,0" Grid.RowSpan="5">
                         <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Activer mesures :</Label>
-                        <CheckBox Checked="Measure_Checked" Unchecked="Measure_Checked" Tag="Mask" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Masques</CheckBox>
-                        <CheckBox Checked="Measure_Checked" Unchecked="Measure_Checked" Tag="Distancing" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Distanciation</CheckBox>
-                        <CheckBox Checked="Measure_Checked" Unchecked="Measure_Checked" Tag="Quarantine" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Quarantaine</CheckBox>
-                        <CheckBox Checked="Measure_Checked" Unchecked="Measure_Checked" Tag="Vaccination" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Vaccination</CheckBox>
+                        <CheckBox x:Name="chxMask" Checked="Measure_Checked" Unchecked="Measure_Checked" Tag="Mask" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Masques</CheckBox>
+                        <CheckBox x:Name="chxDistanciation" Checked="Measure_Checked" Unchecked="Measure_Checked" Tag="Distancing" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Distanciation</CheckBox>
+                        <CheckBox x:Name="chxQuarantaine" Checked="Measure_Checked" Unchecked="Measure_Checked" Tag="Quarantine" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Quarantaine</CheckBox>
+                        <CheckBox x:Name="chxVaccination" Checked="Measure_Checked" Unchecked="Measure_Checked" Tag="Vaccination" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Vaccination</CheckBox>
                     </StackPanel>
 
                     <Label 
@@ -213,10 +223,10 @@
 
                 <StackPanel x:Name="pnlCbxQuarantine" Margin="10,0,0,0" Grid.Column="0" Grid.Row="6">
                     <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Personnes affectées :</Label>
-                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Sain</CheckBox>
-                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Infectés</CheckBox>
-                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Infectieux</CheckBox>
-                    <CheckBox Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Immunisés</CheckBox>
+                    <CheckBox x:Name="chxQuarantineHealthy" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Sain</CheckBox>
+                    <CheckBox x:Name="chxQuarantineInfected" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Infectés</CheckBox>
+                    <CheckBox x:Name="chxQuarantineInfectious" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Infectieux</CheckBox>
+                    <CheckBox x:Name="chxQuarantineImmune" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Immunisés</CheckBox>
                 </StackPanel>
 
                 <!-- Vaccination -->
@@ -256,26 +266,23 @@
                    Style="{StaticResource labelText}">Masques :</Label>
 
                     <!-- Bâtiment -->
+
+                <!-- Client -->
                 <Label Grid.Column="0"
                    Grid.Row="11"
-                   Style="{StaticResource labelText}" Margin="10,0,0,0">Bâtiment :</Label>
-
-                    <!-- Client -->
-                <Label Grid.Column="0"
-                   Grid.Row="12"
                    Style="{StaticResource labelText}" Margin="15,0,0,0">Clients :</Label>
-                <StackPanel Margin="85,0,0,0" Grid.Column="0" Grid.Row="12">
-                    <RadioButton Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activé</RadioButton>
-                    <RadioButton Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivé</RadioButton>
+                <StackPanel Margin="85,0,0,0" Grid.Column="0" Grid.Row="11">
+                    <RadioButton x:Name="chxClientMaskIsOn" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activé</RadioButton>
+                    <RadioButton x:Name="chxClientMaskIsOff" Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivé</RadioButton>
                 </StackPanel>
 
                     <!-- Personnel -->
                 <Label Grid.Column="0"
-                   Grid.Row="13"
+                   Grid.Row="12"
                    Style="{StaticResource labelText}" Margin="15,0,0,0">Personnels :</Label>
-                <StackPanel Margin="85,0,0,0" Grid.Column="0" Grid.Row="13">
-                    <RadioButton Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activés</RadioButton>
-                    <RadioButton Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivés</RadioButton>
+                <StackPanel Margin="85,0,0,0" Grid.Column="0" Grid.Row="12">
+                    <RadioButton x:Name="chxPersonnelMaskIsOn" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activés</RadioButton>
+                    <RadioButton x:Name="chxPersonnelMaskIsOff" Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivés</RadioButton>
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="2">
@@ -412,8 +419,8 @@
                    Style="{StaticResource labelText}" Margin="10,0,0,0">Toux :</Label>
 
                 <StackPanel Margin="10,0,0,0" Grid.Column="1" Grid.Row="11">
-                    <RadioButton Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Activée</RadioButton>
-                    <RadioButton Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Désactivée</RadioButton>
+                    <RadioButton x:Name="rdbCoughSymptomEnabled" Margin="10,0,0,0" IsChecked="True"  Foreground="{StaticResource foreGroundLight}">Activée</RadioButton>
+                    <RadioButton x:Name="rdbCoughSymptomDisabled" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Désactivée</RadioButton>
                 </StackPanel>
 
                 <Label Grid.Column="1"
@@ -442,21 +449,25 @@
 
                 <Label Grid.Column="0"
                    Grid.Row="14"
-                   Style="{StaticResource labelText}">Transmission :</Label>
+                   Style="{StaticResource labelText}">Transmission aérosol :</Label>
 
                 <StackPanel Margin="10,0,0,0" Grid.Column="1" Grid.Row="15">
-                    <RadioButton Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Activée</RadioButton>
-                    <RadioButton Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Désactivée</RadioButton>
+                    <RadioButton x:Name="rdbAerosolTransmissionIsEnabled" Margin="10,0,0,0" IsChecked="True" Foreground="{StaticResource foreGroundLight}">Activée</RadioButton>
+                    <RadioButton x:Name="rdbAerosolTransmissionIsDisabled" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Désactivée</RadioButton>
                 </StackPanel>
 
                 <Button Style="{StaticResource smallButton}" 
                     Grid.Column="1" 
                     Grid.Row="25" 
-                    Content="Annuler" Margin="199,0,0,0" />
+                    Content="Annuler" 
+                    Margin="199,0,0,0" 
+                    Click="Cancel_Click"/>
                 <Button Style="{StaticResource smallButton}" 
                     Grid.Column="1" 
                     Grid.Row="25"
-                    Content="Sauvegarder" Margin="0,0,195,0"/>
+                    Content="Sauvegarder" 
+                    Margin="0,0,195,0"
+                    Click="Save_Click"/>
             </Grid>
         </Grid>
     </ScrollViewer>

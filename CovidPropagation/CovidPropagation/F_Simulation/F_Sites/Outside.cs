@@ -10,11 +10,12 @@ namespace CovidPropagation
 {
     class Outside : Site
     {
+        private const double VENTILATION_WITH_OUTSIDE = 20;
         private static SiteType[] outsideTypes = new SiteType[] { SiteType.Transport, SiteType.Eat };
-        public Outside(double length = GlobalVariables.BUILDING_LENGTH,
-                           double width = GlobalVariables.BUILDING_WIDTH,
-                           double height = GlobalVariables.BUILDING_HEIGHT,
-                           double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
+        public Outside(double length = 1000000,
+                           double width = 1000000,
+                           double height = 1000000,
+                           double ventilationWithOutside = VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
                  base(outsideTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
         {
