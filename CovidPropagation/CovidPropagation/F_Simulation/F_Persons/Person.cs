@@ -61,7 +61,6 @@ namespace CovidPropagation
         private int _timeBeforeDeath;
 
 
-        public double VirusResistanceDebug { get => _virusResistance; }
         public PersonState CurrentState { get => _state; set => _state = value; }
         public double QuantaExhalationRate { get => _quantaExhalationRate; }
         public bool HasMask { get => _hasMask; }
@@ -129,7 +128,7 @@ namespace CovidPropagation
         /// Calcul si l'individus attrape une maladie et decrémente la durée de celles déjà existantes.
         /// Retire les maladies dont la durée est terminée.
         /// </summary>
-        public void ChangeActivity()
+        public Site ChangeActivity()
         {
             // Quitte l'hôpital
             if (_mustLeaveHospital)
@@ -221,6 +220,8 @@ namespace CovidPropagation
                     }
                 }
             }
+
+            return _currentSite;
         }
 
         /// <summary>
@@ -253,7 +254,7 @@ namespace CovidPropagation
         /// Décémente la durée du virus ainsi que des maladies.
         /// Attrape possiblement des maladies.
         /// </summary>
-        public void ChechState()
+        public PersonState ChechState()
         {
             double contaminationProbability = _currentSite.GetProbabilityOfInfection();
 
@@ -271,6 +272,7 @@ namespace CovidPropagation
             ContractIlness();
             DecreaseImmunityDuration();
             DecreaseVirusDuration();
+            return _state;
         }
 
         /// <summary>
@@ -364,7 +366,6 @@ namespace CovidPropagation
                 else
                 {
                     _state = PersonState.Immune;
-                    Debug.WriteLine("ImmuneAfterCovid");
                     _immunityDuration = _rdm.Next(Virus.ImmunityDurationMin, Virus.ImmunityDurationMax) * GlobalVariables.NUMBER_OF_TIMEFRAME;
                     _immunityProtection = Virus.ImmunityEfficiency;
                 }

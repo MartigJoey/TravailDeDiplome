@@ -5,30 +5,25 @@ using UnityEngine;
 public class MovementScript : MonoBehaviour
 {
     private const float SPEED = 5f;
-
-    private Transform target;
-    private MeshRenderer meshRenderer;
-
-    private Material activeMaterial;
-    public Material healthyMaterial;
-    public Material immuneMaterial;
-    public Material infectedMaterial;
-    public Material infectiousMaterial;
+    private readonly Color HEALTHY_COLOR = Color.blue;
+    private readonly Color INFECTED_COLOR = Color.magenta;
+    private readonly Color INFECTIOUS_COLOR = Color.red;
+    private readonly Color IMMUNE_COLOR = Color.yellow;
 
     private Vector2 targetPosition;
     private float speed = SPEED;
-    // Start is called before the first frame update
-    void Start()
-    {
-        meshRenderer = GetComponent<MeshRenderer>();
-    }
+    public SpriteRenderer sprite;
+    public int targetIndex;
+    public int index;
+    public int state;
 
     // Update is called once per frame
     void Update()
     {
-        if (target != null && (targetPosition.x != transform.position.x && targetPosition.y != transform.position.y))
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed);
+        if (targetPosition.x == transform.position.x && targetPosition.y == transform.position.y)
         {
-            transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed);
+            this.enabled = false;
         }
     }
 
@@ -38,50 +33,42 @@ public class MovementScript : MonoBehaviour
         {
             default:
             case 0:
-                activeMaterial = healthyMaterial;
+                sprite.color = HEALTHY_COLOR;
                 break;
             case 1:
-                activeMaterial = immuneMaterial;
+                sprite.color = IMMUNE_COLOR;
                 break;
             case 2:
-                activeMaterial = infectedMaterial;
+                sprite.color = INFECTED_COLOR;
                 break;
             case 3:
-                activeMaterial = infectiousMaterial;
+                sprite.color = INFECTIOUS_COLOR;
                 break;
         }
-
-        meshRenderer ??= GetComponent<MeshRenderer>();
-        meshRenderer.material = activeMaterial;
+        this.state = state;
     }
 
     /// <summary>
     /// Modifie le site cible de l'individu.
     /// </summary>
     /// <param name="target">Nouveau site cible.</param>
-    public void SetTarget(Transform target)
+    public void SetTarget(Vector2 positionMin, Vector2 positionMax, int targetIndex)
     {
-        this.target = target;
-        targetPosition = FindPlaceInSite(target);
+        this.targetIndex = targetIndex;
+        this.enabled = true;
+        targetPosition = FindPlaceInSite(positionMin, positionMax);
         speed = SPEED;
     }
 
     /// <summary>
     /// Choisis un point aléatoire dans le lieu actuelle et le choisis comme nouvelle cible.
     /// </summary>
-    public Vector2 FindPlaceInSite(Transform target)
+    public Vector2 FindPlaceInSite(Vector2 positionMin, Vector2 positionMax)
     {
-        Vector2 newTarget;
-
-        float maxX = target.position.x + (target.localScale.x / 2) - (transform.localScale.x / 2);
-        float maxY = target.position.y + (target.localScale.y / 2) - (transform.localScale.y / 2);
-        float minX = target.position.x - (target.localScale.x / 2) + (transform.localScale.x / 2);
-        float minY = target.position.y - (target.localScale.y / 2) + (transform.localScale.y / 2);
-
-        float newX = Random.Range(minX*100, maxX*100)/100;
-        float newY = Random.Range(minY*100, maxY*100)/100;
-
-        newTarget = new Vector2(newX, newY);
+        Vector2 newTarget = new Vector2(
+                Random.Range(positionMin.x, positionMax.x), 
+                Random.Range(-positionMin.y, -positionMax.y)
+            );
 
         return newTarget;
     }

@@ -15,7 +15,6 @@ public class ScriptClient : MonoBehaviour
     //public GameObject ChangingText;
     public NamedPipeClientStream pipeClient;
     public StreamString ss;
-    Thread readThread;
     public Text dataReceived;
     public Text dataReceived1;
     public Text dataReceived2;
@@ -64,39 +63,42 @@ public class ScriptClient : MonoBehaviour
             ReadPipeData();
         }
     }
-    int readed = 0;
+    int read = 0;
     private async void ReadPipeData()
     {
 
-        dataReceived.text = "B "+readed.ToString();
         string result = await ss.ReadStringAsync();
         string resultDataType = result.Split(' ')[0];
 
-        dataReceived.text = "A " + readed++.ToString();
         switch (resultDataType)
         {
             default:
+                dataReceived1.text = "A " + read++.ToString();
+                dataReceived2.text = resultDataType + " e " + result;
+                break;
             case "Initialize":
-                //resultPopulation = result.Split(' ')[1];
-                //resultSites = result.Split(' ')[2];
-                //
-                //
-                //populationDatas = JsonUtility.FromJson<DataPopulation>(resultPopulation);
-                //
-                //dataReceived1.text = result.Length.ToString() + " Plz ?";
-                //sitesDatas = JsonUtility.FromJson<DataSites>(resultSites);
-                //
-                //mngScript.CreateSites(sitesDatas.SitesType, sitesDatas.SitesId);
-                //mngScript.CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
+                resultPopulation = result.Split(' ')[1];
+                resultSites = result.Split(' ')[2];
+
+                populationDatas = JsonUtility.FromJson<DataPopulation>(resultPopulation);
+                sitesDatas = JsonUtility.FromJson<DataSites>(resultSites);
+
+                mngScript.CreateSites(sitesDatas);
+                mngScript.CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
+                dataReceived.text = "Initialized " + read.ToString();
                 break;
             case "Iterate":
-                //resultIteration = result.Split(' ')[1];
-                //iterationDatas = JsonUtility.FromJson<DataIteration>(resultIteration);
-                //Task.Factory.StartNew(() => mngScript.SetIterationDatas(iterationDatas));
+                dataReceived1.text = "A " + read++.ToString();
+                dataReceived2.text = resultDataType + " " + result;
+                resultIteration = result.Split(' ')[1];
+                iterationDatas = JsonUtility.FromJson<DataIteration>(resultIteration);
+                
+                dataReceived3.text = iterationDatas.PersonsNewState.Count + " Plz ?";
+                
+                mngScript.SetIterationDatas(iterationDatas);
                 break;
         }
 
-        dataReceived.text = "AA " + readed.ToString();
         ReadPipeData();
     }
 }
@@ -111,7 +113,6 @@ public class DataPopulation
 [Serializable]
 public class DataSites
 {
-    public List<int> SitesType;
     public int NbHouse;
     public int NbCompany;
     public int NbHospital;
@@ -119,7 +120,6 @@ public class DataSites
     public int NbSchool;
     public int NbStore;
     public int NbSupermarket;
-    public List<int> SitesId;
 }
 
 [Serializable]
@@ -160,10 +160,13 @@ public class StreamString
         return await Task.Run(() =>
         {
             int len;
-            len = stream.ReadByte() << 8;
+            len = stream.ReadByte() << 24;
+            len = stream.ReadByte() << 16;
+            len += stream.ReadByte() << 8;
             len += stream.ReadByte();
             byte[] inBuffer = new byte[len];
             stream.Read(inBuffer, 0, len);
+
             return streamEncoding.GetString(inBuffer);
         });
     }

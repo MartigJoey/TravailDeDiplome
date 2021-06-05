@@ -19,8 +19,6 @@ namespace CovidPropagation
     public class Site
     {
         private const double DURATION_OF_HOUR = 60;
-        private static int ids = 0;
-        private int id;
 
         List<Person> persons;
         bool hasEnvironnementChanged;
@@ -89,7 +87,6 @@ namespace CovidPropagation
         public double ProbabilityOfInfection { get => probabilityOfInfection; set => probabilityOfInfection = value; }
         public double AverageQuantaExhalationRate { get => averageQuantaExhalationRate; set => averageQuantaExhalationRate = value; }
         public bool HasEnvironnementChanged { get => hasEnvironnementChanged; set => hasEnvironnementChanged = value; }
-        public int Id { get => id; set => id = value; }
 
         #endregion
 
@@ -113,9 +110,6 @@ namespace CovidPropagation
             persons = new List<Person>();
             HasEnvironnementChanged = true;
             AverageQuantaExhalationRate = GlobalVariables.AVERAGE_QUANTA_EXHALATION;
-
-            ids++;
-            id = ids;
         }
 
         /// <summary>
@@ -148,7 +142,7 @@ namespace CovidPropagation
                     InhalationMaskEfficiency = GetInhalationMaskEfficiency();
                     ExhalationMaskEfficiency = GetExhalationMaskEfficiency();
 
-                    ProbabilityOfBeingInfective = GetprobabilityOfBeingInfective(); // actuellement valeur fixe
+                    ProbabilityOfBeingInfective = GetprobabilityOfBeingInfective();
 
                     QuantaExhalationRateOfInfected = GetQuantaExhalationRateofInfected();
                     NetEmissionRate = GetNetEmissionRate(QuantaExhalationRateOfInfected, ExhalationMaskEfficiency, 

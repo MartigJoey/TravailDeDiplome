@@ -133,6 +133,7 @@ namespace CovidPropagation
                 CloseUnity();
 
             SetGrid(grdStruct, chartDatas);
+            ss.CloseLink();
 
             mw.btnGraphicSettings.IsEnabled = true;
         }
@@ -684,7 +685,8 @@ namespace CovidPropagation
 
             //Start embedded Unity Application
             process = new Process();
-            process.StartInfo.FileName = @".\GUIBuild\CovidPropagationGUI.exe";
+            //process.StartInfo.FileName = @".\GUIBuild\CovidPropagationGUI.exe";
+            process.StartInfo.FileName = @".\GUIBuild2D\CovidPropagationGUI2D.exe";
             process.StartInfo.Arguments = "-parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
             process.StartInfo.UseShellExecute = true;
             process.StartInfo.CreateNoWindow = true;
@@ -765,7 +767,6 @@ namespace CovidPropagation
 
                 await Task.Run(() =>
                 {
-                    // Invoke uniquement utile en cas d'utilisation du tbxValue.Text
                     Dispatcher.Invoke((Action)(() =>
                     {
                         ss.WriteString(objectToSend);
@@ -784,9 +785,9 @@ namespace CovidPropagation
                 DataIteration jsonIteration = new DataIteration(personsNewSite, personsNewState);
                 string objectToSend = "Iterate ";
                 objectToSend += JsonSerializer.Serialize(jsonIteration);
+
                 await Task.Run(() =>
                 {
-                    // Invoke uniquement utile en cas d'utilisation du tbxValue.Text
                     Dispatcher.Invoke((Action)(() =>
                     {
                         ss.WriteString(objectToSend);

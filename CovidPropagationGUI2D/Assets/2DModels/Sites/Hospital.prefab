@@ -13,7 +13,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 895313041553648010, guid: ab3ab96a2d96d074488ef79efe604615, type: 3}
       propertyPath: m_LocalScale.y
-      value: 4
+      value: 7.2727275
       objectReference: {fileID: 0}
     - target: {fileID: 895313041553648010, guid: ab3ab96a2d96d074488ef79efe604615, type: 3}
       propertyPath: m_LocalScale.z
@@ -25,12 +25,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 895313041553648010, guid: ab3ab96a2d96d074488ef79efe604615, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 0.36363626
       objectReference: {fileID: 0}
     - target: {fileID: 895313041553648020, guid: ab3ab96a2d96d074488ef79efe604615, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 603eb65c3991e0045be5ddad599ab2b5, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 895313041553648022, guid: ab3ab96a2d96d074488ef79efe604615, type: 3}
       propertyPath: m_Name
       value: Hospital
@@ -38,6 +38,18 @@ PrefabInstance:
     - target: {fileID: 1622733513321573811, guid: ab3ab96a2d96d074488ef79efe604615, type: 3}
       propertyPath: m_Name
       value: Building (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2170469512782847136, guid: ab3ab96a2d96d074488ef79efe604615, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2170469512782847136, guid: ab3ab96a2d96d074488ef79efe604615, type: 3}
+      propertyPath: m_Color.g
+      value: 0.0039854096
+      objectReference: {fileID: 0}
+    - target: {fileID: 2170469512782847136, guid: ab3ab96a2d96d074488ef79efe604615, type: 3}
+      propertyPath: m_Color.r
+      value: 0.41509432
       objectReference: {fileID: 0}
     - target: {fileID: 5215780177394990165, guid: ab3ab96a2d96d074488ef79efe604615, type: 3}
       propertyPath: m_RootOrder

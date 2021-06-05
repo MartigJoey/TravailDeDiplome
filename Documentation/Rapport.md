@@ -1045,6 +1045,8 @@ Pour obtenir un format compact et rapidement convertible de C# à JSON, j'ai obt
 
 Une fois transmis, un procédés similaire est effectué. Certains paramètres int comme les status sont modifiés pour correspondre aux valeurs utilisées par le GUI.
 
+<h1>Parle du format de données (Taille)</h1>
+
 ### Fonctionnement
 Le fonctionnement du GUI moins complexe que la simulation, partiellement pour s'assurer que les performances ne soient pas trop impactées. Les bâtiments reçu sont convertit en objet unity puis leur taille est changé pour que 1000 maisons entre sur une ligne par exemple.
 

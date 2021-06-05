@@ -14,14 +14,14 @@ PrefabInstance:
     - target: {fileID: 793908978752504998, guid: e700f2330acefb348b21ee1bd3fe3abc, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 397d7afc7867dbf4ba3a2a968552eed5, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 793908978752505016, guid: e700f2330acefb348b21ee1bd3fe3abc, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 793908978752505016, guid: e700f2330acefb348b21ee1bd3fe3abc, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.6666667
+      value: 6.6666665
       objectReference: {fileID: 0}
     - target: {fileID: 793908978752505016, guid: e700f2330acefb348b21ee1bd3fe3abc, type: 3}
       propertyPath: m_LocalScale.z
@@ -33,11 +33,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 793908978752505016, guid: e700f2330acefb348b21ee1bd3fe3abc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.00000011920929
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1291787612775399553, guid: e700f2330acefb348b21ee1bd3fe3abc, type: 3}
       propertyPath: m_Name
       value: Building (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835019969186869650, guid: e700f2330acefb348b21ee1bd3fe3abc, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835019969186869650, guid: e700f2330acefb348b21ee1bd3fe3abc, type: 3}
+      propertyPath: m_Color.g
+      value: 0.40392157
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835019969186869650, guid: e700f2330acefb348b21ee1bd3fe3abc, type: 3}
+      propertyPath: m_Color.r
+      value: 0.00030589104
       objectReference: {fileID: 0}
     - target: {fileID: 5695485740574298471, guid: e700f2330acefb348b21ee1bd3fe3abc, type: 3}
       propertyPath: m_RootOrder

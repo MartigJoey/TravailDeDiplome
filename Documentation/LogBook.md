@@ -1255,7 +1255,7 @@
 - Refactorisation des noms de variables
 - Ajout de commentaires
 
-# 04.06.2021 07h45 / 17h00
+# 04.06.2021 07h45 / 00h00
 - Mise en place des paramètres de la simulation
   - Paramètres du virus
   - Création d'une classe static contenant les paramètres
@@ -1295,3 +1295,26 @@
     - Suppression de la création de centaines/miliers de bâtiments
     - Utilisation de position vectorielle 2D à la place
     - Utilisation des sprites comme background
+
+# 05.06.2021 08h42 / 00h00
+- Suppression des matériaux et modification des éléments pour utiliser des sprites
+  - Test avec 100'000 individus, aucun soucis
+  - Test avec 200'000 individus, lag mais fonctionnel
+- Tentative d'utilisation de thread
+  - Échec
+  - Après quelques recherches, unity gère automatiquement les thread, il est donc impossible(Très complexe) de les gérer manuellement pour intéragir avec les gameobjects
+  - Refactorisation des données d'envoies
+  - ![Transfère de données WPF --> Unity](Medias/LogBook/EnvoieDeDonneesWPFToUnity.png)
+  - Modification de la strucutre de l'ajout de site dans la simulation pour correspondre à unity
+  - Correction d'un bug, les bus n'étant pas intégrés dans le GUI, l'index des bus était en dehors des limites du tableau
+  - La simulation peut maitenant envoyer toutes les données nécessaire à unity
+    - Le problème était que les premiers byte qui comprennent la taille de la suite de données était composé de 2 bytes empêchant la lecture de toutes suite de byte étant plus grande que 65'556.
+    - Pour régler le problème, il a fallut ajoute deux bytes supplémentaire pour stocker la longueur de la suite de données.
+    - Pour ce faire, il a fallut ajouter deux byte, un avec un décalage de 16 bits vers la droite et un avec un décalage de 24 bits vers la droite. Il s'agit de la continuation des deux bytes. Le premier ne demandant pas de décalage mais le deuxième demandant un décalage vers la droite de 8.
+    - Il a fallut appliquer la même logique du côté d'unity.
+    - Après cela, le transfère est complet et instantané.
+    - La création des données à transférer est cependant beaucoup trop grande.
+    - Modification de la structure pour récupérer les éléments nécessaires directement dans des boucles existantes.
+    - Attribution des ids des sites dans un dictionnaire au démarrage de la simulation.
+- Le GUI est fonctionnel mais les individus sont derrière les bâtiments
+- 

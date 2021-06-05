@@ -6,6 +6,7 @@
  * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
  */
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,8 @@ namespace CovidPropagation
                 int len = outBuffer.Length;
 
                 List<byte> dataToSend = new List<byte>();
+                dataToSend.Add((byte)(len >> 24));
+                dataToSend.Add((byte)(len >> 16));
                 dataToSend.Add((byte)(len >> 8));
                 dataToSend.Add((byte)(len >> 0));
                 dataToSend.AddRange(outBuffer.ToList());
