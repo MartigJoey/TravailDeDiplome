@@ -9,6 +9,7 @@
 namespace CovidPropagation
 {
     /// <summary>
+    /// ID Documentation : Data_Sites
     /// Données des sites qui seront transmisent par pipeline au GUI.
     /// </summary>
     public class DataSites

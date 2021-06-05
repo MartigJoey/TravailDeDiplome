@@ -204,17 +204,6 @@ namespace CovidPropagation
                     });
                     _population.RemoveAll(p => p.CurrentState == PersonState.Dead);
 
-
-                    sp.Start();
-                    // Trigger l'évènement OnTick qui va mettre à jour le GUI et met à jour ses données.
-                    if (OnGUIUpdate != null)
-                    {
-                        OnGUIUpdate(personsNewSite, personsNewState);
-                    }
-                    sp.Stop();
-                    Debug.WriteLine(sp.ElapsedMilliseconds);
-                    sp.Reset();
-
                     chartsDatas.AddDatas(GetAllDatas());
                     // Affiche au maximum une fois par seconde
                     if (sumEllapsedTime >= 1000)
@@ -222,6 +211,9 @@ namespace CovidPropagation
                         // Trigger les évènements qui vont mettre à jour les graphiques
                         OnDisplay?.Invoke(chartsDatas, false);
                         OnDataUpdate?.Invoke(chartsDatas);
+
+                        // Trigger l'évènement qui va mettre à jour le GUI et met à jour ses données.
+                        OnGUIUpdate?.Invoke(personsNewSite, personsNewState);
 
                         sumEllapsedTime = 0;
                     }
@@ -506,7 +498,6 @@ namespace CovidPropagation
             if (_sitesDictionnary[SiteType.Hospital].Count == 0)
             {
                 missingSite = new Hospital();
-                _sites.Add(missingSite);
                 _sitesDictionnary[SiteType.Hospital].Add(missingSite);
                 companies.Add(missingSite);
             }
@@ -514,7 +505,6 @@ namespace CovidPropagation
             if (_sitesDictionnary[SiteType.Store].Count == 0)
             {
                 missingSite = new Store();
-                _sites.Add(missingSite);
                 _sitesDictionnary[SiteType.Store].Add(missingSite);
                 stores.Add(missingSite);
             }
@@ -522,7 +512,6 @@ namespace CovidPropagation
             if (_sitesDictionnary[SiteType.Eat].Count == 0)
             {
                 missingSite = new Restaurant();
-                _sites.Add(missingSite);
                 _sitesDictionnary[SiteType.Eat].Add(missingSite);
                 restaurants.Add(missingSite);
             }
@@ -530,7 +519,6 @@ namespace CovidPropagation
             if (_sitesDictionnary[SiteType.School].Count == 0)
             {
                 missingSite = new School();
-                _sites.Add(missingSite);
                 _sitesDictionnary[SiteType.School].Add(missingSite);
                 schools.Add(missingSite);
             }
@@ -676,7 +664,7 @@ namespace CovidPropagation
                 nbPeople--;
             }
             _sites.InsertRange(0, houses);
-            for (int i = 0; i < _sites.Count; i++)
+            for (int i = 1; i < _sites.Count; i++)
             {
                 _sitesIds.Add(_sites[i], i);
             }

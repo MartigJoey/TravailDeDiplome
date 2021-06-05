@@ -1317,4 +1317,5 @@
     - Modification de la structure pour récupérer les éléments nécessaires directement dans des boucles existantes.
     - Attribution des ids des sites dans un dictionnaire au démarrage de la simulation.
 - Le GUI est fonctionnel mais les individus sont derrière les bâtiments
+- Modification de l'appelle du GUI pour être appellé en même temps que les graphiques ainsi que au maximum une fois par seconde
 - 

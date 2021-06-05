@@ -9,6 +9,7 @@
 namespace CovidPropagation
 {
     /// <summary>
+    /// ID Documentation : Data_Iteration
     /// Données qui seront envoyé au GUI à chaque itération.
     /// </summary>
     public class DataIteration

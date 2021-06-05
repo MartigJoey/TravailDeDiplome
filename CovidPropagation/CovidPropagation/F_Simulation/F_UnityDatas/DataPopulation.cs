@@ -9,6 +9,7 @@
 namespace CovidPropagation
 {
     /// <summary>
+    /// ID Documentation : Data_Population
     /// Permet de transférer les données de la population au GUI.
     /// </summary>
     public class DataPopulation

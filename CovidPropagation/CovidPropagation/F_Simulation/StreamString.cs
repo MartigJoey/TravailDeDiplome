@@ -25,6 +25,11 @@ namespace CovidPropagation
             streamEncoding = new UnicodeEncoding();
         }
 
+        /// <summary>
+        /// ID Documentation : Write_String
+        /// Écrit en byte le message fournit en string, insère sa taille dans les 4 premiers bytes et envoies les données.
+        /// </summary>
+        /// <param name="outString"></param>
         public async void WriteString(string outString)
         {
             await Task.Run(() => {

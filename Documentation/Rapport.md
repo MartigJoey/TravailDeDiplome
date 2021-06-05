@@ -1041,9 +1041,11 @@ Pour créer l'interface, un premier envoie de donnés doit être reçu. Ces prem
 
 Une fois que tout est en place, d'autres données peuvent arriver. Ces données comprennent uniquement des informations concernant la population. Dont, une mise à jour du statut de chaque individu permettant de changer la couleur de ceux-ci en temps réel et un id du prochain lieu dans lequel les individus doivent se déplacer.
 
-Pour obtenir un format compact et rapidement convertible de C# à JSON, j'ai obté pour la création d'objets servant de conteneurs. Ces objets convertissent les données que la simulation lui fournit et en int pour limiter le nombre de caractères au maximum. Prenons l'exemple des indvidius, leur index étant déjà en int, il n'est pas nécessaire de le modifier et les données sont reprisent tel quel. Cependant, son état est un enum, il faut donc convertir l'état en int pour l'insérer dans la liste.
+Pour obtenir un format compact et rapidement convertible de C# à JSON, j'ai obté pour la création d'objets servant de conteneurs. Ces objets convertissent les données que la simulation lui fournit en int pour limiter le nombre de caractères au maximum. Prenons l'exemple des indvidius, leur index étant déjà en int, il n'est pas nécessaire de le modifier et les données sont reprisent tel quel`(Data_Sites - Data_Population - Data_Iteration)`. Cependant, son état est un enum, il faut donc convertir l'état en int pour l'insérer dans la liste.
 
-Une fois transmis, un procédés similaire est effectué. Certains paramètres int comme les status sont modifiés pour correspondre aux valeurs utilisées par le GUI.
+Une fois transmis, un procédés similaire est effectué. Les paramètres sont ensuites utilisés tel quel dans le GUI qui utilise au maximum des valeurs simple pour éviter qu'il ne consomme trop de ressources.
+
+Un autre point très important du transfère de données est la taille de la suite de données. Cette taille se situe au début du "paquet" et permet au GUI de savoir lorsqu'il a reçu l'entièreté du paquet. La taille est calculée depuis la taille de la string a envoyer convertie en byte. Elle est ensuite découpée en différent byte pour permettre son transport. Sans la découper, il serait possible de recevoir correctement des paquet de seulement 255 caractères. En ajoutant les autres byte correspondant à la taille du paquet, il est possible de transmettre un paquet allant jusqu'à 2'147'483'647 qui correspond à la valeur maximal d'un int`(Write_String)`.
 
 <h1>Parle du format de données (Taille)</h1>
 
