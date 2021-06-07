@@ -113,8 +113,10 @@
   - [13.2. Fonctionnement](#132-fonctionnement)
     - [13.2.1. Général](#1321-général)
     - [13.2.2. Propagation](#1322-propagation)
-    - [13.2.3. Source propagation](#1323-source-propagation)
-    - [13.2.4. Résultats](#1324-résultats)
+    - [13.2.3. Pseudo-code de l'itération](#1323-pseudo-code-de-litération)
+    - [13.2.4. Création des probabilités](#1324-création-des-probabilités)
+    - [13.2.5. Source propagation](#1325-source-propagation)
+    - [13.2.6. Résultats](#1326-résultats)
   - [13.3. Performances](#133-performances)
 - [14. `GUI`](#14-gui)
   - [14.1. Structure](#141-structure)
@@ -936,10 +938,119 @@ Ces paramètres sont différents suivant les individus et le mesures prisent. Si
 
 Différentes mesures sont disponibles pour limiter au maximum la transmission du virus. Le port du masque étant la première de celle-ci et ayant déjà été décrit plus haut. La distanciation étant diffile à appliquer sur un modèle tel que je l'ai fait. Les individus ne pouvant par réellement se distancer des autres car ils ne possèdent pas de positions hormis le fait d'être dans un bâtiment. J'ai donc ajouté aux mesures additionnels une valeur qui est proportionnelle à l'efficacité de la distanciation. Il est aussi possible de mettre en quarantaine les personnes infectées. Celle-ci sont confinée dans leur habitat et ne sortes qu'arpès la durée maximal du virus qui est de 14 jours.
 
+### 13.2.3. Pseudo-code de l'itération
+```
+TANT QUE vrai // Boucle infinie
+  SI EnPause est faux
+    ALORS
+      Chronomètre.Démarrer()
 
-<h2>Lien vers méthodes dans les commentaires du projet</h2>
+      NombreDInfecté EST EGAL aux nombre d'individus infectés
 
-### 13.2.3. Source propagation
+      SI Paramètres.MesureDuMasque est vraie
+        ALORS
+          SiLaMesureDuMasqueEstActive EST EGAL A 
+          AppliquerLaMesureDuMasque(NombreDInfecté, SiLaMesureDuMasqueEstActive)
+      FIN SI
+
+      SI Paramètres.MesureDeDistanciation est vraie
+        ALORS
+          SiLaMesureDeDistanciationEstActive EST EGAL A 
+          AppliquerLaMesureDeDistanciation(NombreDInfecté, 
+          SiLaMesureDeDistanciationEstActive)
+      FIN SI
+
+      SI Paramètres.MesureDeQuarantaine est vraie
+        ALORS
+          SiLaMesureDeQuarantaineEstActive EST EGAL A 
+          AppliquerLaMesureDeQuarantaine(NombreDInfecté, 
+          SiLaMesureDeQuarantaineEstActive)
+      FIN SI
+
+      SI Paramètres.MesureDeVaccination est vraie
+        ALORS
+          
+          SiLaMesureDeVaccinationEstActive EST EGAL A 
+          AppliquerLaMesureDeVaccination(NombreDInfecté, 
+          SiLaMesureDeVaccinationEstActive)
+      FIN SI
+
+      GestionnaireDuTemps.PasserALaProchainePeriode
+
+      POUR IndexIndividus ALLANT DE 0 A NombreDIndividus PAR PAS DE 1 FAIRE
+        Individus[IndexIndividus].ChangeDActivité()
+        NouveauLieu EST EGAL Individus[IndexIndividus].LieuActuel
+        NouveauSiteDIndividus[IndexIndividus] EST EGAL A IdDesLieux[NouveauLieu]
+
+        SI SiLaMesureDeVaccinationEstActive EST VRAI ET QUE 
+        ValeurAléatoireEntre0Et1 EST PLUS PETIT OU EGAL A ProbabilitéDetreVacciné
+        ET QUE Individus[IndexIndividus].Etat N'EST PAS Infecté
+          ALORS
+            Individus[IndexIndividus].SeFaireVacciner()
+        FIN SI
+      FIN POUR
+
+      PARCOURIS Lieux EN TANT QUE Lieu
+        Lieu.CalculLesProbabilitésDêtreInfectés()
+      FIN PARCOURIS
+
+      PARCOURIS Hopitaux EN TANT QUE hopital
+        hopital.TraiterLesPatients()
+      FIN PARCOURIS
+
+      POUR IndexIndividus ALLANT DE 0 A NombreDIndividus PAR PAS DE 1 FAIRE
+        Individus[IndexIndividus].VérifierLEtat()
+        NouvelEtat[IndexIndividus] EST EGAL Individus[IndexIndividus].Etat
+      FIN POUR
+      
+      PARCOURIS Individus EN TANT QUE Individu
+        SI individu.Etat EST EGAL A Décédé
+          ALORS
+            RETIRER Individu de Individus
+        FIN SI
+      FIN PARCOURIS
+
+      SI EvenementDeMiseAJourDeLInterfaceGraphique N'EST PAS EGAL A Vide
+        ALORS
+          EvenementDeMiseAJourDeLInterfaceGraphique(NouveauSiteDIndividus, NouvelEtat)
+      FIN SI
+
+      DonnéesDesGraphiques.AjouterNouvellesDonnées(RécupérerNouvelleDonnées)
+
+      SI TempsEcouléEntreDeuxIteration EST PLUS GRAND OU EGAL A 1000
+        ALORS
+          EvenementDeMiseAJourDesGraphiques(DonnéesDesGraphiques)
+          EvenementDeMiseDeLaffichage(DonnéesDesGraphiques)
+
+          TempsEcouléEntreDeuxIteration EST EGAL A 0
+      FIN SI
+
+      Chronomètre.Arrêter()
+
+      SI Chronomètre.TempsEcoulé EST PLUS PETIT QUE VitesseDeLaSimulation
+        ALORS
+          Delai EST EGAL A VitesseDeLaSimulation - Chronomètre.TempsEcoulé
+          ATTENDRE Delai
+          TempsEcouléEntreDeuxIteration EST EGAL A TempsEcouléEntreDeuxIteration ADDITIONNE A Delai
+      FIN SI
+      TempsEcouléEntreDeuxIteration EST EGAL A TempsEcouléEntreDeuxIteration ADDITIONNE A Chronomètres.TempsEcoulé
+      Chronomètre.Réinitialiser()
+    SINON
+    ATTENDRE 100ms
+  FIN SI
+FIN TANT QUE
+```
+
+### 13.2.4. Création des probabilités
+Afin que la simulation ressemble au maximum à la réalité, il était nécessaire d'utiliser de réel données pour d'autres paramètres que le virus. Pour ce faire, je me suis massivement inspiré de Genève en cherchant divers statistiques et en les adaptant à la simulation.
+
+Les données proviennent majoritairement de sites officiels Suisse comme ge.ch ou covid19.admin.ch. J'ai aussi utilié un article du journal Le temps concernant les statistiques de véhicules à Genève pour obtenir des informations supplémentaires.
+
+Pour utiliser ces statisiques dans la simulation, je les ais transformées en pourcentage permettant d'ensuite les utiliser. Si l'on prend l'exemple des bâtiment, j'ai commencé par récupérer le nombre de bâtiment d'un certain type comme les écoles. J'ai ensuite utilisé le nombre de personnes se trouvant à Genève pour connaître le pourcentage d'école présentes par rapport au nombre d'habitant. A partir de ce résultat, il est aisé de trouver le nombre d'école pour 78'000 individus par exemple.
+
+J'ai effectué ce genre de calculs pour la totalité des bâtiments, l'âge de la population et pour chaque type de véhicules.
+
+### 13.2.5. Source propagation
 La source de mes calculs de transmission du virus par aérosol ont été réalisé par des experts dans le domaines : 
 - Profeseur en chimie Jose-Luis Jimenez de l'université du Colorado à Boulder
 - Docteur Zhe Peng de l'université du Colorado à Boulder
@@ -956,7 +1067,7 @@ Ce fichier en plus de citer ses sources et d'être réalisés par des spécialis
 
 <i>Le fichier excel est disponible en annexe sous format .xlsx, .pdf ou en ligne sur google drive [ici](https://drive.google.com/file/d/1hWvw8I-53Iw7GPy-B1mSyWen20VzTwWr/view?usp=sharing).</i>
 
-### 13.2.4. Résultats
+### 13.2.6. Résultats
 
 Les résultat de la simulation n'entre pas entièrement en accord avec les chiffres de la réalité. La différence réside majoriairement sur la longévité du virus qui, une fois qu'il a atteint son pic dans la simulation, ne fait que chuté. Dans la réalité, certaines mesures permettent de ralentir son expension et de le contenir par la suite. Au relachement de ces mesures, on peut observer que le virus reprend du terrain.
 
@@ -1048,11 +1159,13 @@ Une fois transmis, un procédés similaire est effectué. Certains paramètres i
 <h1>Parle du format de données (Taille)</h1>
 
 ### Fonctionnement
-Le fonctionnement du GUI moins complexe que la simulation, partiellement pour s'assurer que les performances ne soient pas trop impactées. Les bâtiments reçu sont convertit en objet unity puis leur taille est changé pour que 1000 maisons entre sur une ligne par exemple.
+Le fonctionnement du GUI est moins complexe que la simulation, partiellement pour s'assurer que les performances ne soient pas trop impactées. 
 
-Une fois leur échelle modifiée, leur position est modifiée. Les maison sont placées en ligne au dessus, les hôpitaux et écoles sont placées en colonne sur la droite, les restaurants, supermarchés et magasins sont placés en colonne à gauche et finalement, les entreprises sont placées en ligne en bas. Ils sont positionnés de sorte à faire un carré permettant la visualisation des déplacements au centre.
+Les bâtiments reçu sont convertit en objet unity puis leur taille est changé pour que 1000 maisons entre sur une ligne par exemple.
 
-Les individus eux, une fois créés, sont placés dans leur maison. Lorsque des données d'itération sont reçues, elles sont distribuées au individus, se servant de leur ids pour les reconnaitres et fournissant un id représentant le bâtiment vers lequel ils doivent se déplacer. Une fois ces informations reçues, l'individus se trouve un emplacement aléatoire dans le lieu et s'y déplace. Une fois dans le lieu, il attend la prochaine instruction.
+Une fois leur échelle modifiée, leur position l'est aussi. Les maison sont placées en ligne au dessus, les hôpitaux et écoles sont placées en colonne sur la droite, les restaurants, supermarchés et magasins sont placés en colonne à gauche et finalement, les entreprises sont placées en ligne en bas. Ils sont positionnés de sorte à faire un carré permettant la visualisation des déplacements au centre.
+
+Les individus eux, une fois créés, sont placés dans leur maison. Lorsque des données d'itération sont reçues, elles sont distribuées au individus, se servant de leur ids pour les reconnaitres et fournissant un id représentant le bâtiment vers lequel ils doivent se déplacer. Une fois ces informations reçues, l'individus se trouve un emplacement aléatoire dans le lieu et s'y déplace. Une fois dans le lieu, il se désactive en attendant la prochaine instruction.
 
 # 15. `UI`
 ## 15.1. Structure
@@ -1240,8 +1353,11 @@ Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à
 04.06.2021
   - Utilisé dans la vitesse de vaccination des individus
     - [covid19.admin.ch - OFSP - Statistiques de vitesse de vaccination](https://www.covid19.admin.ch/fr/epidemiologic/vacc-doses?vaccRel=abs)
-  - Explication de pourquoi la simulation n'est pas aussi similaire à la réalité.
-    - [Wikipedia - Théorie des six degrés de séparations](https://fr.wikipedia.org/wiki/Six_degr%C3%A9s_de_s%C3%A9paration)
+
+07.06.2021
+  - Utilisé dans l'affichage des valeurs des enums
+    - [StackOverflow - jop - Lecture valeurs enum](https://stackoverflow.com/questions/105372/how-to-enumerate-an-enum#:~:text=foreach%20(Suit%20suit%20in%20(Suit%5B%5D)%20Enum.GetValues(typeof(Suit)))%0A%7B%0A%7D)
+
 
 # 21. `Annexes`
 - Projet C#

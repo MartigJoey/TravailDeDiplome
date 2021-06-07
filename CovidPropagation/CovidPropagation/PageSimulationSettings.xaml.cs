@@ -27,15 +27,6 @@ namespace CovidPropagation
     /// </summary>
     public partial class PageSimulationSettings : Page
     {
-        enum tbxType
-        {
-            Probability = 1,
-            Size = 2,
-            DayDuration = 3,
-            MonthDuration = 4,
-            NbPersons = 5,
-            Quanta = 7
-        }
         public PageSimulationSettings()
         {
             InitializeComponent();
@@ -64,6 +55,18 @@ namespace CovidPropagation
             chxDistanciation.IsChecked = SimulationGeneralParameters.IsDistanciationMeasuresEnabled;
             tbxDistanciationNbPeopleToStart.IsEnabled = SimulationGeneralParameters.IsDistanciationMeasuresEnabled;
             tbxDistanciationNbPeopleToStop.IsEnabled = SimulationGeneralParameters.IsDistanciationMeasuresEnabled;
+
+            tbxProbabilityForHealthyToBeQuarantined.IsEnabled = QuarantineParameters.IshealthyQuarantined;
+            tbxQuarantinedDurationForHealthy.IsEnabled = QuarantineParameters.IshealthyQuarantined;
+
+            tbxProbabilityForInfectedToBeQuarantined.IsEnabled = QuarantineParameters.IsInfectedQuarantined;
+            tbxQuarantinedDurationForInfected.IsEnabled = QuarantineParameters.IsInfectedQuarantined;
+
+            tbxProbabilityForInfectiousToBeQuarantined.IsEnabled = QuarantineParameters.IsInfectiousQuarantined;
+            tbxQuarantinedDurationForInfectious.IsEnabled = QuarantineParameters.IsInfectiousQuarantined;
+
+            tbxProbabilityForImmuneToBeQuarantined.IsEnabled = QuarantineParameters.IsImmuneQuarantined;
+            tbxQuarantinedDurationForImmune.IsEnabled = QuarantineParameters.IsImmuneQuarantined;
 
             // Masques
             chxMask.IsChecked = SimulationGeneralParameters.IsMaskMeasuresEnabled;
@@ -105,7 +108,7 @@ namespace CovidPropagation
         {
             // Général
             tbxNbPeople.Text = SimulationGeneralParameters.NbPeople.ToString();
-            tbxProbabilityOfInfected.Text = SimulationGeneralParameters.ProbabilityOfInfected.ToString();
+            tbxProbabilityOfInfected.Text = SimulationGeneralParameters.ProbabilityOfInfected.ToString();;
 
             // Triggers mesures
             tbxQuarantineNbPeopleToStart.Text = SimulationGeneralParameters.NbInfecetdForQuarantineActivation.ToString();
@@ -119,6 +122,19 @@ namespace CovidPropagation
 
             tbxDistanciationNbPeopleToStart.Text = SimulationGeneralParameters.NbInfecetdForDistanciationActivation.ToString();
             tbxDistanciationNbPeopleToStop.Text = SimulationGeneralParameters.NbInfecetdForDistanciationDeactivation.ToString();
+
+            // Quarantaine
+            tbxProbabilityForHealthyToBeQuarantined.Text = QuarantineParameters.ProbabilityOfHealthyQuarantined.ToString();
+            tbxQuarantinedDurationForHealthy.Text = QuarantineParameters.DurationHealthyQuarantined.ToString();
+
+            tbxProbabilityForInfectedToBeQuarantined.Text = QuarantineParameters.ProbabilityOfInfectedQuarantined.ToString();
+            tbxQuarantinedDurationForInfected.Text = QuarantineParameters.DurationInfectedQuarantined.ToString();
+
+            tbxProbabilityForInfectiousToBeQuarantined.Text = QuarantineParameters.ProbabilityOfHealthyQuarantined.ToString();
+            tbxQuarantinedDurationForInfectious.Text = QuarantineParameters.DurationInfectiousQuarantined.ToString();
+
+            tbxProbabilityForImmuneToBeQuarantined.Text = QuarantineParameters.ProbabilityOfImmuneQuarantined.ToString();
+            tbxQuarantinedDurationForImmune.Text = QuarantineParameters.DurationImmuneQuarantined.ToString();
 
             // Vaccin
             tbxVaccinationDuration.Text = VaccinationParameters.Duration.ToString();
@@ -140,56 +156,73 @@ namespace CovidPropagation
             tbxCoughMinQuanta.Text = VirusParameters.CoughMinQuanta.ToString();
             tbxCoughMaxQuanta.Text = VirusParameters.CoughMaxQuanta.ToString();
         }
-        
+
         /// <summary>
-        /// Regex qui filtres les caractères non numériques.
+        /// Regex qui filtres les caractères non numériques allant de 1'000 à 999'999.
         /// </summary>
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void NbPersons_LeaveFocus(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex("[^0-9].+");
-            e.Handled = regex.IsMatch(e.Text);
+            TextBox tbx = sender as TextBox;
+            Regex regex = new Regex("^([1-9][0-9]{3,5})$");
+            string defaultValue = "1000";
+            CheckTextBoxFormat(tbx, regex, defaultValue);
         }
 
         /// <summary>
-        /// Si la valeur du textBox est plus grande que le maximum autorisé, alors il est assigné au maximum.
+        /// Regex qui filtres les caractères non numériques allant de 0 à 1'000'000.
         /// </summary>
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void DayDuration_LeaveFocus(object sender, RoutedEventArgs e)
         {
             TextBox tbx = sender as TextBox;
-            int min, max;
-            switch ((tbxType)Convert.ToInt32(tbx.Tag))
-            {
-                case tbxType.Probability:
-                    min = 0;
-                    max = 100;
-                    break;
-                case tbxType.Size:
-                    min = 10;
-                    max = 1000;
-                    break;
-                case tbxType.DayDuration:
-                    min = 0;
-                    max = 100000;
-                    break;
-                case tbxType.MonthDuration:
-                    min = 0;
-                    max = 100000;
-                    break;
-                default:
-                case tbxType.NbPersons:
-                    min = 1000;
-                    max = 1000000;
-                    break;
-                case tbxType.Quanta:
-                    min = 0;
-                    max = 800;
-                    break;
-            }
+            Regex regex = new Regex("^([0-9][0-9]{0,5})$");
+            string defaultValue = "7";
+            CheckTextBoxFormat(tbx, regex, defaultValue);
+        }
 
-            if (tbx.Text.Length > 0 && Convert.ToDouble(tbx.Text) > max)
-                tbx.Text = max.ToString();
-            else if(tbx.Text.Length > 0 && Convert.ToDouble(tbx.Text) < min)
-                tbx.Text = min.ToString();
+        /// <summary>
+        /// Regex qui filtres les caractères non numériques allant de 0 à 1'000'000.
+        /// </summary>
+        private void MonthDuration_LeaveFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tbx = sender as TextBox;
+            Regex regex = new Regex("^([0-9][0-9]{0,5})$");
+            string defaultValue = "6";
+            CheckTextBoxFormat(tbx, regex, defaultValue);
+        }
+
+        /// <summary>
+        /// Regex qui filtres les caractères non numériques allant de 0 à 800.
+        /// </summary>
+        private void Quantas_LeaveFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tbx = sender as TextBox;
+            Regex regex = new Regex("^([1-7][0-9]{0,2}|800|[0-9]{1,2})$");
+            string defaultValue = "200";
+            CheckTextBoxFormat(tbx, regex, defaultValue);
+        }
+
+        /// <summary>
+        /// Regex qui filtres les caractères non numériques allant de 0% à 100% en prenant en compte les décimals.
+        /// </summary>
+        private void Probability_LeaveFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tbx = sender as TextBox;
+            Regex regex = new Regex(@"\b(?<!\.)(?!0+(?:\.0+)?%)(?:\d|[1-9]\d|100)(?:(?<!100)\.\d+)?$");
+            string defaultValue = "0.00";
+            CheckTextBoxFormat(tbx, regex, defaultValue);
+        }
+
+        private void CheckTextBoxFormat(TextBox tbx, Regex regex, string defaultValue)
+        {
+            if (!regex.IsMatch(tbx.Text))
+            {
+                tbx.Background = this.FindResource("highlightWrongFormat") as Brush;
+                tbx.Text = defaultValue;
+            }
+            else
+            {
+                tbx.Background = this.FindResource("highlightCorrectFormat") as Brush;
+            }
         }
 
         /// <summary>
@@ -221,7 +254,7 @@ namespace CovidPropagation
                     pnlCbxQuarantine.IsEnabled = (chx.IsChecked == true);
                     tbxQuarantineNbPeopleToStart.IsEnabled = (chx.IsChecked == true);
                     tbxQuarantineNbPeopleToStop.IsEnabled = (chx.IsChecked == true);
-                    if ((chx.IsChecked == false))
+                    if (chx.IsChecked == false)
                     {
                         chxQuarantineHealthy.IsChecked = false;
                         chxQuarantineImmune.IsChecked = false;
@@ -237,7 +270,30 @@ namespace CovidPropagation
                     break;
             }
         }
-
+        private void QuarantineTypeChecked_Checked(object sender, RoutedEventArgs e)
+        {
+            CheckBox chx = sender as CheckBox;
+            switch (chx.Tag.ToString())
+            {
+                default:
+                case "Healthy":
+                    tbxProbabilityForHealthyToBeQuarantined.IsEnabled = chxQuarantineHealthy.IsChecked == true;
+                    tbxQuarantinedDurationForHealthy.IsEnabled = chxQuarantineHealthy.IsChecked == true;
+                    break;
+                case "Infected":
+                    tbxProbabilityForInfectedToBeQuarantined.IsEnabled = chxQuarantineInfected.IsChecked == true;
+                    tbxQuarantinedDurationForInfected.IsEnabled = chxQuarantineInfected.IsChecked == true;
+                    break;
+                case "Infectious":
+                    tbxProbabilityForInfectiousToBeQuarantined.IsEnabled = chxQuarantineInfectious.IsChecked == true;
+                    tbxQuarantinedDurationForInfectious.IsEnabled = chxQuarantineInfectious.IsChecked == true;
+                    break;
+                case "Immune":
+                    tbxProbabilityForImmuneToBeQuarantined.IsEnabled = chxQuarantineImmune.IsChecked == true;
+                    tbxQuarantinedDurationForImmune.IsEnabled = chxQuarantineImmune.IsChecked == true;
+                    break;
+            }
+        }
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             SetVirusParameters();
@@ -361,27 +417,51 @@ namespace CovidPropagation
 
             // Saint
             if (chxQuarantineHealthy.IsChecked == true)
+            {
                 QuarantineParameters.IshealthyQuarantined = true;
+                QuarantineParameters.ProbabilityOfHealthyQuarantined = Convert.ToDouble(tbxProbabilityForHealthyToBeQuarantined.Text);
+                QuarantineParameters.DurationHealthyQuarantined = Convert.ToInt32(tbxQuarantinedDurationForHealthy.Text);
+            }
             else
+            {
                 QuarantineParameters.IshealthyQuarantined = false;
+            }
 
             // Infectés
             if (chxQuarantineInfected.IsChecked == true)
+            {
                 QuarantineParameters.IsInfectedQuarantined = true;
+                QuarantineParameters.ProbabilityOfInfectedQuarantined = Convert.ToDouble(tbxProbabilityForInfectedToBeQuarantined.Text);
+                QuarantineParameters.DurationInfectedQuarantined = Convert.ToInt32(tbxQuarantinedDurationForInfected.Text);
+            }
             else
+            {
                 QuarantineParameters.IsInfectedQuarantined = false;
+            }
 
             // Contagieux
             if (chxQuarantineInfectious.IsChecked == true)
+            {
                 QuarantineParameters.IsInfectiousQuarantined = true;
+                QuarantineParameters.ProbabilityOfHealthyQuarantined = Convert.ToDouble(tbxProbabilityForInfectiousToBeQuarantined.Text);
+                QuarantineParameters.DurationInfectiousQuarantined = Convert.ToInt32(tbxQuarantinedDurationForInfectious.Text);
+            }
             else
+            {
                 QuarantineParameters.IsInfectiousQuarantined = false;
+            }
 
             // Immunisés
             if (chxQuarantineImmune.IsChecked == true)
+            {
                 QuarantineParameters.IsImmuneQuarantined = true;
+                QuarantineParameters.ProbabilityOfImmuneQuarantined = Convert.ToDouble(tbxProbabilityForImmuneToBeQuarantined.Text);
+                QuarantineParameters.DurationImmuneQuarantined = Convert.ToInt32(tbxQuarantinedDurationForImmune.Text);
+            }
             else
+            {
                 QuarantineParameters.IsImmuneQuarantined = false;
+            }
         }
 
         private void SetVaccinationMeasureParameters()

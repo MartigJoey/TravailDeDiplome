@@ -38,10 +38,7 @@ namespace CovidPropagation
         private const double PROBABILITY_OF_USING_A_CAR = 0.36d;
         private const double PROBABILITY_OF_USING_A_BIKE = 0.37d;
         private const double PROBABILITY_OF_USING_A_BUS = 0.15d;
-        private const double PROBABILITY_OF_WALKING = 0.27d;// Normalement 0.11 avec les bus
-
-        private const int MAX_SCHOOL_AGE = 25;
-        private const int MAX_WORKING_AGE = 65;
+        private const double PROBABILITY_OF_WALKING = 0.27d; // Normalement 0.11 avec les bus
 
 
         public event DataUpdateEventHandler OnDataUpdate;
@@ -132,7 +129,7 @@ namespace CovidPropagation
         {
             chartsDatas = new SimulationDatas();
             chartsDatas.Initialize();
-            chartsDatas.AddDatas(GetAllDatas());
+            chartsDatas.AddDatas(GetAllDatas(0,0,0,0,0));
             int[] personsNewSite = new int[_population.Count];
             int[] personsNewState = new int[_population.Count];
 
@@ -141,6 +138,12 @@ namespace CovidPropagation
             bool isDistanciationMeasureOn = false;
             bool isQuarantineMeasureOn = false;
             bool isVaccinationMeasureOn = false;
+
+            int nbOfInfectious = 0;
+            int nbOfIncubating = 0;
+            int nbOfImmune = 0;
+            int nbOfHealthy = 0;
+            int nbOfDead = 0;
 
             int indexPerson = 0;
 
@@ -169,6 +172,14 @@ namespace CovidPropagation
                 if (_startStop)
                 {
                     _sp.Start();
+
+                    // Réinitialise les compteur de types d'individus
+                    nbOfInfectious = 0;
+                    nbOfIncubating = 0;
+                    nbOfImmune = 0;
+                    nbOfHealthy = 0;
+
+                    // Applique les mesures ou les retires.
                     int nbInfected = _population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count();
                     if (SimulationGeneralParameters.IsMaskMeasuresEnabled)
                         isMaskMeasureOn = SetMaskMeasure(nbInfected, isMaskMeasureOn);
@@ -184,6 +195,7 @@ namespace CovidPropagation
 
                     TimeManager.NextTimeFrame();
 
+                    // Change l'activité de la population, change de lieu pour le GUI, applique la vaccination si celle-ci est appliquée.
                     indexPerson = 0;
                     _population.ForEach(p => {
                         Site newSite = p.ChangeActivity();
@@ -194,28 +206,47 @@ namespace CovidPropagation
                             p.GetVaccinated();
                         indexPerson++;
                     });
+                    // Calcul les probabilités d'infections dans les lieux et traites les patients à l'hôpital.
                     _sites.ForEach(p => p.CalculateprobabilityOfInfection());
                     _sitesDictionnary[SiteType.Hospital].ForEach(h => ((Hospital)h).TreatPatients());
 
+                    // Change l'état de l'individu s'il a été infectés et change l'état pour le GUI.
                     indexPerson = 0;
                     _population.ForEach(p => {
                         personsNewState[indexPerson] = (int)p.ChechState();
                         indexPerson++;
+                        switch (p.CurrentState)
+                        {
+                            case PersonState.Dead:
+                                nbOfDead++;
+                                break;
+                            case PersonState.Healthy:
+                                nbOfHealthy++;
+                                break;
+                            case PersonState.Immune:
+                                nbOfImmune++;
+                                break;
+                            case PersonState.Infected:
+                                nbOfIncubating++;
+                                break;
+                            case PersonState.Asymptomatic:
+                            case PersonState.Infectious:
+                                nbOfInfectious++;
+                                break;
+                            default:
+                                break;
+                        }
                     });
+                    // Retire les individus décédés au cours de l'itération.
                     _population.RemoveAll(p => p.CurrentState == PersonState.Dead);
 
-
-                    sp.Start();
                     // Trigger l'évènement OnTick qui va mettre à jour le GUI et met à jour ses données.
                     if (OnGUIUpdate != null)
                     {
                         OnGUIUpdate(personsNewSite, personsNewState);
                     }
-                    sp.Stop();
-                    Debug.WriteLine(sp.ElapsedMilliseconds);
-                    sp.Reset();
 
-                    chartsDatas.AddDatas(GetAllDatas());
+                    chartsDatas.AddDatas(GetAllDatas(nbOfDead, nbOfHealthy, nbOfImmune, nbOfIncubating, nbOfInfectious));
                     // Affiche au maximum une fois par seconde
                     if (sumEllapsedTime >= 1000)
                     {
@@ -245,11 +276,17 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Définit si la mesure du masque doit être appliquée.
+        /// </summary>
+        /// <param name="nbInfected">Le nombre d'infectés dans la simulation.</param>
+        /// <param name="isOn">Si la mesure est déjà active.</param>
+        /// <returns>Si le mesure est active ou non.</returns>
         private bool SetMaskMeasure(int nbInfected, bool isOn)
         {
+            // Si la mesure est déjà active, elle n'est pas réactivée.
             if (isOn == false && nbInfected > SimulationGeneralParameters.NbInfecetdForMaskActivation)
             {
-                // Set masque dans bâtiments par types
                 _sites.ForEach(s => s.SetMaskMeasure(true, true));
                 isOn = true;
             }
@@ -261,6 +298,12 @@ namespace CovidPropagation
             return isOn;
         }
 
+        /// <summary>
+        /// Définit si la mesure des distanciations doit être appliquée.
+        /// </summary>
+        /// <param name="nbInfected">Le nombre d'infectés dans la simulation.</param>
+        /// <param name="isOn">Si la mesure est déjà active.</param>
+        /// <returns>Si le mesure est active ou non.</returns>
         private bool SetDistanciationMeasure(int nbInfected, bool isOn)
         {
             if (isOn == false && nbInfected > SimulationGeneralParameters.NbInfecetdForDistanciationActivation)
@@ -276,6 +319,12 @@ namespace CovidPropagation
             return isOn;
         }
 
+        /// <summary>
+        /// Définit si la quarantaine doit être mise en place.
+        /// </summary>
+        /// <param name="nbInfected">Le nombre d'infectés dans la simulation.</param>
+        /// <param name="isOn">Si la mesure est déjà active.</param>
+        /// <returns>Si le mesure est active ou non.</returns>
         private bool SetQuarantineMeasure(int nbInfected, bool isOn)
         {
             if (isOn == false && nbInfected > SimulationGeneralParameters.NbInfecetdForQuarantineActivation)
@@ -300,6 +349,12 @@ namespace CovidPropagation
             return isOn;
         }
 
+        /// <summary>
+        /// Définit si la vaccination doit être mise en place ou non.
+        /// </summary>
+        /// <param name="nbInfected">Le nombre d'infectés dans la simulation.</param>
+        /// <param name="isOn">Si la mesure est déjà active.</param>
+        /// <returns>Si le mesure est active ou non.</returns>
         private bool SetVaccinationMeasure(int nbInfected, bool isOn)
         {
             if (isOn == false && nbInfected > SimulationGeneralParameters.NbInfecetdForVaccinationActivation)
@@ -320,81 +375,77 @@ namespace CovidPropagation
         {
             OnDisplay?.Invoke(chartsDatas, true);
         }
+
         #region GetDatas
 
         /// <summary>
         /// Récupère les données lors d'un évènement qui est déclanché à chaque itération de la simulation.
         /// </summary>
         /// <returns>Données actuelles de la simulation.</returns>
-        public SimulationDatas GetAllDatas()
+        public SimulationDatas GetAllDatas(int nbOfDead, int nbOfHealthy, int nbOfImmune, int nbOfIncubating, int nbOfInfectious)
         {
             SimulationDatas datas = new SimulationDatas();
             datas.Initialize();
             // MODIFIER LES REQUETES POUR DES VALEURS FIXES
+            double nbContamination = GetNumberOfContamination();
+
             datas.NumberOfPeople.Add(_population.Count);
-            datas.NumberOfInfected.Add(_population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count());
-            datas.NumberOfImmune.Add(_population.Where(p => (int)p.CurrentState == (int)PersonState.Immune).Count());
-            datas.NumberOfHospitalisation.Add(_sitesDictionnary[SiteType.Hospital].Sum(b => ((Hospital)b).CountPatients()));
-            datas.NumberOfDeath.Add(SimulationGeneralParameters.NbPeople - _population.Count);
-            datas.NumberOfContamination.Add(42);
-            datas.NumberOfHealthy.Add(_population.Where(p => (int)p.CurrentState == (int)PersonState.Healthy).Count());
-            datas.NumberOfReproduction.Add(_sites.Sum(b => b.VirusAraisingCases));
+            datas.NumberOfInfected.Add(nbOfInfectious + nbOfIncubating);
+            datas.NumberOfInfectious.Add(nbOfInfectious);
+            datas.NumberOfIncubation.Add(nbOfIncubating);
+            datas.NumberOfImmune.Add(nbOfImmune);
+            datas.NumberOfHospitalisation.Add(GetNumberOfHospitalisation());
+            datas.NumberOfDeath.Add(nbOfDead);
+            datas.NumberOfContamination.Add(nbContamination);
+            datas.NumberOfHealthy.Add(nbOfHealthy);
+            datas.NumberOfReproduction.Add(GetNumberOfReproduction());
             return datas;
-            /*return $"Nombre de personne      : {population.Count} {Environment.NewLine}" +
-                   $"Average age             : {(double)population.Average(p => p.Age)} {Environment.NewLine}" +
-                   $"Infecté(s)              : {(double)population.Where(p => (int)p.CurrentState >= (int)PersonState.Infected).Count()} {Environment.NewLine}" +
-                   $"Moyenne quanta exhalé   : {(double)population.Average(p => p.QuantaExhalationRate)} {Environment.NewLine}" +
-                   $"Probabilité d'infection : {(double)sites.Sum(b => b.ProbabilityOfInfection)} {Environment.NewLine}" +
-
-                   $"Quanta concentre        : {(double)sites.Sum(b => b.AvgQuantaConcentration)} {Environment.NewLine}" +
-                   $"inhal mask eff          : {(double)sites.Sum(b => b.InhalationMaskEfficiency)} {Environment.NewLine}" +
-                   $"Fraction persons w mask : {(double)sites.Sum(b => b.FractionPersonsWithMask)} {Environment.NewLine}" +
-
-                   $"Quanta inhalé par person: {(double)sites.Sum(b => b.QuantaInhaledPerPerson)} {Environment.NewLine}" +
-                   $"Re                      : {sites.Sum(b => b.VirusAraisingCases)} {Environment.NewLine}" +
-                   $"Wearmasks               : {sites.Sum(b => b.FractionPersonsWithMask) / sites.Where(b => b.GetType() != typeof(Home)).Count()}" +
-                   $"Temps                   : {TimeManager.CurrentDayString} {TimeManager.CurrentHour}";*/
         }
 
         // Datas
-        public int GetNumberOfPeople()
-        {
-            return 0;
-        }
-
-        public int GetNumberOfInfected()
-        {
-            return 1;
-        }
-
-        public int GetNumberOfImmune()
-        {
-            return 2;
-        }
-
-        public int GetNumberOfReproduction()
-        {
-            return 3;
-        }
-
-        public int GetNumberOfHealthy()
-        {
-            return 4;
-        }
 
         public int GetNumberOfHospitalisation()
         {
-            return 5;
+            return _sitesDictionnary[SiteType.Hospital].Sum(b => ((Hospital)b).CountPatients());
         }
 
         public int GetNumberOfDeath()
         {
-            return 6;
+            return SimulationGeneralParameters.NbPeople - _population.Count;
         }
 
-        public int GetNumberOfContamination()
+        public double GetNumberOfContamination()
         {
-            return 7;
+            double result = 0;
+            if (chartsDatas.NumberOfInfected != null && chartsDatas.NumberOfInfected.Count > 1)
+            {
+                double currentNbOfInfected = chartsDatas.NumberOfInfected[chartsDatas.NumberOfInfected.GetLastIndex()];
+                double lastNbOfInfected = chartsDatas.NumberOfInfected[chartsDatas.NumberOfInfected.GetLastIndex() - 1];
+                if (lastNbOfInfected == 0)
+                    result = currentNbOfInfected;
+                else
+                    result = currentNbOfInfected - lastNbOfInfected;
+
+                if (result < 0)
+                    result = 0;
+            }
+            return result;
+        }
+
+        public double GetNumberOfReproduction()
+        {
+            double result = 0;
+            if (chartsDatas.NumberOfInfected != null && chartsDatas.NumberOfInfected.Count > 1)
+            {
+                double currentNbOfInfected = chartsDatas.NumberOfInfected[chartsDatas.NumberOfInfected.GetLastIndex()];
+                double lastNbOfInfected = chartsDatas.NumberOfInfected[chartsDatas.NumberOfInfected.GetLastIndex()-1];
+
+                if (lastNbOfInfected == 0)
+                    result = currentNbOfInfected;
+                else
+                    result = currentNbOfInfected / lastNbOfInfected;
+            }
+            return result;
         }
 
         #endregion
@@ -543,8 +594,6 @@ namespace CovidPropagation
             _sites.AddRange(restaurants);
             _sites.AddRange(supermarkets);
             _sites.AddRange(companies);
-
-
         }
 
         /// <summary>

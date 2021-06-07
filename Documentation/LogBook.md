@@ -1296,7 +1296,7 @@
     - Utilisation de position vectorielle 2D à la place
     - Utilisation des sprites comme background
 
-# 05.06.2021 08h42 / 00h00
+# 05.06.2021 08h42 / 17h00
 - Suppression des matériaux et modification des éléments pour utiliser des sprites
   - Test avec 100'000 individus, aucun soucis
   - Test avec 200'000 individus, lag mais fonctionnel
@@ -1317,4 +1317,21 @@
     - Modification de la structure pour récupérer les éléments nécessaires directement dans des boucles existantes.
     - Attribution des ids des sites dans un dictionnaire au démarrage de la simulation.
 - Le GUI est fonctionnel mais les individus sont derrière les bâtiments
+
+# 07.06.2021
+- Suppression du GUI qui apparaissait dans les choix de type de graphiques.
+- Modification de la quarantaine permettant d'avoir des personnes qui passent entre les mailles du filet.
+  - Ajout d'une durée de quarantaine personnalisée
+- Documentation
+  - Ajout du pseudo-code de la boucle d'itération
+  - Sources/Calculs Statistiques
+- Affichage des descriptions dans les titres des courbes des graphiques
+- Ajout de la durée et de l'efficacité de la quarantaine dans les paramètres
+- Création de regex pour les textbox
+  - Probabilité (%), Durée, Nombres
+  - Essai avec PreviewTextInput sans succès
+    - Impossible de filtrer correctement et de prendre en compte la suppression
+  - Essai avec LeaveFocus réussi
+    - Fonctionne correctement et met une valeur par défaut en cas d'erreur
+    - Change la couleur du background en fonction de la réponse (Correct = vert, Incorrect = rouge)
 - 

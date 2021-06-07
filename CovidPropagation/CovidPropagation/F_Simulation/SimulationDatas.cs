@@ -18,6 +18,8 @@ namespace CovidPropagation
             CentralizedDatas = new List<KeyValuePair<string, List<double>>>();
             NumberOfPeople = new List<double>();
             NumberOfInfected = new List<double>();
+            NumberOfInfectious = new List<double>();
+            NumberOfIncubation = new List<double>();
             NumberOfImmune = new List<double>();
             NumberOfReproduction = new List<double>();
             NumberOfHealthy = new List<double>();
@@ -26,7 +28,9 @@ namespace CovidPropagation
             NumberOfContamination = new List<double>();
 
             CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre de personnes", NumberOfPeople));
-            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre d'infecté", NumberOfInfected));
+            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre d'infectés", NumberOfInfected));
+            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre d'infectieux", NumberOfInfectious));
+            CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre en incubation", NumberOfIncubation));
             CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre d'immunisé", NumberOfImmune));
             CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre de reproductions", NumberOfReproduction));
             CentralizedDatas.Add(new KeyValuePair<string, List<double>>("Nombre de sains", NumberOfHealthy));
@@ -39,6 +43,8 @@ namespace CovidPropagation
         public List<double> NumberOfPeople { get; set; }
 
         public List<double> NumberOfInfected { get; set; }
+        public List<double> NumberOfInfectious { get; set; }
+        public List<double> NumberOfIncubation { get; set; }
 
         public List<double> NumberOfImmune { get; set; }
 
@@ -60,6 +66,8 @@ namespace CovidPropagation
         {
             NumberOfPeople.AddRange(newDatas.NumberOfPeople);
             NumberOfInfected.AddRange(newDatas.NumberOfInfected);
+            NumberOfInfectious.AddRange(newDatas.NumberOfInfectious);
+            NumberOfIncubation.AddRange(newDatas.NumberOfIncubation);
             NumberOfImmune.AddRange(newDatas.NumberOfImmune);
             NumberOfReproduction.AddRange(newDatas.NumberOfReproduction);
             NumberOfHealthy.AddRange(newDatas.NumberOfHealthy);
@@ -84,6 +92,12 @@ namespace CovidPropagation
                     break;
                 case ChartsDisplayData.Cases:
                     result = NumberOfInfected;
+                    break;
+                case ChartsDisplayData.Infectious:
+                    result = NumberOfInfectious;
+                    break;
+                case ChartsDisplayData.Incubations:
+                    result = NumberOfIncubation;
                     break;
                 case ChartsDisplayData.Immune:
                     result = NumberOfImmune;

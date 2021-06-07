@@ -44,9 +44,6 @@ namespace CovidPropagation
             mw = (MainWindow)Application.Current.MainWindow;
             charts = new Dictionary<UIType, object>();
             sim = new Simulation();
-            VirusParameters.Init();
-            SimulationGeneralParameters.Init();
-            VaccinationParameters.Init();
         }
 
         private void OpenRawDatasWindow_Click(object sender, RoutedEventArgs e)
@@ -79,7 +76,7 @@ namespace CovidPropagation
                     sim.OnGUIInitialize += new InitializeGUIEventHandler(OnGUIInitialize);
                 }
 
-                rawDatasWindow.CreateLabels(sim.GetAllDatas());
+                rawDatasWindow.CreateLabels(sim.GetAllDatas(0,0,0,0,0));
                 sim.OnDataUpdate += new DataUpdateEventHandler(rawDatasWindow.UpdateLabels);
 
                 if (panelUnity == null)
@@ -189,41 +186,6 @@ namespace CovidPropagation
 
             chart.Tag = chartData;
             sim.TriggerDisplayChanges();
-        }
-
-        /// <summary>
-        /// Permet de récupérer la valeur de l'interval en timeFrames.
-        /// Les valeurs sont différentes suivant le type de graphiques car leur affichage le demande.
-        /// </summary>
-        /// <param name="enumInterval">Interval du graphique.</param>
-        /// <param name="type">Type de graphique.</param>
-        /// <returns>Interval actuel pour ce graphique.</returns>
-        private int GetInterval(ChartsDisplayInterval enumInterval, UIType type)
-        {
-            int interval;
-            switch (enumInterval)
-            {
-                default:
-                case ChartsDisplayInterval.Day:
-                    interval = 48;
-                    if (type == UIType.Horizontal || type == UIType.Vertical)
-                        interval = 12;
-                    break;
-                case ChartsDisplayInterval.Week:
-                    interval = 336;
-                    if (type == UIType.Horizontal || type == UIType.Vertical || type == UIType.HeatMap)
-                        interval = 7;
-                    break;
-                case ChartsDisplayInterval.Month:
-                    interval = 1440; 
-                    if (type == UIType.Horizontal || type == UIType.Vertical)
-                        interval = 4;
-                    break;
-                case ChartsDisplayInterval.Total:
-                    interval = 0;
-                    break;
-            }
-            return interval;
         }
 
         /// <summary>
@@ -537,16 +499,16 @@ namespace CovidPropagation
                 ChartValues<double> values = new ChartValues<double>();
                 chart.Series.Add(new LineSeries
                 {
-                    Title = curvesData[i].ToString(),
+                    Title = GetEnumDescription(curvesData[i]).ToString(),
                     Foreground = Brushes.Gray,
                     Tag = curvesData[i],
                     PointGeometry = null,
                     Values = values,
                     DataLabels = false,
-                });
+                });;
                 chart.Series[0].Values = values.AsGearedValues().WithQuality(Quality.Low);
             }
-        }
+        }            
 
         /// <summary>
         /// Ajoute une ou plusieurs colonnes à un graphique cartésien.
@@ -560,7 +522,7 @@ namespace CovidPropagation
                 ChartValues<double> values = new ChartValues<double>();
                 chart.Series.Add(new ColumnSeries
                 {
-                    Title = curvesData[i].ToString(),
+                    Title = GetEnumDescription(curvesData[i]).ToString(),
                     Foreground = Brushes.Gray,
                     Tag = curvesData[i],
                     Values = values,
@@ -578,10 +540,9 @@ namespace CovidPropagation
         {
             for (int i = 0; i < curvesData.Length; i++)
             {
-                Random rdm = GlobalVariables.rdm;
                 chart.Series.Add(new RowSeries
                 {
-                    Title = curvesData[i].ToString(),
+                    Title = GetEnumDescription(curvesData[i]).ToString(),
                     Foreground = Brushes.Gray,
                     Tag = curvesData[i],
                     Values = new ChartValues<double> ()
@@ -598,10 +559,9 @@ namespace CovidPropagation
         {
             for (int i = 0; i < curvesData.Length; i++)
             {
-                Random rdm = GlobalVariables.rdm;
                 chart.Series.Add(new PieSeries
                 {
-                    Title = curvesData[i].ToString(),
+                    Title = GetEnumDescription(curvesData[i]).ToString(),
                     Foreground = Brushes.Gray,
                     Tag = curvesData[i],
                     Values = new ChartValues<double>()
@@ -616,13 +576,11 @@ namespace CovidPropagation
         /// <param name="heatMapData">Type de données à afficher dans la heatMap.</param>
         private void AddHeatMapToCartesianChart(CartesianChart chart, ChartsDisplayData[] heatMapData)
         {
-            Random rdm = GlobalVariables.rdm;
-
             ChartValues<HeatPoint> values = new ChartValues<HeatPoint>();
 
             HeatSeries heatSeries = new HeatSeries();
             heatSeries.Values = values;
-            heatSeries.Title = heatMapData[0].ToString();
+            heatSeries.Title = GetEnumDescription(heatMapData[0]).ToString();
             heatSeries.Tag = heatMapData[0];
             heatSeries.GradientStopCollection = new GradientStopCollection()
             {
@@ -654,6 +612,8 @@ namespace CovidPropagation
 
             return result;
         }
+
+
 
         // UNITY_______________________________________________________________________________________________________________________________
 

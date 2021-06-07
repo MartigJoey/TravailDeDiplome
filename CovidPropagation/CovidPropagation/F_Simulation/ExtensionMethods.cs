@@ -12,7 +12,9 @@ using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 
 namespace CovidPropagation
@@ -162,13 +164,7 @@ namespace CovidPropagation
         /// <returns>0 ou la valeur du double si autre que NaN</returns>
         public static double SetValueIfNaN(this double value)
         {
-            double result;
-            if (double.IsNaN(value))
-                result = 0;
-            else
-                result = value;
-
-            return result;
+            return double.IsNaN(value) ? 0 : value;
         }
 
         #region Charts
