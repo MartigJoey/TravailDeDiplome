@@ -23,7 +23,7 @@ namespace CovidPropagation
 
         public double ProbabilityOfOneInfection { get => probabilityOfOneInfection; set => probabilityOfOneInfection = value; }
         public double ProbabilityOfInfection { get => probabilityOfInfection; set => probabilityOfInfection = value; }
-        public double NOfInfectivePersons { get => nbOfInfectivePersons; set => nbOfInfectivePersons = value; }
+        public double NOfInfectiousPersons { get => nbOfInfectivePersons; set => nbOfInfectivePersons = value; }
         public double VirusAraisingCases { get => virusAraisingCases; set => virusAraisingCases = value; }
 
         public TransmissionData(
@@ -35,7 +35,7 @@ namespace CovidPropagation
 
             ProbabilityOfOneInfection = probabilityOfOneInfection;
             ProbabilityOfInfection = probabilityOfInfection;
-            NOfInfectivePersons = nbOfInfectivePersons;
+            NOfInfectiousPersons = nbOfInfectivePersons;
             VirusAraisingCases = virusAraisingCases;
         }
 

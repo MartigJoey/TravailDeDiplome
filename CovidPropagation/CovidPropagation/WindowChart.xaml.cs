@@ -73,6 +73,7 @@ namespace CovidPropagation
 
             cbxGraphType.ItemsSource = from UIType n
                                        in Enum.GetValues(typeof(UIType))
+                                       where n != UIType.GUI
                                        select GetEnumDescription(n);
 
             cbxValueX.SelectedIndex = this.graphicDatas.AxisX;

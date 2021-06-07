@@ -46,18 +46,8 @@
                      Grid.Column="0"
                      Grid.Row="1"
                      Tag="5"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="160,0,0,0">
-                    <!--
-                    <TextBox.Text>
-                        <Binding Path="BoundProperty1" UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                 <local:RangeValidationRule MinValue="5" MaxValue="5"></local:RangeValidationRule>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                     -->
-                </TextBox>
+                     LostFocus="NbPersons_LeaveFocus"
+                     Margin="160,0,0,0"/>
 
                 <!-- Probabilités d'infectés -->
                 <Label Grid.Column="0"
@@ -69,8 +59,8 @@
                      Grid.Column="0"
                      Grid.Row="2"
                      Tag="1"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="170,0,0,0"/>
+                     LostFocus="Probability_LeaveFocus" 
+                     Margin="170,0,0,0"/>
 
                 <!-- Activation des mesures -->
                 <Grid Grid.Column="0" Grid.Row="3">
@@ -118,8 +108,8 @@
                         Grid.Column="1"
                         Grid.Row="1"
                         Tag="5"
-                        PreviewTextInput="TextBox_PreviewTextInput" 
-                        TextChanged="TextBox_TextChanged" Margin="27,0,0,0"/>
+                        LostFocus="NbPersons_LeaveFocus" 
+                        Margin="27,0,0,0"/>
 
                     <Label
                         Grid.Row="1"
@@ -130,8 +120,8 @@
                         Grid.Column="2"
                         Grid.Row="1"
                         Tag="5"
-                        PreviewTextInput="TextBox_PreviewTextInput" 
-                        TextChanged="TextBox_TextChanged" Margin="27,0,0,0"/>
+                        LostFocus="NbPersons_LeaveFocus" 
+                        Margin="27,0,0,0"/>
 
                     <!-- Triggers Distanciation -->
                     <Label 
@@ -144,8 +134,8 @@
                         Grid.Column="1"
                         Grid.Row="2"
                         Tag="5"
-                        PreviewTextInput="TextBox_PreviewTextInput" 
-                        TextChanged="TextBox_TextChanged" Margin="27,0,0,0"/>
+                        LostFocus="NbPersons_LeaveFocus" 
+                        Margin="27,0,0,0"/>
 
                     <Label
                         Grid.Row="2"
@@ -156,8 +146,8 @@
                         Grid.Column="2"
                         Grid.Row="2"
                         Tag="5"
-                        PreviewTextInput="TextBox_PreviewTextInput" 
-                        TextChanged="TextBox_TextChanged" Margin="27,0,0,0"/>
+                        LostFocus="NbPersons_LeaveFocus" 
+                        Margin="27,0,0,0"/>
 
                     <!-- Triggers Quarantaine -->
                     <Label 
@@ -170,8 +160,8 @@
                         Grid.Column="1"
                         Grid.Row="3"
                         Tag="5"
-                        PreviewTextInput="TextBox_PreviewTextInput" 
-                        TextChanged="TextBox_TextChanged" Margin="27,0,0,0"/>
+                        LostFocus="NbPersons_LeaveFocus" 
+                        Margin="27,0,0,0"/>
 
                     <Label
                         Grid.Row="3"
@@ -182,8 +172,8 @@
                         Grid.Column="2"
                         Grid.Row="3"
                         Tag="5"
-                        PreviewTextInput="TextBox_PreviewTextInput" 
-                        TextChanged="TextBox_TextChanged" Margin="27,0,0,0"/>
+                        LostFocus="NbPersons_LeaveFocus" 
+                        Margin="27,0,0,0"/>
 
                     <!-- Triggers Vaccination -->
                     <Label 
@@ -196,8 +186,8 @@
                         Grid.Column="1"
                         Grid.Row="4"
                         Tag="5"
-                        PreviewTextInput="TextBox_PreviewTextInput" 
-                        TextChanged="TextBox_TextChanged" Margin="27,0,0,0"/>
+                        LostFocus="NbPersons_LeaveFocus" 
+                        Margin="27,0,0,0"/>
 
                     <Label
                         Grid.Row="4"
@@ -208,8 +198,8 @@
                         Grid.Column="2"
                         Grid.Row="4"
                         Tag="5"
-                        PreviewTextInput="TextBox_PreviewTextInput" 
-                        TextChanged="TextBox_TextChanged" Margin="27,0,0,0"/>
+                        LostFocus="NbPersons_LeaveFocus" 
+                        Margin="27,0,0,0"/>
                 </Grid>
                 <!-- Mesures -->
                 <Label Grid.Row="4" Grid.Column="0" Style="{StaticResource labelTitle}">Mesures :</Label>
@@ -218,14 +208,106 @@
                    Grid.Row="5"
                    Style="{StaticResource labelText}">Quarantaine :</Label>
 
-                <StackPanel x:Name="pnlCbxQuarantine" Margin="10,0,0,0" Grid.Column="0" Grid.Row="6">
-                    <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Personnes affectées :</Label>
-                    <CheckBox x:Name="chxQuarantineHealthy" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Sain</CheckBox>
-                    <CheckBox x:Name="chxQuarantineInfected" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Infectés</CheckBox>
-                    <CheckBox x:Name="chxQuarantineInfectious" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Infectieux</CheckBox>
-                    <CheckBox x:Name="chxQuarantineImmune" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Immunisés</CheckBox>
-                </StackPanel>
+                <Grid Grid.Column="0" Grid.Row="6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40*" />
+                        <ColumnDefinition Width="30*" />
+                        <ColumnDefinition Width="30*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition MinHeight="24" MaxHeight="24"/>
+                        <RowDefinition MinHeight="16" MaxHeight="16"/>
+                        <RowDefinition MinHeight="16" MaxHeight="16"/>
+                        <RowDefinition MinHeight="16" MaxHeight="16"/>
+                        <RowDefinition MinHeight="18" MaxHeight="18"/>
+                    </Grid.RowDefinitions>
 
+                    <!-- Checkbox mesures -->
+                    <StackPanel x:Name="pnlCbxQuarantine" Margin="10,0,0,0" Grid.Column="0" Grid.RowSpan="5">
+                        <Label Foreground="{StaticResource foreGroundLight}" FontWeight="Bold">Personnes affectées :</Label>
+                        <CheckBox Tag="Healthy"    Unchecked="QuarantineTypeChecked_Checked" Checked="QuarantineTypeChecked_Checked" x:Name="chxQuarantineHealthy" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Sain</CheckBox>
+                        <CheckBox Tag="Infected"   Unchecked="QuarantineTypeChecked_Checked" Checked="QuarantineTypeChecked_Checked" x:Name="chxQuarantineInfected" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Infectés</CheckBox>
+                        <CheckBox Tag="Infectious" Unchecked="QuarantineTypeChecked_Checked" Checked="QuarantineTypeChecked_Checked" x:Name="chxQuarantineInfectious" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Infectieux</CheckBox>
+                        <CheckBox Tag="Immune"     Unchecked="QuarantineTypeChecked_Checked" Checked="QuarantineTypeChecked_Checked" x:Name="chxQuarantineImmune" Margin="10,0,0,0" Foreground="{StaticResource foreGroundLight}">Immunisés</CheckBox>
+                    </StackPanel>
+
+                    <Label 
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Foreground="{StaticResource foreGroundLight}" 
+                        FontWeight="Bold" >Probabilités :</Label>
+                    
+                    <Label 
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Foreground="{StaticResource foreGroundLight}" 
+                        FontWeight="Bold" >Durée :</Label>
+
+                    <!-- Probabilités sains -->
+                    <TextBox Style="{StaticResource textbox}" 
+                        x:Name="tbxProbabilityForHealthyToBeQuarantined" 
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Tag="1"
+                        LostFocus="Probability_LeaveFocus"/>
+
+                    <!-- Probabilités Infectés -->
+                    <TextBox Style="{StaticResource textbox}" 
+                        x:Name="tbxProbabilityForInfectedToBeQuarantined" 
+                        Grid.Column="1"
+                        Grid.Row="2"
+                        Tag="1"
+                        LostFocus="Probability_LeaveFocus"/>
+
+                    <!-- Probabilités Infectieux -->
+                    <TextBox Style="{StaticResource textbox}" 
+                        x:Name="tbxProbabilityForInfectiousToBeQuarantined" 
+                        Grid.Column="1"
+                        Grid.Row="3"
+                        Tag="1"
+                        LostFocus="Probability_LeaveFocus" />
+                    
+                    <!-- Probabilités Immunisés -->
+                    <TextBox Style="{StaticResource textbox}" 
+                        x:Name="tbxProbabilityForImmuneToBeQuarantined" 
+                        Grid.Column="1"
+                        Grid.Row="4"
+                        Tag="1"
+                        LostFocus="Probability_LeaveFocus" />
+
+                    <!-- Durée sains -->
+                    <TextBox Style="{StaticResource textbox}" 
+                        x:Name="tbxQuarantinedDurationForHealthy" 
+                        Grid.Column="2"
+                        Grid.Row="1"
+                        Tag="3"
+                        LostFocus="DayDuration_LeaveFocus"/>
+
+                    <!-- Durée Infectés -->
+                    <TextBox Style="{StaticResource textbox}" 
+                        x:Name="tbxQuarantinedDurationForInfected" 
+                        Grid.Column="2"
+                        Grid.Row="2"
+                        Tag="3"
+                        LostFocus="DayDuration_LeaveFocus"/>
+
+                    <!-- Durée Immunisés -->
+                    <TextBox Style="{StaticResource textbox}" 
+                        x:Name="tbxQuarantinedDurationForImmune" 
+                        Grid.Column="2"
+                        Grid.Row="4"
+                        Tag="3"
+                        LostFocus="DayDuration_LeaveFocus" />
+                    
+                    <!-- Durée Infectieux -->
+                    <TextBox Style="{StaticResource textbox}" 
+                        x:Name="tbxQuarantinedDurationForInfectious" 
+                        Grid.Column="2"
+                        Grid.Row="3"
+                        Tag="3"
+                        LostFocus="DayDuration_LeaveFocus"/>
+                </Grid>
+                
                 <!-- Vaccination -->
                 <Label Grid.Column="0"
                    Grid.Row="7"
@@ -241,8 +323,8 @@
                      Grid.Column="0"
                      Grid.Row="8"
                      Tag="4"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="160,1,0,1"/>
+                     LostFocus="DayDuration_LeaveFocus" 
+                     Margin="160,1,0,1"/>
                 
                     <!-- Efficacité -->
                 <Label Grid.Column="0"
@@ -254,8 +336,8 @@
                      Grid.Column="0"
                      Grid.Row="9"
                      Tag="1"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="160,1,0,1"/>
+                     LostFocus="Probability_LeaveFocus" 
+                     Margin="160,1,0,1"/>
 
                 <!-- Masque -->
                 <Label Grid.Column="0"
@@ -322,8 +404,8 @@
                      Grid.Column="1"
                      Grid.Row="1"
                      Tag="3"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="170,1,0,1"/>
+                     LostFocus="DayDuration_LeaveFocus" 
+                     Margin="170,1,0,1"/>
 
                 <Label Grid.Column="1"
                    Grid.Row="2"
@@ -334,8 +416,8 @@
                      Grid.Column="1"
                      Grid.Row="2"
                      Tag="3"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="170,1,0,1"/>
+                     LostFocus="DayDuration_LeaveFocus" 
+                     Margin="170,1,0,1"/>
 
 
                 <Label Grid.Column="1"
@@ -347,8 +429,8 @@
                      Grid.Column="1"
                      Grid.Row="3"
                      Tag="3"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="240,1,0,1"/>
+                     LostFocus="DayDuration_LeaveFocus" 
+                     Margin="240,1,0,1"/>
 
                 <Label Grid.Column="1"
                    Grid.Row="4"
@@ -359,8 +441,8 @@
                      Grid.Column="1"
                      Grid.Row="4"
                      Tag="3"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="240,1,0,1"/>
+                     LostFocus="DayDuration_LeaveFocus" 
+                     Margin="240,1,0,1"/>
 
                 <Label Grid.Column="1"
                    Grid.Row="5"
@@ -371,8 +453,8 @@
                      Grid.Column="1"
                      Grid.Row="5"
                      Tag="4"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="240,1,0,1"/>
+                     LostFocus="DayDuration_LeaveFocus" 
+                     Margin="240,1,0,1"/>
 
                 <Label Grid.Column="1"
                    Grid.Row="6"
@@ -383,8 +465,8 @@
                      Grid.Column="1"
                      Grid.Row="6"
                      Tag="4"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="240,1,0,1"/>
+                     LostFocus="DayDuration_LeaveFocus" 
+                     Margin="240,1,0,1"/>
 
                 <Label Grid.Column="1"
                    Grid.Row="7"
@@ -395,8 +477,8 @@
                      Grid.Column="1"
                      Grid.Row="7"
                      Tag="1"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="190,1,0,1"/>
+                     LostFocus="Probability_LeaveFocus" 
+                     Margin="190,1,0,1"/>
 
                 <Label Grid.Column="0"
                    Grid.Row="8"
@@ -419,8 +501,8 @@
                      Grid.Column="1"
                      Grid.Row="11"
                      Tag="7"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="150,1,0,1"/>
+                     LostFocus="Quantas_LeaveFocus" 
+                     Margin="150,1,0,1"/>
 
                 <Label Grid.Column="1"
                    Grid.Row="12"
@@ -431,8 +513,8 @@
                      Grid.Column="1"
                      Grid.Row="12"
                      Tag="7"
-                     PreviewTextInput="TextBox_PreviewTextInput" 
-                     TextChanged="TextBox_TextChanged" Margin="150,1,0,1"/>
+                     LostFocus="Quantas_LeaveFocus" 
+                     Margin="150,1,0,1"/>
 
                 <Label Grid.Column="0"
                    Grid.Row="13"

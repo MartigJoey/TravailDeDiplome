@@ -12,7 +12,10 @@ using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 
 namespace CovidPropagation
@@ -162,13 +165,7 @@ namespace CovidPropagation
         /// <returns>0 ou la valeur du double si autre que NaN</returns>
         public static double SetValueIfNaN(this double value)
         {
-            double result;
-            if (double.IsNaN(value))
-                result = 0;
-            else
-                result = value;
-
-            return result;
+            return double.IsNaN(value) ? 0 : value;
         }
 
         #region Charts
@@ -295,35 +292,94 @@ namespace CovidPropagation
                         DisplayColumnRowChart(chart, e, currentAxis, isDisplayChange);
                         break;
                     case UIType.HeatMap:
-                        HeatSeries serieHM = (HeatSeries)chart.Series[0];
-                        List<double> heatSeriesData = new List<double>(e.GetDataFromEnum((ChartsDisplayData)serieHM.Tag));
+                        HeatSeries serieHeatMap = (HeatSeries)chart.Series[0];
+                        List<double> simulationData = new List<double>(e.GetDataFromEnum((ChartsDisplayData)serieHeatMap.Tag));
                         interval = 7;
                         int nbTimeFramesPerDay = GlobalVariables.NUMBER_OF_TIMEFRAME;
                         int nbOfDatasUnified = 4;
                         int dayDivision = 4;
 
-                        if (heatSeriesData != null)
+                        if (simulationData != null)
                         {
                             // Trouver premier jour semaine
                             maxValue = Math.Ceiling((double)maxValue / interval) * interval;
-                            for (int i = 1; i < heatSeriesData.Count; i += nbTimeFramesPerDay)
+                            /*for (int x = 1; x < heatSeriesData.Count; x += nbTimeFramesPerDay)
                             {
-                                for (int j = 0; j < nbTimeFramesPerDay; j += nbOfDatasUnified)
+                                for (int y = 0; y < nbTimeFramesPerDay; y += nbOfDatasUnified)
                                 {
-                                    if (heatSeriesData.Count > i + j + nbOfDatasUnified && serieHM.Values.Count < (i + j + nbOfDatasUnified) / dayDivision)
+                                    if (heatSeriesData.Count > x + y + nbOfDatasUnified && serieHM.Values.Count < (x + y + nbOfDatasUnified) / dayDivision)
                                     {
                                         double avgData = 0;
                                         for (int k = 0; k < nbOfDatasUnified; k++)
                                         {
-                                            avgData += heatSeriesData[i + j + k];
+                                            avgData += heatSeriesData[x + y + k];
                                         }
-                                        serieHM.Values.Add(new HeatPoint(i / nbTimeFramesPerDay, j / dayDivision, avgData / nbOfDatasUnified));
+
+                                        //Debug.WriteLine(serieHM.Values.Count + " " + heatSeriesData.Count);
+                                        if (serieHM.Values.Count > 7 * 12)
+                                        {
+                                            int index = ((heatSeriesData.Count - 1) % (7 * 12) )/ 4;
+                                            HeatPoint hm = ((HeatPoint)serieHM.Values[index]);
+                                            Debug.WriteLine(heatSeriesData.Count +" "+index + " " + hm.Weight + " " + hm.X + " "+ hm.Y);
+                                            hm.Weight = (heatSeriesData.Count * hm.Weight + avgData / nbOfDatasUnified) / heatSeriesData.Count+1;
+                                        }
+                                        else
+                                        {
+                                            Debug.WriteLine(serieHM.Values.Count + " " + heatSeriesData.Count + " " + TimeManager.CurrentDayString+"_"+ TimeManager.CurrentHour + ":"+TimeManager.CurrentTimeFrame);
+                                            serieHM.Values.Add(new HeatPoint(x / nbTimeFramesPerDay, y / dayDivision, avgData / nbOfDatasUnified));
+                                        }
+                                    }
+                                }
+                            }*/
+                            int x = 0; 
+                            int y = 0;
+                            int week = 0;
+                            double value = 0;
+                            if (simulationData.Count > 0)
+                            {
+                                //serieHeatMap.Values.Clear();
+                                for (int i = 1; i <= simulationData.Count; i++)
+                                {
+                                    value += simulationData[i - 1];
+                                    if (serieHeatMap.Values.Count < (i/4))
+                                    {
+                                        if (i % 4 == 0)
+                                        {
+                                            if (week == 0)
+                                            {
+                                                serieHeatMap.Values.Add(new HeatPoint(x, y, value / 4));
+                                            }
+                                            else
+                                            {
+                                                HeatPoint hm = ((HeatPoint)serieHeatMap.Values[(x * 12) + y]);
+                                                hm.Weight = ((week * 4) * hm.Weight + value) / ((week * 4) + 4);
+                                            }
+                                        }
+                                    }
+                                    
+
+                                    if (i % 336 == 0)
+                                    {
+                                        week++;
+                                        x = 0;
+                                        y = 0;
+                                        value = 0;
+                                    }
+                                    else if (i % 48 == 0)
+                                    {
+                                        x++;
+                                        y = 0;
+                                        value = 0;
+                                    }
+                                    else if (i % 4 == 0)
+                                    {
+                                        y++;
+                                        value = 0;
                                     }
                                 }
                             }
                         }
-
-                        maxValue = Math.Ceiling((double)serieHM.Values.Count / 48 / (double)interval) * interval;
+                        axisX.MaxValue = 7;
                         axisY.MaxValue = 12;
                         break;
                 }

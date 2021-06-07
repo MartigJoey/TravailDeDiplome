@@ -29,17 +29,17 @@ namespace CovidPropagation
         public MainWindow()
         {
             InitializeComponent();
-            pageSimulation = new PageSimulation();
-            pageSimulationSettings = new PageSimulationSettings();
-            pageGraphicSettings = new PageGraphicSettings();
-            MainContent.NavigationUIVisibility = NavigationUIVisibility.Hidden; // Cache la barre de navigation du contenu
-
 
             SimulationGeneralParameters.Init();
             VirusParameters.Init();
             MaskParameters.Init();
             VaccinationParameters.Init();
             QuarantineParameters.Init();
+
+            pageSimulation = new PageSimulation();
+            pageSimulationSettings = new PageSimulationSettings();
+            pageGraphicSettings = new PageGraphicSettings();
+            MainContent.NavigationUIVisibility = NavigationUIVisibility.Hidden; // Cache la barre de navigation du contenu
         }
 
         private void SimulationPage_Click(object sender, RoutedEventArgs e)

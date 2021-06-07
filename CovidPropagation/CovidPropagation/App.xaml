@@ -23,6 +23,8 @@
             <SolidColorBrush x:Key="normalGray" Color="#9b9b9b"/>
             <SolidColorBrush x:Key="normalRed" Color="#910000"/>
             <SolidColorBrush x:Key="highlightRed" Color="#ff0000"/>
+            <SolidColorBrush x:Key="highlightWrongFormat" Color="#ff0000" Opacity="0.3"/>
+            <SolidColorBrush x:Key="highlightCorrectFormat" Color="#00ff00" Opacity="0.3"/>
 
             <Color x:Key="normalGreenKeyFrame">#b8b8b8</Color>
             <!--17b806-->

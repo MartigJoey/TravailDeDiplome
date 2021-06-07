@@ -51,6 +51,10 @@ namespace CovidPropagation
         Persons,
         [Description("Cas")]
         Cases,
+        [Description("Infectieux")]
+        Infectious,
+        [Description("Incubation")]
+        Incubations,
         [Description("Sains")]
         Healthy,
         [Description("Décès")]
