@@ -134,6 +134,7 @@ namespace CovidPropagation
                     AerosolTransmission aerosolTransmission = Virus.GetTransmission(typeof(AerosolTransmission)) as AerosolTransmission;
                     NbPersons = persons.Count;
                     NbInfectiousPersons = CountNumberInfectiousPersons();
+                    //Debug.WriteLine(NbInfectiousPersons);
                     FractionOfImmune = GetFractionOfImmune();
 
                     NbPersonsWithMask = CountPersonsWithMask(); 
@@ -215,34 +216,6 @@ namespace CovidPropagation
         {
             additionalControlMeasures = isDistanciationSet.ConvertToInt();
             SumFirstOrderLossRate = ventilationWithOutside + decayRateOfVirus + depositionOnSurfaceRate + additionalControlMeasures;
-        }
-
-        /// <summary>
-        /// Permet de convertir le type de bâtiment en int pour simplifier sont transfère vers le GUI.
-        /// </summary>
-        /// <returns>Type de cet objet convertis en int.</returns>
-        public int ConvertTypeToInt()
-        {
-            Type thisType = this.GetType();
-            int result = 0;
-            if (thisType == typeof(Home))
-                result = 0;
-            else if (thisType == typeof(Hospital))
-                result = 1;
-            else if (thisType == typeof(Restaurant))
-                result = 2;
-            else if (thisType == typeof(School))
-                result = 3;
-            else if (thisType == typeof(Store))
-                result = 4;
-            else if (thisType == typeof(Supermarket))
-                result = 5;
-            else if (thisType == typeof(Company))
-                result = 6;
-            else if (thisType == typeof(Bus))
-                result = 7;
-
-            return result;
         }
 
         #region Calculs

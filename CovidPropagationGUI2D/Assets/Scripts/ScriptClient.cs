@@ -15,10 +15,6 @@ public class ScriptClient : MonoBehaviour
     //public GameObject ChangingText;
     public NamedPipeClientStream pipeClient;
     public StreamString ss;
-    public Text dataReceived;
-    public Text dataReceived1;
-    public Text dataReceived2;
-    public Text dataReceived3;
 
     DataPopulation populationDatas;
     DataSites sitesDatas;
@@ -29,7 +25,6 @@ public class ScriptClient : MonoBehaviour
     DataIteration iterationDatas;
 
     private ManagerScript mngScript;
-    //public List<int> testTransfer;
 
     // Use this for initialization
     void Start()
@@ -63,7 +58,7 @@ public class ScriptClient : MonoBehaviour
             ReadPipeData();
         }
     }
-    int read = 0;
+
     private async void ReadPipeData()
     {
 
@@ -73,8 +68,7 @@ public class ScriptClient : MonoBehaviour
         switch (resultDataType)
         {
             default:
-                dataReceived1.text = "A " + read++.ToString();
-                dataReceived2.text = resultDataType + " e " + result;
+                Debug.Log("Error");
                 break;
             case "Initialize":
                 resultPopulation = result.Split(' ')[1];
@@ -85,15 +79,10 @@ public class ScriptClient : MonoBehaviour
 
                 mngScript.CreateSites(sitesDatas);
                 mngScript.CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
-                dataReceived.text = "Initialized " + read.ToString();
                 break;
             case "Iterate":
-                dataReceived1.text = "A " + read++.ToString();
-                dataReceived2.text = resultDataType + " " + result;
                 resultIteration = result.Split(' ')[1];
                 iterationDatas = JsonUtility.FromJson<DataIteration>(resultIteration);
-                
-                dataReceived3.text = iterationDatas.PersonsNewState.Count + " Plz ?";
                 
                 mngScript.SetIterationDatas(iterationDatas);
                 break;

@@ -1340,3 +1340,26 @@
 - Refactorisation complète graphique HeatMap
   - Code beaucoup plus lisible et performant
   - Toujours de grosse baisse de performances lors de son utilisation.
+
+# 08.06.2021 08h05 / 22h00
+- Nouveau test Graphiques HeatMap
+  - Résultat corrects
+  - Performances corrects
+  - Les décimales des valeurs vont trop loin
+  - Suppression des valeur des heatpoint pour utiliser uniquement la couleur de celui-ci
+- Discussion avec M. Mathieu
+  - Rendu
+  - Priorités
+  - Tests mercredi
+- Modification des appelles de StreamString pour éviter les erreurs lors de réinitialisation ou de fermeture de la simulation
+  - Essai des tokens
+  - Utilisation de try catch pour éviter les erreurs
+  - Impossible d'arrêter les tasks comme souhaité.
+  - Utilisation des try catch
+- Fermeture du process unity lors de la fermeture du programme.
+- Unity.UI n'existe plus
+  - Réimportation des assets
+- Ajout du déplacement de la caméra
+- Ajout du zoom et dézoom
+- Bug de positionnement des bâtiments arrivant constamment sur WPF mais qu'une fois sur Unity
+- 

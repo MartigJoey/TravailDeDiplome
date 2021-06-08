@@ -1,21 +1,22 @@
-﻿using System;
+﻿/*
+ * Nom du projet : CovidPropagation
+ * Auteur        : Joey Martig
+ * Date          : 11.06.2021
+ * Version       : 1.0
+ * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
+ */
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace CovidPropagation
 {
     /// <summary>
-    /// Logique d'interaction pour Legend.xaml
+    /// Classe permettant l'affichage des données brutes de la simulation dans une page indépendante.
     /// </summary>
     public partial class WindowRawDatas : Window
     {
@@ -28,6 +29,10 @@ namespace CovidPropagation
             labelsValue = new List<Label>();
         }
 
+        /// <summary>
+        /// Créé les différents groupes de labels et les positionnes.
+        /// </summary>
+        /// <param name="datas">Données de la simulation.</param>
         public void CreateLabels(SimulationDatas datas)
         {
             CreateRows((datas.CentralizedDatas.Count + 1) * 2);
@@ -57,6 +62,13 @@ namespace CovidPropagation
             CreateLabelsGroup(columnMin, rowMin, datas);
         }
 
+        /// <summary>
+        /// Créé plusieurs labels formant un groupe.
+        /// </summary>
+        /// <param name="column">Colonne où le groupe doit être affiché.</param>
+        /// <param name="row">La ligne de départ de ce groupe de labels.</param>
+        /// <param name="datas">Les données que les labels afficheront.</param>
+        /// <returns></returns>
         private int CreateLabelsGroup(int column, int row, SimulationDatas datas)
         {
             foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
@@ -67,6 +79,14 @@ namespace CovidPropagation
             return row;
         }
 
+        /// <summary>
+        /// Créé les labels à la position demandée avec le contenu demandé.
+        /// La clé étant le nom des données et la valeurs, la valeur des données.
+        /// </summary>
+        /// <param name="key">Nom des données.</param>
+        /// <param name="value">Valeur des données.</param>
+        /// <param name="x">Position X.</param>
+        /// <param name="y">Position Y.</param>
         private void CreateLabel(string key, double value, int x, int y)
         {
             Label labelName = new Label();
@@ -95,6 +115,13 @@ namespace CovidPropagation
             labelsValue.Add(labelValue);
         }
 
+        /// <summary>
+        /// Créé les labels de titres à la position demandée avec le contenu demandé.
+        /// Change la police ainsi que le background.
+        /// </summary>
+        /// <param name="content">Contenu du label.</param>
+        /// <param name="x">Position X.</param>
+        /// <param name="y">Position Y.</param>
         private void CreateTitleLabel(string content, int x, int y)
         {
             Label labelTitle = new Label();
@@ -111,6 +138,10 @@ namespace CovidPropagation
             grdContent.Children.Add(labelTitle);
         }
 
+        /// <summary>
+        /// Créé une ou plusieurs nouvelles lignes dans la grid.
+        /// </summary>
+        /// <param name="nbRows">Le nombre de ligne à ajouter.</param>
         private void CreateRows(int nbRows)
         {
             for (int i = 0; i < nbRows; i++)
@@ -122,50 +153,61 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Met à jour les labels avec les derières données.
+        /// </summary>
+        /// <param name="datas">Données à afficher</param>
         public void UpdateLabels(SimulationDatas datas)
         {
-            Dispatcher.Invoke(() =>
+            try
             {
-                // Affiche les dernières données de la simulation.
-                int labelsIndex = 0;
-                int index = 0;
-                foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
+                Dispatcher.Invoke(() =>
                 {
-                    labelsName[labelsIndex].Content = $"{item.Key}: ";
-                    labelsValue[labelsIndex].Content = $"{item.Value.Last().ToString("F2")}";
-                    labelsIndex++;
-                }
+                    // Affiche les dernières données de la simulation.
+                    int labelsIndex = 0;
+                    int index = 0;
+                    foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
+                    {
+                        labelsName[labelsIndex].Content = $"{item.Key}: ";
+                        labelsValue[labelsIndex].Content = $"{item.Value.Last().ToString("F2")}";
+                        labelsIndex++;
+                    }
 
-                // Affiche la moyenne des données de la simulation.
-                index = 0;
-                foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
-                {
-                    labelsName[labelsIndex].Content = $"{item.Key}: ";
-                    labelsValue[labelsIndex].Content = $"{item.Value.Average().ToString("F2")}";
-                    labelsIndex++;
-                    index++;
-                }
+                    // Affiche la moyenne des données de la simulation.
+                    index = 0;
+                    foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
+                    {
+                        labelsName[labelsIndex].Content = $"{item.Key}: ";
+                        labelsValue[labelsIndex].Content = $"{item.Value.Average().ToString("F2")}";
+                        labelsIndex++;
+                        index++;
+                    }
 
-                // Affiche la valeur maximum enregistrée des données de la simulation
-                index = 0;
-                foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
-                {
-                    labelsName[labelsIndex].Content = $"{item.Key}: ";
-                    labelsValue[labelsIndex].Content = $"{item.Value.Max().ToString("F2")}";
-                    labelsIndex++;
-                    index++;
-                }
+                    // Affiche la valeur maximum enregistrée des données de la simulation
+                    index = 0;
+                    foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
+                    {
+                        labelsName[labelsIndex].Content = $"{item.Key}: ";
+                        labelsValue[labelsIndex].Content = $"{item.Value.Max().ToString("F2")}";
+                        labelsIndex++;
+                        index++;
+                    }
 
-                // Affiche la valeur minimum enregistrée des données de la simulation
-                index = 0;
-                foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
-                {
-                    labelsName[labelsIndex].Content = $"{item.Key}: ";
-                    labelsValue[labelsIndex].Content = $"{item.Value.Min().ToString("F2")}";
-                    labelsIndex++;
-                    index++;
-                }
-            });
+                    // Affiche la valeur minimum enregistrée des données de la simulation
+                    index = 0;
+                    foreach (KeyValuePair<string, List<double>> item in datas.CentralizedDatas)
+                    {
+                        labelsName[labelsIndex].Content = $"{item.Key}: ";
+                        labelsValue[labelsIndex].Content = $"{item.Value.Min().ToString("F2")}";
+                        labelsIndex++;
+                        index++;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Update labels error : " + ex);
+            }
         }
     }
 }

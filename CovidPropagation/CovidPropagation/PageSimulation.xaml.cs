@@ -26,17 +26,33 @@ namespace CovidPropagation
     /// </summary>
     public partial class PageSimulation : Page
     {
+        // Unity Process
+        [DllImport("user32.dll")]
+        static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw);
+
+        internal delegate int WindowEnumProc(IntPtr hwnd, IntPtr lparam);
+        [DllImport("user32.dll")]
+        internal static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc func, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        static extern int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
         WindowRawDatas rawDatasWindow;
         MainWindow mw;
-        public ChartData[,] chartDatas;
+        public ChartData[,] chartDatas; // Contient les données des graphiques avec une position x et y
         Simulation sim;
         Dictionary<UIType, object> charts;
         Grid grdStruct;
 
-        System.Windows.Forms.Integration.WindowsFormsHost wfhUnityHost;
-        System.Windows.Forms.Panel panelUnity;
+        System.Windows.Forms.Integration.WindowsFormsHost wfhUnityHost; // Contient le panel Unity
+        System.Windows.Forms.Panel panelUnity; // Affiche la fenêtre unity
 
-        
+        private Process process; // Process contenant le programme Unity
+        private IntPtr unityHWND = IntPtr.Zero; // Handler d'unity
+        NamedPipeServerStream pipeServer; // Permet la création du pipeline connectant WPF à Unity
+        StreamString ss; // Stream permettant l'envoie de données à Unity
+        Thread server;
+
         public PageSimulation()
         {
             InitializeComponent();
@@ -127,13 +143,15 @@ namespace CovidPropagation
             grdContent.Children.Clear();
 
             if (panelUnity != null)
+            {
                 CloseUnity();
+            }
 
             SetGrid(grdStruct, chartDatas);
-            ss.CloseLink();
-
             mw.btnGraphicSettings.IsEnabled = true;
         }
+
+        #region View
 
         /// <summary>
         /// Modifie la grille de cette page pour qu'elle correspondent à celle modifiée dans les paramètres graphiques.
@@ -482,7 +500,7 @@ namespace CovidPropagation
         {
             Axis axis = new Axis();
             axis.Title = GetEnumDescription(axeDatas);
-            axis.MaxValue = double.NaN;
+            axis.MaxValue = 10;
 
             return axis;
         }
@@ -582,6 +600,7 @@ namespace CovidPropagation
             heatSeries.Values = values;
             heatSeries.Title = GetEnumDescription(heatMapData[0]).ToString();
             heatSeries.Tag = heatMapData[0];
+            heatSeries.DataLabels = false;
             heatSeries.GradientStopCollection = new GradientStopCollection()
             {
                 new GradientStop(Colors.Green, 0),
@@ -590,7 +609,6 @@ namespace CovidPropagation
                 new GradientStop(Colors.Orange, 0.75),
                 new GradientStop(Colors.Red, 1)
             };
-            heatSeries.DataLabels = true;
             chart.Series.Add(heatSeries);
         }
 
@@ -613,27 +631,9 @@ namespace CovidPropagation
             return result;
         }
 
+        #endregion
 
-
-        // UNITY_______________________________________________________________________________________________________________________________
-
-        [DllImport("user32.dll")]
-        static extern bool MoveWindow(IntPtr handle, int x, int y, int width, int height, bool redraw);
-
-        internal delegate int WindowEnumProc(IntPtr hwnd, IntPtr lparam);
-        [DllImport("user32.dll")]
-        internal static extern bool EnumChildWindows(IntPtr hwnd, WindowEnumProc func, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        static extern int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
-
-        private Process process; // Process contenant le programme Unity
-        private IntPtr unityHWND = IntPtr.Zero; // Handler d'unity
-
-        private const int WM_ACTIVATE = 0x0006;
-        private readonly IntPtr WA_ACTIVE = new IntPtr(1);
-        private readonly IntPtr WA_INACTIVE = new IntPtr(0);
-        StreamString ss;
+        #region Unity
 
         /// <summary>
         /// Lance le programme unity situé dans les fichier de ce programme.
@@ -644,18 +644,21 @@ namespace CovidPropagation
             IntPtr unityHandle = panelUnity.Handle;
 
             //Start embedded Unity Application
-            process = new Process();
-            //process.StartInfo.FileName = @".\GUIBuild\CovidPropagationGUI.exe";
-            process.StartInfo.FileName = @".\GUIBuild2D\CovidPropagationGUI2D.exe";
-            process.StartInfo.Arguments = "-parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
-            process.StartInfo.UseShellExecute = true;
-            process.StartInfo.CreateNoWindow = true;
-            process.Start();
-
-            if (process.WaitForInputIdle())
+            Task.Run(() =>
             {
-                EnumChildWindows(unityHandle, WindowEnum, IntPtr.Zero);
-            }
+                process = new Process();
+                //process.StartInfo.FileName = @".\GUIBuild\CovidPropagationGUI.exe";
+                process.StartInfo.FileName = @".\GUIBuild2D\CovidPropagationGUI2D.exe";
+                process.StartInfo.Arguments = "-parentHWND " + unityHandle.ToInt32() + " " + Environment.CommandLine;
+                process.StartInfo.UseShellExecute = true;
+                process.StartInfo.CreateNoWindow = true;
+                process.Start();
+
+                if (process.WaitForInputIdle())
+                {
+                    EnumChildWindows(unityHandle, WindowEnum, IntPtr.Zero);
+                }
+            });
         }
 
         private int WindowEnum(IntPtr hwnd, IntPtr lparam)
@@ -664,12 +667,28 @@ namespace CovidPropagation
             return 0;
         }
 
+
         /// <summary>
-        /// Lorsque la page est fermée, ferme le programme unity ainsi que le pipeline.
+        /// Se connecte à unity via un pipeline.
         /// </summary>
-        private void Window_Closed(object sender, EventArgs e)
+        public void ConnectToUnity()
         {
-            CloseUnity();
+            server = new Thread(ServerThread);
+            server.Start();
+        }
+
+        /// <summary>
+        /// Initialise le pipeline et attend que la connexion soit établis pour lancer la simulation.
+        /// </summary>
+        private void ServerThread(object data)
+        {
+            int numThreads = 1;
+            pipeServer = new NamedPipeServerStream("SimulationToUnity", PipeDirection.Out, numThreads);
+
+            pipeServer.WaitForConnection();
+
+            ss = new StreamString(pipeServer);
+            StartSimulationIteration();
         }
 
         /// <summary>
@@ -683,77 +702,16 @@ namespace CovidPropagation
             }
 
             process.CloseMainWindow();
-
-            while (!process.HasExited)
-                process.Kill();
+            process.Kill();
+            process.Close();
         }
 
         /// <summary>
-        /// Se connecte à unity via un pipeline.
+        /// Lorsque la page est fermée, ferme le programme unity ainsi que le pipeline.
         /// </summary>
-        public void ConnectToUnity()
+        private void Window_Closed(object sender, EventArgs e)
         {
-            Thread server;
-
-            server = new Thread(ServerThread);
-            server.Start();
-        }
-
-        /// <summary>
-        /// Initialise le pipeline et attend que la connexion soit établis pour lancer la simulation.
-        /// </summary>
-        private void ServerThread(object data)
-        {
-            int numThreads = 1;
-            NamedPipeServerStream pipeServer = new NamedPipeServerStream("SimulationToUnity", PipeDirection.Out, numThreads);
-
-            pipeServer.WaitForConnection();
-            ss = new StreamString(pipeServer);
-            StartSimulationIteration();
-        }
-
-        /// <summary>
-        /// Convertit les objets en json et les envoies au GUI pour créer l'interface graphique en fonction des données de la simulation.
-        /// </summary>
-        /// <param name="populationDatas">Données de la population à envoyer.</param>
-        /// <param name="siteDatas">Données des sites à envoyer.</param>
-        private async void OnGUIInitialize(DataPopulation populationDatas, DataSites siteDatas)
-        {
-            if (ss != null)
-            {
-                string objectToSend = "Initialize ";
-                objectToSend += JsonSerializer.Serialize(populationDatas);
-                objectToSend += " " + JsonSerializer.Serialize(siteDatas);
-
-                await Task.Run(() =>
-                {
-                    Dispatcher.Invoke((Action)(() =>
-                    {
-                        ss.WriteString(objectToSend);
-                    }));
-                });
-            }
-        }
-
-        /// <summary>
-        /// Lorsque la simulation fait une itération, récupère les données de celle-ci et les envoies au GUI au format JSON.
-        /// </summary>
-        private async void OnGUIUpdate(int[] personsNewSite, int[] personsNewState)
-        {
-            if (ss != null)
-            {
-                DataIteration jsonIteration = new DataIteration(personsNewSite, personsNewState);
-                string objectToSend = "Iterate ";
-                objectToSend += JsonSerializer.Serialize(jsonIteration);
-
-                await Task.Run(() =>
-                {
-                    Dispatcher.Invoke((Action)(() =>
-                    {
-                        ss.WriteString(objectToSend);
-                    }));
-                });
-            }
+            CloseUnity();
         }
 
         /// <summary>
@@ -763,5 +721,36 @@ namespace CovidPropagation
         {
             MoveWindow(unityHWND, 0, 0, panelUnity.Width, panelUnity.Height, true);
         }
+
+        /// <summary>
+        /// Convertit les objets en json et les envoies au GUI pour créer l'interface graphique en fonction des données de la simulation.
+        /// </summary>
+        /// <param name="populationDatas">Données de la population à envoyer.</param>
+        /// <param name="siteDatas">Données des sites à envoyer.</param>
+        private void OnGUIInitialize(DataPopulation populationDatas, DataSites siteDatas)
+        {
+            if (ss != null)
+            {
+                string objectToSend = "Initialize ";
+                objectToSend += JsonSerializer.Serialize(populationDatas);
+                objectToSend += " " + JsonSerializer.Serialize(siteDatas);
+                ss.WriteString(objectToSend);
+            }
+        }
+
+        /// <summary>
+        /// Lorsque la simulation fait une itération, récupère les données de celle-ci et les envoies au GUI au format JSON.
+        /// </summary>
+        private void OnGUIUpdate(int[] personsNewSite, int[] personsNewState)
+        {
+            if (ss != null)
+            {
+                DataIteration jsonIteration = new DataIteration(personsNewSite, personsNewState);
+                string objectToSend = "Iterate ";
+                objectToSend += JsonSerializer.Serialize(jsonIteration);
+                ss.WriteString(objectToSend);
+            }
+        }
+        #endregion
     }
 }

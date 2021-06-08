@@ -22,8 +22,6 @@ ScriptsOnlyBuild:
     - UnityEditor.Tilemaps.TilemapPrefabStageHelper
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
-    Unity.Timeline.Editor.dll:
-    - TimelineProjectSettings
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -50,32 +48,30 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 48
       Script: {instanceID: 0}
-    - Class: 81
-      Script: {instanceID: 0}
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1502}
+      Script: {instanceID: 6836}
     - Class: 114
-      Script: {instanceID: 1508}
+      Script: {instanceID: 6842}
     - Class: 114
-      Script: {instanceID: 1930}
+      Script: {instanceID: 7256}
     - Class: 114
-      Script: {instanceID: 2198}
+      Script: {instanceID: 7516}
     - Class: 114
-      Script: {instanceID: 2612}
+      Script: {instanceID: 7926}
     - Class: 114
-      Script: {instanceID: 2772}
+      Script: {instanceID: 8084}
     - Class: 114
-      Script: {instanceID: 2986}
+      Script: {instanceID: 8292}
     - Class: 114
-      Script: {instanceID: 3228}
+      Script: {instanceID: 8534}
     - Class: 114
-      Script: {instanceID: 3340}
+      Script: {instanceID: 8646}
     - Class: 114
-      Script: {instanceID: 4456}
+      Script: {instanceID: 9746}
     - Class: 114
-      Script: {instanceID: 4572}
+      Script: {instanceID: 9862}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -505,7 +501,7 @@ ScriptsOnlyBuild:
     className: SpriteShapeGeometryCache
   - hash:
       serializedVersion: 2
-      Hash: c1a64557fd4c655fe38f883567d89237
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ScriptClient
@@ -541,7 +537,7 @@ ScriptsOnlyBuild:
     className: ScrollRect
   - hash:
       serializedVersion: 2
-      Hash: 0ddbec966a02df00ccec6754ff385850
+      Hash: 7d295e86d4710149dda60d7f0750a6a9
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ManagerScript

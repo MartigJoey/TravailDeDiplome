@@ -26,11 +26,8 @@ public class ManagerScript : MonoBehaviour
 
     private List<GameObject> _persons;
 
-    public Text dataReceived;
-    public Text dataReceived1;
-    public Text dataReceived2;
-    public Text dataReceived3;
     int read = 0;
+    bool creationDone = false;
 
     // Start is called before the first frame update
     void Start()
@@ -40,50 +37,13 @@ public class ManagerScript : MonoBehaviour
         _sitesMin = new List<Vector2>();
         _sitesMax = new List<Vector2>();
 
-        //DataPopulation populationDatas = JsonUtility.FromJson<DataPopulation>(@"{ ""NbPersons"":90,""IndexOfInfected"":[]}");
-        //DataSites sitesDatas = JsonUtility.FromJson<DataSites>(@"{ ""SitesType"":[0,2,4,6,4,6,6,4,1,3,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],""SitesId"":[0,1,5,20,70,220,670,4,2,10,40,140,440,1340,8,3,15,60,210,660,2010,1,3,4,5,6,7,8,9,10,11,12,13,16,19,22,25,28,31,34,35,36,39,42,45,48,51,54,57,60,63,64,65,68,71,74,77,80,83,84,87,90,93,96,99,102,105,108,111,114,117,120,123,126,129,132,135,138,141,144,147,150,153,156,159,162,165,168,171,174,177,180,181,182,185,188,189,192,195,198,201,204,207,210,213,216,219,222,225,228,231,234,237,240,241,242,245,248,251,254,257,258,259,262,265,268,271,274,277,278,279,280]}");
-        //DataSites sitesDatas = JsonUtility.FromJson<DataSites>(@"{ ""NbHouse"":1000,""NbCompany"":1000,""NbHospital"":1000,""NbRestaurant"":1000,""NbSchool"":100,""NbStore"":100,""NbSupermarket"":100}");
+        DataPopulation populationDatas = JsonUtility.FromJson<DataPopulation>(@"{ ""NbPersons"":90,""IndexOfInfected"":[]}");
+        DataSites sitesDatas = JsonUtility.FromJson<DataSites>(@"{ ""NbHouse"":1000,""NbCompany"":1000,""NbHospital"":1000,""NbRestaurant"":1000,""NbSchool"":100,""NbStore"":100,""NbSupermarket"":100}");
 
-        //GetComponent<ScriptClient>().dataReceived3.text = populationDatas.NbPersons + " " + populationDatas.IndexOfInfected.Count;
-        //GetComponent<ScriptClient>().dataReceived2.text = sitesDatas.SitesType.Count + " " + sitesDatas.SitesId.Count;
-        //
-        //CreateSites(sitesDatas);
-        //CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
+        
+        CreateSites(sitesDatas);
+        CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //List<int> test = GameObject.Find("GUIManager").GetComponent<ScriptClient>().testTransfer;
-        if (Input.GetMouseButton(1))
-        {
-            //DataIteration iterationDatas = JsonUtility.FromJson<DataIteration>(@"{ ""PersonsNewSite"":[0,5,5,5,15,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5, 
-            //                                                                                           0,5,5,5,15,5,5,5,5,5,5,2000,5,5,5,5,5,5,5,5,5,
-            //                                                                                           0,5,5,5,15,5,5,5,5,5,2000,5,5,5,5,5,5,3,5,5,5,
-            //                                                                                           0,5,5,5,15,5,5,5,5,5,2000,5,3000,5,5,5,5,3,5,5,5,
-            //                                                                                           0,5,5,5,5,5,5,5,5,5,3000,5,3000,5,5,5,5,5,5,5,5],
-            //                                                                       ""PersonsNewState"":[0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
-            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
-            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
-            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,
-            //                                                                                            0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3,0,1,2,3]}");
-
-            //_persons.ForEach(p => {
-            //    MovementScript pScript = p.GetComponent<MovementScript>();
-            //    int pIndex = pScript.index;
-            //    int siteIndex = iterationDatas.PersonsNewSite[pIndex];
-            //    p.GetComponent<MovementScript>().SetTarget(_sitesMin[siteIndex], _sitesMax[siteIndex], siteIndex);
-            //    if (pScript.state != iterationDatas.PersonsNewState[pIndex])
-            //        pScript.SetState(iterationDatas.PersonsNewState[pIndex]);
-            //});
-
-            // _persons.ForEach(p => {
-            //     int siteIndex = Random.Range(0, _sitesMin.Count);
-            //     p.GetComponent<MovementScript>().SetTarget(_sitesMin[siteIndex], _sitesMax[siteIndex], siteIndex);
-            // });
-        }
-    }
-    bool creationDone = false;
     public void SetIterationDatas(DataIteration iterationDatas)
     {
         read = 0;
@@ -94,10 +54,9 @@ public class ManagerScript : MonoBehaviour
                 int pIndex = pScript.index;
                 int siteIndex = iterationDatas.PersonsNewSite[pIndex];
 
-                dataReceived2.text = iterationDatas.PersonsNewSite.Count.ToString() + " " + read + " " + siteIndex + " " + _sitesMax.Count + " " + _sitesMin.Count;
                 if (siteIndex < _sitesMin.Count && siteIndex >= 0)
                     p.GetComponent<MovementScript>().SetTarget(_sitesMin[siteIndex], _sitesMax[siteIndex], siteIndex);
-                dataReceived3.text = iterationDatas.PersonsNewSite.Count.ToString() + " " + read + " " + siteIndex + " " + _sitesMax.Count + " " + _sitesMin.Count;
+                
                 if (pScript.state != iterationDatas.PersonsNewState[pIndex])
                     pScript.SetState(iterationDatas.PersonsNewState[pIndex]);
 

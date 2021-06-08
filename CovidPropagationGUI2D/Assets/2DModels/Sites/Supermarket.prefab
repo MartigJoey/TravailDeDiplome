@@ -7,6 +7,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 446600718795367133, guid: 61a600fc51b44e74a83fbe12cc432667, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.6666665
+      objectReference: {fileID: 0}
+    - target: {fileID: 1556528022178377045, guid: 61a600fc51b44e74a83fbe12cc432667, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -3.6666665
+      objectReference: {fileID: 0}
     - target: {fileID: 3300761707624294184, guid: 61a600fc51b44e74a83fbe12cc432667, type: 3}
       propertyPath: m_Name
       value: Supermarket

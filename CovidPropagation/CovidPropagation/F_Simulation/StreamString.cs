@@ -5,11 +5,13 @@
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
  */
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CovidPropagation
@@ -42,10 +44,16 @@ namespace CovidPropagation
                 dataToSend.Add((byte)(len >> 8));
                 dataToSend.Add((byte)(len >> 0));
                 dataToSend.AddRange(outBuffer.ToList());
-                stream.Write(dataToSend.ToArray(), 0, dataToSend.Count);
-                stream.Flush();
+                try
+                {
+                    stream.Write(dataToSend.ToArray(), 0, dataToSend.Count);
+                    stream.Flush();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Pipeline is borken " + ex);
+                }
             });
-
         }
 
         public void CloseLink()

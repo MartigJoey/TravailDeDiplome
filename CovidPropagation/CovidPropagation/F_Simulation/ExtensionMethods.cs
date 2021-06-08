@@ -120,6 +120,7 @@ namespace CovidPropagation
             return value.NextDouble() * (maxRdm - minRdm) + minRdm;
         }
 
+
         /// <summary>
         /// Permet de mélanger une liste de tout type.
         /// </summary>
@@ -213,6 +214,8 @@ namespace CovidPropagation
                 {
                     case UIType.Linear:
                         axisX.MaxValue = maxValue;
+                        axisY.MaxValue = double.NaN;
+                        // Récupère l'interval
                         switch ((ChartsDisplayInterval)datas.DisplayInterval)
                         {
                             default:
@@ -258,15 +261,14 @@ namespace CovidPropagation
                                     lineSerieDatas.RemoveRange(0, lineSerieDatas.GetLastIndex() - interval);
                                 }
                             }
-
                             serie.Values = lineSerieDatas.AsGearedValues().WithQuality(Quality.Low);
                         }
 
                         // ID Documentation : Curve_Chart_AxeX
                         if (maxValue - interval > 0 && interval != 0)
                         {
-                            currentAxis.MinValue = maxValue - interval;
-                            currentAxis.MaxValue = maxValue;
+                            axisX.MinValue = maxValue - interval;
+                            axisX.MaxValue = maxValue;
                         }
                         else if (interval == 0)
                         {
@@ -275,89 +277,59 @@ namespace CovidPropagation
                         }
                         else
                         {
-                            currentAxis.MinValue = 0;
-                            currentAxis.MaxValue = interval;
+                            axisX.MinValue = 0;
+                            axisX.MaxValue = interval;
                         }
 
                         datas.DisplayWindow = displayWindow;
                         chart.Tag = datas;
                         break;
                     case UIType.Vertical:
-                        // Affichage différent
-                        DisplayColumnRowChart(chart, e, currentAxis, isDisplayChange);
+                        axisY.MaxValue = double.NaN;
+                        DisplayColumnRowChart(chart, e, axisX, isDisplayChange);
                         break;
                     case UIType.Horizontal:
-                        // Affichage différent
-                        currentAxis = axisY;
-                        DisplayColumnRowChart(chart, e, currentAxis, isDisplayChange);
+                        axisX.MaxValue = double.NaN;
+                        DisplayColumnRowChart(chart, e, axisY, isDisplayChange);
                         break;
                     case UIType.HeatMap:
                         HeatSeries serieHeatMap = (HeatSeries)chart.Series[0];
                         List<double> simulationData = new List<double>(e.GetDataFromEnum((ChartsDisplayData)serieHeatMap.Tag));
-                        interval = 7;
-                        int nbTimeFramesPerDay = GlobalVariables.NUMBER_OF_TIMEFRAME;
-                        int nbOfDatasUnified = 4;
-                        int dayDivision = 4;
 
                         if (simulationData != null)
                         {
                             // Trouver premier jour semaine
-                            maxValue = Math.Ceiling((double)maxValue / interval) * interval;
-                            /*for (int x = 1; x < heatSeriesData.Count; x += nbTimeFramesPerDay)
-                            {
-                                for (int y = 0; y < nbTimeFramesPerDay; y += nbOfDatasUnified)
-                                {
-                                    if (heatSeriesData.Count > x + y + nbOfDatasUnified && serieHM.Values.Count < (x + y + nbOfDatasUnified) / dayDivision)
-                                    {
-                                        double avgData = 0;
-                                        for (int k = 0; k < nbOfDatasUnified; k++)
-                                        {
-                                            avgData += heatSeriesData[x + y + k];
-                                        }
-
-                                        //Debug.WriteLine(serieHM.Values.Count + " " + heatSeriesData.Count);
-                                        if (serieHM.Values.Count > 7 * 12)
-                                        {
-                                            int index = ((heatSeriesData.Count - 1) % (7 * 12) )/ 4;
-                                            HeatPoint hm = ((HeatPoint)serieHM.Values[index]);
-                                            Debug.WriteLine(heatSeriesData.Count +" "+index + " " + hm.Weight + " " + hm.X + " "+ hm.Y);
-                                            hm.Weight = (heatSeriesData.Count * hm.Weight + avgData / nbOfDatasUnified) / heatSeriesData.Count+1;
-                                        }
-                                        else
-                                        {
-                                            Debug.WriteLine(serieHM.Values.Count + " " + heatSeriesData.Count + " " + TimeManager.CurrentDayString+"_"+ TimeManager.CurrentHour + ":"+TimeManager.CurrentTimeFrame);
-                                            serieHM.Values.Add(new HeatPoint(x / nbTimeFramesPerDay, y / dayDivision, avgData / nbOfDatasUnified));
-                                        }
-                                    }
-                                }
-                            }*/
                             int x = 0; 
                             int y = 0;
                             int week = 0;
                             double value = 0;
                             if (simulationData.Count > 0)
                             {
-                                //serieHeatMap.Values.Clear();
+                                // Parcours les données reçues
                                 for (int i = 1; i <= simulationData.Count; i++)
                                 {
+                                    // Ajotue les données à value
                                     value += simulationData[i - 1];
+                                    // Si il y a de nouvelles valeurs
                                     if (serieHeatMap.Values.Count < (i/4))
                                     {
+                                        // Si value a pu récupérer 4 valeurs
                                         if (i % 4 == 0)
                                         {
+                                            // Si c'est la première semaine, créé des heatpoint
                                             if (week == 0)
                                             {
-                                                serieHeatMap.Values.Add(new HeatPoint(x, y, value / 4));
+                                                double avgValue = value / 4;
+                                                serieHeatMap.Values.Add(new HeatPoint(x, y, avgValue));
                                             }
-                                            else
+                                            else // Sinon, les ajoutent au heatpoint déjà existant et en fait la moyenne
                                             {
                                                 HeatPoint hm = ((HeatPoint)serieHeatMap.Values[(x * 12) + y]);
                                                 hm.Weight = ((week * 4) * hm.Weight + value) / ((week * 4) + 4);
                                             }
                                         }
                                     }
-                                    
-
+                                    // Lors d'un changement de semaine.
                                     if (i % 336 == 0)
                                     {
                                         week++;
@@ -365,13 +337,13 @@ namespace CovidPropagation
                                         y = 0;
                                         value = 0;
                                     }
-                                    else if (i % 48 == 0)
+                                    else if (i % 48 == 0) // Lors d'un changement de jour.
                                     {
                                         x++;
                                         y = 0;
                                         value = 0;
                                     }
-                                    else if (i % 4 == 0)
+                                    else if (i % 4 == 0) // Lors d'un changement de case.
                                     {
                                         y++;
                                         value = 0;
