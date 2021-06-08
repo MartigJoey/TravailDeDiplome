@@ -406,17 +406,24 @@ namespace CovidPropagation
         }
 
         // Datas
-
         public int GetNumberOfHospitalisation()
         {
             return _sitesDictionnary[SiteType.Hospital].Sum(b => ((Hospital)b).CountPatients());
         }
 
+        /// <summary>
+        /// Compte le nombre de décès en soustrayant le nombre d'individus actuellement présents et les individus actuellement healthy.
+        /// </summary>
+        /// <returns>Nombre de décès dans le timeframe.</returns>
         public int GetNumberOfDeath()
         {
             return SimulationGeneralParameters.NbPeople - _population.Count;
         }
 
+        /// <summary>
+        /// Compte le nombre de contamination en soustrayant le nombre d'infectés du dernier timeframe et celui actuel.
+        /// </summary>
+        /// <returns>Nombre de contaminations dans le timeframe.</returns>
         public double GetNumberOfContamination()
         {
             double result = 0;
@@ -435,18 +442,27 @@ namespace CovidPropagation
             return result;
         }
 
+        /// <summary>
+        /// Compte le nombre de reproduction en faisant la somme des dix dernières données de contaminations et en les divisant par le nombre de personnes infectieuses.
+        /// </summary>
+        /// <returns>Nombre de reproduction dans le timeframe.</returns>
         public double GetNumberOfReproduction()
         {
             double result = 0;
-            if (chartsDatas.NumberOfInfected != null && chartsDatas.NumberOfInfected.Count > 1)
+            if (chartsDatas.NumberOfInfectious != null && chartsDatas.NumberOfInfectious.Count > 10)
             {
-                double currentNbOfInfected = chartsDatas.NumberOfInfected[chartsDatas.NumberOfInfected.GetLastIndex()];
-                double lastNbOfInfected = chartsDatas.NumberOfInfected[chartsDatas.NumberOfInfected.GetLastIndex()-1];
+                double avgRecentContamination = 0;
+                double currentNbOfInfectious = chartsDatas.NumberOfInfectious[chartsDatas.NumberOfInfectious.GetLastIndex()];
 
-                if (lastNbOfInfected == 0)
-                    result = currentNbOfInfected;
-                else
-                    result = currentNbOfInfected / lastNbOfInfected;
+                for (int i = chartsDatas.NumberOfContamination.Count - 10; i < chartsDatas.NumberOfContamination.Count; i++)
+                {
+                    avgRecentContamination += chartsDatas.NumberOfContamination[i];
+                }
+
+                if (currentNbOfInfectious != 0)
+                {
+                    result = avgRecentContamination / currentNbOfInfectious;
+                }
             }
             return result;
         }
