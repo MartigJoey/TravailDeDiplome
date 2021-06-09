@@ -137,10 +137,51 @@ namespace CovidPropagation
                 _mustLeaveHospital = false;
             }
 
-            // Si la résistance de l'individus est suffisament faible pour décèdé, qu'il ne se situe pas à l'hopital et que le virus s'est développé.
+            // Si la résistance de l'individus est suffisament faible pour décèder, qu'il ne se situe pas à l'hopital et que le virus s'est développé.
             if (_virusResistance <= MIN_RESISTANCE_BEFORE_DEATH && _currentSite != _hospitalCovid && (int)_state > (int)PersonState.Infected)
             {
                 DecrementUntilDeath(2);
+            }
+
+            if (!_isQuarantined)
+            {
+                // Vérifie s'il doit aller en quarantaine
+                switch (_state)
+                {
+                    default:
+                    case PersonState.Dead:
+                        _isQuarantined = false;
+                        break;
+                    case PersonState.Asymptomatic:
+                    case PersonState.Healthy:
+                        if (_healthyQuarantined && QuarantineParameters.ProbabilityOfHealthyQuarantined > _rdm.NextDouble())
+                        {
+                            _quarantineDuration = QuarantineParameters.DurationHealthyQuarantined * GlobalVariables.NUMBER_OF_TIMEFRAME;
+                            _isQuarantined = true;
+                        }
+                        break;
+                    case PersonState.Immune:
+                        if (_immuneQuarantined && QuarantineParameters.ProbabilityOfImmuneQuarantined > _rdm.NextDouble())
+                        {
+                            _quarantineDuration = QuarantineParameters.DurationImmuneQuarantined * GlobalVariables.NUMBER_OF_TIMEFRAME;
+                            _isQuarantined = true;
+                        }
+                        break;
+                    case PersonState.Infected:
+                        if (_infectedQuarantined && QuarantineParameters.ProbabilityOfInfectedQuarantined > _rdm.NextDouble())
+                        {
+                            _quarantineDuration = QuarantineParameters.DurationInfectedQuarantined * GlobalVariables.NUMBER_OF_TIMEFRAME;
+                            _isQuarantined = true;
+                        }
+                        break;
+                    case PersonState.Infectious:
+                        if (_infectiousQuarantined && QuarantineParameters.ProbabilityOfInfectiousQuarantined > _rdm.NextDouble())
+                        {
+                            _quarantineDuration = QuarantineParameters.DurationInfectiousQuarantined * GlobalVariables.NUMBER_OF_TIMEFRAME;
+                            _isQuarantined = true;
+                        }
+                        break;
+                }
             }
 
             // ID Documentation : Person_Hospital
@@ -286,45 +327,6 @@ namespace CovidPropagation
             _infectedQuarantined = infectedQuarantined;
             _infectiousQuarantined = infectiousQuarantined;
             _immuneQuarantined = immuneQuarantined;
-
-
-            // Vérifie s'il est en quarantaine
-            switch (_state)
-            {
-                default:
-                case PersonState.Dead:
-                    _isQuarantined = false;
-                    break;
-                case PersonState.Asymptomatic:
-                case PersonState.Healthy:
-                    if (_healthyQuarantined && QuarantineParameters.ProbabilityOfHealthyQuarantined > _rdm.NextDouble())
-                    {
-                        _quarantineDuration = QuarantineParameters.DurationHealthyQuarantined * GlobalVariables.NUMBER_OF_TIMEFRAME;
-                        _isQuarantined = true;
-                    }
-                    break;
-                case PersonState.Immune:
-                    if (_immuneQuarantined && QuarantineParameters.ProbabilityOfImmuneQuarantined > _rdm.NextDouble())
-                    {
-                        _quarantineDuration = QuarantineParameters.DurationImmuneQuarantined * GlobalVariables.NUMBER_OF_TIMEFRAME;
-                        _isQuarantined = true;
-                    }
-                    break;
-                case PersonState.Infected:
-                    if (_infectedQuarantined && QuarantineParameters.ProbabilityOfInfectedQuarantined > _rdm.NextDouble())
-                    {
-                        _quarantineDuration = QuarantineParameters.DurationInfectedQuarantined * GlobalVariables.NUMBER_OF_TIMEFRAME;
-                        _isQuarantined = true;
-                    }
-                    break;
-                case PersonState.Infectious:
-                    if (_infectiousQuarantined && QuarantineParameters.ProbabilityOfInfectiousQuarantined > _rdm.NextDouble())
-                    {
-                        _quarantineDuration = QuarantineParameters.DurationInfectiousQuarantined * GlobalVariables.NUMBER_OF_TIMEFRAME;
-                        _isQuarantined = true;
-                    }
-                    break;
-            }
         }
 
         /// <summary>

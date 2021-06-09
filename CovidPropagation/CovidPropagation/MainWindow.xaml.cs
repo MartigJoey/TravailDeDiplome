@@ -55,8 +55,6 @@ namespace CovidPropagation
 
         private void SettingsPage_Click(object sender, RoutedEventArgs e)
         {
-            //LC lcPage = new LC();
-            //lcPage.Show();
             MainContent.Navigate(pageSimulationSettings);
         }
     }

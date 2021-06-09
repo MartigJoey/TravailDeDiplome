@@ -12,13 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CovidPropagation
 {
@@ -108,7 +102,7 @@ namespace CovidPropagation
         {
             // Général
             tbxNbPeople.Text = SimulationGeneralParameters.NbPeople.ToString();
-            tbxProbabilityOfInfected.Text = SimulationGeneralParameters.ProbabilityOfInfected.ToString();;
+            tbxProbabilityOfInfected.Text = (SimulationGeneralParameters.ProbabilityOfInfected * 100).ToString();
 
             // Triggers mesures
             tbxQuarantineNbPeopleToStart.Text = SimulationGeneralParameters.NbInfecetdForQuarantineActivation.ToString();
@@ -124,16 +118,16 @@ namespace CovidPropagation
             tbxDistanciationNbPeopleToStop.Text = SimulationGeneralParameters.NbInfecetdForDistanciationDeactivation.ToString();
 
             // Quarantaine
-            tbxProbabilityForHealthyToBeQuarantined.Text = QuarantineParameters.ProbabilityOfHealthyQuarantined.ToString();
+            tbxProbabilityForHealthyToBeQuarantined.Text = (QuarantineParameters.ProbabilityOfHealthyQuarantined * 100).ToString();
             tbxQuarantinedDurationForHealthy.Text = QuarantineParameters.DurationHealthyQuarantined.ToString();
 
-            tbxProbabilityForInfectedToBeQuarantined.Text = QuarantineParameters.ProbabilityOfInfectedQuarantined.ToString();
+            tbxProbabilityForInfectedToBeQuarantined.Text = (QuarantineParameters.ProbabilityOfInfectedQuarantined * 100).ToString();
             tbxQuarantinedDurationForInfected.Text = QuarantineParameters.DurationInfectedQuarantined.ToString();
 
-            tbxProbabilityForInfectiousToBeQuarantined.Text = QuarantineParameters.ProbabilityOfHealthyQuarantined.ToString();
+            tbxProbabilityForInfectiousToBeQuarantined.Text = (QuarantineParameters.ProbabilityOfHealthyQuarantined * 100).ToString();
             tbxQuarantinedDurationForInfectious.Text = QuarantineParameters.DurationInfectiousQuarantined.ToString();
 
-            tbxProbabilityForImmuneToBeQuarantined.Text = QuarantineParameters.ProbabilityOfImmuneQuarantined.ToString();
+            tbxProbabilityForImmuneToBeQuarantined.Text = (QuarantineParameters.ProbabilityOfImmuneQuarantined * 100).ToString();
             tbxQuarantinedDurationForImmune.Text = QuarantineParameters.DurationImmuneQuarantined.ToString();
 
             // Vaccin
@@ -158,12 +152,23 @@ namespace CovidPropagation
         }
 
         /// <summary>
-        /// Regex qui filtres les caractères non numériques allant de 1'000 à 999'999.
+        /// Regex qui filtres les caractères non numériques allant de 1'000 à 99'999'999.
         /// </summary>
         private void NbPersons_LeaveFocus(object sender, RoutedEventArgs e)
         {
             TextBox tbx = sender as TextBox;
-            Regex regex = new Regex("^([1-9][0-9]{3,5})$");
+            Regex regex = new Regex("^([1-9][0-9]{3,7})$");
+            string defaultValue = "10000";
+            CheckTextBoxFormat(tbx, regex, defaultValue);
+        }
+
+        /// <summary>
+        /// Regex qui filtres les caractères non numériques allant de 0 à 99'999'999.
+        /// </summary>
+        private void NbPersonsMeasures_LeaveFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tbx = sender as TextBox;
+            Regex regex = new Regex("^([0-9]{0,8})$");
             string defaultValue = "1000";
             CheckTextBoxFormat(tbx, regex, defaultValue);
         }
@@ -354,7 +359,7 @@ namespace CovidPropagation
                 SimulationGeneralParameters.NbPeople = Convert.ToInt32(tbxNbPeople.Text);
 
             if (tbxProbabilityOfInfected.Text.Length > 0)
-                SimulationGeneralParameters.ProbabilityOfInfected = (float)Convert.ToDouble(tbxProbabilityOfInfected.Text);
+                SimulationGeneralParameters.ProbabilityOfInfected = (float)Convert.ToDouble(tbxProbabilityOfInfected.Text) / 100;
 
             // Si les mesures sont activées où non.
             if (chxMask.IsChecked == true)
@@ -419,7 +424,7 @@ namespace CovidPropagation
             if (chxQuarantineHealthy.IsChecked == true)
             {
                 QuarantineParameters.IshealthyQuarantined = true;
-                QuarantineParameters.ProbabilityOfHealthyQuarantined = Convert.ToDouble(tbxProbabilityForHealthyToBeQuarantined.Text);
+                QuarantineParameters.ProbabilityOfHealthyQuarantined = Convert.ToDouble(tbxProbabilityForHealthyToBeQuarantined.Text) / 100;
                 QuarantineParameters.DurationHealthyQuarantined = Convert.ToInt32(tbxQuarantinedDurationForHealthy.Text);
             }
             else
@@ -431,7 +436,7 @@ namespace CovidPropagation
             if (chxQuarantineInfected.IsChecked == true)
             {
                 QuarantineParameters.IsInfectedQuarantined = true;
-                QuarantineParameters.ProbabilityOfInfectedQuarantined = Convert.ToDouble(tbxProbabilityForInfectedToBeQuarantined.Text);
+                QuarantineParameters.ProbabilityOfInfectedQuarantined = Convert.ToDouble(tbxProbabilityForInfectedToBeQuarantined.Text) / 100;
                 QuarantineParameters.DurationInfectedQuarantined = Convert.ToInt32(tbxQuarantinedDurationForInfected.Text);
             }
             else
@@ -443,7 +448,7 @@ namespace CovidPropagation
             if (chxQuarantineInfectious.IsChecked == true)
             {
                 QuarantineParameters.IsInfectiousQuarantined = true;
-                QuarantineParameters.ProbabilityOfHealthyQuarantined = Convert.ToDouble(tbxProbabilityForInfectiousToBeQuarantined.Text);
+                QuarantineParameters.ProbabilityOfHealthyQuarantined = Convert.ToDouble(tbxProbabilityForInfectiousToBeQuarantined.Text) / 100;
                 QuarantineParameters.DurationInfectiousQuarantined = Convert.ToInt32(tbxQuarantinedDurationForInfectious.Text);
             }
             else
@@ -455,7 +460,7 @@ namespace CovidPropagation
             if (chxQuarantineImmune.IsChecked == true)
             {
                 QuarantineParameters.IsImmuneQuarantined = true;
-                QuarantineParameters.ProbabilityOfImmuneQuarantined = Convert.ToDouble(tbxProbabilityForImmuneToBeQuarantined.Text);
+                QuarantineParameters.ProbabilityOfImmuneQuarantined = Convert.ToDouble(tbxProbabilityForImmuneToBeQuarantined.Text) / 100;
                 QuarantineParameters.DurationImmuneQuarantined = Convert.ToInt32(tbxQuarantinedDurationForImmune.Text);
             }
             else

@@ -117,6 +117,12 @@
     - [13.2.4. Création des probabilités](#1324-création-des-probabilités)
     - [13.2.5. Source propagation](#1325-source-propagation)
     - [13.2.6. Résultats](#1326-résultats)
+      - [13.2.6.1. Test sans mesures](#13261-test-sans-mesures)
+      - [13.2.6.2. Test avec quarantaine 1](#13262-test-avec-quarantaine-1)
+      - [13.2.6.3. Test avec quarantaine 2](#13263-test-avec-quarantaine-2)
+      - [13.2.6.4. Test avec quarantaine 3](#13264-test-avec-quarantaine-3)
+      - [13.2.6.5. Test avec quarantaine et vaccination](#13265-test-avec-quarantaine-et-vaccination)
+      - [13.2.6.6. Conclusion](#13266-conclusion)
   - [13.3. Performances](#133-performances)
 - [14. `GUI`](#14-gui)
   - [14.1. Structure](#141-structure)
@@ -1086,7 +1092,11 @@ En premier lieu, le programme réside sur la création d'une ville contenant des
 
 En second lieu, l'environnement du programme est totalement isolé, un cas similaire se produirait sûrement si la moitié de la population était infectée dans un pays ayant ses frontières totalement fermées. Je n'ai malheureusement pas pu trouver de telle données correspondant à tous les paramètres.
 
+#### 13.2.6.1. Test sans mesures
 La figure (Figure ##) est une simulation sans qu'aucune mesure soit prise avec une population de 100'000 personnes. Le nombre de cas (En bleu) au départ étant de 1'000. Ce qui correspond à 1% d'infecté dès le départ. 1% est est similaire au plus grand pic de cas au USA qui est l'un des pays ayant été le plus touché. Je penses qu'il est donc très difficile de comparer ce programmes avec des pays entier et qu'il faut réduire la comparaison en comparant des villes.
+
+<div style="text-align:center"><img src="Medias/Rapport/UsaCases.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Nombre de cas de covid aux USA</p></center>
 
 Le taux de décès (en jaune sur le graphique) est très similaire à la réalité ~2%. Il faut malgrer tout prendre en compte que les décès ne sont pas calculés de la même manière que la propagation qui se base sur des calculs réalisés par des professionnels dans le domaines et qui sont extrêmement précis. Il faut aussi prendre en compte que la simulation ne prend en compte que les décès qui sont totalement liés au virus contrairement aux données officiels qui sont parfois faussé par des décès de personnes infectée mais pas décédées dû au virus.
 
@@ -1097,33 +1107,61 @@ Maintenant, si nous imaginons que cette zone est dans le même cas que la simula
 <div style="text-align:center"><img src="Medias/Rapport/EssaiSimulation.png" /></div>
 <center><p style="font-size: 11px">Figure ##: Nombre de cas de covid dans la simulation</p></center>
 
+#### 13.2.6.2. Test avec quarantaine 1
 Lors de ce second test, j'y ai ajouté plusieurs mesures à commencer par la quarantaine qui était déclanchée à partir de 50'000 cas. Le second étant le port du masque appliqué à tout le monde. Et finalement la vaccination.
 
 On peut constater une très nette différence entre le premier teste celui-ci.<br> Pour commencer, on observe une grande diminution de la vitesse de propagation du virus (~divisé par deux). Cette différence est liée au port du masque qui ne permet pas l'arrêt complet de la propagation mais qui permet tout de même de grandement la limiter. <br>
 Ensuite, on peut voir que l'augmentation de cas s'arrête très rapidement peu après de 50'000 cas. Il s'agit de la quarantaine qui vas donc mettre en quarantaine tout individu contagieux sans prendre en compte les personnes asymptomatiques qui passent sous le radar. Cela explique pourquoi le virus met un certain temps avant de réellement commencer à chuter. Les personnes asymptomatiques continuant à propager le virus pendant un certains. Cependant ce n'est pas suffisant pour maintenir le nombre d'infectés qui commence à chuter un peu plus d'une semaine plus tard.<br>
 La courbe d'immunisé augmente au dela du nombre d'infecté du à la vaccination qui a commencé à partir d'environ 5'000 cas. Celle-ci a continué tout du long de la contamination et continue après jusqu'à que le nombre de cas retombe en dessous de 5'000 et à partir de la, elle s'arrête.
 
-<h2>Refaire sim avec mesure et recomparer, aussi à plus grande échelle</h2>
-
 <div style="text-align:center"><img src="Medias/Rapport/EssaiSimulationAvecMesures.png" /></div>
 <center><p style="font-size: 11px">Figure ##: Nombre de cas de covid dans la simulation avec mesures</p></center>
 
+#### 13.2.6.3. Test avec quarantaine 2
+Lors de ce test, j'ai grandement réduit le nombre déclanchant la quarantaine menant à un résultat très différents des autres simulations. À partir de 1'000 infecté, la quarantaine se déclanche et elle se retire une fois en dessous de 1'000.<br>
+
+Le résultat étant que le virus survit beaucoup plus longtemps mais en infectant continuellement de nouvelles personnes. Ce graphique est très loin de la réalité, cependant, il permet d'observer le fait que tant qu'il n'y a pas une population suffisament immunisé ou que la quarantaine ne dure pas jusqu'à qu'aucun cas de virus soit présent, le virus reviendra. Lorsque le virus contamine la plupart de la population, celle-ci finit par être immunisée empêchant le virus de se propager et de trouver des hôtes pour survivres, comme vu dans les tests précédents.
+
+<div style="text-align:center"><img src="Medias/Rapport/EssaiSimulationQuarantaine.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Test 3 avec quarantaine</p></center>
+
+#### 13.2.6.4. Test avec quarantaine 3
+Ce troisième test avec mesures effectué est similaire au précédent mais en activant la quarantaine à partir de 2'500 cas et en la désactivant à 500 cas. Le pattern est similaire mais se raproche plus de la réalité. Le virus effectuant plusieurs montées. Il est tout de même moin rapide à se propager après la première itération. Ce phénomène s'explique par le fait que les individus ont leur habitude ils ont une variété de lieux de déplacements et n'en sortent pas. De ce fait, les individus créé des sortes de groupes plus isolés des autres. Les personnes de ce groupe sont en partie immunisées empêchant une propagation rapide du virus. Celle-ci diminiuant à chaque pique.
+
+<div style="text-align:center"><img src="Medias/Rapport/EssaiSImulationQuarantaine2.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Nombre de cas de covid dans la simulation avec mesures</p></center>
+
+Ces groupes sont évidemment présents dans la réalité mais sont beaucoup plus complexes. Cela me fait beacuoup penser à la théorie des six degrés de séparation ou l'étude du petit monde qui sont des hypothèses que chaque individus dans le monde est relié à une autre personne aléatoire par une courte chaîne de relations sociales. Cela signifie que tout le monde est extremement connectés aux autres. Dans ce cas précis cela signifie qu'un virus pourrait se propager très facilement d'un groupe d'individu à un autre.<br>
+Il ne s'agit cepedant que d'une théorie, l'explication se trouvant peut-être ailleurs. Je trouve cependant très intéressant d'observer ce genre de résultats dans la simulation.
+
 <div style="text-align:center"><img src="Medias/Rapport/GeneveCases.png" /></div>
 <center><p style="font-size: 11px">Figure ##: Nombre de cas de covid en Suisse</p></center>
-<div style="text-align:center"><img src="Medias/Rapport/GeneveDeath.png" /></div>
-<center><p style="font-size: 11px">Figure ##: Nombre de décès dû au covid en Suisse</p></center>
 
-
-<div style="text-align:center"><img src="Medias/Rapport/UsaCases.png" /></div>
-<center><p style="font-size: 11px">Figure ##: Nombre de cas de covid aux USA</p></center>
-<div style="text-align:center"><img src="Medias/Rapport/UsaDeath.png" /></div>
-<center><p style="font-size: 11px">Figure ##: Nombre de décès dû au covid aux USA</p></center>
-
+Ce graphique est plus facilement comparable à la Suisse ou à l'Inde. Cependant, les mesures s'adaptant dans la réalité contrairement à la simulation, empêche de pouvoir réellement comparer les résultats précisement.
 
 <div style="text-align:center"><img src="Medias/Rapport/IndiaCases.png" /></div>
 <center><p style="font-size: 11px">Figure ##: Nombre de cas de covid en Inde</p></center>
-<div style="text-align:center"><img src="Medias/Rapport/IndiaDeath.png" /></div>
-<center><p style="font-size: 11px">Figure ##: Nombre de décès dû au covid en Inde</p></center>
+
+#### 13.2.6.5. Test avec quarantaine et vaccination
+Le cinquième et dernier test est identique au quatrième mais avec la vaccination active très rapidement. La vaccination empêche très rapidement la propagation du virus l'arrêtant nette dans sa course avec l'aide de la quarantaine. Ce n'est malgré tout pas suffisant pour totalement se débarasser du virus. Malgré qu'il y ait très peu de cas, il en reste cependant moins d'une centaine présents durant plusieurs mois avant que le virus ne disparaisse. Une baisse du nombre d'immunisés ou une livraison trop faible de vaccin empêcherait l'éradication du virus.
+
+<div style="text-align:center"><img src="Medias/Rapport/EssaiSImulationQuarantaineVaccination.png" /></div>
+<center><p style="font-size: 11px">Figure ##: Nombre de cas de covid dans la simulation avec mesures</p></center>
+
+#### 13.2.6.6. Conclusion
+Les résultats sont différents de la réalités sur différents point et se rejoignent sur d'autres.
+
+Concernant les deux premiers tests, ils sont majoritairement la pour vérifier l'efficacité des mesures que de les comparer avec la réalité. Aucune données n'étant disponible concernant des villes ayant atteint des pourcentages aussi élevés de cas et ne faisant aucune mesures ou très tardivement.
+
+Le troisième test malgré que différent esthétiquement, montre que la quarantaine est utile uniquement pour limiter la propagation du virus et difficilement pour l'arrêter. Dans ce cas là, d'une ville totalement isolée, la quarantaine serait viable jusqu'à qu'il n'y ai plus de cas. Cependant, l'insertion d'un seul nouveau cas pourrait causer un nouveau départ de propagation. L'immunité, donc vaccination, étant la seule mesure permettant un réel arrêt du virus.
+Le port du masque ne servant qu'à ralentir le virus de même pour les distanciations.
+
+Le quatrième est celui se raprochant le plus de la réalité. Il contient des vagues de contamination qui sont en partie causées par la quarantaine qui stop son avancée ainsi que par les personnes immunisées du au virus.
+
+Dans le dernier test, on peut tout de suite voir que même lorsque la quarantaine est levée, le virus a beaucoup plus de mal à se propager et disparait quasiment du à la grande quantité de personnes immunisée. Cela prouve que l'immunité est le meilleur moyen de limiter la propagation du virus ou même de le supprimer dans la simulation.
+
+En modifiant la structure des paramètres des mesures et en ajoutant un option permettant de gérer le virus différement suivant l'avancement du virus, permettrait d'obtenir un graphique extrêment proche de la réalité si ce n'est presque identique.
+
 
 ## 13.3. Performances
 L'optimisation est nécessaire pour que ce type de programme soit utilisable. Avant de commencer l'optimisation, la création d'une simulation contenant 100'000 individus pouvait prendre jusqu'à 5 min et 1'000'000 plus de 10 minutes et même parfois un plantage de l'application. Cette durée de création se raproche beaucoup d'un algoritme de complexité O(N^2) (Figure ##).
@@ -1443,6 +1481,9 @@ Mes remerciements à
   - Utilisé dans l'affichage des valeurs des enums
     - [StackOverflow - jop - Lecture valeurs enum](https://stackoverflow.com/questions/105372/how-to-enumerate-an-enum#:~:text=foreach%20(Suit%20suit%20in%20(Suit%5B%5D)%20Enum.GetValues(typeof(Suit)))%0A%7B%0A%7D)
 
+09.06.2021
+  - Utilisé dans l'analyse de résultats
+    - [Wikipédia - Frigyes Karinthy - Théorie des six degrés de séparation](https://fr.wikipedia.org/wiki/Six_degr%C3%A9s_de_s%C3%A9paration)
 
 # 21. `Annexes`
 - Projet C#

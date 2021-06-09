@@ -107,6 +107,7 @@ namespace CovidPropagation
 
                 intervalSlider.Value = Convert.ToInt32(intervalSlider.Maximum - sim.Interval);
                 mw.btnGraphicSettings.IsEnabled = false;
+                mw.btnSettings.IsEnabled = false;
                 btnOpenRawDatas.IsEnabled = true;
             }
             sim.Start();
@@ -149,6 +150,8 @@ namespace CovidPropagation
 
             SetGrid(grdStruct, chartDatas);
             mw.btnGraphicSettings.IsEnabled = true;
+            mw.btnSettings.IsEnabled = true;
+            btnOpenRawDatas.IsEnabled = false;
         }
 
         #region View
