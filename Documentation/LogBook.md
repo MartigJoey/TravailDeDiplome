@@ -1382,3 +1382,4 @@
     - Résultats
     - Conclusion
     - Bilan
+- Modification des valeurs minimum des paramètres

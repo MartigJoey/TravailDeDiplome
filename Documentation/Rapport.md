@@ -30,6 +30,7 @@
   - [4.2. XML](#42-xml)
   - [4.3. Graphiques](#43-graphiques)
   - [4.4. Unity](#44-unity)
+- [Étude d'opportunités](#étude-dopportunités)
 - [5. `Maquettes`](#5-maquettes)
   - [5.1. UI](#51-ui)
     - [5.1.1. Page Simulation](#511-page-simulation)
@@ -201,6 +202,9 @@ Les graphiques sont créés par la librairie liveCharts qui permet l'affichage d
 
 ## 4.4. Unity
 Le programme Unity s'occupe de gérer l'interface graphique qui comprend les bâtiments, véhicules et individus. L'interface est animée en fonction de la temporalité de l'application WPF. La simulation et l'interface graphique avancent donc ensemble. La communication s'effectue à travers un pipeline nommé. Les données de la simulation sont envoyées par celui-ci. Le programme Unity est intégré directement dans le projet WPF.
+
+# Étude d'opportunités
+
 
 # 5. `Maquettes`
 ## 5.1. UI
@@ -1416,6 +1420,7 @@ Le programme est cependant terminé et contient les fonctionnalités nécessaire
 Mes remerciements à
 - M. Mathieu majoritairement pour son aide sur l'optimisation de la simulation ainsi que pour les conseils concernant les threads et autres fonctionnalités.
 - Florian Lorentz et Quentin Fasler pour leurs avis et conseils sur le poster.
+- Kevin Moreno qui m'a donné l'idée de réaliser ce projet.
 
 
 # 19. `Table des figures`
