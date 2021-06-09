@@ -5,26 +5,17 @@
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste tel qu'une ville.
  */
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace CovidPropagation
 {
     /// <summary>
     /// Classe utilisée dans le transfère de données de la transmission du virus.
     /// </summary>
-    public class TransmissionData
+    public struct TransmissionData
     {
-        double probabilityOfOneInfection;
-        double probabilityOfInfection;
-        double nbOfInfectivePersons;
-        double virusAraisingCases;
-
-        public double ProbabilityOfOneInfection { get => probabilityOfOneInfection; set => probabilityOfOneInfection = value; }
-        public double ProbabilityOfInfection { get => probabilityOfInfection; set => probabilityOfInfection = value; }
-        public double NOfInfectiousPersons { get => nbOfInfectivePersons; set => nbOfInfectivePersons = value; }
-        public double VirusAraisingCases { get => virusAraisingCases; set => virusAraisingCases = value; }
+        public double ProbabilityOfOneInfection { get; set; }
+        public double ProbabilityOfInfection { get; set; }
+        public double NOfInfectiousPersons { get; set; }
+        public double VirusAraisingCases { get; set; }
 
         public TransmissionData(
                 double probabilityOfOneInfection,
@@ -38,6 +29,5 @@ namespace CovidPropagation
             NOfInfectiousPersons = nbOfInfectivePersons;
             VirusAraisingCases = virusAraisingCases;
         }
-
     }
 }

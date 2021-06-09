@@ -189,6 +189,14 @@ namespace CovidPropagation
             }));
         }
 
+        private static void SetMaxAxisValue(Axis axis, double axisMaxValue)
+        {
+            if (axisMaxValue <= 5)
+                axis.MaxValue = 5;
+            else
+                axis.MaxValue = double.NaN;
+        }
+
         /// <summary>
         /// Affiche les données des graphiques dans le format des différents graphiques.
         /// Affiche les données suivant l'interval de temps donné.
@@ -214,7 +222,7 @@ namespace CovidPropagation
                 {
                     case UIType.Linear:
                         axisX.MaxValue = maxValue;
-                        axisY.MaxValue = double.NaN;
+
                         // Récupère l'interval
                         switch ((ChartsDisplayInterval)datas.DisplayInterval)
                         {
@@ -233,6 +241,7 @@ namespace CovidPropagation
                                 break;
                         }
 
+                        double axisYMaxValue = 0;
                         // ID Documentation : Curve_Chart
                         foreach (LineSeries serie in chart.Series)
                         {
@@ -261,8 +270,14 @@ namespace CovidPropagation
                                     lineSerieDatas.RemoveRange(0, lineSerieDatas.GetLastIndex() - interval);
                                 }
                             }
+                            double serieMaxValue = lineSerieDatas.Max();
+                            if (serieMaxValue > axisYMaxValue)
+                            {
+                                axisYMaxValue = serieMaxValue;
+                            }
                             serie.Values = lineSerieDatas.AsGearedValues().WithQuality(Quality.Low);
                         }
+                        SetMaxAxisValue(axisY, axisYMaxValue);
 
                         // ID Documentation : Curve_Chart_AxeX
                         if (maxValue - interval > 0 && interval != 0)
@@ -285,12 +300,12 @@ namespace CovidPropagation
                         chart.Tag = datas;
                         break;
                     case UIType.Vertical:
-                        axisY.MaxValue = double.NaN;
-                        DisplayColumnRowChart(chart, e, axisX, isDisplayChange);
+                        //SetMaxAxisValue(axisY);
+                        DisplayColumnRowChart(chart, e, axisX, axisY, isDisplayChange);
                         break;
                     case UIType.Horizontal:
-                        axisX.MaxValue = double.NaN;
-                        DisplayColumnRowChart(chart, e, axisY, isDisplayChange);
+                        //SetMaxAxisValue(axisX);
+                        DisplayColumnRowChart(chart, e, axisY, axisX, isDisplayChange);
                         break;
                     case UIType.HeatMap:
                         HeatSeries serieHeatMap = (HeatSeries)chart.Series[0];
@@ -358,7 +373,7 @@ namespace CovidPropagation
             }));
         }
 
-        private static void DisplayColumnRowChart(CartesianChart chart, SimulationDatas e, Axis axis, bool isDisplayChange)
+        private static void DisplayColumnRowChart(CartesianChart chart, SimulationDatas e, Axis axis, Axis axisValueSize, bool isDisplayChange)
         {
             int interval;
             ChartValues<double> cv;
@@ -396,6 +411,18 @@ namespace CovidPropagation
                     interval = 1;
                     break;
             }
+
+            double axisMaxValue = 0;
+            foreach (Series serie in chart.Series)
+            {
+                double serieMaxValue = e.GetDataFromEnum((ChartsDisplayData)serie.Tag).Max();
+                if (serieMaxValue > axisMaxValue)
+                {
+                    axisMaxValue = serieMaxValue;
+                }
+            }
+
+            SetMaxAxisValue(axisValueSize, axisMaxValue);
 
             if (maxValue - interval > 0 && interval != 0)
             {

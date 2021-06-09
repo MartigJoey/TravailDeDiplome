@@ -122,21 +122,30 @@
   - [14.1. Structure](#141-structure)
     - [14.1.1. Interactions entre les objets](#1411-interactions-entre-les-objets)
   - [14.2. Fonctionnement](#142-fonctionnement)
-    - [Transfère de données](#transfère-de-données)
-    - [Fonctionnement](#fonctionnement)
+    - [14.2.1. Transfère de données](#1421-transfère-de-données)
+    - [14.2.2. Fonctionnement](#1422-fonctionnement)
 - [15. `UI`](#15-ui)
   - [15.1. Structure](#151-structure)
   - [15.2. Thème](#152-thème)
   - [15.3. Pages](#153-pages)
     - [15.3.1. Simulation](#1531-simulation)
     - [15.3.2. Paramètres graphiques](#1532-paramètres-graphiques)
-  - [15.3.3 Graphiques](#1533-graphiques)
-    - [15.3.4. Paramètres simulation](#1534-paramètres-simulation)
+  - [15.4. 15.3.3 Graphiques](#154-1533-graphiques)
+    - [15.4.1. Paramètres simulation](#1541-paramètres-simulation)
 - [16. `Planning`](#16-planning)
   - [16.1. Prévisionnel](#161-prévisionnel)
+    - [16.1.1. Sprint 1](#1611-sprint-1)
+    - [16.1.2. Sprint 2](#1612-sprint-2)
+    - [16.1.3. Sprint 3](#1613-sprint-3)
+    - [16.1.4. Sprint 4](#1614-sprint-4)
   - [16.2. Effectif](#162-effectif)
+    - [16.2.1. Sprint 1](#1621-sprint-1)
+    - [16.2.2. Sprint 2](#1622-sprint-2)
+    - [16.2.3. Sprint 3](#1623-sprint-3)
+    - [16.2.4. Sprint 4](#1624-sprint-4)
 - [17. `Bilan personnel`](#17-bilan-personnel)
 - [18. `Conclusion`](#18-conclusion)
+  - [18.1. Remerciements](#181-remerciements)
 - [19. `Table des figures`](#19-table-des-figures)
 - [20. `Bibliographie`](#20-bibliographie)
 - [21. `Annexes`](#21-annexes)
@@ -816,7 +825,7 @@ Les graphiques aussi consommaient énormément de ressources. Dû à la grande q
 ## 11.6. GUI et Untiy
 Malgré avoir réalisé un POC concernant unity, de gros problèmes ont été rencontrés durant sa création. Ces problèmes m'ont empêché de pouvoir terminer le GUI du programme qui ne fonctionne malheureusement par pour des simulations dont le nombre d'individus dépasse ~2'500.
 
-Le transfère de données
+La taille du format de donné m'a causé de gros problèmes en termes de transfert de données. De base, la taille était gérée par deux bytes limitant la taille à 65535 caractères. J'ai pris un certain temps avant de me rendre compte que la création de simulation au delà d'un certains nombre faisait planter le GUI. Une fois trouvé, j'y ai ajouté des autres byte permettant d'arriver à la limite thérique que j'avais trouvé dans le POC.
 
 # 12. `Architecture`
 ## 12.1. Arborescence
@@ -1147,7 +1156,7 @@ On peut donc observer une nettre différence entre les deux tests. Les performan
 Avant même d'afficher quoi que ce soit, des informations concernant la population ainsi que les lieux doivent être fournient. Une fois ces informations ressus depuis la simulation, les lieux sont générés, mis à la bonne échelle puis positionnés. La population ainsi que les lieux possèdent des ids qui permettent de garder une trace et une certaine connection entre la simulation et le GUI. Ces ids permettent aussi aux individus de savoir quel est leur prochaine destination en recevant l'id de lieux. Les types, status, et tailles sont purements visuelles.
 
 ## 14.2. Fonctionnement
-### Transfère de données
+### 14.2.1. Transfère de données
 Pour créer l'interface, un premier envoie de donnés doit être reçu. Ces premières données, contiennent les nombre d'individus, les ids des individus infectés dès le départ, la quantité de chaque type de lieux ainsi que leur id.
 
 Une fois que tout est en place, d'autres données peuvent arriver. Ces données comprennent uniquement des informations concernant la population. Dont, une mise à jour du statut de chaque individu permettant de changer la couleur de ceux-ci en temps réel et un id du prochain lieu dans lequel les individus doivent se déplacer.
@@ -1158,9 +1167,7 @@ Une fois transmis, un procédés similaire est effectué. Les paramètres sont e
 
 Un autre point très important du transfère de données est la taille de la suite de données. Cette taille se situe au début du "paquet" et permet au GUI de savoir lorsqu'il a reçu l'entièreté du paquet. La taille est calculée depuis la taille de la string a envoyer convertie en byte. Elle est ensuite découpée en différent byte pour permettre son transport. Sans la découper, il serait possible de recevoir correctement des paquet de seulement 255 caractères. En ajoutant les autres byte correspondant à la taille du paquet, il est possible de transmettre un paquet allant jusqu'à 2'147'483'647 qui correspond à la valeur maximal d'un int`(Write_String)`.
 
-<h1>Parle du format de données (Taille)</h1>
-
-### Fonctionnement
+### 14.2.2. Fonctionnement
 Le fonctionnement du GUI est moins complexe que la simulation, partiellement pour s'assurer que les performances ne soient pas trop impactées. 
 
 Les bâtiments reçu sont convertit en objet unity puis leur taille est changé pour que 1000 maisons entre sur une ligne par exemple.
@@ -1235,7 +1242,7 @@ Cette pâge offre la possibilité de parametrer le graphique et offre un aperçu
 ![Fenêtre paramètres graphiques](Medias/Rapport/Graphiques.png)
 <center><p style="font-size: 11px">Figure ##: Graphiques disponibles</p></center>
 
-## 15.3.3 Graphiques
+## 15.4. 15.3.3 Graphiques
 Les graphiques généré utilisent LiveCharts
 
 Tous les graphiques disponibles peuvent afficher plusieurs informations à la fois à l'exception du graphique HeatMap qui lui ne se concentre que sur une unique donnée. Les graphiques à courbe, colonne et en ligne peuvent afficher certaines période de temps décidée par l'utilisateur. Il est par exemple possible de revenir plusieur jour en arrière et d'y visualiser les données, il est aussi possible de change le format d'affichage pour afficher les semaines à la place des jours, les mois ou même le total. Une option permet aussi de suivre les données, permettant de visualiser le jour actuel ainsi que les denières données ajoutées.
@@ -1248,7 +1255,7 @@ Pour afficher la période décidée par l'utilisateur, le graphique va récupér
 
 Les graphiques à colonnes et en lignes fonctionnent différements car ils n'afficheent pas des points mais des ligne/colonnes. Si trop de ces éléments sont affichés sur une zone restrainte, livecharts n'arrive plus à les faire apparaître correctement. De ce fait, des moyennes entre plusieurs périodes / jours / semaines sont effectués pour garder un affichage fonctionnel tout en utilisant à meilleur essiant ce type de graphique `(ColumnRow_Chart)`. 
 
-### 15.3.4. Paramètres simulation
+### 15.4.1. Paramètres simulation
 
 <div style="text-align:center"><img src="Medias/Rapport/ParametresSimulationIcone.png" /></div>
 <center><p style="font-size: 11px">Figure ##: Icone de paramètres de la simulation</p></center>
@@ -1276,26 +1283,102 @@ Les paramètres du virus ne sont pas tous accessibles, mais les principaux et le
 ## 16.1. Prévisionnel
 Dans le cadre de ce projet, je vais commencer par réfléchir à la structure générale de celui-ci et de ces interactions entre les différentes sections (Simulation - Graphique - etc.) ainsi que toujours trouver le meilleur moyen d'optimiser le code et la structure pour permettre la simulation d'un plus grand nombre d'individus.
 
+### 16.1.1. Sprint 1
 Les timers de Visual studio étant très aléatoire dès lors que le programme nécessite une trop grande charge de travail, je vais essayer de trouver une alternative ou de corriger ce problème en modifiant le timer.
 Une fois la structure réfléchis et le problème de timer règle, je vais commencer par créer l'interface de l'application où viendront s'ajouter tous les autres composants.
 Je vais ensuite commencer à créer la population et vérifier que tout fonctionne correctement. Pour la population, j'aurais tout de même besoin d'une esquisse des bâtiments.
+![Planning prévisionnel Sprint 1](Medias/Rapport/PlanningPrevisionnelSprint1.png)
+<center><p style="font-size: 11px">Figure ##: Planning prévisionnel sprint 1</p></center>
 
+### 16.1.2. Sprint 2
 Après la population, et pour le second sprint, je pourrais commencer à générer la propagation ainsi que les bâtiments et leurs différents paramètres pour compléter la simulation.
+
+![Planning prévisionnel Sprint 2](Medias/Rapport/PlanningPrevisionnelSprint2.png)
+<center><p style="font-size: 11px">Figure ##: Planning prévisionnel sprint 2</p></center>
+
+### 16.1.3. Sprint 3
 
 Pour le troisième sprint, je vais m'attaquer à la partie graphique en commençant par les graphiques et la librairie Live Charts. Et je finirais par adapter l'interface graphique déjà existante au projet en y apportant des modifications majeures.
 
+![Planning prévisionnel Sprint 3](Medias/Rapport/PlanningPrevisionnelSprint3.png)
+<center><p style="font-size: 11px">Figure ##: Planning prévisionnel sprint 3</p></center>
+
+### 16.1.4. Sprint 4
 Le dernier sprint est consacré entièrement aux finitions du projet ainsi qu'à l'optimisation et si le temps est suffisant, aux améliorations prévues dans le cahier des charges. Les deux derniers jours étant consacrés entièrement à la documentation.
 
-![Planning prévisionnel Sprint 1](Medias/Rapport/PlanningPrevisionnelSprint1.png)
-![Planning prévisionnel Sprint 2](Medias/Rapport/PlanningPrevisionnelSprint2.png)
-![Planning prévisionnel Sprint 3](Medias/Rapport/PlanningPrevisionnelSprint3.png)
 ![Planning prévisionnel Sprint 4](Medias/Rapport/PlanningPrevisionnelSprint4.png)
+<center><p style="font-size: 11px">Figure ##: Planning prévisionnel sprint 4</p></center>
 
 ## 16.2. Effectif
+Comme dans la plupart des projets, ou même la majorité, le planning prévisionnel n'a pas été respecté à la lettre et de nombreuses modifications y ont été apportées. Ces modifications sont dû à la structure du code, à des tâches qui s'éternisent, des corrections de bug. Certains éléments demandaient d'avoir des versions basiques d'autres éléments pour fonctionner pendant que d'autres prenaient simplement plus de temps à être créer. Certaines tâches comme les cercles sociaux ont purement été supprimés dû à la structure des planning qui ne permet pas de les intégrer mais surtout au fait que ce ne sont pas des données paramètres qui impactent réellement les données.
+
+### 16.2.1. Sprint 1
+Dans le premier sprint, j'ai commencé par réfléchir plus en détail à la structure du code de la simulation et son fonctionnement. J'ai effectué des recherches sur le moyen d'optimiser la simulation ainsi que les graphiques et le GUI ainsi que des recherches sur la technologie du GUI que j'allais utiliser. <br>
+J'ai ensuite réalisé une version 1 de l'UI pour avoir une base me permettant de construire d'autres éléments par la suite. J'y ai intégré une forme basique de graphiques permettant de vérifier leur fonctionnement en WPF et ai ensuite commencé la réalisation de la simulation. <br>
+J'ai commencé par la création des planning dont j'avais déjà un squelette ainsi qu'une version 1 des bâtiments qui sont contenu dans le squelette. J'y ai ensuite ajouté les individus et la majorité de leur paramètres. Finalement, les états des individus étant nécessaires, je les ais ajouté en intégrant en parallèle la récupération de données stockées en XML.<br>
+En parallèle, je réalisais le journal de bord journalièrement et ai créé la documentation et sa structure.
+![Planning effectif Sprint 1](Medias/Rapport/PlanningEffectifSprint1.png)
+<center><p style="font-size: 11px">Figure ##: Planning effectif sprint 1</p></center>
+
+### 16.2.2. Sprint 2
+Lors du second sprint, j'ai ajouté la grille permettant l'affichage des graphiques et le GUI à l'UI. <br>
+J'ai ensuite grandement amélioré les plannings qui étaient fixes et qui ne permettaient pas de comprendre des véhicules ainsi que des trajets dynamiques. Les individus n'ayant pas encore de symptômes, je les ais ajoutés en triant les symptômes n'ayant pas de répercussions sur la propagation.<br>
+Le fichier excel a été transposé en code lors de ce sprint, me permettant de commencer à calculer la propagation du virus. La récupération des données en XML a aussi été modifiée pour permettre de récupérer les données du virus.<br>
+Les bâtiments ont été grandement améliorant comprenant maintenant la majorité des paramètres qui leur est nécessaire pour transmettre le virus et contenir des indivius.<br>
+Les dernières tâches comportes: la totalité des tâches des graphiques, la documentation, le journal de bord et le poster.<br>
+Une version 1 des graphique a été intégrée permettant de les placer au bons endroits dans la grille ainsi que d'avoir différents types.<br>
+La documentation a été mise à jour en fonction du travail effectué durant ce sprint, le journal de bord a été mis à jour de façon journalière et le poster a été commencé, modifié, terminé et rendu.
+![Planning effectif Sprint 2](Medias/Rapport/PlanningEffectifSprint2.png)
+<center><p style="font-size: 11px">Figure ##: Planning effectif sprint 2</p></center>
+
+### 16.2.3. Sprint 3
+Durant le troisème sprint, j'ai ajouté les certains paramètres personnalisables par l'utilisateur à l'UI.<br>
+La récupération des données XML a été revues et améliorée ainsi que le changement d'état qui en comprend plus permettant des résultats plus précis. 
+Les graphiques ont ensuites été améliorés offrant la possibilité de les personnalisers dans une nouvelle fenêtre. Ils ont aussi été optimisés pour éviter au maximum de ralentir le reste du programme. <br>
+Le journal de bord à encore été mis à jour de façon journalière et la documentation au début du sprint uniquement.<br>
+Les dernière tâches de ce sprint majoritairement basé sur l'UI est le GUI. Il a été commencé beaucoup plus tardivement que prévu originalement dû au graphiques qui ont demandés beaucoup de temps et d'optimisation. Le déplacement des individus a été ajouté ainsi que la communication entre WPF et Unity réalisé dans le POC.
+![Planning effectif Sprint 3](Medias/Rapport/PlanningEffectifSprint3.png)
+<center><p style="font-size: 11px">Figure ##: Planning effectif sprint 3</p></center>
+
+### 16.2.4. Sprint 4
+Dans le dernier sprint de ce travail qui était normalement basé sur la réfactorisation, l'amélioration et finitions de fonctionnalités existantes a majoritairement été utilisé pour terminer le GUI.<br>
+Le reste des paramètres ont été ajoutés et la simulation a été modifié pour inclure les mesures ainsi qu'optimiser la récupération des données.<br>
+Les résistances des individus ainsi que les maladies qui vont de paire ont été modifées pour ressembler au plus proche à la réalité.<br>
+Des bugs de changements d'états ainsi que de calculs de propagation ont été corrigés.<br>
+Les graphiques ont aussi reçus des corrections de bugs, des optimisation, de la réfactorisation ainsi que la finition du graphique heatmap.<br>
+Le GUI a pu être presque entièrement terminé, les déplacements ont été modifié pour coller avec les données de transmissions qui ont elles aussi été modifiées. Les bâtiments peuvent se positionner de manière dynamiques. Un zoom et dézoom ont été ajoutés ainsi qu'un déplacement de la caméra, permettant à l'utilisateur de mieux visualiser certains points.<br>
+Le journal de bord a été modifié au même rythme que durant tout les autres sprint et la documentation à été grandement améliorée et corrigée.
+![Planning effectif Sprint 4](Medias/Rapport/PlanningEffectifSprint4.png)
+<center><p style="font-size: 11px">Figure ##: Planning effectif sprint 4</p></center>
 
 # 17. `Bilan personnel`
+C'est en avancant dans le travail et majoritairement en avacant la partie graphique comprenant les graphiques ainsi que le GUI que je me suis réellement rendu compte de la charge de travail que ce projet demande. Le projet est terminé et comprend presque toutes les fonctionnalités prévues, à l'exception de certains paramètres ainsi que d'optimisation.
+
+Le GUI est terminé mais manque de fonctionnalités pour garantir sa stabilité. Il manque d'optimisation qui permettrait d'afficher plus d'individus sans ralentissement ou de fluidifier les animations. Sans compter le design qui mérite une refonte. <br>
+
+Les graphiques sont fonctionnelles et assez plus que correcte en terme d'optimisation mais manque de personnalisation. Je souhaitais donner la possiblité de modifier absoulement tous les paramètres des graphiques pour que l'utilisateur en soit totalement maitre.<br>
+
+Le code étant ce qui me dérange le plus, j'ai réussi à finir le programme, mais la qualité du code n'est pas suffisante d'après moi. J'ai réalisé beaucoup de fonctionnalités avec l'intention de les refactoriser dans le dernier sprint. Malheureusement, certaines tâches ayant débordées, je n'ai pu refactoriser qu'une infime partit du code.<br>
+En plus de cela, bien que j'ai eu de l'aide concernant l'asychrone et les threads, je pense que certaines pratiques que j'ai appliqué sont mauvaises malgré le fait qu'elles soient fonctionnelles. J'aurais vraiment aimé avoir le temps de pouvoir refactoriser et parfois même recommencer certaines fonctionnalités pour obtenir un résulat qui atteint mes standards comme j'avais pu le faire lors de mon TPI.<br>
+
+Malgré ces regrets, je ne peux m'empêcher d'être fier de voir tous les éléments fonctionner ensembles. Avant de débuter ce travail, je ne savais même pas qu'il était possible d'intégrer un autre programme comme unity dans une application C# et encore moins qu'il était possible de les faires communiquer.
+Dans le dernier sprint, je pensais même ne pas pouvoir réaliser le GUI du à des limitations physiques qui n'étaient au final que des erreurs dans le code, qui une fois reglés on permit le fonctionnement des deux programmes connectés.<br>
+Le fait d'avoir pu appliquer cette fonctionnalité dans mon travail me rend très gratifiant. De la même manière que de voir les graphiques afficher les données de la simulation qui au départ ne pouvait pas propager le virus est gratifiant.<br>
+
+J'ai pris beaucoup de plaisirs à réaliser le poster qui est toujours une tâche créative que j'aime mais qui parfois se passe mal. Je suis aussi satisfait du résultat du thèmes réalisé sur WPF permettant d'éviter une application ressemblant à du WindowsForm.
 
 # 18. `Conclusion`
+Lors de ce travail de 9 semaines, j'ai pu accomplir la presque totalités des fonctionnalités prévu.<br>
+
+J'ai appris beaucoup en terme d'informatique mais aussi et surtout énormément en terme de planification de projet. J'ai probablement vu trop grand et de ce fait, je n'ai pas pu atteindre un résultat qui me satisfasse entièrement. Ce projet m'a permis de me rendre compte d'à quel point il est important de planifier entièrement la strucutre d'un projet aussi grand pour qu'il fonctionne correctement. Chose que je n'ai pas suffisaement faite. De ce fait, la structure mériterait des améliorations et optimisations.
+
+Le programme est cependant terminé et contient les fonctionnalités nécessaire à son utilisation.
+
+## 18.1. Remerciements
+Mes remerciements à
+- M. Mathieu majoritairement pour son aide sur l'optimisation de la simulation ainsi que pour les conseils concernant les threads et autres fonctionnalités.
+- Florian Lorentz et Quentin Fasler pour leurs avis et conseils sur le poster.
+
 
 # 19. `Table des figures`
 - [Figure 1: Maquette page de simulation](#page-simulation)

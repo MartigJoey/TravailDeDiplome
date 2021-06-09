@@ -114,7 +114,6 @@ namespace CovidPropagation
 
             speedTest.Stop();
             Debug.WriteLine("Population " + speedTest.ElapsedMilliseconds + "  Count " + _population.Count);
-            //buildingSites.ForEach(b => b.SetMaskMeasure(true, true));
         }
 
         /// <summary>
@@ -129,7 +128,6 @@ namespace CovidPropagation
         {
             chartsDatas = new SimulationDatas();
             chartsDatas.Initialize();
-            chartsDatas.AddDatas(GetAllDatas(0,0,0,0,0));
             int[] personsNewSite = new int[_population.Count];
             int[] personsNewState = new int[_population.Count];
 
@@ -280,6 +278,15 @@ namespace CovidPropagation
         }
 
         /// <summary>
+        /// Trigger l'évènement qui réaffiche les graphiques.
+        /// </summary>
+        public void TriggerDisplayChanges()
+        {
+            OnDisplay?.Invoke(chartsDatas, true);
+        }
+
+        #region measures
+        /// <summary>
         /// Définit si la mesure du masque doit être appliquée.
         /// </summary>
         /// <param name="nbInfected">Le nombre d'infectés dans la simulation.</param>
@@ -371,15 +378,9 @@ namespace CovidPropagation
             return isOn;
         }
 
-        /// <summary>
-        /// Trigger l'évènement qui réaffiche les graphiques.
-        /// </summary>
-        public void TriggerDisplayChanges()
-        {
-            OnDisplay?.Invoke(chartsDatas, true);
-        }
+        #endregion
 
-        #region GetDatas
+        #region Datas
 
         /// <summary>
         /// Récupère les données lors d'un évènement qui est déclanché à chaque itération de la simulation.
@@ -389,8 +390,6 @@ namespace CovidPropagation
         {
             SimulationDatas datas = new SimulationDatas();
             datas.Initialize();
-            // MODIFIER LES REQUETES POUR DES VALEURS FIXES
-            double nbContamination = GetNumberOfContamination();
 
             datas.NumberOfPeople.Add(_population.Count);
             datas.NumberOfInfected.Add(nbOfInfectious + nbOfIncubating);
@@ -399,7 +398,7 @@ namespace CovidPropagation
             datas.NumberOfImmune.Add(nbOfImmune);
             datas.NumberOfHospitalisation.Add(GetNumberOfHospitalisation());
             datas.NumberOfDeath.Add(nbOfDead);
-            datas.NumberOfContamination.Add(nbContamination);
+            datas.NumberOfContamination.Add(GetNumberOfContamination());
             datas.NumberOfHealthy.Add(nbOfHealthy);
             datas.NumberOfReproduction.Add(GetNumberOfReproduction());
             return datas;
@@ -756,37 +755,6 @@ namespace CovidPropagation
             return workplace.IsHiring() ? (Site)workplace : FindWorkPlace();
         }
 
-        private int CreateFamilly()
-        {
-            KeyValuePair<object, double>[] famillyPresetsProbability = new KeyValuePair<object, double>[] {
-                new KeyValuePair<object, double>("OnePerson", 0.28d),
-                new KeyValuePair<object, double>("CoupleWithChild", 0.21d),
-                new KeyValuePair<object, double>("CoupleWithoutChild", 0.40d),
-                new KeyValuePair<object, double>("OneParentWithChild", 0.11d)
-            };
-
-            string famillyPreset = (string)GlobalVariables.rdm.NextProbability(famillyPresetsProbability);
-
-            // Switch présets
-            switch (famillyPreset)
-            {
-                default:
-                case "OnePerson":
-                    // Créer personne avec amis
-                    break;
-                case "CoupleWithChild":
-                    // Créer deux personnes en couples avec 1 enfant, amis liés
-                    break;
-                case "CoupleWithoutChild":
-                    // Créer deux personnes en couples sans enfants, amis liés
-                    break;
-                case "OneParentWithChild":
-                    // Créer 1 personne avec 1 enfant, amis
-                    break;
-            }
-            return 1;
-        }
-
         /// <summary>
         /// Récupère le moyen de transport qu'un individu adulte utilisera.
         /// </summary>
@@ -801,80 +769,5 @@ namespace CovidPropagation
             };
             return (Site)rdm.NextProbability(transportsProbability);
         }
-
-        /*
-        private int CreateRetired()
-        {
-            KeyValuePair<object, double>[] retiredPresetsProbability = new KeyValuePair<object, double>[] {
-                new KeyValuePair<object, double>("OnePerson", 0.35d),
-                new KeyValuePair<object, double>("Couple", 0.65d)
-            };
-            int nbCreated;
-            string retiredPreset = (string)GlobalVariables.rdm.NextProbability(retiredPresetsProbability);
-            Dictionary<Type, Site> locations = new Dictionary<Type, Site>();
-
-            // Switch présets
-            switch (retiredPreset)
-            {
-                default:
-                case "OnePerson":
-                    // Créer personne seule
-                    // Choisir dans la liste de lieux au moin 1 de chaque.
-                    List<KeyValuePair<Site, SitePersonStatus>> personSitesFree = new List<KeyValuePair<Site, SitePersonStatus>>() {
-                        new KeyValuePair<Site, SitePersonStatus>(new Home(), SitePersonStatus.Other),
-                        new KeyValuePair<Site, SitePersonStatus>(new Store(), SitePersonStatus.Client),
-                        new KeyValuePair<Site, SitePersonStatus>(new Restaurant(), SitePersonStatus.Client),
-                        new KeyValuePair<Site, SitePersonStatus>(new Car(), SitePersonStatus.Other)
-                    };
-                    Planning planning = new Planning(personSitesFree, 0);
-                    locations.Add(typeof(Home), new Home());
-
-                    if (GlobalVariables.rdm.NextBoolean())
-                        locations.Add(typeof(Car), new Car());
-                    else
-                        locations.Add(typeof(Car), new Outside());
-
-                    locations.Add(typeof(Outside), sites.Where(b => typeof(Outside) == b.GetType()).First());
-                    locations.Add(typeof(Company), sites.Where(b => typeof(Company) == b.GetType()).First());
-                    locations.Add(typeof(Hospital), sites.Where(b => typeof(Hospital) == b.GetType()).First());
-                    locations.Add(typeof(Restaurant), sites.Where(b => typeof(Restaurant) == b.GetType()).First());
-                    locations.Add(typeof(School), sites.Where(b => typeof(School) == b.GetType()).First());
-                    locations.Add(typeof(Store), sites.Where(b => typeof(Store) == b.GetType()).First());
-                    locations.Add(typeof(Supermarket), sites.Where(b => typeof(Supermarket) == b.GetType()).First());
-
-                    //population.Add(new Person(planning));
-                    nbCreated = 1;
-                    break;
-                case "Couple":
-                    // Créer deux personnes en couples
-                    //Planning planning1 = new Planning();
-                    //Planning planning2 = new Planning();
-                    //planning1.CreateElderPlanning(); // Link both
-                    //planning2.CreateElderPlanning();
-                    //
-                    //locations.Add(typeof(Home), new Home());
-                    //
-                    //if (GlobalVariables.rdm.NextBoolean())
-                    //    locations.Add(typeof(Car), new Car());
-                    //else
-                    //    locations.Add(typeof(Car), new Outside());
-                    //
-                    //locations.Add(typeof(Outside), allBuildingSites.Where(b => typeof(Outside) == b.GetType()).First());
-                    //locations.Add(typeof(Company), allBuildingSites.Where(b => typeof(Company) == b.GetType()).First());
-                    //locations.Add(typeof(Hospital), allBuildingSites.Where(b => typeof(Hospital) == b.GetType()).First());
-                    //locations.Add(typeof(Restaurant), allBuildingSites.Where(b => typeof(Restaurant) == b.GetType()).First());
-                    //locations.Add(typeof(School), allBuildingSites.Where(b => typeof(School) == b.GetType()).First());
-                    //locations.Add(typeof(Store), allBuildingSites.Where(b => typeof(Store) == b.GetType()).First());
-                    //locations.Add(typeof(Supermarket), allBuildingSites.Where(b => typeof(Supermarket) == b.GetType()).First());
-                    //
-                    //population.Add(new Person(planning1, locations));
-                    //population.Add(new Person(planning2, locations));
-                    //nbCreated = 2;
-                    break;
-            }
-
-            return nbCreated = 1;
-        }
-        */
     }
 }

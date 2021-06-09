@@ -26,6 +26,7 @@ namespace CovidPropagation
         SiteType[] types;
         bool clientsMustWearMasks;
         bool workersMustWearMasks;
+        TransmissionData aerosolDatas;
 
         #region probability
         // Size
@@ -134,7 +135,6 @@ namespace CovidPropagation
                     AerosolTransmission aerosolTransmission = Virus.GetTransmission(typeof(AerosolTransmission)) as AerosolTransmission;
                     NbPersons = persons.Count;
                     NbInfectiousPersons = CountNumberInfectiousPersons();
-                    //Debug.WriteLine(NbInfectiousPersons);
                     FractionOfImmune = GetFractionOfImmune();
 
                     NbPersonsWithMask = CountPersonsWithMask(); 
@@ -154,7 +154,7 @@ namespace CovidPropagation
 
                     QuantaInhaledPerPerson = GetQuantaInhaledPerPerson(AvgQuantaConcentration, eventDuration, InhalationMaskEfficiency, FractionPersonsWithMask);
 
-                    TransmissionData aerosolDatas = aerosolTransmission.CalculateRisk(NbPersons, NbInfectiousPersons, FractionOfImmune,
+                    aerosolDatas = aerosolTransmission.CalculateRisk(NbPersons, NbInfectiousPersons, FractionOfImmune,
                                                                                       NbPersonsWithMask, InhalationMaskEfficiency, SumFirstOrderLossRate,
                                                                                       volume, QuantaExhalationRateOfInfected, ProbabilityOfBeingInfectious,
                                                                                       QuantaInhaledPerPerson);

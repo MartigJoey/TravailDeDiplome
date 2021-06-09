@@ -305,7 +305,6 @@ namespace CovidPropagation
                             ((CartesianChart)uiElement).Tag = chartData;
                             AddRowsToCartesianChart((CartesianChart)uiElement, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
                             SubscribeToChartEvents((CartesianChart)uiElement, chartData);
-                            ((CartesianChart)uiElement).AxisX[0].MaxValue = double.NaN;
                             break;
                         case (int)UIType.PieChart:
                             uiElement = CreatePieChart();
@@ -317,7 +316,6 @@ namespace CovidPropagation
                             ((CartesianChart)uiElement).Tag = chartData;
                             AddHeatMapToCartesianChart((CartesianChart)uiElement, Array.ConvertAll(chartData.Datas, d => (ChartsDisplayData)d));
                             SubscribeToChartEvents((CartesianChart)uiElement, chartData);
-                            ((CartesianChart)uiElement).AxisX[0].MaxValue = double.NaN;
                             break;
                         case (int)UIType.GUI:
                             uiElement = null;
@@ -338,7 +336,9 @@ namespace CovidPropagation
                             break;
                     }
 
-                    if (chartData.UIType != (int)UIType.PieChart && chartData.UIType != (int)UIType.GUI)
+                    if (chartData.UIType != (int)UIType.PieChart && 
+                        chartData.UIType != (int)UIType.HeatMap && 
+                        chartData.UIType != (int)UIType.GUI)
                     {
                         Grid chartGrid = new Grid();
                         ColumnDefinition firstColumn = new ColumnDefinition();
@@ -409,15 +409,9 @@ namespace CovidPropagation
                         Grid.SetColumnSpan(chartGrid, chartData.SpanX);
                         Grid.SetRowSpan(chartGrid, chartData.SpanY);
 
-                        if ((UIType)chartData.UIType == UIType.HeatMap)
-                        {
-                            cbxTimeIncrement.SelectedIndex = 1;
-                            cbxTimeIncrement.IsEnabled = false;
-                        }
-
                         grdContent.Children.Add(chartGrid);
                     }
-                    else if(chartData.UIType == (int)UIType.PieChart)
+                    else if(chartData.UIType == (int)UIType.PieChart || (UIType)chartData.UIType == UIType.HeatMap)
                     {
                         Grid.SetColumn((UIElement)uiElement, chartData.X);
                         Grid.SetRow((UIElement)uiElement, chartData.Y);

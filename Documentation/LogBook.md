@@ -1362,4 +1362,23 @@
 - Ajout du déplacement de la caméra
 - Ajout du zoom et dézoom
 - Bug de positionnement des bâtiments arrivant constamment sur WPF mais qu'une fois sur Unity
-- 
+
+# 09.06.2021 08h05 / 17h00
+- Ajout de regions pour simplifier la lecture du code des classes longues
+- Suppression de commentaires utilisés comme rappelles
+- Suppression des Debug.WriteLine dans le projet
+- Suppression du premier ajout de données qui insérait des données à 0 au démarrage.
+- Ajouts d'une valeur minimum pour les axes des graphiques
+- Correction d'un bug que les heatmap causait.
+  - Un trigger à l'initialisation Entrait dans le mauvaise case switch
+  - Suppression des boutons pour le heatmap
+- Modification de transmission data pour utiliser une structure à la place d'une classe.
+- Lecture des critères d'évaluations de la documentation
+  - Ajouter les tests
+- Documentation
+  - Planning effectif
+  - Problèmes rencontrés --> taille des paquets
+  - À Terminer
+    - Résultats
+    - Conclusion
+    - Bilan
