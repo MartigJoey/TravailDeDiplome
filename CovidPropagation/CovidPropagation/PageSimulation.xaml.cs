@@ -747,9 +747,12 @@ namespace CovidPropagation
                 ss.CloseLink();
             }
 
-            process.CloseMainWindow();
-            process.Kill();
-            process.Close();
+            if (process != null)
+            {
+                process.CloseMainWindow();
+                process.Kill();
+                process.Close();
+            }
         }
 
         /// <summary>
