@@ -1,6 +1,12 @@
-﻿using System;
+﻿/*
+ * Nom du projet : CovidPropagation
+ * Auteur        : Joey Martig
+ * Date          : 11.06.2021
+ * Version       : 1.0
+ * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
+ */
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -36,6 +42,49 @@ namespace CovidPropagation
 
         [DllImport("user32.dll")]
         static extern int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        private const double FONTSIZE = 15;
+        private const double FIRST_CASE_COLUMN_SIZE = 20;
+        private const double SECOND_CASE_COLUMN_SIZE = 20;
+        private const double THIRD_CASE_COLUMN_SIZE = 70;
+        private const double FOURTH_CASE_COLUMN_SIZE = 50;
+
+        private const double FIRSTROW_CASE_MIN_HEIGHT = 20;
+        private const double FIRSTROW_CASE_MAX_HEIGHT = 20;
+
+        private const string BTNLEFT_CASE_DISPLAY_CHARACTER = "<";
+        private const string BTNRIGHT_CASE_DISPLAY_CHARACTER = ">";
+        private const string BTNAUTO_CASE_DISPLAY_CHARACTER = "auto.";
+
+        private const int BTNLEFT_CASE_COLUMN_POSITION = 0;
+        private const int BTNLEFT_CASE_ROW_POSITION = 0;
+
+        private const int BTNRIGHT_CASE_COLUMN_POSITION = 1;
+        private const int BTNRIGHT_CASE_ROW_POSITION = 0;
+
+        private const int CBXTIMEINCREMENT_CASE_COLUMN_POSITION = 2;
+        private const int CBXTIMEINCREMENT_CASE_ROW_POSITION = 0;
+
+        private const int BTNAUTO_CASE_COLUMN_POSITION = 3;
+        private const int BTNAUTO_CASE_ROW_POSITION = 0;
+
+        private const int CHART_CASE_COLUMN_POSITION = 1;
+        private const int CHART_CASE_ROW_POSITION = 1;
+        private const int CHART_CASE_COLUMN_SPAN = 5;
+        private const int CHART_CASE_ROW_SPAN = 1;
+
+        private const double DEFAULT_AXIS_MAXVALUE = 10;
+
+        private const double HEATMAP_GREEN_DEFAULT_VALUE = 0;
+        private const double HEATMAP_GREEN_YELLOW_DEFAULT_VALUE = 0.25;
+        private const double HEATMAP_YELLOW_DEFAULT_VALUE = 0.5;
+        private const double HEATMAP_ORANGE_DEFAULT_VALUE = 0.75;
+        private const double HEATMAP_RED_DEFAULT_VALUE = 1;
+
+        private const string UNITY_INITIALIZE_STRING = "Initialize ";
+        private const string UNITY_ITERATE_STRING = "Iterate ";
+
+        private const string PIPELINE_NAME = "SimulationToUnity";
 
         WindowRawDatas rawDatasWindow;
         MainWindow mw;
@@ -253,7 +302,7 @@ namespace CovidPropagation
             btn.Style = this.FindResource("GraphButtonStyle") as Style;
             btn.Content = content;
             btn.Foreground = Brushes.White;
-            btn.FontSize = 15;
+            btn.FontSize = FONTSIZE;
             btn.VerticalAlignment = VerticalAlignment.Stretch;
             btn.HorizontalAlignment = HorizontalAlignment.Stretch;
             return btn;
@@ -350,14 +399,14 @@ namespace CovidPropagation
                         ColumnDefinition thourthColumn = new ColumnDefinition();
                         ColumnDefinition fifthColumn = new ColumnDefinition();
 
-                        firstColumn.MinWidth = 20;
-                        firstColumn.MaxWidth = 20;
-                        secondColumn.MinWidth = 20;
-                        secondColumn.MaxWidth = 20;
-                        thirdColumn.MinWidth = 70;
-                        thirdColumn.MaxWidth = 70;
-                        thourthColumn.MinWidth = 50;
-                        thourthColumn.MaxWidth = 50;
+                        firstColumn.MinWidth = FIRST_CASE_COLUMN_SIZE;
+                        firstColumn.MaxWidth = FIRST_CASE_COLUMN_SIZE;
+                        secondColumn.MinWidth = SECOND_CASE_COLUMN_SIZE;
+                        secondColumn.MaxWidth = SECOND_CASE_COLUMN_SIZE;
+                        thirdColumn.MinWidth = THIRD_CASE_COLUMN_SIZE;
+                        thirdColumn.MaxWidth = THIRD_CASE_COLUMN_SIZE;
+                        thourthColumn.MinWidth = FOURTH_CASE_COLUMN_SIZE;
+                        thourthColumn.MaxWidth = FOURTH_CASE_COLUMN_SIZE;
 
                         chartGrid.ColumnDefinitions.Add(firstColumn);
                         chartGrid.ColumnDefinitions.Add(secondColumn);
@@ -368,38 +417,38 @@ namespace CovidPropagation
                         RowDefinition firstRow = new RowDefinition();
                         RowDefinition chartRow = new RowDefinition();
 
-                        firstRow.MinHeight = 20;
-                        firstRow.MaxHeight = 20;
+                        firstRow.MinHeight = FIRSTROW_CASE_MIN_HEIGHT;
+                        firstRow.MaxHeight = FIRSTROW_CASE_MAX_HEIGHT;
 
                         chartGrid.RowDefinitions.Add(firstRow);
                         chartGrid.RowDefinitions.Add(chartRow);
 
-                        Button btnLeft = CreateChartButton("<");
-                        Button btnRight = CreateChartButton(">");
+                        Button btnLeft = CreateChartButton(BTNLEFT_CASE_DISPLAY_CHARACTER);
+                        Button btnRight = CreateChartButton(BTNRIGHT_CASE_DISPLAY_CHARACTER);
                         ComboBox cbxTimeIncrement = CreateChartCombobox();
-                        Button btnAuto = CreateChartButton("auto.");
+                        Button btnAuto = CreateChartButton(BTNAUTO_CASE_DISPLAY_CHARACTER);
 
                         btnLeft.Click += MoveChartDataBackward_Click;
                         btnRight.Click += MoveChartDataForward_Click;
                         cbxTimeIncrement.SelectionChanged += TimeInterval_SelectionChanged;
                         btnAuto.Click += MoveChartAuto_Click;
 
-                        Grid.SetColumn(btnLeft, 0);
-                        Grid.SetRow(btnLeft, 0);
+                        Grid.SetColumn(btnLeft, BTNLEFT_CASE_COLUMN_POSITION);
+                        Grid.SetRow(btnLeft, BTNLEFT_CASE_ROW_POSITION);
 
-                        Grid.SetColumn(btnRight, 1);
-                        Grid.SetRow(btnRight, 0);
+                        Grid.SetColumn(btnRight, BTNRIGHT_CASE_COLUMN_POSITION);
+                        Grid.SetRow(btnRight, BTNRIGHT_CASE_ROW_POSITION);
 
-                        Grid.SetColumn(cbxTimeIncrement, 2);
-                        Grid.SetRow(cbxTimeIncrement, 0);
+                        Grid.SetColumn(cbxTimeIncrement, CBXTIMEINCREMENT_CASE_COLUMN_POSITION);
+                        Grid.SetRow(cbxTimeIncrement, CBXTIMEINCREMENT_CASE_ROW_POSITION);
 
-                        Grid.SetColumn(btnAuto, 3);
-                        Grid.SetRow(btnAuto, 0);
+                        Grid.SetColumn(btnAuto, BTNAUTO_CASE_COLUMN_POSITION);
+                        Grid.SetRow(btnAuto, BTNAUTO_CASE_ROW_POSITION);
 
-                        Grid.SetColumn((UIElement)uiElement, 1);
-                        Grid.SetRow((UIElement)uiElement, 1);
-                        Grid.SetColumnSpan((UIElement)uiElement, 5);
-                        Grid.SetRowSpan((UIElement)uiElement, 1);
+                        Grid.SetColumn((UIElement)uiElement, CHART_CASE_COLUMN_POSITION);
+                        Grid.SetRow((UIElement)uiElement, CHART_CASE_ROW_POSITION);
+                        Grid.SetColumnSpan((UIElement)uiElement, CHART_CASE_COLUMN_SPAN);
+                        Grid.SetRowSpan((UIElement)uiElement, CHART_CASE_ROW_SPAN);
 
                         chartGrid.Children.Add(btnLeft);
                         chartGrid.Children.Add(btnRight);
@@ -497,7 +546,7 @@ namespace CovidPropagation
         {
             Axis axis = new Axis();
             axis.Title = GetEnumDescription(axeDatas);
-            axis.MaxValue = 10;
+            axis.MaxValue = DEFAULT_AXIS_MAXVALUE;
 
             return axis;
         }
@@ -600,11 +649,11 @@ namespace CovidPropagation
             heatSeries.DataLabels = false;
             heatSeries.GradientStopCollection = new GradientStopCollection()
             {
-                new GradientStop(Colors.Green, 0),
-                new GradientStop(Colors.GreenYellow, 0.25),
-                new GradientStop(Colors.Yellow, 0.5),
-                new GradientStop(Colors.Orange, 0.75),
-                new GradientStop(Colors.Red, 1)
+                new GradientStop(Colors.Green, HEATMAP_GREEN_DEFAULT_VALUE),
+                new GradientStop(Colors.GreenYellow, HEATMAP_GREEN_YELLOW_DEFAULT_VALUE),
+                new GradientStop(Colors.Yellow, HEATMAP_YELLOW_DEFAULT_VALUE),
+                new GradientStop(Colors.Orange, HEATMAP_ORANGE_DEFAULT_VALUE),
+                new GradientStop(Colors.Red, HEATMAP_RED_DEFAULT_VALUE)
             };
             chart.Series.Add(heatSeries);
         }
@@ -680,7 +729,7 @@ namespace CovidPropagation
         private void ServerThread(object data)
         {
             int numThreads = 1;
-            pipeServer = new NamedPipeServerStream("SimulationToUnity", PipeDirection.Out, numThreads);
+            pipeServer = new NamedPipeServerStream(PIPELINE_NAME, PipeDirection.Out, numThreads);
 
             pipeServer.WaitForConnection();
 
@@ -728,7 +777,7 @@ namespace CovidPropagation
         {
             if (ss != null)
             {
-                string objectToSend = "Initialize ";
+                string objectToSend = UNITY_INITIALIZE_STRING;
                 objectToSend += JsonSerializer.Serialize(populationDatas);
                 objectToSend += " " + JsonSerializer.Serialize(siteDatas);
                 ss.WriteString(objectToSend);
@@ -743,7 +792,7 @@ namespace CovidPropagation
             if (ss != null)
             {
                 DataIteration jsonIteration = new DataIteration(personsNewSite, personsNewState);
-                string objectToSend = "Iterate ";
+                string objectToSend = UNITY_ITERATE_STRING;
                 objectToSend += JsonSerializer.Serialize(jsonIteration);
                 ss.WriteString(objectToSend);
             }

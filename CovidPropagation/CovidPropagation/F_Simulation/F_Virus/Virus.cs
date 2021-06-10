@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Linq;
-using System.Diagnostics;
 
 namespace CovidPropagation
 {
@@ -19,6 +18,15 @@ namespace CovidPropagation
     /// </summary>
     public static class Virus
     {
+        private const string XML_LOCATION = "./CovidData.xml";
+        private const string TRANSMISSION_XML_NAME = "Transmissions";
+        private const string SYMPTOMS_XML_NAME = "Symptoms";
+        private const string AEROSOL_XML_NAME = "Aerosol";
+        private const string COUGH_XML_NAME = "Cough";
+
+        private const int MIN_QUANTA = 100;
+        private const int MAX_QUANTA = 200;
+
         private static List<Symptom> commonSymptoms;
         private static List<Symptom> rareSymptoms;
         private static List<Transmission> transmissions;
@@ -53,10 +61,10 @@ namespace CovidPropagation
         public static void Init()
         {
             XmlDocument xmlDatas = new XmlDocument();
-            xmlDatas.Load("./CovidData.xml");
+            xmlDatas.Load(XML_LOCATION);
 
-            XmlNodeList transmissionsNode = xmlDatas.GetElementsByTagName("Transmissions");
-            XmlNodeList symptomsNode = xmlDatas.GetElementsByTagName("Symptoms");
+            XmlNodeList transmissionsNode = xmlDatas.GetElementsByTagName(TRANSMISSION_XML_NAME);
+            XmlNodeList symptomsNode = xmlDatas.GetElementsByTagName(SYMPTOMS_XML_NAME);
 
             transmissions = new List<Transmission>();
             commonSymptoms = new List<Symptom>();
@@ -77,7 +85,7 @@ namespace CovidPropagation
             {
                 for (int j = 0; j < transmissionsNode[i].ChildNodes.Count; j++)
                 {
-                    if (transmissionsNode[i].ChildNodes[j].Name == "Aerosol" && VirusParameters.IsAerosolTransmissionActive)
+                    if (transmissionsNode[i].ChildNodes[j].Name == AEROSOL_XML_NAME && VirusParameters.IsAerosolTransmissionActive)
                     {
                         transmissions.Add(new AerosolTransmission());
                     }
@@ -89,10 +97,10 @@ namespace CovidPropagation
             {
                 for (int j = 0; j < symptomsNode[i].ChildNodes.Count; j++)
                 {
-                    if (symptomsNode[i].ChildNodes[j].Name == "Cough" && VirusParameters.IsCoughSymptomActive)
+                    if (symptomsNode[i].ChildNodes[j].Name == COUGH_XML_NAME && VirusParameters.IsCoughSymptomActive)
                     {
-                        int minQanta = 100;
-                        int maxQanta = 200;
+                        int minQanta = MIN_QUANTA;
+                        int maxQanta = MAX_QUANTA;
 
                         if (symptomsNode[i].ChildNodes[j].ChildNodes.Count >= 1 && VirusParameters.CoughMinQuanta < 0)
                             minQanta = Convert.ToInt32(symptomsNode[i].ChildNodes[j].ChildNodes[0].InnerText);

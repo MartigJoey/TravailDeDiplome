@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
  * Date          : 11.06.2021
@@ -17,6 +18,37 @@ namespace CovidPropagation
     /// </summary>
     public class Day
     {
+        private const int FREEDAY_MORNING_TIME_FRAME_MAX = 22;
+        private const int FREEDAY_MORNING_MIN = 12;
+
+        private const int FREEDAY_NOON_TIME_FRAME_MAX = 4;
+        private const int FREEDAY_NOON_MIN = 3;
+
+        private const int FREEDAY_AFTER_NOON_TIME_FRAME_MAX = 10;
+        private const int FREEDAY_AFTER_NOON_MIN = 5;
+
+        private const int FREEDAY_EVENING_TIME_FRAME_MAX = 8;
+        private const int FREEDAY_EVENING_MIN = 3;
+
+        private const int FREEDAY_MIN_TIME_FRAME_VALUE = 3;
+
+        private const int WORKDAY_MORNING_TIME_FRAME_MAX = 16;
+        private const int WORKDAY_MORNING_MIN = 4;
+        private const int WORKDAY_MORNING_TIME_FRAME_TOTAL = 22;
+
+        private const int WORKDAY_NOON_TIME_FRAME_MAX = 4;
+        private const int WORKDAY_NOON_MIN = 3;
+
+        private const int WORKDAY_AFTER_NOON_TIME_FRAME_MAX = 10;
+        private const int WORKDAY_AFTER_NOON_MIN = 4;
+        private const int WORKDAY_AFTER_NOON_TIME_FRAME_TOTAL = 10;
+
+        private const int WORKDAY_EVENING_TIME_FRAME_MAX = 8;
+        private const int WORKDAY_EVENING_MIN = 3;
+
+        private const int WORKDAY_MIN_TIME_FRAME_VALUE = 3;
+
+
         private TimeFrame[] _timeFrames;
         public TimeFrame[] TimeFrames { get => _timeFrames; }
 
@@ -71,12 +103,12 @@ namespace CovidPropagation
             Random rdm = GlobalVariables.rdm;
             List<TimeFrame> timeFrames;
 
-            int morningTimeFrameMax = 16, morningVariation = 4;
-            int morningTimeFrameTotal = 22;
-            int noonTimeFrameMax = 4, noonMin = 3;
-            int afterNoonTimeFrameMax = 10, afterNoonVariation = 4;
-            int afterNoonTimeFrameTotal = 10;
-            int eveningTimeFrameMax = 8, eveningMin = 3;
+            int morningTimeFrameMax = WORKDAY_MORNING_TIME_FRAME_MAX, morningVariation = WORKDAY_MORNING_MIN;
+            int morningTimeFrameTotal = WORKDAY_MORNING_TIME_FRAME_TOTAL;
+            int noonTimeFrameMax = WORKDAY_NOON_TIME_FRAME_MAX, noonMin = WORKDAY_NOON_MIN;
+            int afterNoonTimeFrameMax = WORKDAY_AFTER_NOON_TIME_FRAME_MAX, afterNoonVariation = WORKDAY_AFTER_NOON_MIN;
+            int afterNoonTimeFrameTotal = WORKDAY_AFTER_NOON_TIME_FRAME_TOTAL;
+            int eveningTimeFrameMax = WORKDAY_EVENING_TIME_FRAME_MAX, eveningMin = WORKDAY_EVENING_MIN;
             int nightTimeFrame; // remplit ce qu'il manque
 
             int morningWorkTimeFrame = 0;
@@ -86,7 +118,7 @@ namespace CovidPropagation
             int morningTimeFrame = morningTimeFrameMax - rdm.NextWithMinimum(0, morningVariation, 0);
             int noonTimeFrame = rdm.Next(noonMin, noonTimeFrameMax + 1);
             int afterNoonWorkTimeFrame = afterNoonTimeFrameMax - rdm.NextWithMinimum(0, afterNoonVariation, 0);
-            int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, 3);
+            int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, WORKDAY_MIN_TIME_FRAME_VALUE);
 
             #region Activities
 
@@ -175,20 +207,20 @@ namespace CovidPropagation
             Random rdm = GlobalVariables.rdm;
             List<TimeFrame> timeFrames;
 
-            int morningTimeFrameMax = 22, morningMin = 12;
-            int noonTimeFrameMax = 4, noonMin = 3;
-            int afterNoonTimeFrameMax = 10, afterNoonMin = 5;
-            int eveningTimeFrameMax = 8, eveningMin = 3;
+            int morningTimeFrameMax = FREEDAY_MORNING_TIME_FRAME_MAX, morningMin = FREEDAY_MORNING_MIN;
+            int noonTimeFrameMax = FREEDAY_NOON_TIME_FRAME_MAX, noonMin = FREEDAY_NOON_MIN;
+            int afterNoonTimeFrameMax = FREEDAY_AFTER_NOON_TIME_FRAME_MAX, afterNoonMin = FREEDAY_AFTER_NOON_MIN;
+            int eveningTimeFrameMax = FREEDAY_EVENING_TIME_FRAME_MAX, eveningMin = FREEDAY_EVENING_MIN;
             int nightTimeFrame; // remplit ce qu'il manque
 
             int morningActivityTimeFrame = 0;
             int afterNoonActivityTimeFrame = 0;
             int eveningActivityTimeFrame = 0;
 
-            int morningTimeFrame = rdm.NextWithMinimum(morningMin, morningTimeFrameMax, 3);
+            int morningTimeFrame = rdm.NextWithMinimum(morningMin, morningTimeFrameMax, FREEDAY_MIN_TIME_FRAME_VALUE);
             int noonTimeFrame = rdm.Next(noonMin, noonTimeFrameMax + 1);
-            int afterNoonTimeFrame = rdm.NextWithMinimum(afterNoonMin, afterNoonTimeFrameMax, 3);
-            int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, 3);
+            int afterNoonTimeFrame = rdm.NextWithMinimum(afterNoonMin, afterNoonTimeFrameMax, FREEDAY_MIN_TIME_FRAME_VALUE);
+            int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, FREEDAY_MIN_TIME_FRAME_VALUE);
 
             // Activities
             #region Activities

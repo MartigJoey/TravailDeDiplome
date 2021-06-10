@@ -6,9 +6,6 @@
  * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
  */
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,6 +25,9 @@ namespace CovidPropagation
             SetParametersData();
         }
 
+        /// <summary>
+        /// Prend les valeurs des paramètres et active/désactive les champs nécessaires.
+        /// </summary>
         private void SetUIParameters()
         {
             // Ajoute un évènement qui est trigger lorsque ctrl + v est pressé dans le textbox
@@ -98,6 +98,9 @@ namespace CovidPropagation
             tbxVaccinationNbPeopleToStop.IsEnabled = SimulationGeneralParameters.IsVaccinationMeasuresEnabled;
         }
 
+        /// <summary>
+        /// Prend les valeurs des paramètres et les affiches.
+        /// </summary>
         private void SetParametersData()
         {
             // Général
@@ -132,7 +135,7 @@ namespace CovidPropagation
 
             // Vaccin
             tbxVaccinationDuration.Text = VaccinationParameters.Duration.ToString();
-            tbxVaccinationEfficiency.Text = VaccinationParameters.Efficiency.ToString();
+            tbxVaccinationEfficiency.Text = (VaccinationParameters.Efficiency * 100).ToString();
 
             // Virus
             tbxVirusMinDuration.Text = VirusParameters.DurationMin.ToString();
@@ -217,6 +220,12 @@ namespace CovidPropagation
             CheckTextBoxFormat(tbx, regex, defaultValue);
         }
 
+        /// <summary>
+        /// Vérifie que le format du textBox entre en accord avec le regex attribué.
+        /// </summary>
+        /// <param name="tbx">Textbox modifié.</param>
+        /// <param name="regex">Règle des valeurs du textbox.</param>
+        /// <param name="defaultValue">Valeur placée dans le textbox si l'utilisateur rentre un format incorrect.</param>
         private void CheckTextBoxFormat(TextBox tbx, Regex regex, string defaultValue)
         {
             if (!regex.IsMatch(tbx.Text))
@@ -238,6 +247,10 @@ namespace CovidPropagation
             e.CancelCommand();
         }
 
+        /// <summary>
+        /// Active ou désactive les champs lié à un checkbox.
+        /// </summary>
+        /// <param name="sender">Checkbox qui a trigger l'évènement.</param>
         private void Measure_Checked(object sender, RoutedEventArgs e)
         {
             CheckBox chx = sender as CheckBox;
@@ -275,6 +288,11 @@ namespace CovidPropagation
                     break;
             }
         }
+
+        /// <summary>
+        /// Active ou désactive les champs lié au checkbox de la quarantaine.
+        /// </summary>
+        /// <param name="sender">CheckBox qui a été coché.</param>
         private void QuarantineTypeChecked_Checked(object sender, RoutedEventArgs e)
         {
             CheckBox chx = sender as CheckBox;
@@ -299,6 +317,10 @@ namespace CovidPropagation
                     break;
             }
         }
+
+        /// <summary>
+        /// Sauvegarde les paramètres que l'utilisateur a entré.
+        /// </summary>
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             SetVirusParameters();
@@ -308,6 +330,9 @@ namespace CovidPropagation
             SetVaccinationMeasureParameters();
         }
 
+        /// <summary>
+        /// Récupère les paramètres du virus et les affiches.
+        /// </summary>
         private void SetVirusParameters()
         {
             VirusParameters.Init();
@@ -352,6 +377,9 @@ namespace CovidPropagation
                 VirusParameters.IsCoughSymptomActive = false;
         }
 
+        /// <summary>
+        /// Récupère les paramètres généraux et les affiches.
+        /// </summary>
         private void SetGeneralParameters()
         {
             // Nombre d'individu, et pourcentage d'infectés dès le départ.
@@ -404,18 +432,24 @@ namespace CovidPropagation
                 SimulationGeneralParameters.NbInfecetdForVaccinationDeactivation = Convert.ToInt32(tbxVaccinationNbPeopleToStop.Text);
         }
 
+        /// <summary>
+        /// Sauvegarde les paramètres des masques s'il sont actifs.
+        /// </summary>
         private void SetMaskMeasureParameters()
         {
             MaskParameters.Init();
             
             // Nombre d'individu, et pourcentage d'infectés dès le départ.
             if (rdbClientMaskIsOn.IsChecked == true)
-                MaskParameters.IsClientMaskOn = true;
+                MaskParameters.IsClientMaskOn = (rdbClientMaskIsOn.IsChecked == true);
 
             if (rdbPersonnelMaskIsOn.IsChecked == true)
-                MaskParameters.IsPersonnelMaskOn = true;
+                MaskParameters.IsPersonnelMaskOn = (rdbPersonnelMaskIsOn.IsChecked == true);
         }
 
+        /// <summary>
+        /// Sauvegarde les paramètres des mesures de quarantaines.
+        /// </summary>
         private void SetQuarantineMeasureParameters()
         {
             QuarantineParameters.Init();
@@ -469,6 +503,9 @@ namespace CovidPropagation
             }
         }
 
+        /// <summary>
+        /// Sauvegarde les paramètres de vaccination.
+        /// </summary>
         private void SetVaccinationMeasureParameters()
         {
             VaccinationParameters.Init();
@@ -482,12 +519,18 @@ namespace CovidPropagation
                 VaccinationParameters.Efficiency = Convert.ToInt32(tbxVaccinationEfficiency.Text);
         }
 
+        /// <summary>
+        /// Annule les modifications et remet les paramètres précédents.
+        /// </summary>
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             SetUIParameters();
             SetParametersData();
         }
 
+        /// <summary>
+        /// Remet les paramètres par défaut.
+        /// </summary>
         private void Default_Click(object sender, RoutedEventArgs e)
         {
             VirusParameters.Init();

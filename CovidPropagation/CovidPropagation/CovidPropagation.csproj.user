@@ -7,9 +7,6 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="LC.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="WindowRawDatas.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -27,9 +24,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="LC.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="WindowRawDatas.xaml">
       <SubType>Designer</SubType>
     </Page>

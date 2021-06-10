@@ -25,7 +25,7 @@ namespace CovidPropagation
         /// <summary>
         /// Calcule les risques de propagation d'aérosols.
         /// </summary>
-        public TransmissionData CalculateRisk(int nbPersons, int infectivePersons, double fractionOfImmune, int nbPersonsWithMask, double inhalationMaskEfficiency, double sumFirstOrderLossRate, double volume, double quantaExhalationRateOfInfected, double probabilityOfBeingInfective, double quantaInhaledPerPerson)
+        public AerosolTransmissionData CalculateRisk(int nbPersons, int infectivePersons, double fractionOfImmune, int nbPersonsWithMask, double inhalationMaskEfficiency, double sumFirstOrderLossRate, double volume, double quantaExhalationRateOfInfected, double probabilityOfBeingInfective, double quantaInhaledPerPerson)
         {
             int nbSusceptiblePersons = ((nbPersons - infectivePersons) * (1 - (int)fractionOfImmune));
 
@@ -38,7 +38,7 @@ namespace CovidPropagation
             _virusAraisingCases = (nbSusceptiblePersons - _nOfInfectivePersons) * _probabilityOfInfection;
             _virusAraisingCases = _virusAraisingCases.SetValueIfNaN();
 
-            return new TransmissionData(
+            return new AerosolTransmissionData(
                 _probabilityOfOneInfection,
                 _probabilityOfInfection,
                 _nOfInfectivePersons,

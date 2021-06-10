@@ -8,6 +8,9 @@
 
 namespace CovidPropagation
 {
+    /// <summary>
+    /// Lieu dans lequel les individus travaillent.
+    /// </summary>
     public class WorkSite : Site
     {
         private int _nbPlaces;
@@ -28,7 +31,7 @@ namespace CovidPropagation
         /// <summary>
         /// Définit s'il y a encore de la place dans le lieu.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>S'il a de la place ou non.</returns>
         public bool IsHiring()
         {
             bool result = false;

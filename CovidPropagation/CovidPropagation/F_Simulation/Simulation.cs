@@ -30,15 +30,23 @@ namespace CovidPropagation
         private const double PROBABILITY_OF_BEING_A_HOSPITAL = 0.0004d;
         private const double PROBABILITY_OF_BEING_A_SUPERMARKET = 0.0042d;
 
+        private const int NUMBER_OF_STORE_PER_PERSON = 3;
+        private const int NUMBER_OF_PLACE_TO_EAT_PER_PERSON = 3;
+
         private const double DEFAULT_PROBABILITY_OF_BEING_MINOR = 0.22d;
         private const double DEFAULT_PROBABILITY_OF_BEING_RETIRED = 0.14d;
-
-        private const double PROBABILITY_OF_BEING_VACCINATED_PER_TIMEFRAME = 0.00004472222d;
 
         private const double PROBABILITY_OF_USING_A_CAR = 0.36d;
         private const double PROBABILITY_OF_USING_A_BIKE = 0.37d;
         private const double PROBABILITY_OF_USING_A_BUS = 0.15d;
         private const double PROBABILITY_OF_WALKING = 0.27d; // Normalement 0.11 avec les bus
+        private const double PERCENTAGE_OF_BUS = 0.085d;
+
+        private const double PROBABILITY_OF_BEING_VACCINATED_PER_TIMEFRAME = 0.00004472222d;
+        private const int NUMBER_OF_INFECTIOUS_VALUES_FOR_REPRODUCTION = 10;
+
+        private int DELAY_BEFORE_CHECKING_IF_SIMULATION_SHOULD_START = 100;
+        private int MAX_TIME_BEFORE_DISPLAYING_AGAIN = 1000;
 
 
         public event DataUpdateEventHandler OnDataUpdate;
@@ -142,7 +150,6 @@ namespace CovidPropagation
             int nbOfImmune = 0;
             int nbOfHealthy = 0;
             int nbOfDead = 0;
-
             int indexPerson = 0;
 
             // Initialise les données du GUI
@@ -246,7 +253,7 @@ namespace CovidPropagation
 
                     chartsDatas.AddDatas(GetAllDatas(nbOfDead, nbOfHealthy, nbOfImmune, nbOfIncubating, nbOfInfectious));
                     // Affiche au maximum une fois par seconde
-                    if (sumEllapsedTime >= 1000)
+                    if (sumEllapsedTime >= MAX_TIME_BEFORE_DISPLAYING_AGAIN)
                     {
                         // Trigger les évènements qui vont mettre à jour les graphiques
                         OnDisplay?.Invoke(chartsDatas, false);
@@ -272,10 +279,11 @@ namespace CovidPropagation
                 }
                 else
                 {
-                    await Task.Delay(100); // Ajoute un délai pour réduire la consommation CPU
+                    await Task.Delay(DELAY_BEFORE_CHECKING_IF_SIMULATION_SHOULD_START); // Ajoute un délai pour réduire la consommation CPU
                 }
             }
         }
+
 
         /// <summary>
         /// Trigger l'évènement qui réaffiche les graphiques.
@@ -448,12 +456,12 @@ namespace CovidPropagation
         public double GetNumberOfReproduction()
         {
             double result = 0;
-            if (chartsDatas.NumberOfInfectious != null && chartsDatas.NumberOfInfectious.Count > 10)
+            if (chartsDatas.NumberOfInfectious != null && chartsDatas.NumberOfInfectious.Count > NUMBER_OF_INFECTIOUS_VALUES_FOR_REPRODUCTION)
             {
                 double avgRecentContamination = 0;
                 double currentNbOfInfectious = chartsDatas.NumberOfInfectious[chartsDatas.NumberOfInfectious.GetLastIndex()];
 
-                for (int i = chartsDatas.NumberOfContamination.Count - 10; i < chartsDatas.NumberOfContamination.Count; i++)
+                for (int i = chartsDatas.NumberOfContamination.Count - NUMBER_OF_INFECTIOUS_VALUES_FOR_REPRODUCTION; i < chartsDatas.NumberOfContamination.Count; i++)
                 {
                     avgRecentContamination += chartsDatas.NumberOfContamination[i];
                 }
@@ -610,12 +618,13 @@ namespace CovidPropagation
             _sites.AddRange(companies);
         }
 
+
         /// <summary>
         /// Créé les transports publiques de la simulation.
         /// </summary>
         private void CreatePublicTransports()
         {
-            double nbOfBus = (int)Math.Ceiling((0.85d - 100) / 100 * _nbPersons + _nbPersons);
+            double nbOfBus = (int)Math.Ceiling((PERCENTAGE_OF_BUS - 100) / 100 * _nbPersons + _nbPersons);
             _sitesDictionnary.Add(SiteType.Transport, new List<Site>());
 
             for (int i = 0; i < nbOfBus; i++)
@@ -647,6 +656,7 @@ namespace CovidPropagation
                 Dictionary<SiteType, List<Site>> personSites = new Dictionary<SiteType, List<Site>>();
                 PersonState personState;
 
+                // Calcul la probabilité que l'individu soit infecté dès le départ.
                 if (rdm.NextBoolean(_probabilityOfBeingInfected))
                     personState = PersonState.Infectious;
                 else
@@ -658,18 +668,8 @@ namespace CovidPropagation
                 {
                     personSites = new Dictionary<SiteType, List<Site>>() {
                         { SiteType.Home, new List<Site>{home} },
-                        { SiteType.Store, new List<Site>{
-                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
-                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
-                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)]
-                            }
-                        },
-                        { SiteType.Eat, new List<Site>{
-                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
-                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
-                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)]
-                            }
-                        },
+                        { SiteType.Store, CreateTypePersonSites(SiteType.Store, NUMBER_OF_STORE_PER_PERSON) },
+                        { SiteType.Eat, CreateTypePersonSites(SiteType.Eat, NUMBER_OF_PLACE_TO_EAT_PER_PERSON) },
                         { SiteType.Transport, new List<Site>{ GetVehicle() } }
                     };
                     age = rdm.NextInclusive(60, 100);
@@ -679,26 +679,10 @@ namespace CovidPropagation
                 {
                     personSites = new Dictionary<SiteType, List<Site>>() {
                         { SiteType.Home, new List<Site>{home} },
-                        { SiteType.Store, new List<Site>{
-                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
-                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
-                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)]
-                            }
-                        },
-                        { SiteType.Eat, new List<Site>{
-                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
-                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
-                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)]
-                            }
-                        },
-                        { SiteType.Transport, new List<Site>{ 
-                            _outside 
-                            } 
-                        },
-                        { SiteType.WorkPlace, new List<Site>{ 
-                            _sitesDictionnary[SiteType.School][rdm.Next(0, _sitesDictionnary[SiteType.School].Count)] 
-                            } 
-                        },
+                        { SiteType.Store, CreateTypePersonSites(SiteType.Store, NUMBER_OF_STORE_PER_PERSON) },
+                        { SiteType.Eat, CreateTypePersonSites(SiteType.Eat, NUMBER_OF_PLACE_TO_EAT_PER_PERSON) },
+                        { SiteType.Transport, new List<Site>{ _outside } },
+                        { SiteType.WorkPlace, CreateTypePersonSites(SiteType.School, 1) },
                     };
                     age = rdm.NextInclusive(5, 24);
                     nbWorkDays = 5;
@@ -707,42 +691,44 @@ namespace CovidPropagation
                 {
                     personSites = new Dictionary<SiteType, List<Site>>() {
                         { SiteType.Home, new List<Site>{home} },
-                        { SiteType.Store, new List<Site>{
-                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
-                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)],
-                            _sitesDictionnary[SiteType.Store][rdm.Next(0, _sitesDictionnary[SiteType.Store].Count)]
-                            }
-                        },
-                        { SiteType.Eat, new List<Site>{
-                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
-                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)],
-                            _sitesDictionnary[SiteType.Eat][rdm.Next(0, _sitesDictionnary[SiteType.Eat].Count)]
-                            }
-                        },
-                        { SiteType.Transport, new List<Site>{
-                            _outside,
-                            GetVehicle()
-                            }
-                        },
-                        { SiteType.WorkPlace, new List<Site>{
-                            FindWorkPlace()
-                            }
-                        }
+                        { SiteType.Store, CreateTypePersonSites(SiteType.Store, NUMBER_OF_STORE_PER_PERSON) },
+                        { SiteType.Eat, CreateTypePersonSites(SiteType.Eat, NUMBER_OF_PLACE_TO_EAT_PER_PERSON) },
+                        { SiteType.Transport, new List<Site>{  _outside, GetVehicle() } },
+                        { SiteType.WorkPlace, new List<Site>{ FindWorkPlace() } }
                     };
                     age = rdm.NextInclusive(18, 70);
                     nbWorkDays = 5;
                 }
+                // Créé le planning avec les lieux créés et créé l'individu
                 houses.Add(home);
                 _sitesDictionnary[SiteType.Home].Add(home);
                 Planning planning = new Planning(personSites, nbWorkDays);
                 _population.Add(new Person(planning, hospital, age, personState));
                 nbPeople--;
             }
+            // Insère les maison des individus au début de la liste pour garder un ordre précis dans le GUI. 
             _sites.InsertRange(0, houses);
+            // Tous les lieux sont entrés, les ids peuvent être créés.
             for (int i = 1; i < _sites.Count; i++)
             {
                 _sitesIds.Add(_sites[i], i);
             }
+        }
+
+        /// <summary>
+        /// Créé le nombre de lieu demandé du type demandé dans une liste.
+        /// </summary>
+        /// <param name="type">Type de lieux</param>
+        /// <param name="quantity">Nombre de lieux à créer.</param>
+        /// <returns>Liste de lieux demandé à la quantité demandée.</returns>
+        private List<Site> CreateTypePersonSites(SiteType type, int quantity)
+        {
+            List<Site> sites = new List<Site>();
+            for (int i = 0; i < quantity; i++)
+            {
+                sites.Add(_sitesDictionnary[type][rdm.Next(0, _sitesDictionnary[type].Count)]);
+            }
+            return sites;
         }
 
         /// <summary>

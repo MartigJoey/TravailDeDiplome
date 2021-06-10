@@ -12,14 +12,15 @@ namespace CovidPropagation
         private const int LENGTH = 50;
         private const int WIDTH = 70;
         private const int HEIGHT = 5;
-        private const int nbWorkPlaces = 20;
+        private const int NUMBER_OF_WORK_PLACE = 20;
+
         private static SiteType[] schoolTypes = new SiteType[] { SiteType.Eat, SiteType.WorkPlace };
         public School(double length = LENGTH,
                            double width = WIDTH,
                            double height = HEIGHT,
                            double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
-                 base(schoolTypes, length, width, height, ventilationWithOutside, additionalControlMeasures, nbWorkPlaces)
+                 base(schoolTypes, length, width, height, ventilationWithOutside, additionalControlMeasures, NUMBER_OF_WORK_PLACE)
         {
 
         }

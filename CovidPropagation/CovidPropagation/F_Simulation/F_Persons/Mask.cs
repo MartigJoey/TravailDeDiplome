@@ -23,6 +23,23 @@ namespace CovidPropagation
 
     class Mask
     {
+        private const double CLOTH_MASK_EXHALATION_EFFICIENCY = 0.5d;
+        private const double CLOTH_MASK_INHALATION_EFFICIENCY_MIN = 0.2d;
+        private const double CLOTH_MASK_INHALATION_EFFICIENCY_MAX = 0.5d;
+
+        private const double SURGICAL_MASK_EXHALATION_EFFICIENCY = 0.65d;
+        private const double SURGICAL_MASK_INHALATION_EFFICIENCY_MIN = 0.3d;
+        private const double SURGICAL_MASK_INHALATION_EFFICIENCY_MAX = 0.5d;
+
+
+        private const double FACE_SHIELD_MASK_EXHALATION_EFFICIENCY = 0.23d;
+        private const double FACE_SHIELD_MASK_INHALATION_EFFICIENCY = 0.23d;
+
+
+        private const double N95_MASK_EXHALATION_EFFICIENCY = 0.9d;
+        private const double N95_MASK_INHALATION_EFFICIENCY = 0.9d;
+
+
         private double _exhalationMaskEfficiency;
         private double _inhalationMaskEfficiency;
         private Random rdm;
@@ -36,20 +53,20 @@ namespace CovidPropagation
             {
                 default:
                 case TypeOfMask.Cloth:
-                    _exhalationMaskEfficiency = 0.5d;
-                    _inhalationMaskEfficiency = rdm.NextDoubleInclusive(0.3d, 0.5d);
+                    _exhalationMaskEfficiency = CLOTH_MASK_EXHALATION_EFFICIENCY;
+                    _inhalationMaskEfficiency = rdm.NextDoubleInclusive(CLOTH_MASK_INHALATION_EFFICIENCY_MIN, CLOTH_MASK_INHALATION_EFFICIENCY_MAX);
                     break;
                 case TypeOfMask.Surgical:
-                    _exhalationMaskEfficiency = 0.65d;
-                    _inhalationMaskEfficiency = rdm.NextDoubleInclusive(0.3d, 0.5d);
+                    _exhalationMaskEfficiency = SURGICAL_MASK_EXHALATION_EFFICIENCY;
+                    _inhalationMaskEfficiency = rdm.NextDoubleInclusive(SURGICAL_MASK_INHALATION_EFFICIENCY_MIN, SURGICAL_MASK_INHALATION_EFFICIENCY_MAX);
                     break;
                 case TypeOfMask.FaceShield:
-                    _exhalationMaskEfficiency = 0.23d;
-                    _inhalationMaskEfficiency = 0.23d;
+                    _exhalationMaskEfficiency = FACE_SHIELD_MASK_EXHALATION_EFFICIENCY;
+                    _inhalationMaskEfficiency = FACE_SHIELD_MASK_INHALATION_EFFICIENCY;
                     break;
                 case TypeOfMask.N95:
-                    _exhalationMaskEfficiency = 0.9d;
-                    _inhalationMaskEfficiency = 0.9d;
+                    _exhalationMaskEfficiency = N95_MASK_EXHALATION_EFFICIENCY;
+                    _inhalationMaskEfficiency = N95_MASK_INHALATION_EFFICIENCY;
                     break;
             }
         }

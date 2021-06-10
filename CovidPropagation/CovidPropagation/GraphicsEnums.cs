@@ -1,7 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/*
+ * Nom du projet : CovidPropagation
+ * Auteur        : Joey Martig
+ * Date          : 11.06.2021
+ * Version       : 1.0
+ * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
+ */
 using System.ComponentModel;
-using System.Text;
 
 namespace CovidPropagation
 {

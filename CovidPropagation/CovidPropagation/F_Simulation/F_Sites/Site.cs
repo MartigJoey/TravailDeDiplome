@@ -7,7 +7,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace CovidPropagation
@@ -26,7 +25,7 @@ namespace CovidPropagation
         SiteType[] types;
         bool clientsMustWearMasks;
         bool workersMustWearMasks;
-        TransmissionData aerosolDatas;
+        AerosolTransmissionData aerosolDatas;
 
         #region probability
         // Size

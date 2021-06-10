@@ -8,7 +8,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace CovidPropagation
 {
@@ -29,6 +28,8 @@ namespace CovidPropagation
 
         private const int MIN_TIME_TO_DIE = 5;  // En jours
         private const int MAX_TIME_TO_DIE = 13; // En jours
+
+        private const int DEFAULT_DEATH_DECREMENT = 2;
 
         private static int ids = 0;
         private int id;
@@ -107,10 +108,10 @@ namespace CovidPropagation
             _currentSite = _planning.GetActivity();
             _quarantineLocation = (Home)_currentSite; // Possible uniquement car tous les individus se trouve chez eux au démarrage.
             _quantaExhalationRate = _currentSite.AverageQuantaExhalationRate;
-            if ((int)_state >= 2)
+            if ((int)_state >= (int)PersonState.Infected)
             {
                 SetInfectionDurations(_state);
-                if ((int)_state > 2)
+                if ((int)_state > (int)PersonState.Infected)
                     VirusIncubationOver();
             }
 
@@ -140,7 +141,7 @@ namespace CovidPropagation
             // Si la résistance de l'individus est suffisament faible pour décèder, qu'il ne se situe pas à l'hopital et que le virus s'est développé.
             if (_virusResistance <= MIN_RESISTANCE_BEFORE_DEATH && _currentSite != _hospitalCovid && (int)_state > (int)PersonState.Infected)
             {
-                DecrementUntilDeath(2);
+                DecrementUntilDeath(DEFAULT_DEATH_DECREMENT);
             }
 
             if (!_isQuarantined)
@@ -336,7 +337,7 @@ namespace CovidPropagation
         {
             _state = PersonState.Immune;
             _immunityDuration = VaccinationParameters.Duration * GlobalVariables.NUMBER_OF_TIMEFRAME;
-            _immunityProtection = VaccinationParameters.Efficiency / 100; // Transformation pourcentage à probabilités
+            _immunityProtection = VaccinationParameters.Efficiency;
         }
 
         /// <summary>

@@ -9,17 +9,22 @@ using System.Collections.Generic;
 
 namespace CovidPropagation
 {
+    /// <summary>
+    /// Lieu pouvant accueillir des cas de covid pour les traiter.
+    /// </summary>
     public class Hospital : WorkSite
     {
         private const int LENGTH = 100;
         private const int WIDTH = 50;
         private const int HEIGHT = 10;
+        private const int NUMBER_OF_WORK_PLACE = 50;
+        private const int NUMBER_MAX_OF_COVID_PATIENT = 50;
+        private const int NUMBER_MAX_OF_COVID_PATIENT_EXTREME = 10;
 
         int nbCovidPatientMax;
         int nbExtremeCovidPatientMax;
         int nbSumCovidPatientMax;
         List<Person> covidPatient;
-        private const int nbWorkPlaces = 50;
         private static SiteType[] hospitalTypes = new SiteType[] { SiteType.Hospital, SiteType.Eat, SiteType.WorkPlace };
         
         public Hospital(double length = LENGTH,
@@ -27,10 +32,10 @@ namespace CovidPropagation
                            double height = HEIGHT,
                            double ventilationWithOutside = GlobalVariables.BUILDING_VENTILATION_WITH_OUTSIDE,
                            double additionalControlMeasures = GlobalVariables.BUILDING_ADDITIONAL_CONTROL_MEASURES) :
-                 base(hospitalTypes, length, width, height, ventilationWithOutside, additionalControlMeasures, nbWorkPlaces)
+                 base(hospitalTypes, length, width, height, ventilationWithOutside, additionalControlMeasures, NUMBER_OF_WORK_PLACE)
         {
-            nbCovidPatientMax = 50;
-            nbExtremeCovidPatientMax = 10;
+            nbCovidPatientMax = NUMBER_MAX_OF_COVID_PATIENT;
+            nbExtremeCovidPatientMax = NUMBER_MAX_OF_COVID_PATIENT_EXTREME;
             nbSumCovidPatientMax = nbCovidPatientMax + nbExtremeCovidPatientMax;
             covidPatient = new List<Person>();
         }

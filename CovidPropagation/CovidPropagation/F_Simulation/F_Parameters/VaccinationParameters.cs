@@ -5,21 +5,23 @@
  * Version       : 1.0
  * Description   : Simule la propagation du covid dans un environnement vaste représentant une ville.
  */
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CovidPropagation
 {
+    /// <summary>
+    /// Classe contenant les paramètres de la vaccination.
+    /// </summary>
     class VaccinationParameters
     {
+        private const int VACCIN_DURATION = 30 * 6;
+        private const double VACCIN_EFFICIENCY = 0.95;
         public static void Init()
         {
-            Duration = 30 * 6;
-            Efficiency = 95;
+            Duration = VACCIN_DURATION;
+            Efficiency = VACCIN_EFFICIENCY;
         }
-        // Paramètres généraux
+
         public static int Duration { get; set; }
-        public static int Efficiency { get; set; }
+        public static double Efficiency { get; set; }
     }
 }

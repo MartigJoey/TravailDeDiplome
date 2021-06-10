@@ -243,7 +243,7 @@
       - Une maison vide
       - Une école
       - Un moyen de transport (vide si voiture)
-    - On créé leurs résistances
+    - On crée leurs résistances
 
 # 27.04.2021 08h05 / 16h30
 - Les véhicules dans la simulation agissent exactement comme les bâtiments.
@@ -315,7 +315,7 @@
 
 # 28.04.2021 07h50 / 17h00
 - Refactoring
-  - Certain point logiques à revoir
+  - Certains points logiques à revoir
     - Le lieu calculait le risque de transmission aérosol alors que c'est au type de transmission du virus de le faire. Ou un mix des deux.
 - Penser à modifier les calculs récupérés sur le fichier Excel pour être plus en accord avec le fonctionnement de la simulation.
 - Revoir le pattern visistor pour éventuellement l'implémenter pour le calcul de risque de la transmission
@@ -346,7 +346,7 @@
 - Création des bâtiments
   - Reprise de réel
 - Perte du câble du disque dur externe --> pas de sauvegarde dessus
-- Données concernant le nombre d'étudiants à Genève pour calculer le ratio école / élèves.
+- Données concernant le nombre d'étudiants à Genève pour calculer le ratio école-élèves.
   - Total = 103'008 étudiants en 2020
   - [Sources](https://drive.google.com/drive/folders/16TU3wTAwMIrx5XxhLVHWT5VI7Rbx-zqy?usp=sharing)
 - Rectification du compteur de bâtiment nécessaire à la population
@@ -431,7 +431,7 @@
     - ~~Attribution à chaque itération ?~~
     - ~~Mixe ?~~
   - ![Différence création avec/sans cercle sociaux](Medias/Logbook/CercleSociaux.png)
-  - Création de différents présets
+  - Création de différents presets
   - [Source des données de répartition des ménages](https://www.ge.ch/statistique/tel/publications/2014/analyses/communications/an-cs-2014-48.pdf)
     - Graphique page 4
     - Graphique page 7
@@ -462,18 +462,18 @@
     CoupleWithoutChild 40.52
     OneParentWithChild 11.05
     ```
-- L'attribution des lieux ne se fait pas dans le planning mais lors de la première itération ou lors de la création de la personne(dictionnaire --> si existe pas entre, sinon utiliser existant.)
+- L'attribution des lieux ne se fait pas dans le planning, mais lors de la première itération ou lors de la création de la personne(dictionnaire --> si existe pas entre, sinon utiliser existant.)
 - Chaque personne reçoit un lieu de chaque soit random (Company, restaurant, bar, etc.) soit prédéfini à la création (maison, véhicule, etc.)
 - Insertion d'éléments dans la grille de l'UI de la simulation.
   - Recherche d'une case vide
-  - Ajout d'un élèment dans la case
-  - Suppression de l'élèment d'une case
-  - Déplacement d'un élèment
+  - Ajout d'un élément dans la case
+  - Suppression de l'élément d'une case
+  - Déplacement d'un élément
   - Bug une case se bloque.
     - à la création, la mauvaise case se bloque (inversion x et y)
-    - Lors de la suppression la mauvaise case se libérait (inversion x et y)
+    - Lors de la suppression, la mauvaise case se libérait (inversion x et y)
   - Changement de taille + / -
-    - Ne supporte par encore le déplacement
+    - Ne supporte pas encore le déplacement
 - Documentation
   - Difficultés rencontrées
     - Planning
@@ -483,7 +483,7 @@
   - Support du déplacement des objets de tailles supérieur à 1
   - Modification de la taille en x et y (+ et -)
   - Création d'une méthode permettant de vérifier si des cellules sont utilisées dans un certain périmètre
-    - pareil mais pour changer l'état de ces cellules
+    - pareil, mais pour changer l'état de ces cellules
   - Problème, pour le moment, un élément prend en compte sa propre position et se bloque lors de déplacements.
     - Reglé en libérant l'espace utilisé lors du MouseDown event. L'espace est réassigné si le bouton n'est pas déplacé.
 - Discussion avec M. Mathieu
@@ -502,13 +502,13 @@
     - Sinon de 0 à ~valeur max
 - Ajout de boutons dans l'UI de chaque élément
   - Création d'une grille dans les cellules remplies.
-    - Grille contenant les boutons permettants la modification / suppression de la cellule
+    - Grille contenant les boutons permettant la modification / suppression de la cellule
   - Modification du code pour fonctionner avec le fait qu'il y a plusieurs grilles
   - Ajout d'un bouton permettant de modifier les données du graphique
-    - Bouton ouvrant une nouvelle fenêtre avec les paramètre du graphique
-  - Boutons créés avec différents style
-    - Bug après quelque secondes d'exécutions : ''{DependencyProperty.UnsetValue}' n'est pas une valeur valide pour la propriété 'Background'.'
-    - L'utilisation du style créé pour ces boutons à plusieurs reprise créé cette erreur.
+    - Bouton ouvrant une nouvelle fenêtre avec les paramètres du graphique
+  - Boutons créés avec différent style
+    - Bug après quelques secondes d'exécutions : ''{DependencyProperty.UnsetValue}' n'est pas une valeur valide pour la propriété 'Background'.'
+    - L'utilisation du style créé pour ces boutons à plusieurs reprises crée cette erreur.
     - Erreur réglée, il s'agissait d'un code couleur mal inscrit dans App.xaml.  
       - ```HTML
         <Setter Property="Background" Value="{StaticResource 9b9b9b}"/>  
@@ -519,18 +519,18 @@
 - ⚠ Penser à changer les noms de variables qui contiennent "période" ⚠
 - Structure du planning
   - Assignation des lieux --> Sélection d'un planning compatible
-  - Création d'une méthode créant des horaires aléatoires suivant des paramètres donné (Durée matin, durée midi, durée après-midi, etc.)
+  - Création d'une méthode créant des horaires aléatoires suivant des paramètres donnés (Durée matin, durée midi, durée après-midi, etc.)
 
 # 05.05.2021 08h05 / 17h00
 - Ajouts d'icônes pour les boutons des éléments graphiques
-- Création des planning
+- Création des plannings
   - Transformation des horaires générés en seed
   - Modification des sites pour comprendre un type (Hobby, maison, autres)
-  - Utilisation des types dans l'assignations des sites dans le planning
+  - Utilisation des types dans l'assignation des sites dans le planning
 - Modification fonctionnement planning
-  - La simulation créé la seed
-  - Le planing traduit la seed
-  - L'individus sait ou aller en fonction du type d'endroit où il doit aller qui lui est fournit par le planning
+  - La simulation créée la seed
+  - Le planning traduit la seed
+  - L'individu sait où aller en fonction du type d'endroit où il doit aller qui lui est fourni par le planning
   - ~~Utiliser les valeurs de l'enum ou du type de site dans la seed ?~~
     - ~~+Création simplifée~~
     - ~~+Moins de problèmes au démarrage~~
@@ -538,12 +538,12 @@
     - ~~-Moins de contrôle~~
 - Ajout des moyens de transport lorsque la personne change de lieux dans la création des plannings
 - Suppression de la seed pour directement créer les périodes
-- 1ère version du planning fonctionnelle (Jours de congé) ! (Usine à gaz à refactoriser)
+- 1re version du planning fonctionnelle (Jours de congé) ! (Usine à gaz à refactoriser)
 - Modification de toutes les variables classes contenant "period" en "TimeFrame"
-- Jours de travail du planning fonctionnel. Je doit modifier l'assignation des lieux pour avoir un meilleur contrôle et définir ou la personne va et pourquoi.
+- Jours de travail du planning fonctionnel. Je dois modifier l'assignation des lieux pour avoir un meilleur contrôle et définir ou la personne va et pourquoi.
   - À établir dans les activités
 - ~~Modifier SiteType ou~~ ajouter un nouveau paramètre qui permet de définir pourquoi la personne est là.
-  - Différencie le client d'une personne qui travail
+  - Différencie le client d'une personne qui travaille
 
 # 06.05.2021 08h15 / 17h00
 - Ajout de la raison d'un individu d'aller dans un lieu dans la création du planning
@@ -568,78 +568,78 @@
         Other
     }
     ```
-- Bug la voiture est utilisée 4 fois d'affilée sans aller nul part
-  - ~~Rectification, la voiture faisant partie des hobby, c'est le cas ici et donc pas un bug.~~
-  - Apparaît tout de même beaucoup trop souvent pour ne pas modifier l'alogrithm.
+- Bug la voiture est utilisée 4 fois d'affilée sans aller nulle part
+  - ~~Rectification, la voiture faisant partie des hobbys, c'est le cas ici et donc pas un bug.~~
+  - Apparaît tout de même beaucoup trop souvent pour ne pas modifier l'algorithme.
   - 
 - [Informations concernant les repas à midi dans les entreprises](https://newsroom.heart.org/news/survey-more-than-half-of-u-s-employees-who-typically-eat-lunch-during-work-hours-struggle-to-make-it-healthy)
 - Mise à jour de la création de jours libre en prenant en compte les modifications dans la génération de jour de travail
-  - Il n'est pas nécessaire d'utiliser SitePersonStatus dans le choix de lieu car il est toujours client contrairement à un jour de la semaine.
+  - Il n'est pas nécessaire d'utiliser SitePersonStatus dans le choix de lieu, car il est toujours client contrairement à un jour de la semaine.
 - Déplacement du code de la classe Simulation à Day
 - Suppression du code de génération des seeds
 - Source de données permettant l'approximation des personnes travaillant le samedi et le dimanche [Source](https://www.regionsjob.com/actualites/horaires-organisation-temps-travail-horaires-atypiques.html#:~:text=Selon%20une%20%C3%A9tude%20de%20l,pour%20se%20terminer%20%C3%A0%2018h%20!)
-  - Création des plannings des individus en comprenant que la majorité travail en semaine mais que certains travaillent aussi le week-end
-- Attributions de lieux aléatoires créé au préalable.
+  - Création des plannings des individus en comprenant que la majorité travaille en semaine, mais que certains travaillent aussi le week-end
+- Attributions de lieux aléatoires créés au préalable.
   - Choix du véhicule en fonction de probabilités
-  - Bus pas encore implémenté mais ajoutés
+  - Bus pas encore implémenté, mais ajoutés
   - Ajouts de la classe vélos
 - Ajout de commentaire dans les méthodes d'extension et modifications de certaines
-  - Modification de Nextprobability() qui à la place d'avoir plusieurs versions acceptant différent types de paramètres, accepte uniquement le type object.
+  - Modification de Nextprobability() qui à la place d'avoir plusieurs versions acceptant différents types de paramètres, accepte uniquement le type object.
 - Ajout de commentaire dans la classe Day
 - Modification de SiteType pour inclure "WorkPlace"
-- Modification des valeurs en utilisant la source précédement récupérée [Source](https://www.letemps.ch/suisse/nombre-voitures-menage-diminue-geneve#:~:text=De%20mani%C3%A8re%20g%C3%A9n%C3%A9rale,mod%C3%A9r%C3%A9e%20(%2B%201%20point).)
+- Modification des valeurs en utilisant la source précédemment récupérée [Source](https://www.letemps.ch/suisse/nombre-voitures-menage-diminue-geneve#:~:text=De%20mani%C3%A8re%20g%C3%A9n%C3%A9rale,mod%C3%A9r%C3%A9e%20(%2B%201%20point).)
 - Ajout de la fonctionnalité "Copy link to text" dans google chrome pour simplifier l'utilisation de sources.
 - Modification de certaines sources pour surligner directement le paragraphe utilisé.
 - Création d'un évènement permettant de récupérer les données à chaque itération de la simulation automatiquement.
-- Lancement de la simulation 1ère version.
+- Lancement de la simulation 1re version.
   - Oubli d'ajout des infectés
   - La moyenne des quantas commence à 0 et augmente peut à petit jusqu'à s'arrêter à ~5.6 qui est la valeur par défaut.
-    - Les individus n'ignisialisaient pas leur "quantaExhalationRate" au démarrage mais uniquement lorsqu'ils changaient de lieux.
+    - Les individus n'initialisaient pas leur "quantaExhalationRate" au démarrage, mais uniquement lorsqu'ils changeaient de lieux.
 - Création d'un event load dans la page simulation qui permet de récupérer 
 - Ajout d'infecté dès le départ
-  - Ils désparaissent à la première itération
-  - Les durée récupérée dans le fichier XML étaient set à 0
+  - Ils disparaissent à la première itération
+  - Les durées récupérées dans le fichier XML étaient set à 0
   - Ils ne sont pas pris en compte dans les calcules.
-    - Ils l'étaient mais comme leur état etait celui d'infecté qui signifie que le virus ne s'est pas encore dévelopé.
+    - Ils l'étaient, mais comme leur état était celui d'infecter qui signifie que le virus ne s'est pas encore développé.
     - Changement de l'état "infected" à "infectious" pour aller plus rapidement vers la phase de contagion.
 
 # 07.06.2021 07h45 / 17h00
-- Modification du code de propagation qui a des problèmes de format de données. certains doubles retournant NaN du à des dividions par 0.
-  - Le nombre de reproduction du virus était mélangé aux probabilités d'être infecté créant un valeur non-utilisable.
+- Modification du code de propagation qui a des problèmes de format de données. Certains doubles retournant NaN du à des divisions par 0.
+  - Le nombre de reproductions du virus était mélangé aux probabilités d'être infecté créant une valeur non utilisable.
   - Le calculs nombre de personnes susceptibles d'attraper le virus ne calcul par correctement et donne des résultats négatifs.
-  - ~~Différence de résultat en calculant les mêmes valeurs dans la calculatrice/code et le fichier excel~~
+  - ~~Différence de résultat en calculant les mêmes valeurs dans la calculatrice/code et le fichier Excel~~
     - Différence de format % et probabilités
   - Problème de résultats dans les probabilités d'être infectés.
     - le problème réside dans la quantité de quantas qui n'est pas correcte.
     - Nécessité d'ajouter de nombreux calculs concernant :
-      - Les émissions de Co2
+      - Les émissions de CO2
       - moyenne de concentration de quanta
-      - Les quantas inhalé par personnes
-    - émissions de Co2 fonctionnelles
+      - Les quantas inhalés par personne
+    - émissions de CO2 fonctionnelles
     - Le calcul de quanta moyen n'est pas bon
       - La durée était calculée en minute alors qu'elle doit être calculée en heure (0 -> 0.5 -> 1) ~~(1 -> 1h30 -> 2h00)~~
-      - Le calcul fonctionne en modifiant le volume du lieux et la somme des mesures pour qu'ils soient identiquent au excel.
-    - En utilisant le même BreathingRate du fichier excel, le résultat de quantaInhaledPerPerson est identique.
-    - Modification de calculs déjà existant pour utiliser les nouvelles valeurs calculées en temps réel.
+      - Le calcul fonctionne en modifiant le volume du lieu et la somme des mesures pour qu'ils soient identiques à l’Excel.
+    - En utilisant le même BreathingRate du fichier Excel, le résultat de quantaInhaledPerPerson est identique.
+    - Modification de calculs déjà existants pour utiliser les nouvelles valeurs calculées en temps réel.
     - Probabilité d'infection fonctionnelle.
 - Besoin de refactoriser le code des calculs
   - Actuellement illisible
 - Refactorisation du code dans la classe Site
 - Discussion avec M. Mathieu sur l'état actuel du projet
-  - Pas besoin de trop complexifier les planning en faisant par exemple déposer la fille par le père en voiture
+  - Pas besoin de trop complexifier les plannings en faisant par exemple déposer la fille par le père en voiture
     - Gain de temps et complexité des plannings.
 - ~~La méthode NextDouble ne permet pas de générer des randoms avec une différence de taille suffisante pour permettre à des individus d'être infectés~~
 - Test sur 2 semaines dans la simulation
   - 100 personnes et 9 infectés au départ
-  - 3 on été contaminé.
+  - 3 ont été contaminés.
 - Modification du code pour empêcher le résultat NaN avec la concentration de quanta.
 - Le volume de certains lieux est de 0 empêchant le calcul de concentration de quanta dans un lieu.
-  - Il s'agissait d'un ancien code qui créait les lieux avec le nombre maximum de personnes sur le lieu comme premier paramètre (Qui est maintenant un paramètre de taille)
-- Test Sur ~2 semaines
-  - 1000 personnes et 100 infectés au départs
+  - Il s'agissait d'un ancien code qui créait les lieux avec le nombre maximum de personnes sur le lieu comme premier paramètre (qui est maintenant un paramètre de taille)
+- Test sur ~2 semaines
+  - 1000 personnes et 100 infectés au départ
   - 650 personnes infectées maximum
   - une moyenne de 500 cas. 
-- Testé avec 100'000 personnes et le résultat est fonctionnel mais extrêmement lent.
+- Testé avec 100'000 personnes et le résultat est fonctionnel, mais extrêmement lent.
   - 95% d'infectés maximum
   - Moyenne de 80%
 
@@ -660,10 +660,10 @@
     - Non fonctionnel du à l'utilisation de list en cours de création.
     - Modification du code de création des bâtiments
       - Async - await - Structure
-    - Ancien calcul déterminant le nombre de batiment érroné. 
+    - Ancien calcul déterminant le nombre de bâtiments erroné. 
       - ~~(0.03d - 100) / 100 * _nbPersons + _nbPersons)~~
-      - ~~Peut importe la valeur de _nbPersons le résultat est toujours 0.03 .-.~~
-      - [Source de données concernant le nombre de batiment par personne](https://www.ge.ch/statistique/graphiques/affichage.asp?filtreGraph=09_02&dom=1)
+      - ~~Peu importe la valeur de _nbPersons, le résultat est toujours 0.03 .-.~~
+      - [Source de données concernant le nombre de bâtiments par personne](https://www.ge.ch/statistique/graphiques/affichage.asp?filtreGraph=09_02&dom=1)
       - Utilisation des calculs du 26.04.2020 pour recréer les bâtiments
     - Réduction du temps de création des personnes de 1650ms à 650ms
       - Système de création instable
@@ -702,7 +702,7 @@
   - Regarder pour allouer plus de mémoire au thread 
     - "Accélérer" la création des objets.
 - Recherche sur l'ajout de mémoire
-  - Rien trouver de concluant
+  - Rien trouvé de concluant
 - Ajout de la quarantaine pour les individus
   - Bloquer dans sa maison sans contact externe
 - Ajout d'un équivalent à la distanciation
@@ -736,7 +736,7 @@
   - Retéléchargement depuis le git du projet et rajouts des modifications apportées aujourd'hui.
   - Bug d'évènement de fermeture de fenêtre dû à la barre de titre personnalisée
   - Création d'un évènement le remplaçant
-- Ajout du graphique linéaire en tant que préview des paramètres
+- Ajout du graphique linéaire en tant que preview des paramètres
   - Ajouts de textbox définissant le nombre de courbes
   - Ajouts de combobox définissant les valeurs en X, en Y et pour chaque courbe
 - Documentation
@@ -800,19 +800,19 @@
       - Simulation
       - Paramètres
       - Paramètres graphiques
-- Création de la strucutre GraphicsData
+- Création de la structure GraphicsData
   - Permet le transfert des données qu'un graphique affichera
     - Position
     - Taille
     - Type
     - Donnée X - Y - Courbes
-- Transfert des données des graphique de la page paramètres graphiques à la page simulation
+- Transfert des données des graphiques de la page paramètres graphiques à la page simulation
 - Copie de la structure de la grille de la page paramètres graphiques vers la page simulation.
   - Impossible de copier
   - Recréation d'une grille en reprenant les bases
   - Les graphiques sont dans la grille, mais celle-ci ne s'affichage pas
     - Ajout de la nouvelle grille dans le composant "scrollviewer" a permit d'afficher le contenu de la grille
-    - Les objets déplacé s'affichent aussi à leur dernier emplacement.
+    - Les objets déplacés s'affichent aussi à leur dernier emplacement.
   - Modification du code pour prendre en compte la modification de la structure GraphicData lorsque
     - Le graphique bouge
     - Sa taille change
@@ -820,16 +820,16 @@
       - X -
       - Y +
       - Y -
-    - Ses valeurs changes
-    - Il est suprimmé
+    - Ses valeurs changent
+    - Il est supprimé
     - Il est ajouté
   - Affichage des graphiques linéaires réussi et fonctionnel !
     - (Pas encore lié avec la simulation. Uniquement de l'affichage)
 
 # 18.05.2021 08h05 / 17h00
-- Ajout des graphiques de différents type 
+- Ajout des graphiques de différent type 
   - Léger bug des valeurs pas défaut des graphiques qui utilise directement la valeur des enum et non leur description
-  - Tentative d'ajout d'un méthode d'extension pour récupérer les description des enums mais sans succès.
+  - Tentative d'ajout d'une méthode d'extension pour récupérer les descriptions des enums, mais sans succès.
   - Graphiques ajoutés
     - Vertical
     - Horizontal
@@ -846,31 +846,31 @@
     - Licenses livecharts
     - Ajouté result
     - comparaison réalité
-    - comparaison excel
-- 2ème Discussion avec M. Mathieu sur la structure du code et l'optimisation
+    - comparaison Excel
+- 2e Discussion avec M. Mathieu sur la structure du code et l'optimisation
   - Restructurer le code pour éviter les listes
-- Restructuration de code de création des individu
+- Restructuration de code de création des individus
   - Suppression de certains filtres linq
   - Optimisation du code
   - Temps de création
     - 10'000 = 500ms avant 5 secondes
     - 100'000 = ~5 secondes avant 5 minutes
-    - 1'000'000 = ~1 minutes avant +10 min / crash
-- 3ème Discussion avec M. Mathieu sur la structure du code et l'optimisation
+    - 1'000'000 = ~1 minute avant +10 min / crash
+- 3e Discussion avec M. Mathieu sur la structure du code et l'optimisation
   - Retour sur l'amélioration des performances
   - Ajouter la différence / un paragraphe sur les changements dans la doc
   - Conseils sur l'utilisation du profiler pour détecter où le programme prend trop de temps
 - Utilisation du profiler pour analyser la charge CPU
   - Le profiler ne détecte pas les données à afficher "Il n'existe aucune donnée dans l'ensemble de filtres actuel."
-  - Il s'agit possiblement d'un driver qui pose problème [Source](https://developercommunity.visualstudio.com/t/performance-profiler-not-collecting-data-for-cpu-u-1/1069594). Cependant les versions de windows ne correspondent pas au mien.
+  - Il s'agit possiblement d'un driver qui pose problème [Source](https://developercommunity.visualstudio.com/t/performance-profiler-not-collecting-data-for-cpu-u-1/1069594). Cependant les versions de Windows ne correspondent pas au mien.
 
 # 19.05.2021 07h40 / 17h00
 - Oubli de push le travail de 18
-  - Pas de problème en terme de la continuation de l'optimisation du code
+  - Pas de problème en termes de la continuation de l'optimisation du code
   - Impossible de continuer les graphiques
   - Documentation à la place
-- Détection du différence de rapidité entre le pc école et mon pc
-  - Pour la création de 100'000 individus mon pc est 2 secondes plus rapide soit ~30% de gain. 
+- Détection de la différence de rapidité entre le pc-école et mon pc
+  - Pour la création de 100'000 individus, mon pc est 2 secondes plus rapide soit ~30% de gain. 
   - La ram de mon pc est overclockée à 3600Mhz pouvant expliqué cette différence en sachant le CPU est lui aussi plus récent.
 - Réglage du bug du profiler concernant les performances CPU.
   - Mise à jour de visual studio
@@ -897,8 +897,8 @@
   - Refactorisation de certaines méthodes
 
 # 19.05.2021 08h05 / 17h00
-- Réflection sur le moyen de mettre à jour les données des graphiques en fonction du type de graphique
-  - List de graphique parcourue et mise à jour ?
+- Réflexion sur le moyen de mettre à jour les données des graphiques en fonction du type de graphique
+  - List de graphique parcouru et mise à jour ?
     - Couplé à un event qui est trigger par le timeManager
       - Période
       - Jour
@@ -908,122 +908,122 @@
 - Modification des variables nommée "Graph" pour "Chart"
   - Bug
     - Les graphiques ne s'affichent plus dans la page simulation
-    - Il s'agissait d'une assignation qui avait été mis en commentaire car elle ne changait rien sur le moment.
+    - Il s'agissait d'une assignation qui avait été mise en commentaire, car elle ne changeait rien sur le moment.
 - Ajout d'évènements dans la classe TimeManager
   - Changements de période
   - Changements de jours
   - Changements de semaines
-- Ajout de méthodes d'extensions dans les graphiques cartésien permettant la modification de leur valeurs.
+- Ajout de méthodes d'extensions dans les graphiques cartésiens permettant la modification de leurs valeurs.
 - Déplacements des évènements de TimeManager à la simulation
   - Ajout d'une structure comportant les données à afficher
 - Modification du fonctionnement de la simulation
-  - Elle s'initialize manuellement et non à la création (ctor)
+  - Elle s'initialise manuellement et non à la création (ctor)
   - Permet de s'abonner plus facilement aux évènements  
 - LiveCharts
-  - Utilisation du tag des valeurs pour stocké le type de valeur à récupérer lors de la mise à jour des données.
-- La mise à jour de valeur est fonctionnel avec les graphiques cylindriques
-- Test de la simulation à l'aide du graphique cylindrique et 100'000 individu dont 10% d'infectés:
-  - Données visualisée 
+  - Utilisation du tag des valeurs pour stocker le type de valeur à récupérer lors de la mise à jour des données.
+- La mise à jour de valeur est fonctionnelle avec les graphiques cylindriques
+- Test de la simulation à l'aide du graphique cylindrique et 100'000 individus dont 10% d'infectés:
+  - Données visualisées 
     - Nombre de personnes saines
     - Nombre de personnes infectées
     - Nombre de personnes immunisées
   - Résultats:
-    - Le nombre de contamination augmente petit à petit
-    - Le nombre de contamination surpasse le nombre de personnes saines
+    - Le nombre de contaminations augmente petit à petit
+    - Le nombre de contaminations surpasse le nombre de personnes saines
     - Le nombre d'immunisé commence à augmenter, diminuant le nombre de cas
     - Le virus disparait, il ne reste qu'une partie de la population immunisée et une partie saine qui n'a donc jamais été infectée.
 - Graphique linéaire fonctionnelle
-  - Beaucoup de lag lorsqu'il y a trop de données
-- Réflection sur le fonctionnement des graphiques
+  - Beaucoup de lags lorsqu'il y a trop de données
+- Réflexion sur le fonctionnement des graphiques
   - Graphiques périodiques
-  - Graphiques journalier
-  - Graphiques hebdomadaire
+  - Graphiques journaliers
+  - Graphiques hebdomadaires
   - Graphiques Mensuel
-  - Graphiques Totaux
-  - Affichent une fois les données par durée ou affichent toutes les données depuis le début mais à l'interval désigné ? Ou les deux au choix ?
+  - Graphiques totaux
+  - Affichent une fois les données par durée ou affichent toutes les données depuis le début, mais à l'interval désigné ? Ou les deux au choix ?
   - Choix dans la création de graphiques
-  - Penser à Ajouté un nombre maximum de valeur par graphiques et un slider qui permet de retourner en arrière sur le graphique.
+  - Penser à ajouter un nombre maximum de valeurs par graphiques et un slider qui permet de retourner en arrière sur le graphique.
 - Modification de la structure du code pour accepter ce type possibilités
-- L'ajout de données à chaque itération dans les graphiques est trop gourmande
+- L'ajout de données à chaque itération dans les graphiques est trop gourmand
     - ~~Mise à jour des données toutes les secondes à la place d'à chaque itération~~
     - Tentative d'optimiser l'affichage des graphiques
-      - Contient du linq qui devra être remplacé
+      - Contiens du linq qui devra être remplacé
 
 # 21.05.2021 08h00 / 17h00
 - Modification de la structure des données transférées pour éviter les requêtes linq
   - Modification du code des PieChart afin d'éviter un bug qui rend la lecture impossible
-  - Réflection sur l'interval d'affichage
+  - Réflexion sur l'interval d'affichage
     - Jours
       - Affichage des jours sur une semaine ?
-        - Semaine ou nombre de jour max modifiable ?
-        - Scrollbar pour voir les jours précédent / suivants
-      - Affichage des jours en général jusqu'à une valeure max ?
+        - Semaine ou nombre de jours max modifiables ?
+        - Scrollbar pour voir les jours précédents / suivants
+      - Affichage des jours en général jusqu'à une valeur max ?
       - Affichage du contenu des jours(Timeframes) mis à jour tous les jours ?
         - Trop complexe pour les graphiques à colonnes
-  - Modification des combobox pour restraindre certains choix
+  - Modification des combobox pour restreindre certains choix
 - Ajout de boutons permettant de modifier la section des données visibles des graphiques
-  - Les boutons sont fonctionnelles et permettent:
-    -  Déplacements de jours en jours
+  - Les boutons sont fonctionnels et permettent:
+    -  Déplacements de jour en jour
     -  Déplacements avant et après
-    -  Ajout d'un combobox permettant de définir la distance à parcouris en avant ou en arrière
+    -  Ajout d'un combobox permettant de définir la distance à parcourir en avant ou en arrière
 - Ajout d'un combobox permettant de choisir la durée à afficher
   - Jour
   - Semaine
   - Mois
   - Total
 - Un bouton permettant de suivre l'avancement des données automatiquement
-  - Avance bloquée par le fait que "ActualMaxValue" des axes ne correspond pas aux valeurs contenues mais à la taille maximum possible de l'axe actuellement.
-  - Problème reglé en comptant le nombre de valeur dans une série
+  - Avance bloquée par le fait que "ActualMaxValue" des axes ne correspond pas aux valeurs contenues, mais à la taille maximum possible de l'axe actuellement.
+  - Problème réglé en comptant le nombre de valeurs dans une série
 - Les graphiques à colonnes ne peuvent pas afficher assez de données pour correspondre aux graphiques à courbes
   - Il est nécessaire de faire des regroupements
     - Par jours pour les semaines
     - Par semaines pour les mois
     - Données brutes pour les jours
-  - Fonctionnel pour les graphiques à colonnes mais nécessites des changements dans le fonctionnement des boutons
-    - Créer un bouton pour chaque type lors de la création. Similaire aux création de contenu des graphiques
+  - Fonctionnel pour les graphiques à colonnes, mais nécessites des changements dans le fonctionnement des boutons
+    - Créer un bouton pour chaque type lors de la création. Similaire aux créations de contenu des graphiques
 
 # 25.05.2021 08h05 / 17h00
 - Modification de la structure de modification des données des graphiques et d'affichage
   - Séparation de l'ajout de données et de l'affichage
   - Création d'un nouvel évènement gérant l'affichage
-  - Supression des évènement OnWeek et OnMonth qui étaient identique à l'évènement OnTimeFrame
+  - Suppression des évènements OnWeek et OnMonth qui étaient identiques à l'évènement OnTimeFrame
     - Changement du code pour appeler OnTimeFrame qui est renommé en OnDataUpdate
-  - Bug, l'affichage des données des graphiques à colonnes ne s'affichent qu'en jours lors d'un déplacement.
+  - Bug, l'affichage des données des graphiques à colonnes ne s'affiche qu'en jours lors d'un déplacement.
     - Réglé and ajoutant du code qui permet cet affichage dans la méthode d'ajout de données
     - ⚠ redondance de code ⚠
 - Ajout de commentaires dans "PageSimulation"
 - Graphiques à lignes fonctionnels
-- Pour les graphiques à colonne et en ligne, 48 colonnes est beaucoup trop pour des affichages plus petits (1 case) ou simplement lorsqu'il y a plus de données à afficher
+- Pour les graphiques à colonnes et en ligne, 48 colonnes sont beaucoup trop pour des affichages plus petits (1 case) ou simplement lorsqu'il y a plus de données à afficher
   - Modification de l'affichage des graphiques pour n'afficher que 12 valeurs
-    - Fonctionne mais lorsque le graphique est trop petit et affiche trop de données le même problème surgit
+    - Fonctionne, mais lorsque le graphique est trop petit et affiche trop de données le même problème surgit
 - Discussion avec M. Mathieu sur la comparaison avec la réalité
   - Comparaison avec l'Inde
     - Classe pauvre moins impactée
       - Système immunitaire++
   - Graphique HeatMap possiblement compliqué à implémenter
 - Premier affichage de données à l'aide du graphique HeatMap
-  - Ne peu changer de semaines
+  - Ne peut changer de semaines
   - Réactualise constamment les couleurs en fonction de la nouvelle valeur max
-- Le graphique HeatMap fonctionne et peut avancer ou reculer dans le temps mais l'affichage automatique ne fonctionne pas sur lui.
+- Le graphique HeatMap fonctionne et peut avancer ou reculer dans le temps, mais l'affichage automatique ne fonctionne pas sur lui.
   - Un bug survient si l'on retourne en arrière dès le début
 - HeatMap fonctionnelle
 - Test de longue durée avec la heatmap, elle consomme trop lorsque beaucoup de données se situent dedans
-- Bug des graphiques à colonne
+- Bug des graphiques à colonnes
   - La valeur minimum n'évolue pas avec le reste
-  - Simple erreur d'écriture du nom de variable ne mettant pas à jours la valeur maximum de l'axe
+  - Simple erreur d'écriture du nom de variable ne mettant pas à jour la valeur maximum de l'axe
 - ~~Les valeurs du graphique à ligne disparaissent après ~3 lignes~~
   - Les valeurs min et max de l'axe Y ne correspondent pas aux données.
-    - Modification de la mise à jour de données à reglé le problème
+    - Modification de la mise à jour de données à régler le problème
 
 # 26.05.2021 08h05 / 16h10
-- Test de la quantité de maladies ainsi que le nombre d'entrée à l'hopital.
-  - Les deux sont fonctionnels mais le graphique utilisé consomme trop de ressources
+- Test de la quantité de maladies ainsi que le nombre d'entrées à l'hôpital.
+  - Les deux sont fonctionnels, mais le graphique utilisé consomme trop de ressources
   - Optimisation des graphiques nécessaires
 - Test de l'hospitalisation et du décès
-  - très peu de décès hospitalisé durant le test
+  - très peu de décès hospitalisés durant le test
   - Beaucoup plus lent et moins nombreux
   - Le nombre de décès ne correspondait pas au nombre de cas
-    - Le décès n'était pas lié au covid mais simplement à sa résistance qui menait les individus à décéder même lorsqu'ils n'étaient pas infectés.
+    - Le décès n'était pas lié au covid, mais simplement à sa résistance qui menait les individus à décéder même lorsqu'ils n'étaient pas infectés.
   - ~~Les individus ne sortent pas de l'hôpital~~
   - Ajout de commentaires supplémentaires dans le code
     - Person
@@ -1038,27 +1038,27 @@
 - Penser à modifier le déplacement 
 
 # 27.05.2021 07h45 / 17h00
-- Modification de l'âge pour un random entre des valeurs prédéfinie pour chaque groupes
+- Modification de l'âge pour un random entre des valeurs prédéfinies pour chaque groupe
 - Ajout des bus
-- Besoin de limiter la quantité de travailleur dans certains lieux
+- Besoin de limiter la quantité de travailleurs dans certains lieux
   - Nécessite un changement de la structure du code
-  - Soit limiter le nombre de personne travaillant depuis l'objet, ~~soit en modifiant la sélection du lieu de travail avec des probabilités~~
-    - Ajout d'un object WorkSite étant un enfant de Site et un parent de Restaurants, Hopital, école, companie, etc.
-    - WorkSite permet de définir si il reste de la place pour travailler dans un lieu
+  - Soit limiter le nombre de personnes travaillant depuis l'objet, ~~soit en modifiant la sélection du lieu de travail avec des probabilités~~
+    - Ajout d'un object WorkSite étant un enfant de Site et un parent de Restaurants, Hôpital, école, compagnie, etc.
+    - WorkSite permet de définir s’il reste de la place pour travailler dans un lieu
     - Ajout de constante dans chaque type de lieu héritant de WorkSite contenant le nombre maximum d'employés
     - Simulation fonctionnelle avec la nouvelle structure
 - Ajout d'une nouvelle fenêtre permettant la visualisation des données brutes de la simulation.
-  - Modification de la structure "SimulationDatas" pour y ajouter une liste contenant le nom de chaque données ainsi que le contenu des listes.
+  - Modification de la structure "SimulationDatas" pour y ajouter une liste contenant le nom de chaque donnée ainsi que le contenu des listes.
     - Permet un affichage dynamique des labels
   - Affichage des dernières données, la valeur maximum enregistrée, la valeur minimum enregistrée, ainsi que leur moyenne.
 - Affichage des données fonctionnel et dynamique.
 - Création de la page Paramètres
-  - Réflections sur les paramètres à ajouter
+  - Réflexions sur les paramètres à ajouter
     - Nombre d'individus
     - Mesures à appliquer
       - Pour certaines mesures, à qui/où les appliquer ?
       - Avec quelle intensité ? %
-    - Modification des quantités / pourcentages de chances de création de chaques bâtiments
+    - Modification des quantités / pourcentages de chances de création de chaque bâtiment
     - Modifier chaque type de bâtiments individuellement
       - Nombre de travailleurs si possible
       - Taille
@@ -1074,46 +1074,46 @@
       - Activer / désactiver symptômes
       - Modifier les symptômes du virus
     - Bouton valeurs par défaut
-- Essai de la simulation en utilisant un graphique à courbe comportant le nombre de personne saines(Rouge), infectées(bleu), immunisées(Gris) et décédées (Jaune)
+- Essai de la simulation en utilisant un graphique à courbe comportant le nombre de personnes saines(Rouge), infectées(bleu), immunisées(Gris) et décédées (Jaune)
   - ![Essai de la simulation](Medias/LogBook/EssaiSimulation.png)
-- Modification de l'ajouts de données dans les graphiques pour optimiser les performances
-  - Les données étaient entièrement réindroduite à chaque itération
-  - Le graphique heatmap est fonctionnel avec cette modification mais n'est pas encore optimisé à 100%
+- Modification de l'ajout de données dans les graphiques pour optimiser les performances
+  - Les données étaient entièrement réintroduites à chaque itération
+  - Le graphique heatmap est fonctionnel avec cette modification, mais n'est pas encore optimisé à 100%
   - Une dernière optimisation graphique est nécessaire pour cacher les données qui ne sont pas à l'écran.
 
 # 28.05.2021 08h05 / 16h40
 - Optimisation des graphiques
   - Colonnes
   - Ligne
-- Optimisation réussi, cependant les données ne se mettent plus à jours lors d' changement d'interval. Seul le format change.
+- Optimisation réussie, cependant les données ne se mettent plus à jours lors de changement d'interval. Seul le format change.
   - Utilisation de la variable isDisplayChange pour pallier au problème et réinitialiser les données lorsque c'est nécessaire.
-- L'optimisation effectuée n'a que très peu augmanté les performances.
-  - Le problème se situe majoritairement sur l'affichage de nombreuse données.
+- L'optimisation effectuée n'a que très peu augmenté les performances.
+  - Le problème se situe majoritairement sur l'affichage de nombreuses données.
   - 
-- Refactoring du code des graphiques en lignes et à colonne pour éviter la redondance.
-  - Bug reperé
-    - Lors du déplacement ainsi que l'appuie du bouton automatique, certaines données s'ajoutent au début du graphique.
+- Refactoring du code des graphiques en ligne et à colonne pour éviter la redondance.
+  - Bug repéré
+    - Lors du déplacement ainsi que l'appui du bouton automatique, certaines données s'ajoutent au début du graphique.
 - Modification de ChartData pour y intégrer displayWindow qui permet de définir la plage de données à afficher.
 - Modification du graphique à courbe
-  - Changement de la structure pour n'afficher que les données dans la fenêtre actuel.
-  - Lorsque trop de données sont affichées, réduit la quantité en faisant la moyenne de certaines valeur.
+  - Changement de la structure pour n'afficher que les données dans la fenêtre actuelle.
+  - Lorsque trop de données sont affichées, réduis la quantité en faisant la moyenne de certaines valeurs.
   - Très peu de changement de performances notable si ce n'est aucune
 - Utilisation d'un stopWatch dans la simulation pour déterminer si c'est elle qui prend trop de temps
-  - Certaines itération de la simulation prennent jusqu'à 1 secondes
+  - Certaines itérations de la simulation prennent jusqu'à 1 seconde
   - Ajout de stopWatch plus précis pour définir l'élément étant le plus gourmand
   - Le changement d'activité est très gourmand.
 - Ajout d'un thread gérant l'itération de la simulation pour limiter les freezes
   - Problèmes d'events interThreads
   - L'objet appartenant à un autre thread, il n'est pas possible de le modifier.
   - ![Compréhension problème inter-thread](Medias/LogBook/EventInterThread.png)
-  - Utilisation de Dispatcher.Invoke autour du code pour palier au problème
-  - Impossible d'utiliser cette méthode dans les méthode d'extension des graphiques.
+  - Utilisation de Dispatcher.Invoke autour du code pour pallier au problème
+  - Impossible d'utiliser cette méthode dans les méthodes d'extension des graphiques.
     - Utilisation de Application.Current.Dispatcher.Invoke((Action)(() => {})); à la place
-- ~~Le thread pose problème lors de l'appuie sur les boutons permettant le changement de plage d'affichage.~~
+- ~~Le thread pose problème lors de l'appui sur les boutons permettant le changement de plage d'affichage.~~
   - ~~Les données de la simulation sont vides.~~
-- Modification du code d'appele de la boucle itération de la simulation dans une task. Elle prenait en paramètre une structure qui devait se situer dans la simulation dès le départ.
+- Modification du code d'appel de la boucle itération de la simulation dans une task. Elle prenait en paramètre une structure qui devait se situer dans la simulation dès le départ.
 - Problèmes de crache dû à livechart.
-  - Il n'est pas possible de trouver l'origine du bug étant donné que je n'ai pas accès à leur code pour le môment.
+  - Il n'est pas possible de trouver l'origine du bug étant donné que je n'ai pas accès à leur code pour le moment.
 - Documentation
   - Structure
     - UI
@@ -1132,17 +1132,17 @@
         - Conseil --> Utiliser hwndHost à la place de unityHandle
           - Impossible de trouver un moyen d'initialiser hwndHost ou de récupérer le hande.
         - Ou utiliser WindowsFormsHost
-          - Impossible d'ajouter les références comme expliqué [ici](https://wpf-tutorial.com/fr/67/controles-divers/le-controle-windowsformshost-/)
+          - Impossible d'ajouter les références comme expliquées [ici](https://wpf-tutorial.com/fr/67/controles-divers/le-controle-windowsformshost-/)
           - Ajout de la référence en suivant cette [vidéo](https://www.youtube.com/watch?v=GiaFyAKvizs)
           - Utilisation du code XAML proposé par [Flemming Bonde Kentved et Programmer](https://stackoverflow.com/questions/44059182/embed-unity3d-app-inside-wpf-application)
     - La fenêtre Unity se trouve au bon endroit et sa taille est modifiée en conséquence du changement de la taille de son conteur.
   - Programme Unity fonctionnel, début de la création du GUI
 - Déplacements de la caméra à l'aide de la souris
   - [Tutorial](https://www.youtube.com/watch?v=iuygipAigew)
-- Zoom et dézoom avec la molette de la souris
+- Zoom et dézoome avec la molette de la souris
   - Ne fonctionne pas dans l'application WPF
   - Sera remplacé par des boutons ou supprimé par la suite
-- Instantiation de prefabs
+- Instanciation de prefabs
 - Utilisation du code du Stage pour positionner les bâtiments
   - Le positionnement ne fonctionne pas correctement et place les bâtiments en ligne
   - Positionnement terminé, nécessite une modification de la l'échelle pour permettre à tous les objets d'être visibles.
@@ -1154,7 +1154,7 @@
 
 # 01.06.2021 08h05 / 19h00
 - Modification de l'emplacement du build d'Unity
-- Ajout de la possiblité de choisir d'ajouter le GUI et de modifier
+- Ajout de la possibilité de choisir d'ajouter le GUI et de modifier
   - Sa taille
   - Sa position
 - Impossible d'ajouter plus d'un GUI
@@ -1169,7 +1169,7 @@
   - Débloque l'accès aux paramètres graphiques.
   - Réinitialise l'affichage
 - Paramètres de la simulation
-  - Création d'un textBox bloquant tout caractère n'étant pas numériques
+  - Création d'un textBox bloquant tout caractère n'étant pas numérique
   - Création de la structure des paramètres
     - Général
       - Mesures actives
@@ -1197,11 +1197,11 @@
 - Déplacement d'individus en direction de lieux aléatoires
 - Déplacement des individus dans les lieux
 - Détection de l'entrée dans un lieu
-- Changement du matériel des individus en fonction de leur états.
-- Changement du nom du pipeLine de "testPipe" à "dataPipe"
+- Changement du matériel des individus en fonction de leurs états.
+- Changement du nom du pipeline de "testPipe" à "dataPipe"
 - Test d'envoi de données
-  - Création de classes de transfer temporaire
-  - Analyse de la structure de l'envoie
+  - Création de classes de transfert temporaire
+  - Analyse de la structure de l'envoi
     - {"NbPersons":100,"IndexOfInfected":[0,6,8,15,42,69,80,90,99]} 
     - {"SitesType":[1,2,3,4,5,6,1,2,3,4,5,6,1,2,3,4,5,6],"SitesId":[1,5,20,70,220,670,2,10,40,140,440,1340,3,15,60,210,660,2010]}
   - Réception des données réussie.
@@ -1210,8 +1210,8 @@
   - Modification du positionnement des bâtiments
   - Centrage de la caméra par rapport aux bâtiments
   - Ajout d'un évènement trigger au moment de l'initialisation de la simulation
-  - Utilisation de l'évènement trigger à chaque itération pour l'envoie de données.
-  - Intégration des données des classes de testes à la simulation
+  - Utilisation de l'évènement trigger à chaque itération pour l'envoi de données.
+  - Intégration des données des classes de tests à la simulation
 - Documentation
   - Début comparaison avec réalité
   - GUI
@@ -1221,37 +1221,37 @@
 
 # 03.06.2021 08h05 / 18h00
 - Envoie des données d'itérations à Unity
-  - ~~Echec~~
-  - Transfère de données opérationnel mais affichage manquant
-    - L'objet streamstring est null ce qui empêche l'envoie de la première série de données.
-    - Un changement de la strucutre de l'envoie de donnés servant à la création cause le bug
-    - Le trigger permettant l'initialisation du GUI est lancé trop tôt, il faut attendre le GUI avant de démarrer.
-    - Changement effetué pour pallier au problème -->
+  - ~~Échec~~
+  - Transfère de données opérationnelles mais affichages manquants
+    - L'objet streamstring est null ce qui empêche l'envoi de la première série de données.
+    - Un changement de la structure de l'envoi de données servant à la création cause le bug
+    - Le trigger permettant l'initialisation du GUI est lancer trop tôt, il faut attendre le GUI avant de démarrer.
+    - Changement effectué pour pallier au problème -->
       - Utilisation d'une méthode pour démarrer l'itération
-      - Appelle de la méthode dans l'itération si il n'y a pas de GUI
+      - Appelle de la méthode dans l'itération s’il n'y a pas de GUI
       - S'il y a un GUI, l'appelle de l'itération se fait après celui du GUI
-- L'affichage apparaît mais les lieux sont tous concentrés sur un point
+- L'affichage apparaît, mais les lieux sont tous concentrés sur un point
   - Il s'agit d'un type inexistant pour le moment dans le GUI qui a causé ce problème
-  - Type ajouté et reglé du côté du GUI mais un autre objet cause le même bug
+  - Type ajouté et réglé du côté du GUI, mais un autre objet cause le même bug
   - Ajout d'une condition
 - Affichage fonctionnel
 - Après 10 itérations, la lecture du pipeline s'arrête
-  - Le problème est reglé après l'utilisation d'une task pour appeler les méthodes de déplacements des individus
-- Unity n'est pas capable de gérer 10'000 individus sans rammer / ne pas charger
-- Suppression des rigibody et des collider et simplification des individu.
-  - Génération instantanée de 10'000 individus mais lenteur et lag pour 100'000
+  - Le problème est réglé après l'utilisation d'une task pour appeler les méthodes de déplacements des individus
+- Unity n'est pas capable de gérer 10'000 individus sans ramer / ne pas charger
+- Suppression des rigibody et des collider et simplification des individus.
+  - Génération instantanée de 10'000 individus, mais lenteur et lag pour 100'000
 - Essai depuis WPF
-  - ~~Un bug survient. Aucun bâtiment n'apparaît. Problème similaire au bug rencontré précédement~~
-- Plusieurs problèmes majeures avec le GUI
+  - ~~Un bug survient. Aucun bâtiment n'apparaît. Problème similaire au bug rencontré précédemment~~
+- Plusieurs problèmes majeurs avec le GUI
   - La lisibilité
-    - Il est au final très difficile de voir où se passent les propagation en parti dû à la grande quantité d'individus
+    - Il est au final très difficile de voir où se passent les propagations en parti dû à la grande quantité d'individus
   - La vitesse d'exécution
     - Il y a une latence entre la simulation et le GUI. Le GUI ne peut garder le même rythme que la simulation et c'est visible.
   - Les performances
-    - À partir de 5'000 individus, le GUI ne charge plus les bâtiments. Il s'agit d'un bug dû à la vitesse de création des lieux qui n'as pas le temps de tout créer avant de recevoir d'autres données.
-    - ~~Le thread est tellement ralenti que les calculs de temps ne sont plus cohérent, impactant les graphiques.~~
+    - À partir de 5'000 individus, le GUI ne charge plus les bâtiments. Il s'agit d'un bug dû à la vitesse de création des lieux qui n'a pas le temps de tout créer avant de recevoir d'autres données.
+    - ~~Le thread est tellement ralenti que les calculs de temps ne sont plus cohérents, impactant les graphiques.~~
   - Transfert de données
-    - les données de la création sont coupées. Il ne s'agit pas de la longueur maximal qui est atteinte mais d'une coupur de données sûrement dû à un prochain appelle trop rapide.
+    - les données de la création sont coupées. Il ne s'agit pas de la longueur maximale qui est atteinte, mais d'une coupure de données sûrement due à un prochain appel trop rapide.
 - Refactorisation des noms de variables
 - Ajout de commentaires
 
@@ -1263,18 +1263,18 @@
     - Simulation
     - Mesures
   - Modification de la structure de la simulation pour implémenter les mesures
-- Masques partiellement operationnels
-- Distanciation operationnels
-- Quarantaine partiellement operationnels
-- Vaccination pas operationnels
-- Les mesures s'activent mais ne fonctionnent pas.
+- Masques partiellement opérationnels
+- Distanciation opérationnelle
+- Quarantaine partiellement opérationnels
+- Vaccination pas opérationnelle
+- Les mesures s'activent, mais ne fonctionnent pas.
 - Le site "extérieur" était trop petit, confinant un grand nombre d'individus dedans.
-  - Après modifications, les contaminations sont très limités, trop limitées.
-  - Modification de paramètres faussés. Croissance  dès qu'une large concentration d'individus est détectées.
+  - Après modifications, les contaminations sont très limitées, trop limitées.
+  - Modification de paramètres faussés. Croissance  dès qu'une large concentration d'individus est détectée.
   - Les masques sont utiles et ralentissent la propagation du virus.
   - Le reste pas vraiment
   - Quarantaine fonctionnelle
-- Même en quarantaine, la propagation continue, elle s'arrête uniquement si les individus sains son en quarantaine.
+- Même en quarantaine, la propagation continue, elle s'arrête uniquement si les individus sains sont en quarantaine.
 - La quarantaine ne sortait pas les individus du lieu actuel, leur faisant contaminer plus de monde.
 - En 1 mois ~400'000 doses administrées
   - [Source](https://www.covid19.admin.ch/fr/epidemiologic/vacc-doses?vaccRel=abs)
@@ -1282,8 +1282,8 @@
     - 5% / 30 = 0.00166666666 par jour
 - Modification des maladies pour arriver à un taux ~1-2% de décès
 - Modification de l'affichage des paramètres
-  - Désactivation des checkbox aux bon moments
-  - Désactivation des radiobouton aux bon moments
+  - Désactivation des checkbox aux bons moments
+  - Désactivation des radiobouton aux bons moments
 - Unity
   - Recherche de méthode d'affichage de grand nombre d'entités
     - Aucun résultat convaincant
@@ -1291,33 +1291,33 @@
   - Transfère du code sur Unity 2D
   - Réduction au maximum des reflets et effets de lumière
   - accélération des entités
-  - Recréation des positionnement des bâtiments
-    - Suppression de la création de centaines/miliers de bâtiments
+  - Recréation des positionnements des bâtiments
+    - Suppression de la création de centaines/milliers de bâtiments
     - Utilisation de position vectorielle 2D à la place
     - Utilisation des sprites comme background
 
 # 05.06.2021 08h42 / 17h00
 - Suppression des matériaux et modification des éléments pour utiliser des sprites
-  - Test avec 100'000 individus, aucun soucis
-  - Test avec 200'000 individus, lag mais fonctionnel
+  - Test avec 100'000 individus, aucun souci
+  - Test avec 200'000 individus, lag, mais fonctionnel
 - Tentative d'utilisation de thread
   - Échec
-  - Après quelques recherches, unity gère automatiquement les thread, il est donc impossible(Très complexe) de les gérer manuellement pour intéragir avec les gameobjects
-  - Refactorisation des données d'envoies
+  - Après quelques recherches, Unity gère automatiquement les thread, il est donc impossible(très complexe) de les gérer manuellement pour interagir avec les gameobjects
+  - Refactorisation des données d'envoie
   - ![Transfère de données WPF --> Unity](Medias/LogBook/EnvoieDeDonneesWPFToUnity.png)
-  - Modification de la strucutre de l'ajout de site dans la simulation pour correspondre à unity
+  - Modification de la structure de l'ajout de site dans la simulation pour correspondre à Unity
   - Correction d'un bug, les bus n'étant pas intégrés dans le GUI, l'index des bus était en dehors des limites du tableau
-  - La simulation peut maitenant envoyer toutes les données nécessaire à unity
-    - Le problème était que les premiers byte qui comprennent la taille de la suite de données était composé de 2 bytes empêchant la lecture de toutes suite de byte étant plus grande que 65'556.
+  - La simulation peut maintenant envoyer toutes les données nécessaires à Unity
+    - Le problème était que les premiers bytes qui comprennent la taille de la suite de données étaient composés de 2 bytes empêchant la lecture de toute suite de byte étant plus grande que 65'556.
     - Pour régler le problème, il a fallut ajoute deux bytes supplémentaire pour stocker la longueur de la suite de données.
-    - Pour ce faire, il a fallut ajouter deux byte, un avec un décalage de 16 bits vers la droite et un avec un décalage de 24 bits vers la droite. Il s'agit de la continuation des deux bytes. Le premier ne demandant pas de décalage mais le deuxième demandant un décalage vers la droite de 8.
-    - Il a fallut appliquer la même logique du côté d'unity.
+    - Pour ce faire, il a fallu ajouter deux bytes, un avec un décalage de 16 bits vers la droite et un avec un décalage de 24 bits vers la droite. Il s'agit de la continuation des deux bytes. Le premier ne demandant pas de décalage, mais le deuxième demandant un décalage vers la droite de 8.
+    - Il a fallu appliquer la même logique du côté d'Unity.
     - Après cela, le transfère est complet et instantané.
     - La création des données à transférer est cependant beaucoup trop grande.
     - Modification de la structure pour récupérer les éléments nécessaires directement dans des boucles existantes.
     - Attribution des ids des sites dans un dictionnaire au démarrage de la simulation.
-- Le GUI est fonctionnel mais les individus sont derrière les bâtiments
-- Modification de l'appelle du GUI pour être appellé en même temps que les graphiques ainsi que au maximum une fois par seconde
+- Le GUI est fonctionnel, mais les individus sont derrière les bâtiments
+- Modification de l'appelle du GUI pour être appelés en même temps que les graphiques ainsi qu’au maximum une fois par seconde
 
 # 07.06.2021 07h45 / 22h00
 - Suppression du GUI qui apparaissait dans les choix de type de graphiques.
@@ -1325,7 +1325,7 @@
   - Ajout d'une durée de quarantaine personnalisée
 - Documentation
   - Ajout du pseudo-code de la boucle d'itération
-  - Sources/Calculs Statistiques
+  - Sources/Calculs statistiques
 - Affichage des descriptions dans les titres des courbes des graphiques
 - Ajout de la durée et de l'efficacité de la quarantaine dans les paramètres
 - Création de regex pour les textbox
@@ -1333,9 +1333,9 @@
   - Essai avec PreviewTextInput sans succès
     - Impossible de filtrer correctement et de prendre en compte la suppression
   - Essai avec LeaveFocus réussi
-    - Fonctionne correctement et met une valeur par défaut en cas d'erreur
-    - Change la couleur du background en fonction de la réponse (Correct = vert, Incorrect = rouge)
-- Modification de le boucle d'itération pour limiter au maximum les requêtes linq
+    - Fonctionne correctement et mets une valeur par défaut en cas d'erreur
+    - Change la couleur du background en fonction de la réponse (Correct = vert, incorrect = rouge)
+- Modification de la boucle d'itération pour limiter au maximum les requêtes linq
   - Ajout des données de reproduction et de contaminations aux graphiques
 - Refactorisation complète graphique HeatMap
   - Code beaucoup plus lisible et performant
@@ -1343,10 +1343,10 @@
 
 # 08.06.2021 08h05 / 22h00
 - Nouveau test Graphiques HeatMap
-  - Résultat corrects
-  - Performances corrects
+  - Résultat correct
+  - Performances correctes
   - Les décimales des valeurs vont trop loin
-  - Suppression des valeur des heatpoint pour utiliser uniquement la couleur de celui-ci
+  - Suppression des valeurs des heatpoint pour utiliser uniquement la couleur de celui-ci
 - Discussion avec M. Mathieu
   - Rendu
   - Priorités
@@ -1356,21 +1356,21 @@
   - Utilisation de try catch pour éviter les erreurs
   - Impossible d'arrêter les tasks comme souhaité.
   - Utilisation des try catch
-- Fermeture du process unity lors de la fermeture du programme.
+- Fermeture du process Unity lors de la fermeture du programme.
 - Unity.UI n'existe plus
   - Réimportation des assets
 - Ajout du déplacement de la caméra
-- Ajout du zoom et dézoom
-- Bug de positionnement des bâtiments arrivant constamment sur WPF mais qu'une fois sur Unity
+- Ajout du zoom et dézoome
+- Bug de positionnement des bâtiments arrivant constamment sur WPF, mais qu'une fois sur Unity
 
 # 09.06.2021 08h05 / 17h00
-- Ajout de regions pour simplifier la lecture du code des classes longues
+- Ajout de régions pour simplifier la lecture du code des classes longues
 - Suppression de commentaires utilisés comme rappelles
 - Suppression des Debug.WriteLine dans le projet
 - Suppression du premier ajout de données qui insérait des données à 0 au démarrage.
 - Ajouts d'une valeur minimum pour les axes des graphiques
 - Correction d'un bug que les heatmap causait.
-  - Un trigger à l'initialisation Entrait dans le mauvaise case switch
+  - Un trigger à l'initialisation entrait dans le mauvaise case switch
   - Suppression des boutons pour le heatmap
 - Modification de transmission data pour utiliser une structure à la place d'une classe.
 - Lecture des critères d'évaluations de la documentation
@@ -1378,8 +1378,63 @@
 - Documentation
   - Planning effectif
   - Problèmes rencontrés --> taille des paquets
-  - À Terminer
+  - À terminer
     - Résultats
     - Conclusion
     - Bilan
-- Modification des valeurs minimum des paramètres
+- Modification des valeurs minimums des paramètres
+
+# 10.06.2021 07h50 / 17h00
+- Ajouts de commentaires manquants, suppression des using inutiles, suppression des magics values
+  - pageSimulationSettings
+  - pageSimulation
+  - Simulation
+  - VirusParameters
+  - Person
+  - SimulatioNGeneralParameters
+  - QuarantineParameters
+  - MaskParameters
+  - TimeFrames
+  - Planning
+  - PersonState
+  - Mask
+  - Ilness
+  - Day
+  - WorkSite
+  - Store
+  - Supermarket
+  - SiteType
+  - SitePersonStatut
+  - Site
+  - School
+  - Outside
+  - Restaurant
+  - Hospital
+  - Home
+  - Company
+  - Car
+  - Bus
+  - Bike
+  - DataSites
+  - DataPopulation
+  - Dataiteration
+  - CoughSymptom
+  - AerosolTransmission
+  - AerosolTransmissionData
+  - Symptom
+  - Transmission
+  - Virus
+  - ExtensionMethods
+  - GlobaleVariables
+  - SimulationData
+  - StreamString
+  - TimeManager
+  - WindowRawDatas
+  - WindowChart
+  - ChartData
+  - GraphicsEnum
+- Documentation
+  - Correction des fautes d'orthographe
+  - Relecture
+  - Correction des incohérences
+  - Correction de la grammaire

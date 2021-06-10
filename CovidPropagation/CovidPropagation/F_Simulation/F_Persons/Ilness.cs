@@ -1,4 +1,5 @@
-﻿/*
+﻿
+/*
  * Nom du projet : CovidPropagation
  * Auteur        : Joey Martig
  * Date          : 11.06.2021
@@ -14,12 +15,38 @@ namespace CovidPropagation
     /// </summary>
     class Ilness
     {
+        private const int MIN_TIME_BEFORE_DESAPEARING = 1;
+        private const int MAX_TIME_BEFORE_DESAPEARING = 7;
+
+        private const int FIRST_STAGE_AGE = 20;
+        private const int FIRST_STAGE_MIN_ATTACK = 3;
+        private const int FIRST_STAGE_MAX_ATTACK = 6;
+
+        private const int SECOND_STAGE_AGE = 30;
+        private const int SECOND_STAGE_MIN_ATTACK = 5;
+        private const int SECOND_STAGE_MAX_ATTACK = 9;
+
+        private const int THIRD_STAGE_AGE = 40;
+        private const int THIRD_STAGE_MIN_ATTACK = 5;
+        private const int THIRD_STAGE_MAX_ATTACK = 13;
+
+        private const int FOURTH_STAGE_AGE = 60;
+        private const int FOURTH_STAGE_MIN_ATTACK = 5;
+        private const int FOURTH_STAGE_MAX_ATTACK = 16;
+
+        private const int FIFTH_STAGE_AGE = 70;
+        private const int FIFTH_STAGE_MIN_ATTACK = 5;
+        private const int FIFTH_STAGE_MAX_ATTACK = 19;
+
+        private const int SIXTH_STAGE_MIN_ATTACK = 5;
+        private const int SIXTH_STAGE_MAX_ATTACK = 21;
+
         int timeBeforeDesapearing; // En période
         int attack;
         public int Attack { get => attack; set => attack = value; }
         public Ilness(int age, Random rdm)
         {
-            timeBeforeDesapearing = rdm.Next(1, 7) * 48; // entre 7 jours et 30 (Temporaire)
+            timeBeforeDesapearing = rdm.Next(MIN_TIME_BEFORE_DESAPEARING, MAX_TIME_BEFORE_DESAPEARING) * GlobalVariables.NUMBER_OF_TIMEFRAME; // entre 7 jours et 30 (Temporaire)
             Attack = CalculateAttack(age, rdm); // Entre 5 et 20, en fonction de l'âge
         }
 
@@ -35,29 +62,29 @@ namespace CovidPropagation
             // Entre 5 et 20
             // Plus age est élevé plus c'est haut
             int result;
-            if (age < 20)
+            if (age < FIRST_STAGE_AGE)
             {
-                result = rdm.Next(5, 5 + 1);
+                result = rdm.Next(FIRST_STAGE_MIN_ATTACK, FIRST_STAGE_MAX_ATTACK);
             }
-            else if (age < 30)
+            else if (age < SECOND_STAGE_AGE)
             {
-                result = rdm.Next(5, 8 + 1);
+                result = rdm.Next(SECOND_STAGE_MIN_ATTACK, SECOND_STAGE_MAX_ATTACK);
             }
-            else if (age < 40)
+            else if (age < THIRD_STAGE_AGE)
             {
-                result = rdm.Next(5, 12 + 1);
+                result = rdm.Next(THIRD_STAGE_MIN_ATTACK, THIRD_STAGE_MAX_ATTACK);
             }
-            else if (age < 60)
+            else if (age < FOURTH_STAGE_AGE)
             {
-                result = rdm.Next(5, 15 + 1);
+                result = rdm.Next(FOURTH_STAGE_MIN_ATTACK, FOURTH_STAGE_MAX_ATTACK);
             }
-            else if(age < 70)
+            else if(age < FIFTH_STAGE_AGE)
             {
-                result = rdm.Next(5, 18 + 1);
+                result = rdm.Next(FIFTH_STAGE_MIN_ATTACK, FIFTH_STAGE_MAX_ATTACK);
             }
             else
             {
-                result = rdm.Next(5, 20 + 1);
+                result = rdm.Next(SIXTH_STAGE_MIN_ATTACK, SIXTH_STAGE_MAX_ATTACK);
             }
             return result;
         }

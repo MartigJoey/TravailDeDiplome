@@ -10,14 +10,14 @@ namespace CovidPropagation
     /// <summary>
     /// Classe utilisée dans le transfère de données de la transmission du virus.
     /// </summary>
-    public struct TransmissionData
+    public struct AerosolTransmissionData
     {
         public double ProbabilityOfOneInfection { get; set; }
         public double ProbabilityOfInfection { get; set; }
         public double NOfInfectiousPersons { get; set; }
         public double VirusAraisingCases { get; set; }
 
-        public TransmissionData(
+        public AerosolTransmissionData(
                 double probabilityOfOneInfection,
                 double probabilityOfInfection,
                 double nbOfInfectivePersons,

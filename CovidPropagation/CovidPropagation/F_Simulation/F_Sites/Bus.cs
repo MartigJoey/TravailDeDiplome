@@ -8,9 +8,12 @@
 
 namespace CovidPropagation
 {
+    /// <summary>
+    /// Lieu similaire au voiture mais comprenant un chauffeur et plusieurs passagers.
+    /// </summary>
     class Bus : WorkSite
     {
-        private const int nbWorkPlaces = 1;
+        private const int NUMBER_OF_WORK_PLACE = 1;
         private static SiteType[] busTypes = new SiteType[] { SiteType.Transport, SiteType.WorkPlace };
 
         public Bus(double length = GlobalVariables.BUS_LENGTH,
@@ -18,7 +21,7 @@ namespace CovidPropagation
                    double height = GlobalVariables.BUS_HEIGHT,
                    double ventilationWithOutside = GlobalVariables.BUS_VENTILATION_WITH_OUTSIDE,
                    double additionalControlMeasures = GlobalVariables.BUS_ADDITIONAL_CONTROL_MEASURES) :
-                 base(busTypes, length, width, height, ventilationWithOutside, additionalControlMeasures, nbWorkPlaces)
+                 base(busTypes, length, width, height, ventilationWithOutside, additionalControlMeasures, NUMBER_OF_WORK_PLACE)
         {
 
         }
