@@ -15,7 +15,7 @@ namespace CovidPropagation
         private const int HEIGHT = 3;
         private const int NUMBER_OF_WORK_PLACE = 5;
 
-        private static SiteType[] storeTypes = new SiteType[] { SiteType.WorkPlace };
+        private static SiteType[] storeTypes = new SiteType[] { SiteType.Store, SiteType.WorkPlace };
         public Store(double length = LENGTH,
                            double width = WIDTH,
                            double height = HEIGHT,

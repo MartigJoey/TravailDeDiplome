@@ -392,15 +392,23 @@ namespace CovidPropagation
             // Si les mesures sont activées où non.
             if (chxMask.IsChecked == true)
                 SimulationGeneralParameters.IsMaskMeasuresEnabled = true;
+            else
+                SimulationGeneralParameters.IsMaskMeasuresEnabled = false;
 
             if (chxDistanciation.IsChecked == true)
                 SimulationGeneralParameters.IsDistanciationMeasuresEnabled = true;
+            else
+                SimulationGeneralParameters.IsDistanciationMeasuresEnabled = false;
 
             if (chxQuarantaine.IsChecked == true)
                 SimulationGeneralParameters.IsQuarantineMeasuresEnabled = true;
+            else
+                SimulationGeneralParameters.IsQuarantineMeasuresEnabled = false;
 
             if (chxVaccination.IsChecked == true)
                 SimulationGeneralParameters.IsVaccinationMeasuresEnabled = true;
+            else
+                SimulationGeneralParameters.IsVaccinationMeasuresEnabled = false;
 
             // Trigger des mesures
             // Masques
@@ -439,12 +447,9 @@ namespace CovidPropagation
         {
             MaskParameters.Init();
             
-            // Nombre d'individu, et pourcentage d'infectés dès le départ.
-            if (rdbClientMaskIsOn.IsChecked == true)
-                MaskParameters.IsClientMaskOn = (rdbClientMaskIsOn.IsChecked == true);
+            MaskParameters.IsClientMaskOn = (rdbClientMaskIsOn.IsChecked == true);
 
-            if (rdbPersonnelMaskIsOn.IsChecked == true)
-                MaskParameters.IsPersonnelMaskOn = (rdbPersonnelMaskIsOn.IsChecked == true);
+            MaskParameters.IsPersonnelMaskOn = (rdbPersonnelMaskIsOn.IsChecked == true);
         }
 
         /// <summary>

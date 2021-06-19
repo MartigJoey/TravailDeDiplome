@@ -17,7 +17,7 @@ namespace CovidPropagation
         Vertical,
         [Description("Horizontal")]
         Horizontal,
-        [Description("Secteur")]
+        [Description("Cylindrique")]
         PieChart,
         [Description("Carte thermique")]
         HeatMap,
@@ -51,7 +51,7 @@ namespace CovidPropagation
 
     public enum ChartsDisplayData
     {
-        [Description("Personnes")]
+        [Description("Nombre de Personnes")]
         Persons,
         [Description("Cas")]
         Cases,

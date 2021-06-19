@@ -11,6 +11,7 @@ using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -86,9 +87,13 @@ namespace CovidPropagation
             cbxValueY.SelectedIndex = this.graphicDatas.AxisY;
             cbxGraphType.SelectedIndex = this.graphicDatas.UIType;
 
-
             currentCurvesIndex = this.graphicDatas.Datas.Length - 1;
             cbxQuantityOfCurves.SelectedIndex = currentCurvesIndex;
+
+            for (int i = 0; i < 5; i++)
+            {
+                cbxDatas[i].Visibility = Visibility.Hidden;
+            }
 
             for (int i = 0; i < this.graphicDatas.Datas.Length; i++)
             {
@@ -482,6 +487,7 @@ namespace CovidPropagation
                 HeatSeries heatSeries = new HeatSeries();
                 heatSeries.Values = values;
                 heatSeries.Title = cbxDatas[0].SelectedItem.ToString();
+                heatSeries.DrawsHeatRange = false;
                 heatSeries.GradientStopCollection = new GradientStopCollection()
                 {
                     new GradientStop(Colors.Green, 0),
@@ -490,7 +496,7 @@ namespace CovidPropagation
                     new GradientStop(Colors.Orange, 0.75),
                     new GradientStop(Colors.Red, 1)
                 };
-                heatSeries.DataLabels = true;
+                heatSeries.DataLabels = false;
                 cartesianChart.Series.Add(heatSeries);
             }
             DataContext = this;

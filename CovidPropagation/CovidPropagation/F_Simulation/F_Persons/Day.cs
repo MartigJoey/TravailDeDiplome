@@ -118,7 +118,7 @@ namespace CovidPropagation
             int morningTimeFrame = morningTimeFrameMax - rdm.NextWithMinimum(0, morningVariation, 0);
             int noonTimeFrame = rdm.Next(noonMin, noonTimeFrameMax + 1);
             int afterNoonWorkTimeFrame = afterNoonTimeFrameMax - rdm.NextWithMinimum(0, afterNoonVariation, 0);
-            int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, WORKDAY_MIN_TIME_FRAME_VALUE);
+            int eveningTimeFrame = rdm.NextWithMinimum(0, eveningTimeFrameMax, WORKDAY_MIN_TIME_FRAME_VALUE);
 
             #region Activities
 
@@ -143,8 +143,8 @@ namespace CovidPropagation
             nightTimeFrame = totalTimeFrame - nightTimeFrame;
 
             // Choisis les lieux où l'individus va passer son temps en fonction des données reçues.
-            KeyValuePair<Site, SitePersonStatus> hometSite = new KeyValuePair<Site, SitePersonStatus>(
-                personSites[SiteType.Home][rdm.Next(0, personSites[SiteType.Home].Count)],
+            KeyValuePair<Site, SitePersonStatus> homeSite = new KeyValuePair<Site, SitePersonStatus>(
+                personSites[SiteType.Home][0],
                 SitePersonStatus.Other
                 );
 
@@ -165,7 +165,7 @@ namespace CovidPropagation
                 noonSite = workSite;
 
             // Récupère le lieux de l'après midi si l'individu quitte le travail plus tôt
-            SiteType afterNoonSiteType = (SiteType)rdm.Next(0, (int)SiteType.Eat);
+            SiteType afterNoonSiteType = (SiteType)rdm.NextInclusive(0, (int)SiteType.Eat);
             KeyValuePair<Site, SitePersonStatus> afterNoonFreeTimeSite = new KeyValuePair<Site, SitePersonStatus>(
                 personSites[afterNoonSiteType][rdm.Next(0, personSites[afterNoonSiteType].Count)],
                 SitePersonStatus.Worker
@@ -187,11 +187,11 @@ namespace CovidPropagation
             timeFrames = new List<TimeFrame>(totalTimeFrame);
 
             // Une fois que tous les lieux sont choisis, les périodes de la journée sont créés.
-            CreateMorning(timeFrames, hometSite, morningTimeFrame, workSite, morningWorkTimeFrame, transportSite);
+            CreateMorning(timeFrames, homeSite, morningTimeFrame, workSite, morningWorkTimeFrame, transportSite);
             CreateNoon(timeFrames, noonSite, noonTimeFrame, transportSite);
             CreateAfterNoon(timeFrames, workSite, afterNoonWorkTimeFrame, afterNoonFreeTimeSite, afterNoonFreeTimeTimeFrame, transportSite);
-            CreateEvening(timeFrames, hometSite, eveningTimeFrame, eveningActivitySite, eveningActivityTimeFrame, transportSite);
-            CreateNight(timeFrames, hometSite, nightTimeFrame, transportSite);
+            CreateEvening(timeFrames, homeSite, eveningTimeFrame, eveningActivitySite, eveningActivityTimeFrame, transportSite);
+            CreateNight(timeFrames, homeSite, nightTimeFrame, transportSite);
 
             return timeFrames.ToArray();
         }
@@ -220,7 +220,7 @@ namespace CovidPropagation
             int morningTimeFrame = rdm.NextWithMinimum(morningMin, morningTimeFrameMax, FREEDAY_MIN_TIME_FRAME_VALUE);
             int noonTimeFrame = rdm.Next(noonMin, noonTimeFrameMax + 1);
             int afterNoonTimeFrame = rdm.NextWithMinimum(afterNoonMin, afterNoonTimeFrameMax, FREEDAY_MIN_TIME_FRAME_VALUE);
-            int eveningTimeFrame = rdm.NextWithMinimum(eveningMin, eveningTimeFrameMax, FREEDAY_MIN_TIME_FRAME_VALUE);
+            int eveningTimeFrame = rdm.NextWithMinimum(0, eveningTimeFrameMax, FREEDAY_MIN_TIME_FRAME_VALUE);
 
             // Activities
             #region Activities

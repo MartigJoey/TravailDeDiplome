@@ -29,34 +29,48 @@ Description : Simulation d'une propagation de virus.
             <RowDefinition Height="5*"/>
         </Grid.RowDefinitions>
 
+        <Label Grid.Column="0"
+               Grid.Row="0"
+               Style="{StaticResource labelText}">Vitesse d'itération :</Label>
         <Slider Template="{StaticResource HorizontalSlider}" 
                     x:Name="intervalSlider" 
-                    Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
+                    Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
                     Minimum="0" Maximum="1000"
                     IsSelectionRangeEnabled="True"
                     Thumb.DragCompleted="IntervalSlider_DragCompleted">
         </Slider>
 
+
+        <Label Grid.Column="2"
+               Grid.Row="0"
+               Style="{StaticResource labelText}">Date:</Label>
+
+
+        <Label Grid.Column="2"
+               Grid.Row="1"
+               x:Name="lblDate"
+               Style="{StaticResource labelText}"></Label>
+
         <Button Click="Start_Click" Style="{StaticResource smallButton}" 
                     x:Name="btnStart" 
-                    Grid.Column="0" Grid.Row="1"
+                    Grid.Column="0" Grid.Row="2"
                     Content="Démarrer"/>
 
         <Button Click="Break_Click" Style="{StaticResource smallButton}"
                     x:Name="btnBreak" 
-                    Grid.Column="1" Grid.Row="1"
+                    Grid.Column="1" Grid.Row="2"
                     Content="Pause"
                     Height="auto"/>
 
         <Button Click="Reset_Click" Style="{StaticResource smallButton}"
                     x:Name="btnReset" 
-                    Grid.Column="2" Grid.Row="1"
+                    Grid.Column="2" Grid.Row="2"
                     Content="Réinitialiser"
                     Height="auto"/>
 
         <Button Click="OpenRawDatasWindow_Click" Style="{StaticResource smallButton}"
                     x:Name="btnOpenRawDatas" 
-                    Grid.Column="3" Grid.Row="1"
+                    Grid.Column="3" Grid.Row="2"
                     Content="Données"
                     Height="auto"
                     IsEnabled="False"/>

@@ -259,9 +259,6 @@ namespace CovidPropagation
                         OnDisplay?.Invoke(chartsDatas, false);
                         OnDataUpdate?.Invoke(chartsDatas);
 
-                        // Trigger l'évènement qui va mettre à jour le GUI et met à jour ses données.
-                        OnGUIUpdate?.Invoke(personsNewSite, personsNewState);
-
                         sumEllapsedTime = 0;
                     }
 
@@ -526,7 +523,6 @@ namespace CovidPropagation
             _sitesDictionnary.Add(SiteType.WorkPlace, new List<Site>());
             _sitesDictionnary.Add(SiteType.Eat, new List<Site>());
             _sitesDictionnary.Add(SiteType.School, new List<Site>());
-            //buildingSitesDictionnaryArray.Add(typeof(Company), new Site[nbBuildings]);
 
             while (nbBuildings > 0)
             {
@@ -584,13 +580,15 @@ namespace CovidPropagation
             {
                 missingSite = new Hospital();
                 _sitesDictionnary[SiteType.Hospital].Add(missingSite);
-                companies.Add(missingSite);
+                _sitesDictionnary[SiteType.WorkPlace].Add(missingSite);
+                hospitals.Add(missingSite);
             }
 
             if (_sitesDictionnary[SiteType.Store].Count == 0)
             {
                 missingSite = new Store();
                 _sitesDictionnary[SiteType.Store].Add(missingSite);
+                _sitesDictionnary[SiteType.WorkPlace].Add(missingSite);
                 stores.Add(missingSite);
             }
                 
@@ -598,6 +596,7 @@ namespace CovidPropagation
             {
                 missingSite = new Restaurant();
                 _sitesDictionnary[SiteType.Eat].Add(missingSite);
+                _sitesDictionnary[SiteType.WorkPlace].Add(missingSite);
                 restaurants.Add(missingSite);
             }
                 
@@ -605,6 +604,7 @@ namespace CovidPropagation
             {
                 missingSite = new School();
                 _sitesDictionnary[SiteType.School].Add(missingSite);
+                _sitesDictionnary[SiteType.WorkPlace].Add(missingSite);
                 schools.Add(missingSite);
             }
 
@@ -668,8 +668,8 @@ namespace CovidPropagation
                 {
                     personSites = new Dictionary<SiteType, List<Site>>() {
                         { SiteType.Home, new List<Site>{home} },
-                        { SiteType.Store, CreateTypePersonSites(SiteType.Store, NUMBER_OF_STORE_PER_PERSON) },
-                        { SiteType.Eat, CreateTypePersonSites(SiteType.Eat, NUMBER_OF_PLACE_TO_EAT_PER_PERSON) },
+                        { SiteType.Store, CreateTypePersonSites(SiteType.Store, NUMBER_OF_STORE_PER_PERSON, home) },
+                        { SiteType.Eat, CreateTypePersonSites(SiteType.Eat, NUMBER_OF_PLACE_TO_EAT_PER_PERSON, home) },
                         { SiteType.Transport, new List<Site>{ GetVehicle() } }
                     };
                     age = rdm.NextInclusive(60, 100);
@@ -679,10 +679,10 @@ namespace CovidPropagation
                 {
                     personSites = new Dictionary<SiteType, List<Site>>() {
                         { SiteType.Home, new List<Site>{home} },
-                        { SiteType.Store, CreateTypePersonSites(SiteType.Store, NUMBER_OF_STORE_PER_PERSON) },
-                        { SiteType.Eat, CreateTypePersonSites(SiteType.Eat, NUMBER_OF_PLACE_TO_EAT_PER_PERSON) },
+                        { SiteType.Store, CreateTypePersonSites(SiteType.Store, NUMBER_OF_STORE_PER_PERSON, home) },
+                        { SiteType.Eat, CreateTypePersonSites(SiteType.Eat, NUMBER_OF_PLACE_TO_EAT_PER_PERSON, home) },
                         { SiteType.Transport, new List<Site>{ _outside } },
-                        { SiteType.WorkPlace, CreateTypePersonSites(SiteType.School, 1) },
+                        { SiteType.WorkPlace, new List<Site>{_sitesDictionnary[SiteType.School][rdm.Next(0, _sitesDictionnary[SiteType.School].Count)] } },
                     };
                     age = rdm.NextInclusive(5, 24);
                     nbWorkDays = 5;
@@ -691,8 +691,8 @@ namespace CovidPropagation
                 {
                     personSites = new Dictionary<SiteType, List<Site>>() {
                         { SiteType.Home, new List<Site>{home} },
-                        { SiteType.Store, CreateTypePersonSites(SiteType.Store, NUMBER_OF_STORE_PER_PERSON) },
-                        { SiteType.Eat, CreateTypePersonSites(SiteType.Eat, NUMBER_OF_PLACE_TO_EAT_PER_PERSON) },
+                        { SiteType.Store, CreateTypePersonSites(SiteType.Store, NUMBER_OF_STORE_PER_PERSON, home) },
+                        { SiteType.Eat, CreateTypePersonSites(SiteType.Eat, NUMBER_OF_PLACE_TO_EAT_PER_PERSON, home) },
                         { SiteType.Transport, new List<Site>{  _outside, GetVehicle() } },
                         { SiteType.WorkPlace, new List<Site>{ FindWorkPlace() } }
                     };
@@ -706,10 +706,11 @@ namespace CovidPropagation
                 _population.Add(new Person(planning, hospital, age, personState));
                 nbPeople--;
             }
+
             // Insère les maison des individus au début de la liste pour garder un ordre précis dans le GUI. 
-            _sites.InsertRange(0, houses);
+            _sites.InsertRange(1, houses);
             // Tous les lieux sont entrés, les ids peuvent être créés.
-            for (int i = 1; i < _sites.Count; i++)
+            for (int i = 0; i < _sites.Count; i++)
             {
                 _sitesIds.Add(_sites[i], i);
             }
@@ -721,13 +722,14 @@ namespace CovidPropagation
         /// <param name="type">Type de lieux</param>
         /// <param name="quantity">Nombre de lieux à créer.</param>
         /// <returns>Liste de lieux demandé à la quantité demandée.</returns>
-        private List<Site> CreateTypePersonSites(SiteType type, int quantity)
+        private List<Site> CreateTypePersonSites(SiteType type, int quantity, Site home)
         {
             List<Site> sites = new List<Site>();
             for (int i = 0; i < quantity; i++)
             {
                 sites.Add(_sitesDictionnary[type][rdm.Next(0, _sitesDictionnary[type].Count)]);
             }
+            sites.Add(home);
             return sites;
         }
 

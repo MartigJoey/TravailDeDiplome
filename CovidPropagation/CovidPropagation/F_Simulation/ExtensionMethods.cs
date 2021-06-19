@@ -12,6 +12,7 @@ using LiveCharts.Helpers;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 
@@ -174,16 +175,23 @@ namespace CovidPropagation
         /// </summary>
         public static void OnDataUpdatePieChart(this PieChart chart, SimulationDatas e)
         {
-            Application.Current.Dispatcher.Invoke((Action)(() =>
+            try
             {
-                ChartValues<double> cv;
-                foreach (PieSeries serie in chart.Series)
+                Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
-                    cv = new ChartValues<double>();
-                    cv.Add(e.GetDataFromEnum((ChartsDisplayData)serie.Tag).Last());
-                    serie.Values = cv;
-                }
-            }));
+                    ChartValues<double> cv;
+                    foreach (PieSeries serie in chart.Series)
+                    {
+                        cv = new ChartValues<double>();
+                        cv.Add(e.GetDataFromEnum((ChartsDisplayData)serie.Tag).Last());
+                        serie.Values = cv;
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("PieChart thread error:" + ex);
+            }
         }
 
         private static void SetMaxAxisValue(Axis axis, double axisMaxValue)
@@ -205,169 +213,176 @@ namespace CovidPropagation
         /// <param name="isDisplayChange">Si l'affichage change et qu'il est nécessaire de recharger les données du graphiques.</param>
         public static void Display(this CartesianChart chart, SimulationDatas e, bool isDisplayChange)
         {
-            Application.Current.Dispatcher.Invoke((Action)(() =>
+            try
             {
-                int interval = 48;
-                Axis axisX = chart.AxisX[0];
-                Axis axisY = chart.AxisY[0];
-                Axis currentAxis = axisX;
-                double maxValue = chart.Series[0].Values.Count;
-                ChartData datas = (ChartData)chart.Tag;
-                int displayWindow = datas.DisplayWindow;
-
-                switch ((UIType)datas.UIType)
+                Application.Current.Dispatcher.Invoke((Action)(() =>
                 {
-                    case UIType.Linear:
-                        axisX.MaxValue = maxValue;
+                    int interval = 48;
+                    Axis axisX = chart.AxisX[0];
+                    Axis axisY = chart.AxisY[0];
+                    Axis currentAxis = axisX;
+                    double maxValue = chart.Series[0].Values.Count;
+                    ChartData datas = (ChartData)chart.Tag;
+                    int displayWindow = datas.DisplayWindow;
 
-                        // Récupère l'interval
-                        switch ((ChartsDisplayInterval)datas.DisplayInterval)
-                        {
-                            default:
-                            case ChartsDisplayInterval.Day:
-                                interval = 48;
-                                break;
-                            case ChartsDisplayInterval.Week:
-                                interval = 336;
-                                break;
-                            case ChartsDisplayInterval.Month:
-                                interval = 1440;
-                                break;
-                            case ChartsDisplayInterval.Total:
-                                interval = 0;
-                                break;
-                        }
-
-                        double axisYMaxValue = 0;
-                        // ID Documentation : Curve_Chart
-                        foreach (LineSeries serie in chart.Series)
-                        {
-                            List<double> lineSerieDatas = new List<double>(e.GetDataFromEnum((ChartsDisplayData)serie.Tag));
-
-                            // Si l'affichage n'est pas "total" et que lineSerieDatas a suffisament de données
-                            if (interval != 0 && lineSerieDatas.GetLastIndex() > interval)
-                            {
-                                // Permet de garder le focus sur la dernière fenêtre d'informations
-                                if (datas.AutoDisplay)
-                                    displayWindow = lineSerieDatas.GetLastIndex() / interval;
-
-                                // Permet d'éviter d'incrémenter displayWindow au delà de la quantité d'interval actuellement disponible.
-                                if (displayWindow > lineSerieDatas.GetLastIndex() / interval)
-                                    displayWindow = lineSerieDatas.GetLastIndex() / interval;
-
-                                // Différencie le premier jour du reste.
-                                if ((interval * displayWindow + interval) < lineSerieDatas.GetLastIndex())
-                                {
-                                    int lastItemIndex = interval * displayWindow + interval;
-                                    lineSerieDatas.RemoveRange(lastItemIndex, lineSerieDatas.GetLastIndex() - lastItemIndex + 1);
-                                    lineSerieDatas.RemoveRange(0, interval * displayWindow);
-                                }
-                                else
-                                {
-                                    lineSerieDatas.RemoveRange(0, lineSerieDatas.GetLastIndex() - interval);
-                                }
-                            }
-                            double serieMaxValue = lineSerieDatas.Max();
-                            if (serieMaxValue > axisYMaxValue)
-                            {
-                                axisYMaxValue = serieMaxValue;
-                            }
-                            serie.Values = lineSerieDatas.AsGearedValues().WithQuality(Quality.Low);
-                        }
-                        SetMaxAxisValue(axisY, axisYMaxValue);
-
-                        // ID Documentation : Curve_Chart_AxeX
-                        if (maxValue - interval > 0 && interval != 0)
-                        {
-                            axisX.MinValue = maxValue - interval;
+                    switch ((UIType)datas.UIType)
+                    {
+                        case UIType.Linear:
                             axisX.MaxValue = maxValue;
-                        }
-                        else if (interval == 0)
-                        {
-                            axisX.MinValue = 0;
-                            axisX.MaxValue = maxValue;
-                        }
-                        else
-                        {
-                            axisX.MinValue = 0;
-                            axisX.MaxValue = interval;
-                        }
 
-                        datas.DisplayWindow = displayWindow;
-                        chart.Tag = datas;
-                        break;
-                    case UIType.Vertical:
-                        //SetMaxAxisValue(axisY);
-                        DisplayColumnRowChart(chart, e, axisX, axisY, isDisplayChange);
-                        break;
-                    case UIType.Horizontal:
-                        //SetMaxAxisValue(axisX);
-                        DisplayColumnRowChart(chart, e, axisY, axisX, isDisplayChange);
-                        break;
-                    case UIType.HeatMap:
-                        HeatSeries serieHeatMap = (HeatSeries)chart.Series[0];
-                        List<double> simulationData = new List<double>(e.GetDataFromEnum((ChartsDisplayData)serieHeatMap.Tag));
-
-                        if (simulationData != null)
-                        {
-                            // Trouver premier jour semaine
-                            int x = 0; 
-                            int y = 0;
-                            int week = 0;
-                            double value = 0;
-                            if (simulationData.Count > 0)
+                            // Récupère l'interval
+                            switch ((ChartsDisplayInterval)datas.DisplayInterval)
                             {
-                                // Parcours les données reçues
-                                for (int i = 1; i <= simulationData.Count; i++)
+                                default:
+                                case ChartsDisplayInterval.Day:
+                                    interval = 48;
+                                    break;
+                                case ChartsDisplayInterval.Week:
+                                    interval = 336;
+                                    break;
+                                case ChartsDisplayInterval.Month:
+                                    interval = 1440;
+                                    break;
+                                case ChartsDisplayInterval.Total:
+                                    interval = 0;
+                                    break;
+                            }
+
+                            double axisYMaxValue = 0;
+                            // ID Documentation : Curve_Chart
+                            foreach (LineSeries serie in chart.Series)
+                            {
+                                List<double> lineSerieDatas = new List<double>(e.GetDataFromEnum((ChartsDisplayData)serie.Tag));
+
+                                // Si l'affichage n'est pas "total" et que lineSerieDatas a suffisament de données
+                                if (interval != 0 && lineSerieDatas.GetLastIndex() > interval)
                                 {
-                                    // Ajotue les données à value
-                                    value += simulationData[i - 1];
-                                    // Si il y a de nouvelles valeurs
-                                    if (serieHeatMap.Values.Count < (i/4))
+                                    // Permet de garder le focus sur la dernière fenêtre d'informations
+                                    if (datas.AutoDisplay)
+                                        displayWindow = lineSerieDatas.GetLastIndex() / interval;
+
+                                    // Permet d'éviter d'incrémenter displayWindow au delà de la quantité d'interval actuellement disponible.
+                                    if (displayWindow > lineSerieDatas.GetLastIndex() / interval)
+                                        displayWindow = lineSerieDatas.GetLastIndex() / interval;
+
+                                    // Différencie le premier jour du reste.
+                                    if ((interval * displayWindow + interval) < lineSerieDatas.GetLastIndex())
                                     {
-                                        // Si value a pu récupérer 4 valeurs
-                                        if (i % 4 == 0)
+                                        int lastItemIndex = interval * displayWindow + interval;
+                                        lineSerieDatas.RemoveRange(lastItemIndex, lineSerieDatas.GetLastIndex() - lastItemIndex + 1);
+                                        lineSerieDatas.RemoveRange(0, interval * displayWindow);
+                                    }
+                                    else
+                                    {
+                                        lineSerieDatas.RemoveRange(0, lineSerieDatas.GetLastIndex() - interval);
+                                    }
+                                }
+                                double serieMaxValue = lineSerieDatas.Max();
+                                if (serieMaxValue > axisYMaxValue)
+                                {
+                                    axisYMaxValue = serieMaxValue;
+                                }
+                                serie.Values = lineSerieDatas.AsGearedValues().WithQuality(Quality.Low);
+                            }
+                            SetMaxAxisValue(axisY, axisYMaxValue);
+
+                            // ID Documentation : Curve_Chart_AxeX
+                            if (maxValue - interval > 0 && interval != 0)
+                            {
+                                axisX.MinValue = maxValue - interval;
+                                axisX.MaxValue = maxValue;
+                            }
+                            else if (interval == 0)
+                            {
+                                axisX.MinValue = 0;
+                                axisX.MaxValue = maxValue;
+                            }
+                            else
+                            {
+                                axisX.MinValue = 0;
+                                axisX.MaxValue = interval;
+                            }
+
+                            datas.DisplayWindow = displayWindow;
+                            chart.Tag = datas;
+                            break;
+                        case UIType.Vertical:
+                            //SetMaxAxisValue(axisY);
+                            DisplayColumnRowChart(chart, e, axisX, axisY, isDisplayChange);
+                            break;
+                        case UIType.Horizontal:
+                            //SetMaxAxisValue(axisX);
+                            DisplayColumnRowChart(chart, e, axisY, axisX, isDisplayChange);
+                            break;
+                        case UIType.HeatMap:
+                            HeatSeries serieHeatMap = (HeatSeries)chart.Series[0];
+                            List<double> simulationData = new List<double>(e.GetDataFromEnum((ChartsDisplayData)serieHeatMap.Tag));
+
+                            if (simulationData != null)
+                            {
+                                // Trouver premier jour semaine
+                                int x = 0;
+                                int y = 0;
+                                int week = 0;
+                                double value = 0;
+                                if (simulationData.Count > 0)
+                                {
+                                    // Parcours les données reçues
+                                    for (int i = 1; i <= simulationData.Count; i++)
+                                    {
+                                        // Ajotue les données à value
+                                        value += simulationData[i - 1];
+                                        // Si il y a de nouvelles valeurs
+                                        if (serieHeatMap.Values.Count < (i / 4))
                                         {
-                                            // Si c'est la première semaine, créé des heatpoint
-                                            if (week == 0)
+                                            // Si value a pu récupérer 4 valeurs
+                                            if (i % 4 == 0)
                                             {
-                                                double avgValue = value / 4;
-                                                serieHeatMap.Values.Add(new HeatPoint(x, y, avgValue));
-                                            }
-                                            else // Sinon, les ajoutent au heatpoint déjà existant et en fait la moyenne
-                                            {
-                                                HeatPoint hm = ((HeatPoint)serieHeatMap.Values[(x * 12) + y]);
-                                                hm.Weight = ((week * 4) * hm.Weight + value) / ((week * 4) + 4);
+                                                // Si c'est la première semaine, créé des heatpoint
+                                                if (week == 0)
+                                                {
+                                                    double avgValue = value / 4;
+                                                    serieHeatMap.Values.Add(new HeatPoint(x, y, avgValue));
+                                                }
+                                                else // Sinon, les ajoutent au heatpoint déjà existant et en fait la moyenne
+                                                {
+                                                    HeatPoint hm = ((HeatPoint)serieHeatMap.Values[(x * 12) + y]);
+                                                    hm.Weight = ((week * 4) * hm.Weight + value) / ((week * 4) + 4);
+                                                }
                                             }
                                         }
-                                    }
-                                    // Lors d'un changement de semaine.
-                                    if (i % 336 == 0)
-                                    {
-                                        week++;
-                                        x = 0;
-                                        y = 0;
-                                        value = 0;
-                                    }
-                                    else if (i % 48 == 0) // Lors d'un changement de jour.
-                                    {
-                                        x++;
-                                        y = 0;
-                                        value = 0;
-                                    }
-                                    else if (i % 4 == 0) // Lors d'un changement de case.
-                                    {
-                                        y++;
-                                        value = 0;
+                                        // Lors d'un changement de semaine.
+                                        if (i % 336 == 0)
+                                        {
+                                            week++;
+                                            x = 0;
+                                            y = 0;
+                                            value = 0;
+                                        }
+                                        else if (i % 48 == 0) // Lors d'un changement de jour.
+                                        {
+                                            x++;
+                                            y = 0;
+                                            value = 0;
+                                        }
+                                        else if (i % 4 == 0) // Lors d'un changement de case.
+                                        {
+                                            y++;
+                                            value = 0;
+                                        }
                                     }
                                 }
                             }
-                        }
-                        axisX.MaxValue = 7;
-                        axisY.MaxValue = 12;
-                        break;
-                }
-            }));
+                            axisX.MaxValue = 7;
+                            axisY.MaxValue = 12;
+                            break;
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error thread: " + ex);
+            }
         }
 
         private static void DisplayColumnRowChart(CartesianChart chart, SimulationDatas e, Axis axis, Axis axisValueSize, bool isDisplayChange)

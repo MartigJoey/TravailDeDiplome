@@ -1,14 +1,12 @@
 using UnityEngine;
-using UnityEngine.UI;
-using System.Collections;
 using System.IO;
 using System.IO.Pipes;
 using System.Threading;
 using System.Text;
 using System;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class ScriptClient : MonoBehaviour
 {

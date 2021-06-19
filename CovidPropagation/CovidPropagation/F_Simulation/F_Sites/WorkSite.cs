@@ -25,8 +25,10 @@ namespace CovidPropagation
                  base(workPlaceTypes, length, width, height, ventilationWithOutside, additionalControlMeasures)
         {
             this._nbPlaces = nbPlaces;
-            _nbWorker = 0;
+            NbWorker = 0;
         }
+
+        public int NbWorker { get => _nbWorker; set => _nbWorker = value; }
 
         /// <summary>
         /// Définit s'il y a encore de la place dans le lieu.
@@ -35,9 +37,9 @@ namespace CovidPropagation
         public bool IsHiring()
         {
             bool result = false;
-            if (_nbWorker < _nbPlaces)
+            if (NbWorker < _nbPlaces)
             {
-                _nbWorker++;
+                NbWorker++;
                 result = true;
             }
             return result;

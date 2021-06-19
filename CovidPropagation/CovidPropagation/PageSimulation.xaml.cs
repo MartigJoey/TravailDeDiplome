@@ -24,6 +24,7 @@ using System.Runtime.InteropServices;
 using System.IO.Pipes;
 using System.IO;
 using System.Text.Json;
+using System.Windows.Threading;
 
 namespace CovidPropagation
 {
@@ -102,6 +103,8 @@ namespace CovidPropagation
         StreamString ss; // Stream permettant l'envoie de données à Unity
         Thread server;
 
+        DispatcherTimer dispatcherTimer = new DispatcherTimer();
+
         public PageSimulation()
         {
             InitializeComponent();
@@ -109,12 +112,19 @@ namespace CovidPropagation
             mw = (MainWindow)Application.Current.MainWindow;
             charts = new Dictionary<UIType, object>();
             sim = new Simulation();
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Interval = new TimeSpan(100);
         }
 
         private void OpenRawDatasWindow_Click(object sender, RoutedEventArgs e)
         {
             rawDatasWindow.Show();
             rawDatasWindow.Focus();
+        }
+
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            lblDate.Content = TimeManager.CurrentDayString + " " + TimeManager.CurrentHour;
         }
 
         /// <summary>
@@ -160,6 +170,7 @@ namespace CovidPropagation
                 btnOpenRawDatas.IsEnabled = true;
             }
             sim.Start();
+            dispatcherTimer.Start();
         }
 
         private void StartSimulationIteration()
@@ -173,6 +184,7 @@ namespace CovidPropagation
         private void Break_Click(object sender, RoutedEventArgs e)
         {
             sim.Stop();
+            dispatcherTimer.Stop();
         }
 
         private void Reset_Click(object sender, RoutedEventArgs e)
@@ -201,6 +213,8 @@ namespace CovidPropagation
             mw.btnGraphicSettings.IsEnabled = true;
             mw.btnSettings.IsEnabled = true;
             btnOpenRawDatas.IsEnabled = false;
+
+            dispatcherTimer.Stop();
         }
 
         #region View
@@ -655,6 +669,7 @@ namespace CovidPropagation
                 new GradientStop(Colors.Orange, HEATMAP_ORANGE_DEFAULT_VALUE),
                 new GradientStop(Colors.Red, HEATMAP_RED_DEFAULT_VALUE)
             };
+            heatSeries.DrawsHeatRange = false;
             chart.Series.Add(heatSeries);
         }
 

@@ -37,12 +37,12 @@ public class ManagerScript : MonoBehaviour
         _sitesMin = new List<Vector2>();
         _sitesMax = new List<Vector2>();
 
-        DataPopulation populationDatas = JsonUtility.FromJson<DataPopulation>(@"{ ""NbPersons"":90,""IndexOfInfected"":[]}");
-        DataSites sitesDatas = JsonUtility.FromJson<DataSites>(@"{ ""NbHouse"":1000,""NbCompany"":1000,""NbHospital"":1000,""NbRestaurant"":1000,""NbSchool"":100,""NbStore"":100,""NbSupermarket"":100}");
-
-        
-        CreateSites(sitesDatas);
-        CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
+        //DataPopulation populationDatas = JsonUtility.FromJson<DataPopulation>(@"{ ""NbPersons"":90,""IndexOfInfected"":[]}");
+        //DataSites sitesData§s = JsonUtility.FromJson<DataSites>(@"{ ""NbHouse"":1000,""NbCompany"":1000,""NbHospital"":1000,""NbRestaurant"":1000,""NbSchool"":100,""NbStore"":100,""NbSupermarket"":100}");
+        //
+        //
+        //CreateSites(sitesDatas);
+        //CreatePopulation(populationDatas.NbPersons, populationDatas.IndexOfInfected);
     }
     public void SetIterationDatas(DataIteration iterationDatas)
     {
@@ -85,7 +85,10 @@ public class ManagerScript : MonoBehaviour
 
     public void CreateSites(DataSites sites)
     {
-        //House T
+        // Outside
+        CreateSite(new Vector2(-9, -4), new Vector2(9, 4));
+
+        // House T
         float topStartX = -9;
         float topStopX = 9;
         float topStartY = -5;
